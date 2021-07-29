@@ -69,6 +69,14 @@ class Car {
     }
 };
 
+bool amIKing(int age) {
+    return age > 50;
+}
+
+int subtract(int a, int b) {
+    return a - b;
+}
+
 int main() {
 
     // create object of Room class

@@ -8,15 +8,15 @@ logger = logging.getLogger("mkdocs")
 
 
 class DoxygenRun:
-    def __init__(self, sourceDir, destinationDir):
-        self.sourceDir = sourceDir
-        self.destinationDir = destinationDir
-        self.command = f'/media/kuba/neon/git/robo/rbcx-robotka/mkdocs-doxygen-snippets-plugin/doxygen_snippets/extractDoxygen.sh "Doxygn Snippets" {self.sourceDir} {self.destinationDir}'
+	def __init__(self, sourceDir, destinationDir):
+		self.sourceDir = sourceDir
+		self.destinationDir = destinationDir
+		self.command = f'/media/kuba/neon/git/robo/rbcx-robotka/mkdocs-doxygen-snippets-plugin/doxygen_snippets/extractDoxygen.sh "Doxygn Snippets" {self.sourceDir} {self.destinationDir}'
 
-    def run(self, print_command: bool = False):
-        if print_command:
-            print(self.command)
-        subprocess.call(shlex.split(self.command))
+	def run(self, print_command: bool = False):
+		if print_command:
+			print(self.command)
+		subprocess.call(shlex.split(self.command))
 
 # class DoxygenRun:
 #     def __init__(self, sourceDir, destinationDir):
