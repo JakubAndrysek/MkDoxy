@@ -6,6 +6,9 @@ import subprocess
 import shlex
 
 
+# os.walk
+
+
 class DoxygenRun:
     def __init__(self, scriptSh, sourceDir, destinationDir):
         self.scriptSh = scriptSh
@@ -26,6 +29,27 @@ class DoxygenParser:
         # self.parsedXml = {}
         self.parsedXml["class"] = {}
 
+    # def run(self, root: Element):  # noqa: D102 (ignore missing docstring)
+    #     if not self.id_prefix:
+    #         return
+    #     for el in root.iter():
+    #         id_attr = el.get("id")
+    #         if id_attr:
+    #             el.set("id", self.id_prefix + id_attr)
+    #
+    #         href_attr = el.get("href")
+    #         if href_attr and href_attr.startswith("#"):
+    #             el.set("href", "#" + self.id_prefix + href_attr[1:])
+    #
+    #         name_attr = el.get("name")
+    #         if name_attr:
+    #             el.set("name", self.id_prefix + name_attr)
+    #
+    #         if el.tag == "label":
+    #             for_attr = el.get("for")
+    #             if for_attr:
+    #                 el.set("for", self.id_prefix + for_attr)
+
     def getFilePath(self, filename: str) -> str:
         index_path = os.path.join(self.doxygen_path, filename)
         assert os.path.isfile(index_path)
@@ -43,7 +67,6 @@ class DoxygenParser:
             kind = compound.attrib["kind"]
             if "class" in kind:
                 self.parsedXml["class"][compound[0].text] = {"file": compound.get("refid")}
-
 
     def parseClasses(self) -> None:
         for doxyClass in self.parsedXml["class"]:
@@ -76,12 +99,14 @@ class DoxygenSnippets:
 
 
 if __name__ == '__main__':
-    # runner = DoxygenRun("./extractDoxygen.sh", "/media/kuba/neon/git/robo/rbcx-robotka/RB3204-RBCX-Doc/master/RB3204-RBCX-library/src/", "/media/kuba/neon/git/robo/rbcx-robotka/RB3204-RBCX-Doc/master/RB3204-RBCX-library/doc/")
-    runner = DoxygenRun("./extractDoxygen.sh", "./cpp_basic/src/", "./cpp_basic/doc/")
+    runner = DoxygenRun("./extractDoxygen.sh",
+                        "/media/kuba/neon/git/robo/rbcx-robotka/RB3204-RBCX-Doc/master/RB3204-RBCX-library/src/",
+                        "/media/kuba/neon/git/robo/rbcx-robotka/RB3204-RBCX-Doc/master/RB3204-RBCX-library/doc/")
+    # runner = DoxygenRun("./extractDoxygen.sh", "./cpp_basic/src/", "./cpp_basic/doc/")
     runner.run(print_command=True)
 
-    # parser = DoxygenParser('/media/kuba/neon/git/robo/rbcx-robotka/RB3204-RBCX-Doc/master/RB3204-RBCX-library/doc/xml/')
-    parser = DoxygenParser('cpp_basic/doc/xml/')
+    parser = DoxygenParser('/media/kuba/neon/git/robo/rbcx-robotka/RB3204-RBCX-Doc/master/RB3204-RBCX-library/doc/xml/')
+    # parser = DoxygenParser('cpp_basic/doc/xml/')
     parser.parseIndex()
     parser.parseClasses()
 
