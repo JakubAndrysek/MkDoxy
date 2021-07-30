@@ -10,10 +10,20 @@ if __name__ == '__main__':
 	doxygen = DoxygenRun(doxygenSource, doxygenDest)
 	doxygen.run(print_command=True)
 
-	parsedDoxygen = DoxygenParser(doxygenDest)
-	parsedDoxygen.parseIndex()
-	parsedDoxygen.parseClasses()
-	parsedXml = parsedDoxygen.getParsedXml()
+	doxyParsers = DoxygenParser(doxygenDest)
+	doxyParsers.parseIndex()
+	doxyParsers.parseClasses()
+	parsedDoxygen = doxyParsers.getParsedDoxygen()
 
-	pprint(parsedXml)
+	pprint(parsedDoxygen)
+
+	classCar = GeneratedClassMd(parsedDoxygen, "Car")
+	brief = classCar.getBrief()
+	detail = classCar.getDetail()
+
+	# pprint(brief.getroottree())
+	pprint(classCar.generate())
+	# pprint(detail)
+
+	# pprint(brief)
 

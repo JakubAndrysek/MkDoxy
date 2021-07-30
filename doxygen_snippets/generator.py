@@ -3,6 +3,7 @@ from typing import Dict
 from jinja2 import Template
 
 from lxml import etree
+from lxml.etree import _Element
 from mkdocs.config import base
 from mkdocs.structure import files, pages
 from doxygen_snippets.parser import *
@@ -17,7 +18,7 @@ class IncludeSnippets:
 	             page: pages.Page,
 	             config: base.Config,
 	             files: files.Files,
-	             parsedDoxygen: DoxygenParser
+	             parsedDoxygen: ParsedDoxygen
 	             ):
 		self.markdown = markdown
 		self.page = page
@@ -28,8 +29,10 @@ class IncludeSnippets:
 	### Create documentation generator callbacks
 	def doxyClass(self,
 	              className: str,
-	              classMethod: str = None, ):
-		return f"## Doxygen CLASS: {className}: {classMethod}"
+	              classMethod: str = None
+	              ):
+		classMd = GeneratedClassMd(self.parsedDoxygen, className, classMethod)
+		return classMd.generate()
 
 	def doxyFunction(self, functionName: str):
 		return f"## Doxygen FUNCTION: {functionName}"
@@ -44,12 +47,33 @@ class IncludeSnippets:
 
 class GeneratedClassMd:
 	def __init__(self,
-	             parsedDoxygen: DoxygenParser,
+	             parsedDoxygen: ParsedDoxygen,
 	             className: str,
-	             classMethod: str = None) :
+	             classMethod: str = None):
 		self.parsedDoxygen = parsedDoxygen
 		self.className = className
 		self.classMethod = classMethod
 
-	def generateBrief(self):
-		return self.parsedDoxygen["class"][self.className]["briefdescription"]
+	def getName(self) -> str:
+		return self.className
+
+	def getBrief(self) -> str:
+		briefXml = self.parsedDoxygen.classes[self.className]["briefdescription"]
+		brief = ""
+		for br in briefXml.getchildren():
+			brief += br.text
+		return brief
+
+	def getDetail(self) -> str:
+		briefXml = self.parsedDoxygen.classes[self.className]["detaileddescription"]
+		brief = ""
+		for br in briefXml.getchildren():
+			brief += br.text
+		return brief
+
+	def generate(self):
+		return f"""
+			## {self.getName()}
+			{self.getBrief()}
+			{self.getDetail()}
+		"""

@@ -34,9 +34,10 @@ class DoxygenSnippets(BasePlugin):
 		doxygen_dest = self.config["doxygen-dest"]
 		doxygen = DoxygenRun(doxygen_source, doxygen_dest)
 		doxygen.run()
-		self.parsedDoxygen = DoxygenParser(doxygen_dest)
-		self.parsedDoxygen.parseIndex()
-		logger.error(self.parsedDoxygen.getParsedXml())
+		self.doxyParser = DoxygenParser(doxygen.getDestination())
+		self.doxyParser.parseIndex()
+		self.parsedDoxygen = self.doxyParser.getParsedDoxygen()
+		logger.error(self.parsedDoxygen)
 		return
 
 	def on_page_markdown(

@@ -18,6 +18,10 @@ class DoxygenRun:
 			print(self.command)
 		subprocess.call(shlex.split(self.command))
 
+	def getDestination(self):
+		return self.destinationDir
+
+# https://leimao.github.io/blog/CPP-Documentation-Using-Doxygen/
 # class DoxygenRun:
 #     def __init__(self, sourceDir, destinationDir):
 #         self.destinationDir = destinationDir

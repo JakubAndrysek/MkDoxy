@@ -36,8 +36,8 @@ class Room {
 };
 
 /**
- * @brief My better Car classes
- * @details More Car details
+ * @brief My better xCar classes
+ * @details More xCar details
  * 
  */
 class Car {
