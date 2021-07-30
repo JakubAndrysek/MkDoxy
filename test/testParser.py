@@ -15,19 +15,22 @@ if __name__ == '__main__':
 	# pprint(parsedIndex)
 
 	parsedClass = doxyParsers.parseClass("Car")
-	if not parsedClass:
-		print("Class name error")
-	# else:
-	# 	pp(parsedClass)
+	if parsedClass:
+		pp(parsedClass)
+	else:
+		print("Class not exist")
 
+	parsedFile = doxyParsers.parseFile("main.cpp")
+	if parsedFile:
+		pp(parsedFile)
+	else:
+		print("Not exist")
 
-	classCar = GeneratedClassMd(parsedClass, "Car")
-	brief = classCar.getBrief()
-	# detail = classCar.getDetail()
+	parsedXml = doxyParsers.parseXml("std", "namespace")
+	if parsedXml:
+		pp(parsedXml)
+	else:
+		print("Not exist")
 
-	# pprint(brief.getroottree())
-	# pprint(classCar.generate())
-	# pprint(detail)
-
-	# pprint(brief)
+	pp(doxyParsers.getContent())
 

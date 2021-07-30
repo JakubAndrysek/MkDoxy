@@ -1,27 +1,29 @@
 import os
 from typing import Dict
 from jinja2 import Template
-
+from typing import Union, List, Dict
 from lxml import etree
 import xmltodict
+
+
 from mkdocs.config import base
 from mkdocs.structure import files, pages
 import logging
+from pprint import *
 
 logger = logging.getLogger("mkdocs")
-
-
-class ParsedDoxygen:
-	def __init__(self,):
-		self.classes = {}
-		self.files = {}
-		self.namespaces = {}
 
 
 class DoxygenParser:
 	def __init__(self, doxygen_path: str):
 		self.doxygen_path = doxygen_path
-		self.parsedDoxygen = ParsedDoxygen
+
+		indexPath = self.getFilePath("index.xml")
+		with open(indexPath, 'r') as f:
+			self.parsedIndex = xmltodict.parse(f.read())
+
+	def getParsedIndex(self) -> dict:
+		return self.parsedIndex
 
 	def getFilePath(self, filename: str) -> str:
 		relative = os.path.join(os.path.join(self.doxygen_path, "xml"), filename)
@@ -30,67 +32,42 @@ class DoxygenParser:
 		assert os.path.isfile(index_path)
 		return index_path
 
-	def parseIndex(self) -> None:
-		index_path = self.getFilePath("index.xml")
+	def getContent(self) -> List[dict]:
+		compound = self.parsedIndex["doxygenindex"]["compound"]
+		arr = []
+		for content in compound:
+			arr.append({content["name"]: content["@kind"]})
+		return arr
 
-		index_xml = etree.parse(source=index_path)
-		self.parsedDoxygen.classes = {}
-		self.parsedDoxygen.files = {}
-		for compound in index_xml.findall("compound"):
-			kind = compound.attrib["kind"]
-			if kind == "class":
-				self.parsedDoxygen.classes[compound[0].text] = {"refid": compound.get("refid")}
-			elif kind == "file":
-				self.parsedDoxygen.files[compound[0].text] = {"refid": compound.get("refid")}
+	def getFilename(self, name: str, fileType: str) -> Union[str, None]:
+		"""
+		:param name:
+		:param fileType:
+		:return: filename: str or None
+		"""
+		classes = self.parsedIndex["doxygenindex"]["compound"]
+		for doxyClass in classes:
+			if doxyClass["name"] == name and doxyClass["@kind"] == fileType:
+				return doxyClass["@refid"]
+		return None
 
-	def parseClasses(self) -> None:
-		for doxyClass in self.parsedDoxygen.classes:
-			class_path = self.getFilePath(f"{self.parsedDoxygen.classes[doxyClass]['refid']}.xml")
-			class_xml = etree.parse(source=class_path).getroot()
-			doxygen = class_xml.getchildren()[0]
-			# self.parsedXml["class"][doxyClass]["language"] = doxygen.attrib["language"]
-			self.parsedDoxygen.classes[doxyClass]["compounddef"] = doxygen
-			self.parsedDoxygen.classes[doxyClass]["sectiondef"] = {}
-			for compounddef in doxygen.getchildren():
-				if compounddef.tag == "sectiondef":
-					self.parsedDoxygen.classes[doxyClass]["sectiondef"][compounddef.get("kind")] = compounddef
-				else:
-					self.parsedDoxygen.classes[doxyClass][compounddef.tag] = compounddef
+	def parseXml(self, name: str, xtype: str):
+		fileName = self.getFilename(name, xtype)
+		if fileName:
+			classPath = self.getFilePath(f"{fileName}.xml")
+			with open(classPath, 'r') as f:
+				parsedClass = xmltodict.parse(f.read(), force_list=("briefdescription"))
+			return parsedClass["doxygen"]["compounddef"]
+		else:
+			return None
 
-	# def parseFiles(self) -> None:
-	#     for doxyFile in self.parsedXml["files"]:
-	#         class_path = self.getFilePath(f"{self.parsedXml['file'][doxyFile]['refid']}.xml")
-	#         class_xml = etree.parse(source=class_path).getroot()
-	#         doxygen = class_xml.getchildren()[0]
-	#         # self.parsedXml["class"][doxyClass]["language"] = doxygen.attrib["language"]
-	#         self.parsedXml["class"][doxyFile]["compounddef"] = doxygen
-	#         self.parsedXml["class"][doxyFile]["sectiondef"] = {}
-	#         for compounddef in doxygen.getchildren():
-	#             if compounddef.tag == "sectiondef":
-	#                 self.parsedXml["file"][doxyFile]["sectiondef"][compounddef.get("kind")] = compounddef
-	#             else:
-	#                 self.parsedXml["file"][doxyFile][compounddef.tag] = compounddef
+	def parseClass(self, className: str) -> Union[dict, None]:
+		return self.parseXml(className, "class")
 
-	def getParsedDoxygen(self) -> ParsedDoxygen:
-		return self.parsedDoxygen
+	def parseFile(self, fileName: str) -> Union[dict, None]:
+		return self.parseXml(fileName, "file")
 
-# def run(self, root: Element):  # noqa: D102 (ignore missing docstring)
-#     if not self.id_prefix:
-#         return
-#     for el in root.iter():
-#         id_attr = el.get("id")
-#         if id_attr:
-#             el.set("id", self.id_prefix + id_attr)
-#
-#         href_attr = el.get("href")
-#         if href_attr and href_attr.startswith("#"):
-#             el.set("href", "#" + self.id_prefix + href_attr[1:])
-#
-#         name_attr = el.get("name")
-#         if name_attr:
-#             el.set("name", self.id_prefix + name_attr)
-#
-#         if el.tag == "label":
-#             for_attr = el.get("for")
-#             if for_attr:
-#                 el.set("for", self.id_prefix + for_attr)
+	def parseNamespace(self, nsName: str) -> Union[dict, None]:
+		return self.parseXml(nsName, "namespace")
+
+
