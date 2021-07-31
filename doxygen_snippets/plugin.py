@@ -10,6 +10,7 @@ from doxygen_snippets.generator import Generator
 from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
+# from doxygen_snippets.snippets import IncludeSnippets
 
 import logging
 from pprint import *
@@ -21,7 +22,7 @@ class DoxygenSnippets(BasePlugin):
 	plugins:
 	- search
 	- doxygen-snippets:
-		doxygen-source:build/RB3204-RBCX-library/src/
+		doxygen-input:build/RB3204-RBCX-library/src/
 		doxygen-dest:build/RB3204-RBCX-library/doc/
 		target: mkdocs
 		hints: False
@@ -38,6 +39,7 @@ class DoxygenSnippets(BasePlugin):
 		('full-doc', config_options.Type(bool, default=False)),
 		('hints', config_options.Type(bool, default=False)),
 		('debug', config_options.Type(bool, default=False)),
+		('full-doc', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
 		('link-prefix', config_options.Type(str, default='')),
 	)
@@ -49,15 +51,15 @@ class DoxygenSnippets(BasePlugin):
 	def on_pre_build(self, config):
 		# Building Doxygen and parse XML
 		logger.warning("Building Doxygen and parse XML")
-		doxygenInput = self.config["doxygen-input"]
-		doxygenOutput = self.config["doxygen-output"]
-		apiOutput = self.config["api-output"]
-		fullDoc = self.config["full-doc"]
-		debug = False
-		doxygenRun = DoxygenRun(doxygenInput, doxygenOutput)
+		self.doxygenInput = self.config["doxygen-input"]
+		self.doxygenOutput = self.config["doxygen-output"]
+		self.apiOutput = self.config["api-output"]
+		self.fullDoc = self.config["full-doc"]
+		self.debug = False
+		doxygenRun = DoxygenRun(self.doxygenInput, self.doxygenOutput)
 		doxygenRun.run()
 		logger.warning(doxygenRun.getDestination())
-		os.makedirs(apiOutput, exist_ok=True)
+		os.makedirs(self.apiOutput, exist_ok=True)
 
 		options = {
 			'target': self.config["target"],
@@ -65,16 +67,18 @@ class DoxygenSnippets(BasePlugin):
 		}
 
 		cache = Cache()
-		parser = XmlParser(cache=cache, target=self.config['target'], hints=self.config['hints'], debug=debug)
+		parser = XmlParser(cache=cache, target=self.config['target'], hints=self.config['hints'], debug=self.debug)
 		logger.warning(pformat(parser))
-		doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=debug)
+		self.doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=self.debug)
 
-		if debug:
-			doxygen.print()
+		if self.debug:
+			self.doxygen.print()
 
 		self.generator = Generator(ignore_errors=self.config["ignore-errors"], options=options)
-		if fullDoc:
-			self.generator.fullDoc(apiOutput, doxygen)
+
+		if self.fullDoc:
+			self.generator.fullDoc(self.apiOutput, self.doxygen)
+
 		return
 
 	def on_page_markdown(
@@ -84,8 +88,8 @@ class DoxygenSnippets(BasePlugin):
 			config: base.Config,
 			files: files.Files,
 	) -> str:
-		# Parse markdown and include doxygen snippets
-		# logger.warning("Parse markdown and include doxygen snippets")
+		# Parse markdown and include self.fullDoc snippets
+		# logger.warning("Parse markdown and include self.fullDoc snippets")
 		# editedSnippets = IncludeSnippets(markdown, page, config, files, self.doxyParser)
 		# finalMd = editedSnippets.include()
 		# logger.warning(finalMd)
