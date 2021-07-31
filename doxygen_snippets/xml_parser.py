@@ -36,10 +36,11 @@ SIMPLE_SECTIONS_HINTS_VUEPRESS = {
 
 
 class XmlParser:
-	def __init__(self, cache: Cache, target: str = 'gitbook', hints: bool = True):
+	def __init__(self, cache: Cache, target: str = 'gitbook', hints: bool = True, debug: bool = False):
 		self.target = target
 		self.cache = cache
 		self.hints = hints
+		self.debug = debug
 
 	def anchor(self, name: str) -> str:
 		return '<a name=\"' + name + '\"></a>'

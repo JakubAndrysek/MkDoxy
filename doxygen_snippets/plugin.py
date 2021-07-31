@@ -35,6 +35,7 @@ class DoxygenSnippets(BasePlugin):
 		('doxygen-output', config_options.Type(str, default='')),
 		('api-output', config_options.Type(str, default='')),
 		('target', config_options.Type(str, default='mkdocs')),
+		('full-doc', config_options.Type(bool, default=False)),
 		('hints', config_options.Type(bool, default=False)),
 		('debug', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
@@ -47,13 +48,15 @@ class DoxygenSnippets(BasePlugin):
 
 	def on_pre_build(self, config):
 		# Building Doxygen and parse XML
-		logger.error("Building Doxygen and parse XML")
+		logger.warning("Building Doxygen and parse XML")
 		doxygenInput = self.config["doxygen-input"]
 		doxygenOutput = self.config["doxygen-output"]
 		apiOutput = self.config["api-output"]
-		doxygen = DoxygenRun(doxygenInput, doxygenOutput)
-		doxygen.run()
-		logger.error(doxygen.getDestination())
+		fullDoc = self.config["full-doc"]
+		debug = False
+		doxygenRun = DoxygenRun(doxygenInput, doxygenOutput)
+		doxygenRun.run()
+		logger.warning(doxygenRun.getDestination())
 		os.makedirs(apiOutput, exist_ok=True)
 
 		options = {
@@ -62,40 +65,16 @@ class DoxygenSnippets(BasePlugin):
 		}
 
 		cache = Cache()
-		parser = XmlParser(cache=cache, target=self.config['target'], hints=self.config['hints'])
-		logger.error(pformat(parser))
-		doxygen = Doxygen(doxygen.getDestination(), parser, cache, options=options)
+		parser = XmlParser(cache=cache, target=self.config['target'], hints=self.config['hints'], debug=debug)
+		logger.warning(pformat(parser))
+		doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=debug)
 
-		if self.config["debug"]:
+		if debug:
 			doxygen.print()
 
-		generator = Generator(ignore_errors=self.config["ignore-errors"], options=options)
-		# generator.members(apiOutput, doxygen.root.children)
-
-		generator.annotated(apiOutput, doxygen.root.children)
-		generator.fileindex(apiOutput, doxygen.files.children)
-		generator.members(apiOutput, doxygen.root.children)
-		generator.members(apiOutput, doxygen.groups.children)
-		generator.files(apiOutput, doxygen.files.children)
-		generator.namespaces(apiOutput, doxygen.root.children)
-		generator.classes(apiOutput, doxygen.root.children)
-		generator.hierarchy(apiOutput, doxygen.root.children)
-		generator.modules(apiOutput, doxygen.groups.children)
-		generator.pages(apiOutput, doxygen.pages.children)
-		generator.relatedpages(apiOutput, doxygen.pages.children)
-		generator.index(apiOutput, doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
-		generator.index(apiOutput, doxygen.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Functions')
-		generator.index(apiOutput, doxygen.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Variables')
-		generator.index(apiOutput, doxygen.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Typedefs')
-		generator.index(apiOutput, doxygen.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Enums')
-		generator.index(apiOutput, doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM], [Kind.NAMESPACE], 'Namespace Members')
-		generator.index(apiOutput, doxygen.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions')
-		generator.index(apiOutput, doxygen.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables')
-		generator.index(apiOutput, doxygen.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs')
-		generator.index(apiOutput, doxygen.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums')
-		generator.index(apiOutput, doxygen.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions')
-		generator.index(apiOutput, doxygen.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros')
-		generator.index(apiOutput, doxygen.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE], 'Variables')
+		self.generator = Generator(ignore_errors=self.config["ignore-errors"], options=options)
+		if fullDoc:
+			self.generator.fullDoc(apiOutput, doxygen)
 		return
 
 	def on_page_markdown(
@@ -106,10 +85,10 @@ class DoxygenSnippets(BasePlugin):
 			files: files.Files,
 	) -> str:
 		# Parse markdown and include doxygen snippets
-		# logger.error("Parse markdown and include doxygen snippets")
+		# logger.warning("Parse markdown and include doxygen snippets")
 		# editedSnippets = IncludeSnippets(markdown, page, config, files, self.doxyParser)
 		# finalMd = editedSnippets.include()
-		# logger.error(finalMd)
+		# logger.warning(finalMd)
 		# return finalMd
 		return markdown
 

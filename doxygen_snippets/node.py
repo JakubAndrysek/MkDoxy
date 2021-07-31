@@ -12,12 +12,13 @@ from doxybook.property import Property
 
 
 class Node:
-    def __init__(self, xml_file: str, xml: Element, cache: Cache, parser: XmlParser, parent: 'Node', refid: str = None, options: dict = {}):
+    def __init__(self, xml_file: str, xml: Element, cache: Cache, parser: XmlParser, parent: 'Node', refid: str = None, options: dict = {}, debug: bool = False):
         self._children: ['Node'] = []
         self._cache: Cache = cache
         self._parser: XmlParser = parser
         self._parent = parent
         self._options = options
+        self.debug = debug
 
         if xml_file == 'root':
             self._refid = 'root'
@@ -26,7 +27,8 @@ class Node:
             self._xml = None
 
         elif xml is None:
-            print('Loading XML from: ' + xml_file)
+            if self.debug:
+                print('Loading XML from: ' + xml_file)
             self._dirname = os.path.dirname(xml_file)
             self._xml = ElementTree.parse(xml_file).getroot().find('compounddef')
             if self._xml is None:
@@ -37,7 +39,8 @@ class Node:
             self._cache.add(self._refid, self)
             self._static = False
 
-            print('Parsing: ' + self._refid)
+            if self.debug:
+                print('Parsing: ' + self._refid)
             self._check_for_children()
             
             title = self._xml.find('title')
@@ -55,7 +58,8 @@ class Node:
                 self._refid = self._xml.get('id')
             self._cache.add(self._refid, self)
 
-            print('Parsing: ' + self._refid)
+            if self.debug:
+                print('Parsing: ' + self._refid)
             self._check_attrs()
             self._title = self._name
 

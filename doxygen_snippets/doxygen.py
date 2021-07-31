@@ -7,14 +7,17 @@ from doxybook.xml_parser import XmlParser
 
 
 class Doxygen:
-    def __init__(self, index_path: str, parser: XmlParser, cache: Cache, options: dict = {}):
+    def __init__(self, index_path: str, parser: XmlParser, cache: Cache, options: dict = {}, debug: bool = False):
+        self.debug = debug
         path = os.path.join(index_path, 'index.xml')
-        print('Loading XML from: ' + path)
+        if self.debug:
+            print('Loading XML from: ' + path)
         xml = ElementTree.parse(path).getroot()
 
         self.parser = parser
         self.cache = cache
         self._options = options
+
         self.root = Node('root', None, self.cache, self.parser, None, options=self._options)
         self.groups = Node('root', None, self.cache, self.parser, None, options=self._options)
         self.files = Node('root', None, self.cache, self.parser, None, options=self._options)
@@ -40,7 +43,8 @@ class Doxygen:
                 node._visibility = Visibility.PUBLIC
                 self.pages.add_child(node)
 
-        print('Deduplicating data... (may take a minute!)')
+        if self.debug:
+            print('Deduplicating data... (may take a minute!)')
         for i, child in enumerate(self.root.children.copy()):
             self._fix_duplicates(child, self.root, [])
 
@@ -52,7 +56,8 @@ class Doxygen:
 
         self._fix_parents(self.files)
 
-        print('Sorting...')
+        if self.debug:
+            print('Sorting...')
         self._recursive_sort(self.root)
         self._recursive_sort(self.groups)
         self._recursive_sort(self.files)
@@ -92,14 +97,16 @@ class Doxygen:
             self._fix_duplicates(child, root, filter)
 
     def print(self):
-        for node in self.root.children:
-            self.print_node(node, '')
-        for node in self.groups.children:
-            self.print_node(node, '')
-        for node in self.files.children:
-            self.print_node(node, '')
+        if self.debug:
+            for node in self.root.children:
+                self.print_node(node, '')
+            for node in self.groups.children:
+                self.print_node(node, '')
+            for node in self.files.children:
+                self.print_node(node, '')
 
     def print_node(self, node: Node, indent: str):
-        print(indent, node.kind, node.name)
+        if self.debug:
+            print(indent, node.kind, node.name)
         for child in node.children:
             self.print_node(child, indent + '  ')
