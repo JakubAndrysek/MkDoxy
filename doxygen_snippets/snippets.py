@@ -1,11 +1,6 @@
-import inspect
-from textwrap import dedent
 import os
 from typing import *
 from jinja2 import Template
-
-from lxml import etree
-from lxml.etree import _Element
 from mkdocs.config import base
 from mkdocs.structure import files, pages
 import logging

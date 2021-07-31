@@ -6,21 +6,21 @@ from typing import TextIO
 from jinja2 import Template
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
-from doxybook.node import Node, DummyNode
-from doxybook.constants import Kind
-from doxybook.templates.annotated import TEMPLATE as ANNOTATED_TEMPLATE
-from doxybook.templates.member import TEMPLATE as MEMBER_TEMPLATE
-from doxybook.templates.member_definition import TEMPLATE as MEMBER_DEFINITION_TEMPLATE
-from doxybook.templates.member_table import TEMPLATE as MEMBER_TABLE_TEMPLATE
-from doxybook.templates.namespaces import TEMPLATE as NAMESPACES_TEMPLATE
-from doxybook.templates.classes import TEMPLATE as CLASSES_TEMPLATE
-from doxybook.templates.hierarchy import TEMPLATE as HIEARARCHY_TEMPLATE
-from doxybook.templates.index import TEMPLATE as INDEX_TEMPLATE
-from doxybook.templates.modules import TEMPLATE as MODULES_TEMPLATE
-from doxybook.templates.files import TEMPLATE as FILES_TEMPLATE
-from doxybook.templates.programlisting import TEMPLATE as PROGRAMLISTING_TEMPLATE
-from doxybook.templates.page import TEMPLATE as PAGE_TEMPLATE
-from doxybook.templates.pages import TEMPLATE as PAGES_TEMPLATE
+from doxygen_snippets.node import Node, DummyNode
+from doxygen_snippets.constants import Kind
+from doxygen_snippets.templates.annotated import TEMPLATE as ANNOTATED_TEMPLATE
+from doxygen_snippets.templates.member import TEMPLATE as MEMBER_TEMPLATE
+from doxygen_snippets.templates.member_definition import TEMPLATE as MEMBER_DEFINITION_TEMPLATE
+from doxygen_snippets.templates.member_table import TEMPLATE as MEMBER_TABLE_TEMPLATE
+from doxygen_snippets.templates.namespaces import TEMPLATE as NAMESPACES_TEMPLATE
+from doxygen_snippets.templates.classes import TEMPLATE as CLASSES_TEMPLATE
+from doxygen_snippets.templates.hierarchy import TEMPLATE as HIEARARCHY_TEMPLATE
+from doxygen_snippets.templates.index import TEMPLATE as INDEX_TEMPLATE
+from doxygen_snippets.templates.modules import TEMPLATE as MODULES_TEMPLATE
+from doxygen_snippets.templates.files import TEMPLATE as FILES_TEMPLATE
+from doxygen_snippets.templates.programlisting import TEMPLATE as PROGRAMLISTING_TEMPLATE
+from doxygen_snippets.templates.page import TEMPLATE as PAGE_TEMPLATE
+from doxygen_snippets.templates.pages import TEMPLATE as PAGES_TEMPLATE
 
 LETTERS = string.ascii_lowercase + '~_@'
 

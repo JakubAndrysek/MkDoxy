@@ -1,10 +1,10 @@
 import sys
 import os
-from doxybook.doxygen import Doxygen
-from doxybook.generator import Generator
-from doxybook.xml_parser import XmlParser
-from doxybook.cache import Cache
-from doxybook.constants import Kind
+from doxygen_snippets.doxygen import Doxygen
+from doxygen_snippets.generator import Generator
+from doxygen_snippets.xml_parser import XmlParser
+from doxygen_snippets.cache import Cache
+from doxygen_snippets.constants import Kind
 
 
 def run(output: str, 

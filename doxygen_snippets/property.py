@@ -1,8 +1,8 @@
 import re
 from xml.etree.ElementTree import Element as Element
-from doxybook.xml_parser import XmlParser
-from doxybook.constants import Kind
-from doxybook.markdown import escape
+from doxygen_snippets.xml_parser import XmlParser
+from doxygen_snippets.constants import Kind
+from doxygen_snippets.markdown import escape
 
 
 class Property:
