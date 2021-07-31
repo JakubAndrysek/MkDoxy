@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/mkdocs-doxygen-snippets-plugin.iml" filepath="$PROJECT_DIR$/.idea/mkdocs-doxygen-snippets-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/master.iml" filepath="$PROJECT_DIR$/.idea/master.iml" />
     </modules>
   </component>
 </project>
