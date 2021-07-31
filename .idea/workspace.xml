@@ -2,8 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/snippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/snippets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp_basic/Doxyfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp_basic/examples/advanced_coffee/advanced_coffee.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp_basic/examples/basic_coffee/basic_coffee.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp_basic/examples/header/header.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/cpp_basic/src/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/doxyAndPars.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/doxygenRun.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/extractDoxygen.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/genFunctionMd.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/originalTest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/parseXml.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/testParser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/xmlToDict.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +67,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1627758459388</updated>
-      <workItem from="1627758463181" duration="9916000" />
+      <workItem from="1627758463181" duration="10964000" />
     </task>
     <servers />
   </component>

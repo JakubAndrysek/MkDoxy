@@ -10,7 +10,7 @@ from doxygen_snippets.generator import Generator
 from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
-# from doxygen_snippets.snippets import IncludeSnippets
+from doxygen_snippets.snippets import IncludeSnippets
 
 import logging
 from pprint import *
@@ -70,6 +70,7 @@ class DoxygenSnippets(BasePlugin):
 		parser = XmlParser(cache=cache, target=self.config['target'], hints=self.config['hints'], debug=self.debug)
 		logger.warning(pformat(parser))
 		self.doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=self.debug)
+		logger.warning(pformat(self.doxygen))
 
 		if self.debug:
 			self.doxygen.print()
@@ -90,11 +91,11 @@ class DoxygenSnippets(BasePlugin):
 	) -> str:
 		# Parse markdown and include self.fullDoc snippets
 		# logger.warning("Parse markdown and include self.fullDoc snippets")
-		# editedSnippets = IncludeSnippets(markdown, page, config, files, self.doxyParser)
-		# finalMd = editedSnippets.include()
+		editedSnippets = IncludeSnippets(markdown, page, config, files, self.apiOutput, self.doxygen)
+		finalMd = editedSnippets.include()
 		# logger.warning(finalMd)
-		# return finalMd
-		return markdown
+		return finalMd
+		# return markdown
 
 	# def on_serve(self, server):
 	#     return server

@@ -7,6 +7,7 @@ from jinja2 import Template
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
 from doxygen_snippets.node import Node, DummyNode
+from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
 from doxygen_snippets.templates.annotated import TEMPLATE as ANNOTATED_TEMPLATE
 from doxygen_snippets.templates.member import TEMPLATE as MEMBER_TEMPLATE
@@ -99,7 +100,7 @@ class Generator:
 				ret.extend(self._recursive_find_with_parent(node.children, kinds, parent_kinds))
 		return ret
 
-	def fullDoc(self, output_dir: str, nodes):
+	def fullDoc(self, output_dir: str, nodes: Doxygen):
 		self.annotated(output_dir, nodes.root.children)
 		self.fileindex(output_dir, nodes.files.children)
 		self.members(output_dir, nodes.root.children)

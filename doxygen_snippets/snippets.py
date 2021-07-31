@@ -3,8 +3,8 @@ from typing import *
 from jinja2 import Template
 from mkdocs.config import base
 from mkdocs.structure import files, pages
+from doxygen_snippets.doxygen import Doxygen
 import logging
-import re
 
 logger = logging.getLogger("mkdocs")
 
@@ -15,33 +15,31 @@ class IncludeSnippets:
 	             page: pages.Page,
 	             config: base.Config,
 	             files: files.Files,
-	             output_dir: str,
-	             nodes: Node
+	             outputDir: str,
+	             doxygen: Doxygen
 	             ):
 		self.markdown = markdown
 		self.page = page
 		self.config = config
 		self.files = files
-		self.doxyParser = doxyParser
+		self.outputDir = outputDir
+		self.doxygen = doxygen
 
 	### Create documentation generator callbacks
 	def doxyClass(self,
 	              className: str,
 	              classMethod: str = None
 	              ):
-		parsedClass = self.doxyParser.parseClass(className)
-		classMd = GenerateClassMd(parsedClass, className, classMethod)
-		logger.error(classMethod)
-		return classMd.generate()
+
+		logger.error("Class")
+		return f"# Doxygen CLASS {className}"
 
 	# return f"{classMd.generate()}"
 	# return f"Class:{className}"
 
 	def doxyFunction(self, fileName: str, functionName: str, fullDoc: bool = True):
-		parsedFunc = self.doxyParser.parseFunction(fileName, functionName)
-		functionMd = GenerateFunctionMd(parsedFunc, fullDoc)
-		return functionMd.generate()
-		# return f"## Doxygen FUNCTION: {functionName}"
+		# return functionMd.generate()
+		return f"## Doxygen FUNCTION: {functionName}"
 
 	### Create documentation generator callbacks END
 
@@ -72,7 +70,7 @@ class IncludeSnippets:
 # 		self.functionName = ""
 # 		self.fullDoc = fullDoc
 #
-# 	def test(self):
+# 	def test_old(self):
 # 		parameters = {}
 # 		# x = self.parsedFunction["detaileddescription"].get("para")[0]
 # 		parameterlist = self.parsedFunction["detaileddescription"].get("para")[1]['parameterlist']['#alldata']
