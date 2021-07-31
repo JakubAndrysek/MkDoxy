@@ -36,7 +36,7 @@ class DoxygenSnippets(BasePlugin):
 		doxygen = DoxygenRun(doxygen_source, doxygen_dest)
 		doxygen.run()
 		self.doxyParser = DoxygenParser(doxygen.getDestination())
-		logger.error(pformat(self.doxyParser.getParsedIndex()))
+		# logger.error(pformat(self.doxyParser.getParsedIndex()))
 		return
 
 	def on_page_markdown(
@@ -49,7 +49,9 @@ class DoxygenSnippets(BasePlugin):
 		# Parse markdown and include doxygen snippets
 		logger.error("Parse markdown and include doxygen snippets")
 		editedSnippets = IncludeSnippets(markdown, page, config, files, self.doxyParser)
-		return editedSnippets.include()
+		finalMd = editedSnippets.include()
+		logger.error(finalMd)
+		return finalMd
 
 	# def on_serve(self, server):
 	#     return server

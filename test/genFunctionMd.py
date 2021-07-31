@@ -1,3 +1,4 @@
+
 from doxygen_snippets.doxygen import *
 from doxygen_snippets.parser import *
 from doxygen_snippets.generator import *
@@ -14,19 +15,25 @@ if __name__ == '__main__':
 	parsedIndex = doxyParsers.getParsedIndex()
 	# pprint(parsedIndex)
 
-	parsedClass = doxyParsers.parseClass("Car")
-	if not parsedClass:
+	parsedFunction = doxyParsers.parseFunction("main.cpp", "subtract")
+	# parsedFunction = doxyParsers.parseFunction("main.cpp", "amIKing")
+	if not parsedFunction:
 		print("Class name error")
-	# else:
-		# pp(parsedClass)
 
+	# pp(parsedFunction)
 
-	classCar = GenerateClassMd(parsedClass, "Car", "setWheelCount")
+	subFun = GenerateFunctionMd(parsedFunction)
+	test = subFun.generateParam()
+	pp(test)
+	gen = subFun.generate()
+	pp(gen)
+
+	# classCar = GeneratedClassMd(parsedClass, "Car", "setWheelCount")
 	# brief = classCar.getBrief()
 	# detail = classCar.getDetail()
 	# pp(classCar.generate())
 	# pp(classCar.getFunction("setWheelCount"))
-	pp(classCar.generate())
+	# pp(classCar.generate())
 
 	# pprint(brief.getroottree())
 	# pprint(classCar.generate())

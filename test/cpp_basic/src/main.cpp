@@ -37,7 +37,7 @@ class Room {
 
 /**
  * @brief My better Car classes
- * @details More xCar details
+ * @details More Car details
  * 
  */
 class Car {
@@ -46,6 +46,7 @@ class Car {
         bool fast;
 
     bool isFast() {
+        int asd;
         return fast;
     }
 
@@ -61,7 +62,7 @@ class Car {
 
     /**
      * @brief Get the Wheel Count object
-     * 
+     *
      * @return int wheelCount as number
      */
     int getWheelCount() {
@@ -73,7 +74,14 @@ bool amIKing(int age) {
     return age > 50;
 }
 
-int subtract(int a, int b) {
+/**
+ * @brief Subtract two numbers
+ * @details More details
+ * @param a int number-1
+ * @param b int number-2
+ * @return int result
+ */
+int subtract(int a = 33, int b) {
     return a - b;
 }
 

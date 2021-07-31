@@ -3,8 +3,9 @@ from typing import Dict
 from jinja2 import Template
 from typing import Union, List, Dict
 from lxml import etree
-import xmltodict
 
+# import xmltodict
+from ssxtd import parsers
 
 from mkdocs.config import base
 from mkdocs.structure import files, pages
@@ -19,8 +20,7 @@ class DoxygenParser:
 		self.doxygen_path = doxygen_path
 
 		indexPath = self.getFilePath("index.xml")
-		with open(indexPath, 'r') as f:
-			self.parsedIndex = xmltodict.parse(f.read())
+		self.parsedIndex = next(parsers.xml_parse(indexPath, depth=0))
 
 	def getParsedIndex(self) -> dict:
 		return self.parsedIndex
@@ -54,9 +54,8 @@ class DoxygenParser:
 	def parseXml(self, name: str, xtype: str):
 		fileName = self.getFilename(name, xtype)
 		if fileName:
-			classPath = self.getFilePath(f"{fileName}.xml")
-			with open(classPath, 'r') as f:
-				parsedClass = xmltodict.parse(f.read(), force_list=("briefdescription"))
+			xmlPath = self.getFilePath(f"{fileName}.xml")
+			parsedClass = next(parsers.lxml_parse(xmlPath, depth=0, del_empty=False, cleanup_namespaces=False, verbose=True, trim_spaces=False))
 			return parsedClass["doxygen"]["compounddef"]
 		else:
 			return None
@@ -69,5 +68,13 @@ class DoxygenParser:
 
 	def parseNamespace(self, nsName: str) -> Union[dict, None]:
 		return self.parseXml(nsName, "namespace")
+
+	def parseFunction(self, fileName: str, functionName: str) -> Union[dict, None]:
+		parsedFile =  self.parseXml(fileName, "file")
+		memberdef = parsedFile.get('sectiondef').get('memberdef')
+		for function in memberdef:
+			if function.get('name') == functionName:
+				return function
+		return None
 
 
