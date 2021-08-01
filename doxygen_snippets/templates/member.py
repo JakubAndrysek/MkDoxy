@@ -12,7 +12,7 @@ TEMPLATE = """
 [**Class List**]({{link_prefix}}annotated.md)
 {%- endif %}
 {%- for parent in node.parents -%}
-{{'**>**'|indent(1, true)}} [**{{parent.name_long if node.is_group else parent.name_short}}**]({{parent.url}})
+{{'**>**'|indent(1, true)}} [**{{parent.name_long if node.is_group else parent.name_short}}**]({{link_prefix}}{{parent.url}})
 {%- endfor %}
 
 {% if node.is_file and node.has_programlisting -%}
@@ -46,25 +46,25 @@ Inherited by the following classes:
 {%- endfor -%}
 {%- endif %}
 
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Files', 'visibility': 'public', 'kinds': ['file'], 'static': False}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Directories', 'visibility': 'public', 'kinds': ['dir'], 'static': False}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Modules', 'visibility': 'public', 'kinds': ['group'], 'static': False}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Namespaces', 'visibility': 'public', 'kinds': ['namespace'], 'static': False}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Classes', 'visibility': 'public', 'kinds': ['class', 'struct', 'interface'], 'static': False}) }}
+{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Files', 'visibility': 'public', 'kinds': ['file'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Directories', 'visibility': 'public', 'kinds': ['dir'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Modules', 'visibility': 'public', 'kinds': ['group'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Namespaces', 'visibility': 'public', 'kinds': ['namespace'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Classes', 'visibility': 'public', 'kinds': ['class', 'struct', 'interface'], 'static': False, 'link_prefix': link_prefix}) }}
 
 {%- for visibility in ['public', 'protected'] -%}
 {%- for query in [['types', ['enum', 'union', 'typedef']], ['attributes', ['variable']], ['functions', ['function']]] -%}
 {%- for static in [['', False], ['static ', True]] %}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1]}) }}
+{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1], 'link_prefix': link_prefix}) }}
 {%- for child in node.base_classes recursive -%}{%- if child is not string %}
-{{ member_table_template.render({'target': target, 'node': child, 'parent': node, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1]}) }}
+{{ member_table_template.render({'target': target, 'node': child, 'parent': node, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1], 'link_prefix': link_prefix}) }}
 {{- loop(child.base_classes)}}
 {%- endif -%}{%- endfor -%}
 {%- endfor -%}
 {%- endfor -%}
 {%- endfor -%}
 
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Macros', 'visibility': 'public', 'kinds': ['define'], 'static': False}) }}
+{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Macros', 'visibility': 'public', 'kinds': ['define'], 'static': False, 'link_prefix': link_prefix}) }}
 
 {%- if node.has_details %}
 # Detailed Description

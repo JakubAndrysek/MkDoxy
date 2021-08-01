@@ -11,6 +11,7 @@ from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
 from doxygen_snippets.snippets import IncludeSnippets
+from doxygen_snippets.finder import Finder
 
 import logging
 from pprint import *
@@ -55,32 +56,36 @@ class DoxygenSnippets(BasePlugin):
 		self.doxygenOutput = self.config["doxygen-output"]
 		self.apiOutput = self.config["api-output"]
 		self.fullDoc = self.config["full-doc"]
+		self.ignoreErrors = self.config["ignore-errors"]
+		self.target = self.config['target']
+		self.hints = self.config['hints']
 		self.debug = False
 		doxygenRun = DoxygenRun(self.doxygenInput, self.doxygenOutput)
 		doxygenRun.run()
 		logger.warning(doxygenRun.getDestination())
 		os.makedirs(self.apiOutput, exist_ok=True)
 
-		options = {
+		self.options = {
 			'target': self.config["target"],
 			'link_prefix': self.config["link-prefix"]
 		}
 
 		cache = Cache()
-		parser = XmlParser(cache=cache, target=self.config['target'], hints=self.config['hints'], debug=self.debug)
+		parser = XmlParser(cache=cache, target=self.target, hints=self.config['hints'], debug=self.debug)
 		logger.warning(pformat(parser))
-		self.doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=self.debug)
+		self.doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=self.options, debug=self.debug)
 		logger.warning(pformat(self.doxygen))
 
 		if self.debug:
 			self.doxygen.print()
 
-		self.generator = Generator(ignore_errors=self.config["ignore-errors"], options=options)
+		self.generator = Generator(ignore_errors=self.ignoreErrors, options=self.options)
 
 		if self.fullDoc:
 			self.generator.fullDoc(self.apiOutput, self.doxygen)
 
 		return
+
 
 	def on_page_markdown(
 			self,
@@ -91,7 +96,11 @@ class DoxygenSnippets(BasePlugin):
 	) -> str:
 		# Parse markdown and include self.fullDoc snippets
 		# logger.warning("Parse markdown and include self.fullDoc snippets")
-		editedSnippets = IncludeSnippets(markdown, page, config, files, self.apiOutput, self.doxygen)
+		options = {
+			'target': self.config["target"],
+			'link_prefix': "api/"
+		}
+		editedSnippets = IncludeSnippets(markdown, page, config, files, self.apiOutput, self.doxygen, self.ignoreErrors, options, self.debug)
 		finalMd = editedSnippets.include()
 		# logger.warning(finalMd)
 		return finalMd

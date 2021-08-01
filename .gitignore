@@ -739,3 +739,16 @@ example/src/special_bird.h
 example/src/utils/exception.h
 example/vuepress/README.md
 example/vuepress/.vuepress/config.js
+test_old/doxyAndPars.py
+test_old/doxygenRun.py
+test_old/extractDoxygen.sh
+test_old/genFunctionMd.py
+test_old/originalTest.py
+test_old/parseXml.py
+test_old/testParser.py
+test_old/xmlToDict.py
+test_old/cpp_basic/Doxyfile
+test_old/cpp_basic/examples/advanced_coffee/advanced_coffee.cpp
+test_old/cpp_basic/examples/basic_coffee/basic_coffee.cpp
+test_old/cpp_basic/examples/header/header.h
+test_old/cpp_basic/src/main.cpp

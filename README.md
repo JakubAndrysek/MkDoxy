@@ -7,6 +7,7 @@ Than converts exported XML into markdown and create new folder with full generat
 Next usage is by snippets inside documentation markdown. Just place `{{ doxyClass("Foo") }}` to generate class `Foo` in your doc.
 Or place `{{ doxyDunction("main.cpp", "sayHello") }}` to generate function `sayHello` from `main.cpp`.
 
+![Basic-implementation](docs/media/Basic-implementation.png)
 
 <!-- ## Live Demo
 

@@ -2,24 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/doxygen_snippets/finder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/originalTest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/snippetsTest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/snippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/snippets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/cpp_basic/Doxyfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/cpp_basic/examples/advanced_coffee/advanced_coffee.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/cpp_basic/examples/basic_coffee/basic_coffee.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/cpp_basic/examples/header/header.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/cpp_basic/src/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/doxyAndPars.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/doxygenRun.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/extractDoxygen.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/genFunctionMd.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/originalTest.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/parseXml.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/testParser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/xmlToDict.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,11 +44,64 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/doxygen_snippets" />
+      <recent name="$PROJECT_DIR$/tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/old" />
       <recent name="$PROJECT_DIR$/test" />
     </key>
+  </component>
+  <component name="RunManager" selected="Python.snippetsTest">
+    <configuration name="originalTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/originalTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="snippetsTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/snippetsTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.snippetsTest" />
+        <item itemvalue="Python.originalTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -67,7 +111,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1627758459388</updated>
-      <workItem from="1627758463181" duration="10964000" />
+      <workItem from="1627758463181" duration="15029000" />
+      <workItem from="1627809996984" duration="8275000" />
     </task>
     <servers />
   </component>
@@ -84,5 +129,31 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/.local/lib/python3.8/site-packages/doxybook/runner.py</url>
+          <line>29</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
+          <line>25</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/snippetsTest.py</url>
+          <line>51</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1627772097557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1627812998462" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>
