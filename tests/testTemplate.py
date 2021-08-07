@@ -26,8 +26,8 @@ if __name__ == "__main__":
 
     # Debug options
     debug=True
-    debugFull=False
-    fullDoc=False
+    debugFull=True
+    fullDoc=True
 
     os.makedirs(apiOutput, exist_ok=True)
 
@@ -50,9 +50,3 @@ if __name__ == "__main__":
 
     if fullDoc:
         generator.fullDoc(apiOutput, doxygen)
-
-    find = Finder(doxygen, debug)
-    fc = find.doxyClass("example::Bird", "move")
-
-    pp(fc)
-

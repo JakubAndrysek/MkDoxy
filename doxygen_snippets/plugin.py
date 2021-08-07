@@ -22,17 +22,12 @@ class DoxygenSnippets(BasePlugin):
 	"""
 	plugins:
 	- search
-	- doxygen-snippets:
-		doxygen-input:build/RB3204-RBCX-library/src/
-		doxygen-dest:build/RB3204-RBCX-library/doc/
-		target: mkdocs
-		hints: False
-		debug: False
-		ignore-errors: False
-		link_prefix:
+	- doxygen-snippets
 	"""
 
 	config_scheme = (
+		('doxygen-path', config_options.Type(str, default='')),
+		('doxygen-config', config_options.Type(str, default='')),
 		('doxygen-input', config_options.Type(str, default='')),
 		('doxygen-output', config_options.Type(str, default='')),
 		('api-output', config_options.Type(str, default='')),
@@ -52,6 +47,8 @@ class DoxygenSnippets(BasePlugin):
 	def on_pre_build(self, config):
 		# Building Doxygen and parse XML
 		logger.warning("Building Doxygen and parse XML")
+		self.doxygenPath = self.config["doxygen-path"]
+		self.doxygenConfig = self.config["doxygen-config"]
 		self.doxygenInput = self.config["doxygen-input"]
 		self.doxygenOutput = self.config["doxygen-output"]
 		self.apiOutput = self.config["api-output"]
@@ -60,8 +57,10 @@ class DoxygenSnippets(BasePlugin):
 		self.target = self.config['target']
 		self.hints = self.config['hints']
 		self.debug = False
-		doxygenRun = DoxygenRun(self.doxygenInput, self.doxygenOutput)
+
+		doxygenRun = DoxygenRun(self.doxygenPath, self.doxygenInput, self.doxygenOutput, self.doxygenConfig)
 		doxygenRun.run()
+
 		logger.warning(doxygenRun.getDestination())
 		os.makedirs(self.apiOutput, exist_ok=True)
 
@@ -72,7 +71,7 @@ class DoxygenSnippets(BasePlugin):
 
 		cache = Cache()
 		parser = XmlParser(cache=cache, target=self.target, hints=self.config['hints'], debug=self.debug)
-		logger.warning(pformat(parser))
+		# logger.warning(pformat(parser))
 		self.doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=self.options, debug=self.debug)
 		logger.warning(pformat(self.doxygen))
 

@@ -98,10 +98,18 @@ class Doxygen:
 
     def print(self):
         if self.debug:
+            print('\n')
+            print("Print root")
             for node in self.root.children:
                 self.print_node(node, '')
+            print('\n')
+
+            print("Print groups")
             for node in self.groups.children:
                 self.print_node(node, '')
+            print('\n')
+
+            print("Print files")
             for node in self.files.children:
                 self.print_node(node, '')
 

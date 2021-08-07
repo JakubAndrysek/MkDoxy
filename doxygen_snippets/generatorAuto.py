@@ -1,11 +1,5 @@
 import os
-from typing import *
-from jinja2 import Template
-from mkdocs.config import base
-from mkdocs.structure import files, pages
-from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.finder import Finder
-
+import re
 import string
 import traceback
 from typing import TextIO
@@ -29,11 +23,6 @@ from doxygen_snippets.templates.programlisting import TEMPLATE as PROGRAMLISTING
 from doxygen_snippets.templates.page import TEMPLATE as PAGE_TEMPLATE
 from doxygen_snippets.templates.pages import TEMPLATE as PAGES_TEMPLATE
 
-import logging
-
-logger = logging.getLogger("mkdocs")
-
-
 LETTERS = string.ascii_lowercase + '~_@'
 
 ADDITIONAL_FILES = {
@@ -52,37 +41,19 @@ ADDITIONAL_FILES = {
 	'Class Member Enumerations': 'class_member_enums.md',
 }
 
-
 def generate_link(name, url) -> str:
 	return '* [' + name + '](' + url + ')\n'
 
-
-class IncludeSnippets:
-	def __init__(self,
-                markdown,
-	            page: pages.Page,
-	            config: base.Config,
-	            files: files.Files,
-	            outputDir: str,
-	            doxygen: Doxygen,
-				ignore_errors: bool = False,
-				options: dict = {},
-				debug: bool = False):
-		self.markdown = markdown
-		self.page = page
-		self.config = config
-		self.files = files
-		self.outputDir = outputDir
-		self.doxygen = doxygen
+class Generator:
+	def __init__(self, ignore_errors: bool = False, options: dict = {}, debug: bool = False):
 		self.options = options
 		self.debug = debug
-		self.finder = Finder(doxygen, debug)
 
 		on_undefined_class = Undefined
 		if not ignore_errors:
 			on_undefined_class = StrictUndefined
 
-		try:
+		try: 
 			self.annotated_template = Template(ANNOTATED_TEMPLATE, undefined=on_undefined_class)
 			self.member_template = Template(MEMBER_TEMPLATE, undefined=on_undefined_class)
 			self.member_definition_template = Template(MEMBER_DEFINITION_TEMPLATE, undefined=on_undefined_class)
@@ -99,47 +70,15 @@ class IncludeSnippets:
 		except TemplateSyntaxError as e:
 			raise Exception(str(e) + ' at line: ' + str(e.lineno))
 
-	def include(self):
-		mdTemplate = Template(self.markdown)
-		# Register documentation generator callbacks
-		return mdTemplate.render(doxyClass=self.doxyClass, doxyFunction=self.doxyFunction)
-
-	### Create documentation generator callbacks
-	def doxyClass(self,
-	              className: str,
-	              methodeName: str = None,
-	              *args
-	              ):
-
-		# logger.error("Class")
-		node = self.finder.doxyClass(className, methodeName)
-
-		if methodeName:
-			if not node:
-				return f"**Didnt find methode `{methodeName}` in Class `{className}`.**"
-			md = self.function(node)
-		else:
-			if not node:
-				return f"**Didn`t find Class `{className}`.**`"
-			md = self.member(node)
-		return md
-
-		# return f"# Doxygen CLASS {className}-> {fClass.filename}"
-
-	# return f"{classMd.generate()}"
-	# return f"Class:{className}"
-
-	def doxyFunction(self, fileName: str, functionName: str, fullDoc: bool = True):
-		# return functionMd.generate()
-		return f"## Doxygen FUNCTION: {functionName}"
-
-	### Create documentation generator callbacks END
-
-	def _render(self, tmpl: Template, data: dict) -> str:
-		try:
+	def _render(self, tmpl: Template, path: str, data: dict) -> str:
+		try: 
+			if self.debug:
+				print('Generating', path)
 			data.update(self.options)
 			output = tmpl.render(data)
-			return output
+
+			with open(path, 'w', encoding='utf-8') as file:
+				file.write(output) 
 		except TemplateError as e:
 			raise Exception(str(e))
 
@@ -173,26 +112,19 @@ class IncludeSnippets:
 		self.modules(output_dir, nodes.groups.children)
 		self.pages(output_dir, nodes.pages.children)
 		self.relatedpages(output_dir, nodes.pages.children)
-		self.index(output_dir, nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
-		           [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
-		self.index(output_dir, nodes.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Functions')
-		self.index(output_dir, nodes.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Variables')
-		self.index(output_dir, nodes.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Typedefs')
-		self.index(output_dir, nodes.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Enums')
-		self.index(output_dir, nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
-		           [Kind.NAMESPACE], 'Namespace Members')
+		self.index(output_dir, nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
+		self.index(output_dir, nodes.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Functions')
+		self.index(output_dir, nodes.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Variables')
+		self.index(output_dir, nodes.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Typedefs')
+		self.index(output_dir, nodes.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Member Enums')
+		self.index(output_dir, nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM], [Kind.NAMESPACE], 'Namespace Members')
 		self.index(output_dir, nodes.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions')
 		self.index(output_dir, nodes.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables')
 		self.index(output_dir, nodes.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs')
 		self.index(output_dir, nodes.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums')
 		self.index(output_dir, nodes.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions')
 		self.index(output_dir, nodes.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros')
-		self.index(output_dir, nodes.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE],
-		           'Variables')
+		self.index(output_dir, nodes.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE], 'Variables')
 
 	def annotated(self, output_dir: str, nodes: [Node]):
 		path = os.path.join(output_dir, 'annotated.md')
@@ -200,7 +132,7 @@ class IncludeSnippets:
 		data = {
 			'nodes': nodes
 		}
-		self._render(self.annotated_template, path, data)
+		self._render(self.annotated_template, path, data) 
 
 	def programlisting(self, output_dir: str, node: [Node]):
 		path = os.path.join(output_dir, node.refid + '_source.md')
@@ -208,7 +140,7 @@ class IncludeSnippets:
 		data = {
 			'node': node
 		}
-		self._render(self.programlisting_template, path, data)
+		self._render(self.programlisting_template, path, data) 
 
 	def fileindex(self, output_dir: str, nodes: [Node]):
 		path = os.path.join(output_dir, 'files.md')
@@ -216,7 +148,7 @@ class IncludeSnippets:
 		data = {
 			'nodes': nodes
 		}
-		self._render(self.files_template, path, data)
+		self._render(self.files_template, path, data) 
 
 	def namespaces(self, output_dir: str, nodes: [Node]):
 		path = os.path.join(output_dir, 'namespaces.md')
@@ -267,14 +199,14 @@ class IncludeSnippets:
 		data = {
 			'dictionary': dictionary
 		}
-		self._render(self.classes_template, path, data)
+		self._render(self.classes_template, path, data) 
 
 	def _find_base_classes(self, nodes: [Node], derived: Node):
 		ret = []
 		for node in nodes:
 			if isinstance(node, str):
 				ret.append({
-					'refid': node,
+					'refid': node, 
 					'derived': derived
 				})
 			elif node.kind.is_parent() and not node.kind.is_namespace():
@@ -291,7 +223,7 @@ class IncludeSnippets:
 		data = {
 			'nodes': nodes
 		}
-		self._render(self.modules_template, path, data)
+		self._render(self.modules_template, path, data) 
 
 	def hierarchy(self, output_dir: str, nodes: [Node]):
 		path = os.path.join(output_dir, 'hierarchy.md')
@@ -306,7 +238,7 @@ class IncludeSnippets:
 		for base in bases:
 			if not isinstance(base, dict):
 				deduplicated[base.refid] = base
-
+				
 		for base in bases:
 			if isinstance(base, dict):
 				if base['refid'] not in deduplicated:
@@ -333,26 +265,20 @@ class IncludeSnippets:
 		data = {
 			'classes': deduplicated_arr
 		}
-		self._render(self.hiearchy_template, path, data)
+		self._render(self.hiearchy_template, path, data) 
 
-	def member(self, node: Node):
+	def member(self, output_dir: str, node: Node):
+		path = os.path.join(output_dir, node.filename)
 
 		data = {
 			'node': node,
 			'member_definition_template': self.member_definition_template,
 			'member_table_template': self.member_table_template
 		}
-		return self._render(self.member_template, data)
+		self._render(self.member_template, path, data)
 
-		# if node.is_language or node.is_group or node.is_file or node.is_dir:
-		# 	self.members(output_dir, node.children)
-
-	def function(self, node: Node):
-
-		data = {
-			'node': node,
-		}
-		return self._render(self.member_definition_template, data)
+		if node.is_language or node.is_group or node.is_file or node.is_dir:
+			self.members(output_dir, node.children)
 
 	def file(self, output_dir: str, node: Node):
 		path = os.path.join(output_dir, node.filename)
@@ -447,20 +373,20 @@ class IncludeSnippets:
 		if node.kind.is_group():
 			f.write(' ' * level + generate_link(node.title, diff + '/' + node.refid + '.md'))
 			for child in node.children:
-				self._generate_recursive_groups(f, child, level + 2, diff)
+				self._generate_recursive_groups(f, child, level + 2, diff)     
 
 	def _generate_recursive_pages(self, f: TextIO, node: Node, level: int, diff: str):
 		if node.kind.is_page():
 			f.write(' ' * level + generate_link(node.title, diff + '/' + node.refid + '.md'))
 			for child in node.children:
-				self._generate_recursive_pages(f, child, level + 2, diff)
+				self._generate_recursive_pages(f, child, level + 2, diff)     
 
 	def summary(self, output_dir: str, summary_file: str, nodes: [Node], modules: [Node], files: [Node], pages: [Node]):
 		if self.debug:
 			print('Modifying', summary_file)
 		summaryDir = os.path.dirname(os.path.abspath(summary_file))
 		output_path = os.path.abspath(output_dir)
-		diff = output_path[len(summaryDir) + 1:].replace('\\', '/')
+		diff = output_path[len(summaryDir)+1:].replace('\\', '/')
 		link = diff + '/index.md'
 
 		content = []
@@ -478,7 +404,7 @@ class IncludeSnippets:
 					start = m.start()
 					start = i
 				continue
-
+			
 			if start is not None and end is None:
 				if not line.startswith(' ' * (offset + 2)):
 					end = i
@@ -492,31 +418,31 @@ class IncludeSnippets:
 
 		with open(summary_file, 'w+') as f:
 			# Write first part of the file
-			for i in range(0, start + 1):
+			for i in range(0, start+1):
 				f.write(content[i])
 
-			f.write(' ' * (offset + 2) + generate_link('Related Pages', diff + '/' + 'pages.md'))
+			f.write(' ' * (offset+2) + generate_link('Related Pages', diff + '/' + 'pages.md'))
 			for node in pages:
 				self._generate_recursive_pages(f, node, offset + 4, diff)
 
-			f.write(' ' * (offset + 2) + generate_link('Modules', diff + '/' + 'modules.md'))
+			f.write(' ' * (offset+2) + generate_link('Modules', diff + '/' + 'modules.md'))
 			for node in modules:
 				self._generate_recursive_groups(f, node, offset + 4, diff)
 
-			f.write(' ' * (offset + 2) + generate_link('Class List', diff + '/' + 'annotated.md'))
+			f.write(' ' * (offset+2) + generate_link('Class List', diff + '/' + 'annotated.md'))
 			for node in nodes:
-				self._generate_recursive(f, node, offset + 4, diff)
+				self._generate_recursive(f, node, offset + 4, diff)  
 
 			for key, val in ADDITIONAL_FILES.items():
-				f.write(' ' * (offset + 2) + generate_link(key, diff + '/' + val))
+				f.write(' ' * (offset+2) + generate_link(key, diff + '/' + val))
 
-			f.write(' ' * (offset + 2) + generate_link('Files', diff + '/' + 'files.md'))
+			f.write(' ' * (offset+2) + generate_link('Files', diff + '/' + 'files.md'))
 			for node in files:
-				self._generate_recursive_files(f, node, offset + 4, diff)
+				self._generate_recursive_files(f, node, offset + 4, diff)    
 
-			f.write(' ' * (offset + 2) + generate_link('File Variables', diff + '/' + 'variables.md'))
-			f.write(' ' * (offset + 2) + generate_link('File Functions', diff + '/' + 'functions.md'))
-			f.write(' ' * (offset + 2) + generate_link('File Macros', diff + '/' + 'macros.md'))
+			f.write(' ' * (offset+2) + generate_link('File Variables', diff + '/' + 'variables.md'))
+			f.write(' ' * (offset+2) + generate_link('File Functions', diff + '/' + 'functions.md'))
+			f.write(' ' * (offset+2) + generate_link('File Macros', diff + '/' + 'macros.md'))
 
 			# Write second part of the file
 			for i in range(end, len(content)):

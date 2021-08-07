@@ -9,17 +9,40 @@ from jinja2 import StrictUndefined, Undefined
 from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
+from pprint import pp
 
 class Finder:
-	def __init__(self, doxygen, debug: bool = False):
+	def __init__(self, doxygen: Doxygen, debug: bool = False):
 		self.doxygen = doxygen
 		self.debug = debug
 
-	def doxyClass(self, className):
-		cache = self.doxygen.cache.cache
-		for node in cache:
-			if cache[node].name_long == className:
-				return cache[node]
+	def _recursive_find(self, nodes: [Node], kind: Kind):
+		ret = []
+		for node in nodes:
+			if node.kind == kind:
+				ret.append(node)
+			if node.kind.is_parent():
+				ret.extend(self._recursive_find(node.children, kind))
+		return ret
+
+	def _recursive_find_with_parent(self, nodes: [Node], kinds: [Kind], parent_kinds: [Kind]):
+		ret = []
+		for node in nodes:
+			if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
+				ret.append(node)
+			if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
+				ret.extend(self._recursive_find_with_parent(node.children, kinds, parent_kinds))
+		return ret
+
+	def doxyClass(self, className, functionName = None):
+		classes = self._recursive_find(self.doxygen.root.children, Kind.CLASS)
+		for findClass in classes:
+			if findClass.name_long == className:
+				if functionName:
+					members = self._recursive_find(findClass.children, Kind.FUNCTION)
+					for member in members:
+						if member.name == functionName:
+							return member
+				else:
+					return findClass
 		return None
-
-
