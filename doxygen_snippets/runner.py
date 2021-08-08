@@ -1,7 +1,7 @@
 import sys
 import os
 from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.generator import Generator
+from doxygen_snippets.generatorBase import GeneratorBase
 from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
@@ -30,7 +30,7 @@ def run(output: str,
     if debug:
         doxygen.print()
 
-    generator = Generator(ignore_errors=ignore_errors, options=options)
+    generator = GeneratorBase(ignore_errors=ignore_errors, options=options)
     # generator.annotated(output, doxygen.root.children)
     # generator.fileindex(output, doxygen.files.children)
     generator.members(output, doxygen.root.children)

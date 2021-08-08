@@ -6,7 +6,8 @@ from mkdocs.structure import files, pages
 
 from doxygen_snippets.doxyrun import DoxygenRun
 from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.generator import Generator
+from doxygen_snippets.generatorBase import GeneratorBase
+from doxygen_snippets.generatorAuto import GeneratorAuto
 from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
@@ -65,7 +66,7 @@ class DoxygenSnippets(BasePlugin):
 		os.makedirs(self.apiOutput, exist_ok=True)
 
 		self.options = {
-			'target': self.config["target"],
+			'target': self.target,
 			'link_prefix': self.config["link-prefix"]
 		}
 
@@ -78,10 +79,11 @@ class DoxygenSnippets(BasePlugin):
 		if self.debug:
 			self.doxygen.print()
 
-		self.generator = Generator(ignore_errors=self.ignoreErrors, options=self.options)
+		self.generator = GeneratorBase(ignore_errors=self.ignoreErrors, options=self.options)
 
 		if self.fullDoc:
-			self.generator.fullDoc(self.apiOutput, self.doxygen)
+			generatorAuto = GeneratorAuto(generatorBase=self.generator, debug=self.debug)
+			generatorAuto.fullDoc(self.apiOutput, self.doxygen)
 
 		return
 
@@ -96,7 +98,7 @@ class DoxygenSnippets(BasePlugin):
 		# Parse markdown and include self.fullDoc snippets
 		# logger.warning("Parse markdown and include self.fullDoc snippets")
 		options = {
-			'target': self.config["target"],
+			'target': self.target,
 			'link_prefix': "api/"
 		}
 		editedSnippets = IncludeSnippets(markdown, page, config, files, self.apiOutput, self.doxygen, self.ignoreErrors, options, self.debug)

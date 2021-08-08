@@ -2,7 +2,8 @@ import argparse
 import sys
 import os
 from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.generator import Generator
+from doxygen_snippets.generatorBase import GeneratorBase
+from doxygen_snippets.generatorAuto import GeneratorAuto
 from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
@@ -46,7 +47,11 @@ if __name__ == "__main__":
     if debugFull:
         doxygen.print()
 
-    generator = Generator(ignore_errors=ignoreErrors, options=options)
+    generatorBase = GeneratorBase(ignore_errors=ignoreErrors, options=options)
+    generatorAuto = GeneratorAuto( generatorBase=generatorBase, debug=debug)
+
 
     if fullDoc:
-        generator.fullDoc(apiOutput, doxygen)
+        generatorAuto.fullDoc(apiOutput, doxygen)
+
+    pp(generatorAuto)
