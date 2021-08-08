@@ -36,7 +36,15 @@ class GeneratorSnippets:
 	def generate(self):
 		mdTemplate = Template(self.markdown)
 		# Register documentation generator callbacks
-		return mdTemplate.render(doxyClass=self.doxyClass, doxyFunction=self.doxyFunction)
+		return mdTemplate.render(
+			doxyClass=self.doxyClass,
+			doxyClassList=self.doxyClassList,
+			doxyClassIndex=self.doxyClassIndex,
+			doxyClassHierarchy=self.doxyClassHierarchy,
+			doxyFunction=self.doxyFunction,
+			doxyNamespaceList=self.doxyNamespaceList,
+			doxyFileList=self.doxyFileList,
+		)
 
 	### Create documentation generator callbacks
 	def doxyClass(self, className: str, methodeName: str = None, *args):
@@ -53,9 +61,29 @@ class GeneratorSnippets:
 
 	# return f"# Doxygen CLASS {className}-> {fClass.filename}"
 
+	def doxyClassList(self):
+		md = self.generatorBase.annotated(self.doxygen.root.children)
+		return md
+
+	def doxyClassIndex(self):
+		md = self.generatorBase.classes(self.doxygen.root.children)
+		return md
+
+	def doxyClassHierarchy(self):
+		md = self.generatorBase.hierarchy(self.doxygen.root.children)
+		return md
+
 	def doxyFunction(self, fileName: str, functionName: str, fullDoc: bool = True):
 		# return functionMd.generate()
 		return f"## Doxygen FUNCTION: {functionName}"
+
+	def doxyNamespaceList(self):
+		md = self.generatorBase.namespaces(self.doxygen.root.children)
+		return md
+
+	def doxyFileList(self):
+		md = self.generatorBase.fileindex(self.doxygen.files.children)
+		return md
 
 ### Create documentation generator callbacks END
 
