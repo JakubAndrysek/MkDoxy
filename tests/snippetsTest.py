@@ -52,7 +52,7 @@ if __name__ == "__main__":
         generator.fullDoc(apiOutput, doxygen)
 
     find = Finder(doxygen, debug)
-    fc = find.doxyClass("example::Bird", "move")
+    fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
 
     pp(fc)
 

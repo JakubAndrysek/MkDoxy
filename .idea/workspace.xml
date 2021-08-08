@@ -2,23 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/doxygen_snippets/generatorAuto.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/Doxyfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/animal.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/animal_interface.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/bird.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/config.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/example.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/special_bird.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/utils/exception.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/testTemplate.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/finder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/node.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/property.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/property.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/snippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/snippets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/originalTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/originalTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/Doxyfile" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/Doxyfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/snippetsTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/snippetsTest.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -123,7 +113,8 @@
       <option name="presentableId" value="Default" />
       <updated>1627758459388</updated>
       <workItem from="1627758463181" duration="15029000" />
-      <workItem from="1627809996984" duration="28578000" />
+      <workItem from="1627809996984" duration="32215000" />
+      <workItem from="1628412425915" duration="1784000" />
     </task>
     <servers />
   </component>
@@ -152,7 +143,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>55</line>
+          <line>48</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -167,17 +158,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>53</line>
+          <line>46</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>51</line>
+          <line>44</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>50</line>
+          <line>43</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
       </breakpoints>
@@ -190,8 +181,8 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1628368022579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1628375679572" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628372367686" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1628378521593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628378040534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>

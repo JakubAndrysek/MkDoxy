@@ -342,6 +342,10 @@ class Node:
         return self._name
 
     @property
+    def name_params(self) -> str:
+        return self._name+self._specifiers.plain()
+
+    @property
     def title(self) -> str:
         return self._title
 
@@ -572,9 +576,9 @@ class Node:
                         code.append('    ' + param)
                     else:
                         code.append('    ' + param + ',')
-                code.append(') ' + self._specifiers.plain())
+                code.append(') ' + self._specifiers.parsed())
             else:
-                code.append(typ + self.name_full_unescaped + ' () ' + self._specifiers.plain())
+                code.append(typ + self.name_full_unescaped + ' () ' + self._specifiers.parsed())
 
         elif self.is_enum:
             if self._values.has():
@@ -711,7 +715,7 @@ class Node:
 
     @property
     def specifiders(self) -> str:
-        return self._specifiers.plain()
+        return self._specifiers.parsed()
 
     @property
     def has_values(self) -> bool:

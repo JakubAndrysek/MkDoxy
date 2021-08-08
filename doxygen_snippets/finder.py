@@ -41,7 +41,7 @@ class Finder:
 				if functionName:
 					members = self._recursive_find(findClass.children, Kind.FUNCTION)
 					for member in members:
-						if member.name == functionName:
+						if functionName.replace(" ", "") in member.name_params.replace(" ", ""):
 							return member
 				else:
 					return findClass
