@@ -15,7 +15,7 @@ class DoxygenRun:
 		self.sourceDir = sourceDir
 		self.destinationDir = destinationDir
 		self.doxygenConfig = path.abspath(path.join(libPath, doxygenConfig))
-		
+
 		self.config_parser = ConfigParser()
 		self.configuration = self.config_parser.load_configuration(self.doxygenConfig)
 
@@ -54,13 +54,11 @@ class DoxygenRun:
 		self.configuration['EXAMPLE_PATH'] = 'examples'
 		self.configuration['EXAMPLE_PATTERNS'] = '*.cpp'
 
-
 	def run(self, print_command: bool = False):
 		self.config_parser.store_configuration(self.configuration, self.doxygenConfig)
 		doxy_builder = Generator(self.doxygenConfig)
 		output_zip_archive = doxy_builder.build(clean=False, generate_zip=False)
 		return output_zip_archive
-
 
 	def getDestination(self):
 		return path.join(path.join(self.libPath, self.destinationDir), "xml")

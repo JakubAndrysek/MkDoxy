@@ -14,6 +14,7 @@ from doxygen_snippets.generatorBase import GeneratorBase
 def generate_link(name, url) -> str:
 	return '* [' + name + '](' + url + ')\n'
 
+
 class GeneratorAuto:
 	def __init__(self, generatorBase: GeneratorBase, debug: bool = False):
 		self.generatorBase = generatorBase
@@ -21,7 +22,7 @@ class GeneratorAuto:
 
 	def save(self, path: str, output: str):
 		with open(path, 'w', encoding='utf-8') as file:
-					file.write(output)
+			file.write(output)
 
 	def fullDoc(self, output_dir: str, nodes: Doxygen):
 		self.annotated(output_dir, nodes.root.children)
@@ -113,7 +114,6 @@ class GeneratorAuto:
 
 		output = self.generatorBase.hierarchy(nodes)
 		self.save(path, output)
-
 
 	def member(self, output_dir: str, node: Node):
 		path = os.path.join(output_dir, node.filename)

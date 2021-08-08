@@ -16,6 +16,7 @@ from doxygen_snippets.finder import Finder
 
 import logging
 from pprint import *
+
 logger = logging.getLogger("mkdocs")
 
 
@@ -87,7 +88,6 @@ class DoxygenSnippets(BasePlugin):
 
 		return
 
-
 	def on_page_markdown(
 			self,
 			markdown: str,
@@ -101,53 +101,54 @@ class DoxygenSnippets(BasePlugin):
 			'target': self.target,
 			'link_prefix': "api/"
 		}
-		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generator, doxygen=self.doxygen, debug=self.debug)
+		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generator, doxygen=self.doxygen,
+		                                      debug=self.debug)
 		finalMd = generatorSnippets.generate()
 		# logger.warning(finalMd)
 		return finalMd
-		# return markdown
+	# return markdown
 
-	# def on_serve(self, server):
-	#     return server
-	#
-	# def on_files(self, files: files.Files, config):
-	#     return files
+# def on_serve(self, server):
+#     return server
+#
+# def on_files(self, files: files.Files, config):
+#     return files
 
-	# def on_nav(self, nav, config, files):
-	#     return nav
-	#
-	# def on_env(self, env, config, files):
-	#     return env
-	#
-	# def on_config(self, config):
-	#     return config
-	#
-	# def on_post_build(self, config):
-	#     return
-	#
-	# def on_pre_template(self, template, template_name, config):
-	#     return template
-	#
-	# def on_template_context(self, context, template_name, config):
-	#     return context
-	#
-	# def on_post_template(self, output_content, template_name, config):
-	#     return output_content
-	#
-	# def on_pre_page(self, page: pages.Page, config, files: files.Files):
-	#     return page
-	#
-	# def on_page_read_source(self, page: pages.Page, config):
-	#     return
-	#
-	# def on_page_markdown(self, markdown, page, config, files):
-	#     return markdown
-	#
-	# def on_page_content(self, html, page, config, files):
-	#     return html
-	#
-	# def on_page_context(self, context, page, config, nav):
-	#     return context
-	#
-	# def on_post_page(self, output_content, page, config):
-	#     return output_content
+# def on_nav(self, nav, config, files):
+#     return nav
+#
+# def on_env(self, env, config, files):
+#     return env
+#
+# def on_config(self, config):
+#     return config
+#
+# def on_post_build(self, config):
+#     return
+#
+# def on_pre_template(self, template, template_name, config):
+#     return template
+#
+# def on_template_context(self, context, template_name, config):
+#     return context
+#
+# def on_post_template(self, output_content, template_name, config):
+#     return output_content
+#
+# def on_pre_page(self, page: pages.Page, config, files: files.Files):
+#     return page
+#
+# def on_page_read_source(self, page: pages.Page, config):
+#     return
+#
+# def on_page_markdown(self, markdown, page, config, files):
+#     return markdown
+#
+# def on_page_content(self, html, page, config, files):
+#     return html
+#
+# def on_page_context(self, context, page, config, nav):
+#     return context
+#
+# def on_post_page(self, output_content, page, config):
+#     return output_content

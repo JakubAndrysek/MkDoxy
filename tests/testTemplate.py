@@ -14,44 +14,43 @@ from doxygen_snippets.doxyrun import DoxygenRun
 from pprint import *
 
 if __name__ == "__main__":
-    doxygenPath="files/"
-    doxygenInput="src"
-    doxygenOutput="doxy"
-    doxygenConfig="Doxyfile"
-    apiOutput="files/docs/"
-    target="mkdocs"
-    hints=True
-    ignoreErrors=False
-    summary=None
-    link_prefix=""
+	doxygenPath = "files/"
+	doxygenInput = "src"
+	doxygenOutput = "doxy"
+	doxygenConfig = "Doxyfile"
+	apiOutput = "files/docs/"
+	target = "mkdocs"
+	hints = True
+	ignoreErrors = False
+	summary = None
+	link_prefix = ""
 
-    # Debug options
-    debug=True
-    debugFull=True
-    fullDoc=True
+	# Debug options
+	debug = True
+	debugFull = True
+	fullDoc = True
 
-    os.makedirs(apiOutput, exist_ok=True)
+	os.makedirs(apiOutput, exist_ok=True)
 
-    doxygenRun = DoxygenRun(doxygenPath, doxygenInput, doxygenOutput, doxygenConfig)
-    doxygenRun.run()
+	doxygenRun = DoxygenRun(doxygenPath, doxygenInput, doxygenOutput, doxygenConfig)
+	doxygenRun.run()
 
-    options = {
-        'target': target,
-        'link_prefix': link_prefix
-    }
+	options = {
+		'target': target,
+		'link_prefix': link_prefix
+	}
 
-    cache = Cache()
-    parser = XmlParser(cache=cache, target=target, hints=hints, debug=debug)
-    doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=debug)
+	cache = Cache()
+	parser = XmlParser(cache=cache, target=target, hints=hints, debug=debug)
+	doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=debug)
 
-    if debugFull:
-        doxygen.print()
+	if debugFull:
+		doxygen.print()
 
-    generatorBase = GeneratorBase(ignore_errors=ignoreErrors, options=options)
-    generatorAuto = GeneratorAuto( generatorBase=generatorBase, debug=debug)
+	generatorBase = GeneratorBase(ignore_errors=ignoreErrors, options=options)
+	generatorAuto = GeneratorAuto(generatorBase=generatorBase, debug=debug)
 
+	if fullDoc:
+		generatorAuto.fullDoc(apiOutput, doxygen)
 
-    if fullDoc:
-        generatorAuto.fullDoc(apiOutput, doxygen)
-
-    pp(generatorAuto)
+	pp(generatorAuto)

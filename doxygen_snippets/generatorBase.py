@@ -41,8 +41,10 @@ ADDITIONAL_FILES = {
 	'Class Member Enumerations': 'class_member_enums.md',
 }
 
+
 def generate_link(name, url) -> str:
 	return '* [' + name + '](' + url + ')\n'
+
 
 class GeneratorBase:
 	def __init__(self, ignore_errors: bool = False, options: dict = {}, debug: bool = False):
@@ -104,7 +106,7 @@ class GeneratorBase:
 			'nodes': nodes
 		}
 		return self.render(self.annotated_template, data)
-	
+
 	def programlisting(self, node: [Node]):
 		data = {
 			'node': node
@@ -134,7 +136,7 @@ class GeneratorBase:
 			'nodes': nodes
 		}
 		return self.render(self.pages_template, data)
-	
+
 	def classes(self, nodes: [Node]):
 		classes = self.recursive_find(nodes, Kind.CLASS)
 		classes.extend(self.recursive_find(nodes, Kind.STRUCT))

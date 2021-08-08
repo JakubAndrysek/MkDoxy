@@ -96,7 +96,7 @@ class XmlParser:
 				for highlight in codeline.findall('highlight'):
 					if not got_lang and len(
 							highlight.getchildren()) == 0 and highlight.text is not None and highlight.text.startswith(
-							'{') and highlight.text.endswith('}'):
+						'{') and highlight.text.endswith('}'):
 						lang = highlight.text[1:-1]
 						code.set_lang(lang)
 						got_lang = True

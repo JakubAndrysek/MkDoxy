@@ -2,12 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/cache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/finder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorAuto.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorAuto.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/markdown.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/markdown.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/node.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/snippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/property.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/property.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/xml_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/xml_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/files/Doxyfile" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/Doxyfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/originalTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/originalTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/snippetsTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/snippetsTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/testTemplate.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/testTemplate.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +126,7 @@
       <updated>1627758459388</updated>
       <workItem from="1627758463181" duration="15029000" />
       <workItem from="1627809996984" duration="32215000" />
-      <workItem from="1628412425915" duration="10191000" />
+      <workItem from="1628412425915" duration="10531000" />
     </task>
     <servers />
   </component>
@@ -141,7 +155,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>48</line>
+          <line>49</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -151,27 +165,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>46</line>
+          <line>47</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>44</line>
+          <line>45</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>43</line>
+          <line>44</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/testTemplate.py</url>
-          <line>56</line>
+          <line>55</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/testTemplate.py</url>
-          <line>54</line>
+          <line>53</line>
           <option name="timeStamp" value="41" />
         </line-breakpoint>
       </breakpoints>

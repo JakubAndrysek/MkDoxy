@@ -11,6 +11,7 @@ from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
 from pprint import pp
 
+
 class Finder:
 	def __init__(self, doxygen: Doxygen, debug: bool = False):
 		self.doxygen = doxygen
@@ -34,7 +35,7 @@ class Finder:
 				ret.extend(self._recursive_find_with_parent(node.children, kinds, parent_kinds))
 		return ret
 
-	def doxyClass(self, className, functionName = None):
+	def doxyClass(self, className, functionName=None):
 		classes = self._recursive_find(self.doxygen.root.children, Kind.CLASS)
 		for findClass in classes:
 			if findClass.name_long == className:
