@@ -218,6 +218,12 @@ class GeneratorBase:
 		}
 		return self.render(self.hiearchy_template, data)
 
+	def function(self, node: Node):
+		data = {
+			'node': node,
+		}
+		return self.render(self.member_definition_template, data)
+
 	def member(self, node: Node):
 		data = {
 			'node': node,

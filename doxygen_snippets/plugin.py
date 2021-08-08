@@ -11,7 +11,7 @@ from doxygen_snippets.generatorAuto import GeneratorAuto
 from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
-from doxygen_snippets.snippets import IncludeSnippets
+from doxygen_snippets.generatorSnippets import GeneratorSnippets
 from doxygen_snippets.finder import Finder
 
 import logging
@@ -101,8 +101,8 @@ class DoxygenSnippets(BasePlugin):
 			'target': self.target,
 			'link_prefix': "api/"
 		}
-		editedSnippets = IncludeSnippets(markdown, page, config, files, self.apiOutput, self.doxygen, self.ignoreErrors, options, self.debug)
-		finalMd = editedSnippets.include()
+		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generator, doxygen=self.doxygen, debug=self.debug)
+		finalMd = generatorSnippets.generate()
 		# logger.warning(finalMd)
 		return finalMd
 		# return markdown
