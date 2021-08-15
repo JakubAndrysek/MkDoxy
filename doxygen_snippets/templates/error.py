@@ -1,0 +1,6 @@
+TEMPLATE = """
+### Error: {{title}}
+```
+{{message}}
+```
+"""

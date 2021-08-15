@@ -22,6 +22,7 @@ from doxygen_snippets.templates.files import TEMPLATE as FILES_TEMPLATE
 from doxygen_snippets.templates.programlisting import TEMPLATE as PROGRAMLISTING_TEMPLATE
 from doxygen_snippets.templates.page import TEMPLATE as PAGE_TEMPLATE
 from doxygen_snippets.templates.pages import TEMPLATE as PAGES_TEMPLATE
+from doxygen_snippets.templates.error import TEMPLATE as ERROR_TEMPLATE
 
 LETTERS = string.ascii_lowercase + '~_@'
 
@@ -69,6 +70,7 @@ class GeneratorBase:
 			self.programlisting_template = Template(PROGRAMLISTING_TEMPLATE, undefined=on_undefined_class)
 			self.page_template = Template(PAGE_TEMPLATE, undefined=on_undefined_class)
 			self.pages_template = Template(PAGES_TEMPLATE, undefined=on_undefined_class)
+			self.error_template = Template(ERROR_TEMPLATE, undefined=on_undefined_class)
 		except TemplateSyntaxError as e:
 			raise Exception(str(e) + ' at line: ' + str(e.lineno))
 
@@ -100,6 +102,13 @@ class GeneratorBase:
 			if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
 				ret.extend(self.recursive_find_with_parent(node.children, kinds, parent_kinds))
 		return ret
+
+	def error(self, title: str = "", message: str = ""):
+		data = {
+			'title': title,
+			'message': message,
+		}
+		return self.render(self.error_template, data)
 
 	def annotated(self, nodes: [Node]):
 		data = {

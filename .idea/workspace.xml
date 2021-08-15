@@ -2,25 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/files/examples/myExample.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/special/findTags.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/files/src/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/parseMdTags.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/doxygen_snippets/templates/error.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/Doxyfile" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/Doxyfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/animal.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/animal_interface.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/bird.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/config.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/example.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/special_bird.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/utils/exception.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/originalTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/originalTest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/snippetsTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/snippetsTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/special/findTags.md" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/special/findTags.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,10 +35,11 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/doxygen_snippets/templates" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/doxygen_snippets/templates" />
       <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/doxygen_snippets" />
       <recent name="$PROJECT_DIR$/tests/files" />
@@ -173,7 +160,7 @@
       <workItem from="1627809996984" duration="32215000" />
       <workItem from="1628412425915" duration="15028000" />
       <workItem from="1628457417005" duration="500000" />
-      <workItem from="1628954891115" duration="17843000" />
+      <workItem from="1628954891115" duration="27810000" />
     </task>
     <servers />
   </component>
@@ -251,7 +238,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1628957306493" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1628960218964" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1628984406206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629021951405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628421513979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>

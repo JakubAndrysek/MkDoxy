@@ -4,7 +4,7 @@ Some text
 ```yaml
 ::: doxy.Class
     name: Rectangle
-    methode: 
+    method: 
         - width()
         - height()
     description: True
@@ -12,14 +12,14 @@ Some text
 
 ::: doxy.Class
     name: Rectangle
-    methode: 
+    method: 
         - width()
         - height()
     description: True
 
 ::: doxy.File
     name: main.cpp
-    methode: main()
+    method: main()
     description: False
     sourceCode: True
 
