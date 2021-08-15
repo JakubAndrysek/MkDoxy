@@ -1,9 +1,9 @@
 site_name: RBCX Docs Test
 theme:
-    name: material
+  name: material
 
 plugins:
-    - search
+  - search
 
 markdown_extensions:
   - pymdownx.highlight

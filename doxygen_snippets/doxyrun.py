@@ -28,7 +28,7 @@ class DoxygenRun:
 		self.configuration['GENERATE_LATEX'] = 'NO'
 		self.configuration['XML_OUTPUT'] = 'xml'
 		self.configuration['RECURSIVE'] = 'YES'
-		self.configuration['FILE_PATTERNS'] = "*.h *.hpp *.md"
+		# self.configuration['FILE_PATTERNS'] = "*.h *.hpp *.md"
 		self.configuration['EXAMPLE_PATH'] = 'examples'
 		self.configuration['EXAMPLE_PATTERNS'] = '*.cpp'
 		self.configuration['SHOW_NAMESPACES'] = 'YES'

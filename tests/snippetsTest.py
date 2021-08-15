@@ -4,6 +4,7 @@ import os
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.generatorBase import GeneratorBase
 from doxygen_snippets.generatorAuto import GeneratorAuto
+from doxygen_snippets.generatorSnippets import GeneratorSnippets
 from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.constants import Kind
@@ -53,7 +54,11 @@ if __name__ == "__main__":
 	if fullDoc:
 		generatorAuto.fullDoc(apiOutput, doxygen)
 
-	find = Finder(doxygen, debug)
-	fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
+	# find = Finder(doxygen, debug)
+	# fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
 
-	pp(fc)
+	generatorSnippets = GeneratorSnippets(markdown="", generatorBase=generatorBase, doxygen=doxygen, debug=debug)
+
+	func = generatorSnippets.doxyFunction("animal.h", "some_global_function ([**example::Animal**](classexample_1_1Animal.md) * animal)")
+
+	pp(func)
