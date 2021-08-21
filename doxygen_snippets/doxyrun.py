@@ -22,17 +22,18 @@ class DoxygenRun:
 		self.configuration['INPUT'] = self.sourceDir
 		self.configuration['OUTPUT_DIRECTORY'] = self.destinationDir
 		self.configuration['DOXYFILE_ENCODING'] = 'UTF-8'
-		self.configuration['PROJECT_NAME'] = 'Doxygen snippets'
-		self.configuration['GENERATE_HTML'] = 'NO'
+		# self.configuration['PROJECT_NAME'] = 'Doxygen snippets'
+		# self.configuration['GENERATE_HTML'] = 'NO'
 		self.configuration['GENERATE_XML'] = 'YES'
-		self.configuration['GENERATE_LATEX'] = 'NO'
-		self.configuration['XML_OUTPUT'] = 'xml'
+		# self.configuration['GENERATE_LATEX'] = 'NO'
+		# self.configuration['XML_OUTPUT'] = 'xml'
 		self.configuration['RECURSIVE'] = 'YES'
 		# self.configuration['FILE_PATTERNS'] = "*.h *.hpp *.md"
 		self.configuration['EXAMPLE_PATH'] = 'examples'
-		self.configuration['EXAMPLE_PATTERNS'] = '*.cpp'
+		# self.configuration['EXAMPLE_PATTERNS'] = '*.cpp'
 		self.configuration['SHOW_NAMESPACES'] = 'YES'
-		self.configuration['EXTRACT_ALL'] = 'YES'
+		# self.configuration['EXTRACT_ALL'] = 'YES'
+
 
 		# self.configuration['EXCLUDE_PATTERNS'] = '*_deps* *build* *test*'
 		# self.configuration['DOXYFILE_ENCODING'] = 'UTF-8'

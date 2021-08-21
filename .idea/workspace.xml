@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/doxygen_snippets/templates/error.py" afterDir="false" />
+    <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Change snippet handler from Jinja to own Regex">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/extractDoxygen.sh" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/special/findTags.md" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/special/findTags.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +49,29 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.parseMdTags">
+  <component name="RunManager" selected="Python.doxygenSubprocess">
+    <configuration name="doxygenSubprocess" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/doxygenSubprocess.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="originalTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="master" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -141,6 +162,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.doxygenSubprocess" />
         <item itemvalue="Python.parseMdTags" />
         <item itemvalue="Python.snippetsTest" />
         <item itemvalue="Python.originalTest" />
@@ -160,8 +182,17 @@
       <workItem from="1627809996984" duration="32215000" />
       <workItem from="1628412425915" duration="15028000" />
       <workItem from="1628457417005" duration="500000" />
-      <workItem from="1628954891115" duration="27810000" />
+      <workItem from="1628954891115" duration="34616000" />
+      <workItem from="1629134293566" duration="9922000" />
     </task>
+    <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
+      <created>1629032602287</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1629032602287</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,6 +209,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Change snippet handler from Jinja to own Regex" />
+    <option name="LAST_COMMIT_MESSAGE" value="Change snippet handler from Jinja to own Regex" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -238,7 +273,8 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1628957306493" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1628960218964" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629021951405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629136660398" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$doxygenSubprocess.coverage" NAME="doxygenSubprocess Coverage Results" MODIFIED="1629554160016" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628421513979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>

@@ -24,7 +24,15 @@ import logging
 
 logger = logging.getLogger("mkdocs")
 
-regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)"
+# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)"
+# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z))|(?:(?=\n))"
+# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?:(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z))|(?=\n)|(?=:::)|\Z)"
+# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<title>[a-zA-Z.-_]+))\s*\n(?:(?:(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|(?=`)|\Z))|(?=\n)|(?=:::)|\Z)"
+
+
+regexLong= r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)" #https://regex101.com/r/lY9fgm/2
+regexShort = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?=\n)|(?=:::)|\Z)" #https://regex101.com/r/i3e4g6/1
+
 
 class GeneratorSnippets:
 	def __init__(self,
@@ -39,17 +47,10 @@ class GeneratorSnippets:
 		self.finder = Finder(doxygen, debug)
 
 	def generate(self):
-		matches = re.finditer(regex, self.markdown, re.MULTILINE)
+
+		matches = re.finditer(regexShort, self.markdown, re.MULTILINE)
 		for match in reversed(list(matches)):
 			key = match.group('key')
-			yamlRaw = match.group('yaml')
-			if yamlRaw:
-				try:
-					yaml = YAML()
-					config = yaml.load(yamlRaw)
-					yaml.dump(config, sys.stdout)
-				except YAMLError as e:
-					print(e)
 
 			keyLow = key.lower()
 			print(f"Key: {keyLow}")
@@ -63,8 +64,37 @@ class GeneratorSnippets:
 			else:
 				replaceStr = "# " + key + "\n" + pformat(config)
 
-
 			self.replaceMarkdown(match.start(), match.end(), replaceStr)
+
+
+		matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
+		for match in reversed(list(matches)):
+			if match:
+				key = match.group('key')
+				yamlRaw = match.group('yaml')
+				if yamlRaw:
+					try:
+						yaml = YAML()
+						config = yaml.load(yamlRaw)
+						yaml.dump(config, sys.stdout)
+					except YAMLError as e:
+						print(e)
+
+				keyLow = key.lower()
+				print(f"Key: {keyLow}")
+				if keyLow.startswith("class"):
+					if keyLow.endswith("list"):
+						replaceStr = self.doxyClassList()
+					elif keyLow.endswith("index"):
+						replaceStr = self.doxyClassIndex()
+					else:
+						replaceStr = self.doxyClass(config)
+				else:
+					# replaceStr = "# " + key + "\n" + pformat(config)
+					replaceStr = self.generatorBase.error("Not implemented: " + key, pformat(config))
+
+
+				self.replaceMarkdown(match.start(), match.end(), replaceStr)
 
 		return self.markdown
 
@@ -77,7 +107,7 @@ class GeneratorSnippets:
 		if config.get("method"):
 			if not node:
 				# return f"**Didnt find methode `{config.get('method')}` in Class `{config.get('name')}`.**"
-				return self.generatorBase.error(message=f"Did not find methode `{config.get('method')}` in Class `{config.get('name')}`.")
+				return self.generatorBase.error(message=f"Did not find method `{config.get('method')}` in Class `{config.get('name')}`.")
 			md = self.generatorBase.function(node)
 		else:
 			if not node:
