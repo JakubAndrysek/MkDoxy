@@ -28,10 +28,7 @@ class DoxygenSnippets(BasePlugin):
 	"""
 
 	config_scheme = (
-		('doxygen-path', config_options.Type(str, default='')),
-		('doxygen-config', config_options.Type(str, default='')),
-		('doxygen-input', config_options.Type(str, default='')),
-		('doxygen-output', config_options.Type(str, default='')),
+		('doxygen-source', config_options.Type(str, default='')),
 		('api-output', config_options.Type(str, default='')),
 		('target', config_options.Type(str, default='mkdocs')),
 		('full-doc', config_options.Type(bool, default=False)),
@@ -46,23 +43,23 @@ class DoxygenSnippets(BasePlugin):
 		self.enabled = True
 		self.total_time = 0
 
-	def on_pre_build(self, config):
+	def on_files(self, files: files.Files, config):
 		# Building Doxygen and parse XML
 		logger.warning("Building Doxygen and parse XML")
-		self.doxygenPath = self.config["doxygen-path"]
-		self.doxygenConfig = self.config["doxygen-config"]
-		self.doxygenInput = self.config["doxygen-input"]
-		self.doxygenOutput = self.config["doxygen-output"]
+		self.doxygenSource = self.config["doxygen-source"]
 		self.apiOutput = self.config["api-output"]
 		self.fullDoc = self.config["full-doc"]
 		self.ignoreErrors = self.config["ignore-errors"]
 		self.target = self.config['target']
 		self.hints = self.config['hints']
+		
+		self.siteDir = config['site_dir']
 		self.debug = False
 
-		doxygenRun = DoxygenRun(self.doxygenPath, self.doxygenInput, self.doxygenOutput, self.doxygenConfig)
+		doxygenRun = DoxygenRun(self.doxygenSource, self.siteDir)
 		doxygenRun.run()
 
+		logger.warning(pformat(config))
 		logger.warning(doxygenRun.getDestination())
 		os.makedirs(self.apiOutput, exist_ok=True)
 
@@ -86,7 +83,7 @@ class DoxygenSnippets(BasePlugin):
 			generatorAuto = GeneratorAuto(generatorBase=self.generator, debug=self.debug)
 			generatorAuto.fullDoc(self.apiOutput, self.doxygen)
 
-		return
+		return files
 
 	def on_page_markdown(
 			self,
@@ -107,6 +104,8 @@ class DoxygenSnippets(BasePlugin):
 		# logger.warning(finalMd)
 		return finalMd
 	# return markdown
+
+# def on_pre_build(self, config):
 
 # def on_serve(self, server):
 #     return server
