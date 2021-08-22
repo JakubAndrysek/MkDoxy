@@ -9,9 +9,11 @@ TEMPLATE = """
 ```cpp
 {{node.codeblock}}
 ```
-
+# config.get('details')
+{% if True -%}
 {% if node.has_details -%}
 {{node.details}}
+{%- endif -%}
 {%- endif -%}
 
 {% if node.reimplements %}

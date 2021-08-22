@@ -78,7 +78,7 @@ Inherited by the following classes:
 {%- if node.has(visibility, query[1], static[1]) %}
 ## {{visibility|title}} {{static[0]|title}}{{query[0]|title}} Documentation
 {% for member in node.query(visibility, query[1], static[1]) -%}
-{{ member_definition_template.render({'target': target, 'node': member}) }}
+{{ member_definition_template.render({'target': target, 'node': member, 'config': config}) }}
 {%- endfor %}
 {%- endif -%}
 {%- endfor -%}
@@ -89,7 +89,7 @@ Inherited by the following classes:
 ## Macro Definition Documentation
 
 {% for member in node.query('public', ['define'], False) -%}
-{{ member_definition_template.render({'target': target, 'node': member}) }}
+{{ member_definition_template.render({'target': target, 'node': member, 'config': config}) }}
 {%- endfor -%}
 {%- endif %}
 
@@ -97,7 +97,7 @@ Inherited by the following classes:
 ## Friends Documentation
 
 {% for member in node.query('public', ['friend'], False) -%}
-{{ member_definition_template.render({'target': target, 'node': member}) }}
+{{ member_definition_template.render({'target': target, 'node': member, 'config': config}) }}
 {%- endfor %}
 {%- endif %}
 

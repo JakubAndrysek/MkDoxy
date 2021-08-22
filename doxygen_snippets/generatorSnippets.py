@@ -24,15 +24,8 @@ import logging
 
 logger = logging.getLogger("mkdocs")
 
-# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)"
-# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z))|(?:(?=\n))"
-# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?:(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z))|(?=\n)|(?=:::)|\Z)"
-# regex = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<title>[a-zA-Z.-_]+))\s*\n(?:(?:(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|(?=`)|\Z))|(?=\n)|(?=:::)|\Z)"
-
-
 regexLong= r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)" #https://regex101.com/r/lY9fgm/2
 regexShort = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?=\n)|(?=:::)|\Z)" #https://regex101.com/r/i3e4g6/1
-
 
 class GeneratorSnippets:
 	def __init__(self,
@@ -46,6 +39,13 @@ class GeneratorSnippets:
 		self.debug = debug
 		self.finder = Finder(doxygen, debug)
 
+		self.DOXY_CALL = {
+			"class": self.doxyClass,
+			"class.list":self.doxyClassList,
+			"class.index":self.doxyClassIndex,
+			"function":self.doxyFunction
+		}
+
 	def generate(self):
 
 		matches = re.finditer(regexShort, self.markdown, re.MULTILINE)
@@ -54,18 +54,9 @@ class GeneratorSnippets:
 
 			keyLow = key.lower()
 			print(f"Key: {keyLow}")
-			if keyLow.startswith("class"):
-				if keyLow.endswith("list"):
-					replaceStr = self.doxyClassList()
-				elif keyLow.endswith("index"):
-					replaceStr = self.doxyClassIndex()
-				else:
-					replaceStr = self.doxyClass(config)
-			else:
-				replaceStr = "# " + key + "\n" + pformat(config)
 
+			replaceStr = self.callDoxyByName(keyLow, {})
 			self.replaceMarkdown(match.start(), match.end(), replaceStr)
-
 
 		matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
 		for match in reversed(list(matches)):
@@ -82,24 +73,36 @@ class GeneratorSnippets:
 
 				keyLow = key.lower()
 				print(f"Key: {keyLow}")
-				if keyLow.startswith("class"):
-					if keyLow.endswith("list"):
-						replaceStr = self.doxyClassList()
-					elif keyLow.endswith("index"):
-						replaceStr = self.doxyClassIndex()
-					else:
-						replaceStr = self.doxyClass(config)
-				else:
-					# replaceStr = "# " + key + "\n" + pformat(config)
-					replaceStr = self.generatorBase.error("Not implemented: " + key, pformat(config))
 
-
+				replaceStr = self.callDoxyByName(keyLow, config)
 				self.replaceMarkdown(match.start(), match.end(), replaceStr)
+
 
 		return self.markdown
 
 	def replaceMarkdown(self, start: int, end: int, newString: string):
 		self.markdown = self.markdown[:start] + newString + "\n" + self.markdown[end:]
+
+
+	def callDoxyByName(self, key, config):
+		if key in self.DOXY_CALL:
+			funcName = self.DOXY_CALL[key]
+			return funcName(config)
+		else:
+			return self.generatorBase.error(f"Did not exist key with name: {key}")
+
+	def checkConfig(self, config, params):
+		"""
+		returns false if config is correct
+		return error message if find problem in config
+		"""
+		for param in params:
+			if not config.get(param):
+				return f"The requid parameter `{param}` is not configured!"
+		return False
+
+	def doxyError(self, title: str = "", message: str = ""):
+		return self.generatorBase.error(title, message)
 
 	### Create documentation generator callbacks
 	def doxyClass(self, config):
@@ -116,27 +119,34 @@ class GeneratorSnippets:
 			md = self.generatorBase.member(node)
 		return md
 
-	def doxyClassList(self):
+	def doxyClassList(self, config):
 		md = self.generatorBase.annotated(self.doxygen.root.children)
 		return md
 
-	def doxyClassIndex(self):
+	def doxyClassIndex(self, config):
 		md = self.generatorBase.classes(self.doxygen.root.children)
 		return md
 
-	def doxyClassHierarchy(self):
+	def doxyClassHierarchy(self, config):
 		md = self.generatorBase.hierarchy(self.doxygen.root.children)
 		return md
 
-	def doxyFunction(self, fileName: str, functionName: str, fullDoc: bool = True):
-		functions = self.generatorBase.recursive_find_with_parent(self.doxygen.files.children, [Kind.FUNCTION], [Kind.FILE])
-		return f"## Doxygen FUNCTION: {functionName}"
+	def doxyFunction(self, config):
+		if errorMsg := self.checkConfig(config, ["name"]):
+			return self.doxyError(errorMsg)
 
-	def doxyNamespaceList(self):
+		function = self.finder.doxyFunction(config.get("name"))
+		if function:
+			md = self.generatorBase.function(function, config)
+			return md
+		return self.doxyError(f"Did not find function with name: {config.get('name')}", f"Posible functions: TODO")
+		# return f"## Doxygen FUNCTION: {functionName}"
+
+	def doxyNamespaceList(self, config):
 		md = self.generatorBase.namespaces(self.doxygen.root.children)
 		return md
 
-	def doxyFileList(self):
+	def doxyFileList(self, config):
 		md = self.generatorBase.fileindex(self.doxygen.files.children)
 		return md
 

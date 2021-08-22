@@ -25,7 +25,7 @@ class GeneratorAuto:
 
 	def save(self, path: str, output: str):
 		# print(f"File: {path}, '/tmp/asd/', {self.config['site_dir']}")
-		self.fullDocFiles.append(files.File(path, self.config['docs_dir'], self.config['site_dir'], self.config['use_directory_urls']))
+		# self.fullDocFiles.append(files.File(path, self.config['docs_dir'], self.config['site_dir'], self.config['use_directory_urls']))
 		with open(path, 'w', encoding='utf-8') as file:
 			file.write(output)
 

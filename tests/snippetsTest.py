@@ -15,10 +15,8 @@ from doxygen_snippets.doxyrun import DoxygenRun
 from pprint import *
 
 if __name__ == "__main__":
-	doxygenPath = "files/"
-	doxygenInput = "src"
-	doxygenOutput = "doxy"
-	doxygenConfig = "Doxyfile"
+	doxygenSource = "files/src"
+	siteDir = "docs"
 	apiOutput = "files/docs/"
 	target = "mkdocs"
 	hints = True
@@ -29,11 +27,9 @@ if __name__ == "__main__":
 	# Debug options
 	debug = True
 	debugFull = False
-	fullDoc = False
+	fullDoc = True
 
-	os.makedirs(apiOutput, exist_ok=True)
-
-	doxygenRun = DoxygenRun(doxygenPath, doxygenInput, doxygenOutput, doxygenConfig)
+	doxygenRun = DoxygenRun(doxygenSource, siteDir)
 	doxygenRun.run()
 
 	options = {
@@ -49,7 +45,7 @@ if __name__ == "__main__":
 		doxygen.print()
 
 	generatorBase = GeneratorBase(ignore_errors=ignoreErrors, options=options)
-	generatorAuto = GeneratorAuto(generatorBase=generatorBase, debug=debug)
+	generatorAuto = GeneratorAuto(generatorBase=generatorBase, debug=debug, config=[])
 
 	if fullDoc:
 		generatorAuto.fullDoc(apiOutput, doxygen)
@@ -59,6 +55,6 @@ if __name__ == "__main__":
 
 	generatorSnippets = GeneratorSnippets(markdown="", generatorBase=generatorBase, doxygen=doxygen, debug=debug)
 
-	func = generatorSnippets.doxyFunction("animal.h", "some_global_function ([**example::Animal**](classexample_1_1Animal.md) * animal)")
+	func = generatorSnippets.doxyFunction({"name":"getRandomNumber()"})
 
 	pp(func)

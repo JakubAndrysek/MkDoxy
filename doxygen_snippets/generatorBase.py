@@ -229,25 +229,28 @@ class GeneratorBase:
 		}
 		return self.render(self.hiearchy_template, data)
 
-	def function(self, node: Node):
+	def function(self, node: Node, config: dict = {}):
 		data = {
 			'node': node,
+			'config': config
 		}
 		return self.render(self.member_definition_template, data)
 
-	def member(self, node: Node):
+	def member(self, node: Node, config: dict = {}):
 		data = {
 			'node': node,
 			'member_definition_template': self.member_definition_template,
-			'member_table_template': self.member_table_template
+			'member_table_template': self.member_table_template,
+			'config': config
 		}
 		return self.render(self.member_template, data)
 
-	def file(self, node: Node):
+	def file(self, node: Node, config: dict = {}):
 		data = {
 			'node': node,
 			'member_definition_template': self.member_definition_template,
-			'member_table_template': self.member_table_template
+			'member_table_template': self.member_table_template,
+			'config': config
 		}
 		return self.render(self.member_template, data)
 

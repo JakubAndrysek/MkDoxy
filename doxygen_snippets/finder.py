@@ -35,15 +35,26 @@ class Finder:
 				ret.extend(self._recursive_find_with_parent(node.children, kinds, parent_kinds))
 		return ret
 
-	def doxyClass(self, className, functionName=None):
+	def _normalize(self, name: str) -> str:
+		return name.replace(" ", "")
+
+	def doxyClass(self, className: str, functionName=None):
 		classes = self._recursive_find(self.doxygen.root.children, Kind.CLASS)
 		for findClass in classes:
 			if findClass.name_long == className:
 				if functionName:
 					members = self._recursive_find(findClass.children, Kind.FUNCTION)
 					for member in members:
-						if functionName.replace(" ", "") in member.name_params.replace(" ", ""):
+						if self._normalize(functionName) in self._normalize(member.name_params):
 							return member
 				else:
 					return findClass
+		return None
+
+	def doxyFunction(self, functionName: str):
+		if functionName:
+			functions = self._recursive_find_with_parent(self.doxygen.files.children, [Kind.FUNCTION], [Kind.FILE])
+			for function in functions:
+				if self._normalize(functionName) == self._normalize(function.name_params):
+					return function
 		return None
