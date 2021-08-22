@@ -2,6 +2,7 @@ import os
 import re
 import string
 import traceback
+from mkdocs.structure import files
 from jinja2 import Template
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
@@ -16,15 +17,21 @@ def generate_link(name, url) -> str:
 
 
 class GeneratorAuto:
-	def __init__(self, generatorBase: GeneratorBase, debug: bool = False):
+	def __init__(self, generatorBase: GeneratorBase, config, fullDocFiles: dict = [], debug: bool = False):
 		self.generatorBase = generatorBase
+		self.config = config
+		self.fullDocFiles = fullDocFiles
 		self.debug = debug
 
 	def save(self, path: str, output: str):
+		# print(f"File: {path}, '/tmp/asd/', {self.config['site_dir']}")
+		self.fullDocFiles.append(files.File(path, self.config['docs_dir'], self.config['site_dir'], self.config['use_directory_urls']))
 		with open(path, 'w', encoding='utf-8') as file:
 			file.write(output)
 
 	def fullDoc(self, output_dir: str, nodes: Doxygen):
+		os.makedirs(output_dir, exist_ok=True)
+
 		self.annotated(output_dir, nodes.root.children)
 		self.fileindex(output_dir, nodes.files.children)
 		self.members(output_dir, nodes.root.children)

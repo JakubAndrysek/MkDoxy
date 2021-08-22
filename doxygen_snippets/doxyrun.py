@@ -21,7 +21,7 @@ class DoxygenRun:
 	"""
 	def __init__(self, doxygenSource, siteDir):
 		self.doxygenSource = doxygenSource
-		self.destinationDir = path.abspath(path.join(path.join(siteDir, "assets"), "doxy"))
+		self.destinationDir = path.abspath(path.join(path.join(siteDir, "assets"), ".doxy"))
 
 		self.doxyConfig = f"""
 		INPUT = {self.doxygenSource}
@@ -41,8 +41,8 @@ class DoxygenRun:
 
 		doxyBuilder = Popen(['doxygen', '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 		stdout_data = doxyBuilder.communicate(self.doxyConfig.encode('utf-8'))[0].decode().strip()
-		logger.info(self.destinationDir)
-		logger.info(stdout_data)
+		# logger.info(self.destinationDir)
+		# logger.info(stdout_data)
 
 	def getDestination(self):
 		return path.join(self.destinationDir, "xml")

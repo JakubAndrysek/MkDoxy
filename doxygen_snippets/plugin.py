@@ -1,8 +1,9 @@
-import os
+from os import path, makedirs
 from mkdocs import utils as mkdocs_utils
 from mkdocs.plugins import BasePlugin
 from mkdocs.config import base, config_options, Config
 from mkdocs.structure import files, pages
+from mkdocs.commands import serve
 
 from doxygen_snippets.doxyrun import DoxygenRun
 from doxygen_snippets.doxygen import Doxygen
@@ -43,6 +44,12 @@ class DoxygenSnippets(BasePlugin):
 		self.enabled = True
 		self.total_time = 0
 
+	# def on_serve(self, server, config, **kwargs):
+	# # def on_serve(self, server: serve.LiveReloadServer, config, **kwargs):
+	# 	logger.error("Run on serve")
+	# 	logger.error(self.config)
+	# 	return server
+
 	def on_files(self, files: files.Files, config):
 		# Building Doxygen and parse XML
 		logger.warning("Building Doxygen and parse XML")
@@ -54,14 +61,16 @@ class DoxygenSnippets(BasePlugin):
 		self.hints = self.config['hints']
 		
 		self.siteDir = config['site_dir']
+		self.siteDirAssets = path.join(self.siteDir, "assets")
+		# self.apiTempOutput = path.join(self.siteDirAssets, ".api")
+		self.apiTempOutput = path.join(self.siteDir, "api")
 		self.debug = False
 
 		doxygenRun = DoxygenRun(self.doxygenSource, self.siteDir)
 		doxygenRun.run()
 
-		logger.warning(pformat(config))
-		logger.warning(doxygenRun.getDestination())
-		os.makedirs(self.apiOutput, exist_ok=True)
+		# logger.warning(pformat(config))
+		# logger.warning(doxygenRun.getDestination())
 
 		self.options = {
 			'target': self.target,
@@ -70,18 +79,23 @@ class DoxygenSnippets(BasePlugin):
 
 		cache = Cache()
 		parser = XmlParser(cache=cache, target=self.target, hints=self.config['hints'], debug=self.debug)
-		# logger.warning(pformat(parser))
 		self.doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=self.options, debug=self.debug)
 		logger.warning(pformat(self.doxygen))
 
 		if self.debug:
+			logger.warning(pformat(parser))
 			self.doxygen.print()
 
 		self.generator = GeneratorBase(ignore_errors=self.ignoreErrors, options=self.options)
 
 		if self.fullDoc:
-			generatorAuto = GeneratorAuto(generatorBase=self.generator, debug=self.debug)
+			self.fullDocFiles = []
+			generatorAuto = GeneratorAuto(generatorBase=self.generator, config=config, fullDocFiles=self.fullDocFiles, debug=self.debug)
+			# generatorAuto.fullDoc(self.apiTempOutput, self.doxygen)
 			generatorAuto.fullDoc(self.apiOutput, self.doxygen)
+			# files = files + generatorAuto.fullDocFiles
+			# for file in generatorAuto.fullDocFiles:
+			# 	files.append(file)
 
 		return files
 
