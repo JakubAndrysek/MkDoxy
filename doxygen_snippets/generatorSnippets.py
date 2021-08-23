@@ -40,10 +40,13 @@ class GeneratorSnippets:
 		self.finder = Finder(doxygen, debug)
 
 		self.DOXY_CALL = {
+			"code": self.doxyCode,
+			"function": self.doxyFunction,
 			"class": self.doxyClass,
+			"class.method": self.doxyClassMethod,
 			"class.list":self.doxyClassList,
 			"class.index":self.doxyClassIndex,
-			"function":self.doxyFunction
+
 		}
 
 	def generate(self):
@@ -53,15 +56,18 @@ class GeneratorSnippets:
 			key = match.group('key')
 
 			keyLow = key.lower()
-			print(f"Key: {keyLow}")
+			print(f"\nKey: {keyLow}")
 
-			replaceStr = self.callDoxyByName(keyLow, {})
+			replaceStr = self.callDoxyByName(snippet, keyLow, {})
 			self.replaceMarkdown(match.start(), match.end(), replaceStr)
 
 		matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
 		for match in reversed(list(matches)):
 			if match:
+				snippet = match.group()
 				key = match.group('key')
+				keyLow = key.lower()
+				print(f"\nKey: {keyLow}")
 				yamlRaw = match.group('yaml')
 				if yamlRaw:
 					try:
@@ -71,10 +77,7 @@ class GeneratorSnippets:
 					except YAMLError as e:
 						print(e)
 
-				keyLow = key.lower()
-				print(f"Key: {keyLow}")
-
-				replaceStr = self.callDoxyByName(keyLow, config)
+				replaceStr = self.callDoxyByName(snippet, keyLow, config)
 				self.replaceMarkdown(match.start(), match.end(), replaceStr)
 
 
@@ -84,69 +87,86 @@ class GeneratorSnippets:
 		self.markdown = self.markdown[:start] + newString + "\n" + self.markdown[end:]
 
 
-	def callDoxyByName(self, key, config):
+	def callDoxyByName(self, snippet, key, config):
 		if key in self.DOXY_CALL:
 			funcName = self.DOXY_CALL[key]
-			return funcName(config)
+			return funcName(snippet, config)
 		else:
 			return self.generatorBase.error(f"Did not exist key with name: {key}")
 
-	def checkConfig(self, config, params):
+	def checkConfig(self, snippet, config, params):
 		"""
 		returns false if config is correct
 		return error message if find problem in config
 		"""
 		for param in params:
 			if not config.get(param):
-				return f"The requid parameter `{param}` is not configured!"
+				return self.doxyError(f"The requid parameter `{param}` is not configured!", snippet, "yaml")
 		return False
 
-	def doxyError(self, title: str = "", message: str = ""):
-		return self.generatorBase.error(title, message)
-
 	### Create documentation generator callbacks
-	def doxyClass(self, config):
-		node = self.finder.doxyClass(config.get("name"), config.get("method"))
-		if config.get("method"):
-			if not node:
-				# return f"**Didnt find methode `{config.get('method')}` in Class `{config.get('name')}`.**"
-				return self.generatorBase.error(message=f"Did not find method `{config.get('method')}` in Class `{config.get('name')}`.")
-			md = self.generatorBase.function(node)
-		else:
-			if not node:
-				# return f"**Didn`t find Class `{config.get('name')}`.**`"
-				return self.generatorBase.error("Did not find Class", config.get('name'))
-			md = self.generatorBase.member(node)
-		return md
 
-	def doxyClassList(self, config):
+	def doxyError(self, title: str = "", message: str = "", language: str = ""):
+		return self.generatorBase.error(title, message, language)
+	
+	def doxyCode(self, snippet, config):
+		if errorMsg := self.checkConfig(snippet, config, ["file"]):
+			return errorMsg
+		node = self.finder.doxyCode(config.get("file"))
+		if isinstance(node, Node):
+			md = self.generatorBase.programlisting(node, config)
+			return md
+		return self.doxyError(f"Did not find File: `{config.get('file')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+
+
+	def doxyFunction(self, snippet, config):
+		if errorMsg := self.checkConfig(snippet, config, ["name"]):
+			return errorMsg
+
+		node = self.finder.doxyFunction(config.get("name"))
+		if isinstance(node, Node):
+			md = self.generatorBase.function(node, config)
+			return md
+		return self.doxyError(f"Did not find Function with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+
+	def doxyClass(self, snippet, config):
+		if errorMsg := self.checkConfig(snippet, config, ["name"]):
+			return errorMsg
+
+		node = self.finder.doxyClass(config.get("name"))
+		if isinstance(node, Node):
+			md = self.generatorBase.member(node, config)
+			return md
+		return self.doxyError(f"Did not find Class with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+
+	def doxyClassMethod(self, snippet, config):
+		if errorMsg := self.checkConfig(snippet, config, ["name", "method"]):
+			return errorMsg
+
+		node = self.finder.doxyClassMethod(config.get("name"), config.get("method"))
+		if isinstance(node, Node):
+			md = self.generatorBase.function(node, config)
+			return md
+		return self.doxyError(f"Did not find Class with name: `{config.get('name')}` and method: `{config.get('method')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+
+
+	def doxyClassList(self, snippet, config):
 		md = self.generatorBase.annotated(self.doxygen.root.children)
 		return md
 
-	def doxyClassIndex(self, config):
+	def doxyClassIndex(self, snippet, config):
 		md = self.generatorBase.classes(self.doxygen.root.children)
 		return md
 
-	def doxyClassHierarchy(self, config):
+	def doxyClassHierarchy(self, snippet, config):
 		md = self.generatorBase.hierarchy(self.doxygen.root.children)
 		return md
 
-	def doxyFunction(self, config):
-		if errorMsg := self.checkConfig(config, ["name"]):
-			return self.doxyError(errorMsg)
-
-		function = self.finder.doxyFunction(config.get("name"))
-		if function:
-			md = self.generatorBase.function(function, config)
-			return md
-		return self.doxyError(f"Did not find function with name: {config.get('name')}", f"Posible functions: TODO")
-		# return f"## Doxygen FUNCTION: {functionName}"
-
-	def doxyNamespaceList(self, config):
+	def doxyNamespaceList(self, snippet, config):
 		md = self.generatorBase.namespaces(self.doxygen.root.children)
 		return md
 
-	def doxyFileList(self, config):
+	def doxyFileList(self, snippet, config):
 		md = self.generatorBase.fileindex(self.doxygen.files.children)
 		return md
 

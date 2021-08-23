@@ -27,7 +27,8 @@ You need to have **python 3.6 or newer** and [Jinja2](http://jinja.pocoo.org/doc
 ```
 git clone https://github.com/JakubAndrysek/mkdocs-doxygen-snippets-plugin.git
 cd doxybook
-sudo python setup.py install
+sudo python setup.py installClass rb::MotorChangeBuilder
+
 ```
 
 

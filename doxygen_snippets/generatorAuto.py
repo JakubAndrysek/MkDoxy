@@ -17,144 +17,152 @@ def generate_link(name, url) -> str:
 
 
 class GeneratorAuto:
-	def __init__(self, generatorBase: GeneratorBase, config, fullDocFiles: dict = [], debug: bool = False):
+	def __init__(self,
+	             generatorBase: GeneratorBase,
+	             tempDoxyDir: str,
+	             siteDir: str,
+	             apiPath: str,
+	             useDirectoryUrls: bool,
+	             fullDocFiles: dict = [],
+	             debug: bool = False):
 		self.generatorBase = generatorBase
-		self.config = config
+		self.tempDoxyDir = tempDoxyDir
+		self.siteDir = siteDir
+		self.apiPath = apiPath
+		self.useDirectoryUrls = useDirectoryUrls,
 		self.fullDocFiles = fullDocFiles
 		self.debug = debug
+		os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
 
 	def save(self, path: str, output: str):
-		# print(f"File: {path}, '/tmp/asd/', {self.config['site_dir']}")
-		# self.fullDocFiles.append(files.File(path, self.config['docs_dir'], self.config['site_dir'], self.config['use_directory_urls']))
-		with open(path, 'w', encoding='utf-8') as file:
+		pathRel = os.path.join(self.apiPath, path)
+		self.fullDocFiles.append(files.File(pathRel, self.tempDoxyDir, self.siteDir, self.useDirectoryUrls))
+		with open(os.path.join(self.tempDoxyDir, pathRel), 'w', encoding='utf-8') as file:
 			file.write(output)
 
-	def fullDoc(self, output_dir: str, nodes: Doxygen):
-		os.makedirs(output_dir, exist_ok=True)
-
-		self.annotated(output_dir, nodes.root.children)
-		self.fileindex(output_dir, nodes.files.children)
-		self.members(output_dir, nodes.root.children)
-		self.members(output_dir, nodes.groups.children)
-		self.files(output_dir, nodes.files.children)
-		self.namespaces(output_dir, nodes.root.children)
-		self.classes(output_dir, nodes.root.children)
-		self.hierarchy(output_dir, nodes.root.children)
-		self.modules(output_dir, nodes.groups.children)
-		self.pages(output_dir, nodes.pages.children)
-		self.relatedpages(output_dir, nodes.pages.children)
-		self.index(output_dir, nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
+	def fullDoc(self, nodes: Doxygen):
+		self.annotated(nodes.root.children)
+		self.fileindex(nodes.files.children)
+		self.members(nodes.root.children)
+		self.members(nodes.groups.children)
+		self.files(nodes.files.children)
+		self.namespaces(nodes.root.children)
+		self.classes(nodes.root.children)
+		self.hierarchy(nodes.root.children)
+		self.modules(nodes.groups.children)
+		self.pages(nodes.pages.children)
+		self.relatedpages(nodes.pages.children)
+		self.index(nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
 		           [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
-		self.index(output_dir, nodes.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(nodes.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Functions')
-		self.index(output_dir, nodes.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(nodes.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Variables')
-		self.index(output_dir, nodes.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(nodes.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Typedefs')
-		self.index(output_dir, nodes.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(nodes.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Enums')
-		self.index(output_dir, nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
+		self.index(nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
 		           [Kind.NAMESPACE], 'Namespace Members')
-		self.index(output_dir, nodes.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions')
-		self.index(output_dir, nodes.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables')
-		self.index(output_dir, nodes.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs')
-		self.index(output_dir, nodes.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums')
-		self.index(output_dir, nodes.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions')
-		self.index(output_dir, nodes.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros')
-		self.index(output_dir, nodes.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE],
+		self.index(nodes.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions')
+		self.index(nodes.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables')
+		self.index(nodes.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs')
+		self.index(nodes.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums')
+		self.index(nodes.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions')
+		self.index(nodes.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros')
+		self.index(nodes.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE],
 		           'Variables')
 
-	def annotated(self, output_dir: str, nodes: [Node]):
-		path = os.path.join(output_dir, 'annotated.md')
-
+	def annotated(self, nodes: [Node]):
+		path = 'annotated.md'
 		output = self.generatorBase.annotated(nodes)
 		self.save(path, output)
 
-	def programlisting(self, output_dir: str, node: [Node]):
-		path = os.path.join(output_dir, node.refid + '_source.md')
+	def programlisting(self, node: [Node]):
+		path = node.refid + '_source.md'
 
 		output = self.generatorBase.programlisting(node)
 		self.save(path, output)
 
-	def fileindex(self, output_dir: str, nodes: [Node]):
-		path = os.path.join(output_dir, 'files.md')
+	def fileindex(self, nodes: [Node]):
+		path = 'files.md'
 
 		output = self.generatorBase.fileindex(nodes)
 		self.save(path, output)
 
-	def namespaces(self, output_dir: str, nodes: [Node]):
-		path = os.path.join(output_dir, 'namespaces.md')
+	def namespaces(self, nodes: [Node]):
+		path = 'namespaces.md'
 
 		output = self.generatorBase.namespaces(nodes)
 		self.save(path, output)
 
-	def page(self, output_dir: str, node: Node):
-		path = os.path.join(output_dir, node.name + '.md')
+	def page(self, node: Node):
+		path = node.name + '.md'
 
 		output = self.generatorBase.page(node)
 		self.save(path, output)
 
-	def pages(self, output_dir: str, nodes: [Node]):
+	def pages(self, nodes: [Node]):
 		for node in nodes:
-			self.page(output_dir, node)
+			self.page(node)
 
-	def relatedpages(self, output_dir: str, nodes: [Node]):
-		path = os.path.join(output_dir, 'pages.md')
+	def relatedpages(self, nodes: [Node]):
+		path = 'pages.md'
 
 		output = self.generatorBase.annotated(nodes)
 		self.save(path, output)
 
-	def classes(self, output_dir: str, nodes: [Node]):
-		path = os.path.join(output_dir, 'classes.md')
+	def classes(self, nodes: [Node]):
+		path = 'classes.md'
 
 		output = self.generatorBase.classes(nodes)
 		self.save(path, output)
 
-	def modules(self, output_dir: str, nodes: [Node]):
-		path = os.path.join(output_dir, 'modules.md')
+	def modules(self, nodes: [Node]):
+		path = 'modules.md'
 
 		output = self.generatorBase.modules(nodes)
 		self.save(path, output)
 
-	def hierarchy(self, output_dir: str, nodes: [Node]):
-		path = os.path.join(output_dir, 'hierarchy.md')
+	def hierarchy(self, nodes: [Node]):
+		path = 'hierarchy.md'
 
 		output = self.generatorBase.hierarchy(nodes)
 		self.save(path, output)
 
-	def member(self, output_dir: str, node: Node):
-		path = os.path.join(output_dir, node.filename)
+	def member(self, node: Node):
+		path = node.filename
 
 		output = self.generatorBase.member(node)
 		self.save(path, output)
 
 		if node.is_language or node.is_group or node.is_file or node.is_dir:
-			self.members(output_dir, node.children)
+			self.members(node.children)
 
-	def file(self, output_dir: str, node: Node):
-		path = os.path.join(output_dir, node.filename)
+	def file(self, node: Node):
+		path = node.filename
 
 		output = self.generatorBase.file(node)
 		self.save(path, output)
 
 		if node.is_file and node.has_programlisting:
-			self.programlisting(output_dir, node)
+			self.programlisting(node)
 
 		if node.is_file or node.is_dir:
-			self.files(output_dir, node.children)
+			self.files(node.children)
 
-	def members(self, output_dir: str, nodes: [Node]):
+	def members(self, nodes: [Node]):
 		for node in nodes:
 			if node.is_parent or node.is_group or node.is_file or node.is_dir:
-				self.member(output_dir, node)
+				self.member(node)
 
-	def files(self, output_dir: str, nodes: [Node]):
+	def files(self, nodes: [Node]):
 		for node in nodes:
 			if node.is_file or node.is_dir:
-				self.file(output_dir, node)
+				self.file(node)
 
-	def index(self, output_dir: str, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str):
-		path = os.path.join(output_dir, title.lower().replace(' ', '_') + '.md')
+	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str):
+		path = title.lower().replace(' ', '_') + '.md'
 
 		output = self.generatorBase.index(nodes, kind_filters, kind_parents, title)
 		self.save(path, output)

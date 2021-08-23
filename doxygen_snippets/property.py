@@ -220,7 +220,10 @@ class Property:
 			return self.parsed()
 
 		def plain(self) -> str:
-			return self.xml.find('argsstring').text
+			argss = self.xml.find('argsstring')
+			if argss is None or argss.text is None:
+				return ''
+			return argss.text
 
 		def parsed(self) -> str:
 			argss = self.xml.find('argsstring')

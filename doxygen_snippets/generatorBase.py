@@ -11,7 +11,7 @@ from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
 from doxygen_snippets.templates.annotated import TEMPLATE as ANNOTATED_TEMPLATE
 from doxygen_snippets.templates.member import TEMPLATE as MEMBER_TEMPLATE
-from doxygen_snippets.templates.member_definition import TEMPLATE as MEMBER_DEFINITION_TEMPLATE
+from doxygen_snippets.templates.member_definition import TEMPLATE as MEMBER_DEFINITION_TEMPLATE, CONFIG as MEMBER_DEFINITION_CONFIG
 from doxygen_snippets.templates.member_table import TEMPLATE as MEMBER_TABLE_TEMPLATE
 from doxygen_snippets.templates.namespaces import TEMPLATE as NAMESPACES_TEMPLATE
 from doxygen_snippets.templates.classes import TEMPLATE as CLASSES_TEMPLATE
@@ -103,10 +103,18 @@ class GeneratorBase:
 				ret.extend(self.recursive_find_with_parent(node.children, kinds, parent_kinds))
 		return ret
 
-	def error(self, title: str = "", message: str = ""):
+
+	def merge_two_dicts(self, x, y):
+		"https://stackoverflow.com/a/26853961"
+		z = x.copy()  # start with keys and values of x
+		z.update(y)  # modifies z with keys and values of y
+		return z
+
+	def error(self, title: str = "", message: str = "", language: str = ""):
 		data = {
 			'title': title,
 			'message': message,
+			'language': language,
 		}
 		return self.render(self.error_template, data)
 
@@ -116,19 +124,26 @@ class GeneratorBase:
 		}
 		return self.render(self.annotated_template, data)
 
-	def programlisting(self, node: [Node]):
+	def programlisting(self, node: [Node], config: dict = {}):
 		data = {
 			'node': node
 		}
 		return self.render(self.programlisting_template, data)
 
-	def fileindex(self, nodes: [Node]):
+	def code(self, node: [Node], config: dict = {}):
+
+		data = {
+			'node': node
+		}
+		return self.render(self.programlisting_template, data)
+
+	def fileindex(self, nodes: [Node], config: dict = {}):
 		data = {
 			'nodes': nodes
 		}
 		return self.render(self.files_template, data)
 
-	def namespaces(self, nodes: [Node]):
+	def namespaces(self, nodes: [Node], config: dict = {}):
 		data = {
 			'nodes': nodes
 		}
@@ -140,13 +155,13 @@ class GeneratorBase:
 		}
 		return self.render(self.page_template, data)
 
-	def relatedpages(self, nodes: [Node]):
+	def relatedpages(self, nodes: [Node], config: dict = {}):
 		data = {
 			'nodes': nodes
 		}
 		return self.render(self.pages_template, data)
 
-	def classes(self, nodes: [Node]):
+	def classes(self, nodes: [Node], config: dict = {}):
 		classes = self.recursive_find(nodes, Kind.CLASS)
 		classes.extend(self.recursive_find(nodes, Kind.STRUCT))
 		classes.extend(self.recursive_find(nodes, Kind.INTERFACE))
@@ -183,13 +198,13 @@ class GeneratorBase:
 					ret.extend(self._find_base_classes(bases, node))
 		return ret
 
-	def modules(self, nodes: [Node]):
+	def modules(self, nodes: [Node], config: dict = {}):
 		data = {
 			'nodes': nodes
 		}
 		return self.render(self.modules_template, data)
 
-	def hierarchy(self, nodes: [Node]):
+	def hierarchy(self, nodes: [Node], config: dict = {}):
 		classes = self.recursive_find(nodes, Kind.CLASS)
 		classes.extend(self.recursive_find(nodes, Kind.STRUCT))
 		classes.extend(self.recursive_find(nodes, Kind.INTERFACE))
@@ -230,9 +245,10 @@ class GeneratorBase:
 		return self.render(self.hiearchy_template, data)
 
 	def function(self, node: Node, config: dict = {}):
+		newConfig = self.merge_two_dicts(MEMBER_DEFINITION_CONFIG, config)
 		data = {
 			'node': node,
-			'config': config
+			'config': newConfig
 		}
 		return self.render(self.member_definition_template, data)
 

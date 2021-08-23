@@ -6,7 +6,7 @@ from doxybook.runner import run
 if __name__ == "__main__":
 	run(
 		input="files/doxy/xml",
-		output="files/docs",
+		output="files/doxy/api",
 		target="mkdocs",
 		hints=True,
 		debug=True,

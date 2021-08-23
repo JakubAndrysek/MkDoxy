@@ -1,3 +1,8 @@
+CONFIG = {
+	"details": True,
+	"implements": True
+}
+
 TEMPLATE = """
 # {{node.kind.value|title}} {{node.name_long}}
 {% if node.has_templateparams %}

@@ -16,9 +16,11 @@ from pprint import *
 
 if __name__ == "__main__":
 	doxygenSource = "files/src"
-	siteDir = "docs"
-	apiOutput = "files/docs/"
+	tempDoxyDir="files/doxy"
+	siteDir = "files/doxy"
+	apiPath="api"
 	target = "mkdocs"
+	useDirectoryUrls=True
 	hints = True
 	ignoreErrors = False
 	summary = None
@@ -45,16 +47,23 @@ if __name__ == "__main__":
 		doxygen.print()
 
 	generatorBase = GeneratorBase(ignore_errors=ignoreErrors, options=options)
-	generatorAuto = GeneratorAuto(generatorBase=generatorBase, debug=debug, config=[])
-
+	
+	generatorAuto = GeneratorAuto(generatorBase=generatorBase,
+	                              tempDoxyDir=tempDoxyDir,
+	                              siteDir=siteDir,
+	                              apiPath=apiPath,
+	                              useDirectoryUrls=useDirectoryUrls,
+	                              fullDocFiles=[],
+	                              debug=debug)
 	if fullDoc:
-		generatorAuto.fullDoc(apiOutput, doxygen)
+		generatorAuto.fullDoc(doxygen)
 
 	# find = Finder(doxygen, debug)
 	# fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
 
 	generatorSnippets = GeneratorSnippets(markdown="", generatorBase=generatorBase, doxygen=doxygen, debug=debug)
+	func = generatorSnippets.doxyFunction("", {"name":"getRandomNumber()"})
 
-	func = generatorSnippets.doxyFunction({"name":"getRandomNumber()"})
+	# func = generatorSnippets.doxyCode("", {"file":"shape.cppa"})
 
 	pp(func)

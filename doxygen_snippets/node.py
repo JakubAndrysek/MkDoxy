@@ -350,7 +350,10 @@ class Node:
 
 	@property
 	def name_params(self) -> str:
-		return self._name + self._specifiers.plain()
+		params = self._specifiers.plain()
+		if params:
+			return self._name + params
+		return self.name_long
 
 	@property
 	def title(self) -> str:

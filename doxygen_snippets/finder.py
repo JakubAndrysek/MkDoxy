@@ -38,23 +38,47 @@ class Finder:
 	def _normalize(self, name: str) -> str:
 		return name.replace(" ", "")
 
-	def doxyClass(self, className: str, functionName=None):
+	def listToNames(self, list):
+		names = []
+		for part in list:
+			names.append(part.name_params)
+		return names
+
+	def doxyClass(self, className: str):
 		classes = self._recursive_find(self.doxygen.root.children, Kind.CLASS)
-		for findClass in classes:
-			if findClass.name_long == className:
-				if functionName:
-					members = self._recursive_find(findClass.children, Kind.FUNCTION)
-					for member in members:
-						if self._normalize(functionName) in self._normalize(member.name_params):
-							return member
-				else:
+		if classes:
+			for findClass in classes:
+				if findClass.name_long == className:
 					return findClass
+			return self.listToNames(classes)
+		return None
+
+	def doxyClassMethod(self, className: str, methodName: str):
+		findClass = self.doxyClass(className)
+		if findClass:
+			members = self._recursive_find(findClass.children, Kind.FUNCTION)
+			if members:
+				for member in members:
+					if self._normalize(methodName) in self._normalize(member.name_params):
+						return member
+				return self.listToNames(members)
+			return None
 		return None
 
 	def doxyFunction(self, functionName: str):
-		if functionName:
-			functions = self._recursive_find_with_parent(self.doxygen.files.children, [Kind.FUNCTION], [Kind.FILE])
+		functions = self._recursive_find_with_parent(self.doxygen.files.children, [Kind.FUNCTION], [Kind.FILE])
+		if functions:
 			for function in functions:
 				if self._normalize(functionName) == self._normalize(function.name_params):
 					return function
+			return self.listToNames(functions)
+		return None
+
+	def doxyCode(self, fileName):
+		files = self._recursive_find_with_parent(self.doxygen.files.children, [Kind.FILE], [Kind.DIR])
+		if files:
+			for file in files:
+				if self._normalize(fileName) == self._normalize(file.name_long):
+					return file
+			return self.listToNames(files)
 		return None

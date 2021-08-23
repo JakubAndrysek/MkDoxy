@@ -30,7 +30,7 @@ class DoxygenSnippets(BasePlugin):
 
 	config_scheme = (
 		('doxygen-source', config_options.Type(str, default='')),
-		('api-output', config_options.Type(str, default='')),
+		('api-path', config_options.Type(str, default='api')),
 		('target', config_options.Type(str, default='mkdocs')),
 		('full-doc', config_options.Type(bool, default=False)),
 		('hints', config_options.Type(bool, default=False)),
@@ -54,19 +54,19 @@ class DoxygenSnippets(BasePlugin):
 		# Building Doxygen and parse XML
 		logger.warning("Building Doxygen and parse XML")
 		self.doxygenSource = self.config["doxygen-source"]
-		self.apiOutput = self.config["api-output"]
+		self.apiPath = self.config["api-path"]
 		self.fullDoc = self.config["full-doc"]
 		self.ignoreErrors = self.config["ignore-errors"]
 		self.target = self.config['target']
 		self.hints = self.config['hints']
-		
-		self.siteDir = config['site_dir']
-		self.siteDirAssets = path.join(self.siteDir, "assets")
-		# self.apiTempOutput = path.join(self.siteDirAssets, ".api")
-		self.apiTempOutput = path.join(self.siteDir, "api")
+		self.useDirectoryUrls = config['use_directory_urls']
 		self.debug = False
 
-		doxygenRun = DoxygenRun(self.doxygenSource, self.siteDir)
+		self.siteDir = config['site_dir']
+		self.tempDoxyDir = path.join(self.siteDir, "assets/.doxy")
+		makedirs(self.tempDoxyDir, exist_ok=True)
+
+		doxygenRun = DoxygenRun(self.doxygenSource, self.tempDoxyDir)
 		doxygenRun.run()
 
 		# logger.warning(pformat(config))
@@ -86,16 +86,20 @@ class DoxygenSnippets(BasePlugin):
 			logger.warning(pformat(parser))
 			self.doxygen.print()
 
-		self.generator = GeneratorBase(ignore_errors=self.ignoreErrors, options=self.options)
+		self.generatorBase = GeneratorBase(ignore_errors=self.ignoreErrors, options=self.options)
 
 		if self.fullDoc:
 			self.fullDocFiles = []
-			generatorAuto = GeneratorAuto(generatorBase=self.generator, config=config, fullDocFiles=self.fullDocFiles, debug=self.debug)
-			# generatorAuto.fullDoc(self.apiTempOutput, self.doxygen)
-			generatorAuto.fullDoc(self.apiOutput, self.doxygen)
-			# files = files + generatorAuto.fullDocFiles
-			# for file in generatorAuto.fullDocFiles:
-			# 	files.append(file)
+			generatorAuto = GeneratorAuto(generatorBase=self.generatorBase,
+			                              tempDoxyDir=self.tempDoxyDir,
+			                              siteDir=self.siteDir,
+			                              apiPath=self.apiPath,
+			                              useDirectoryUrls=self.useDirectoryUrls,
+			                              fullDocFiles=self.fullDocFiles,
+			                              debug=self.debug)
+			generatorAuto.fullDoc(self.doxygen)
+			for file in generatorAuto.fullDocFiles:
+				files.append(file)
 
 		return files
 
@@ -110,9 +114,9 @@ class DoxygenSnippets(BasePlugin):
 		# logger.warning("Parse markdown and include self.fullDoc snippets")
 		options = {
 			'target': self.target,
-			'link_prefix': "api/"
+			'link_prefix': self.apiPath+"/"
 		}
-		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generator, doxygen=self.doxygen,
+		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generatorBase, doxygen=self.doxygen,
 		                                      debug=self.debug)
 		finalMd = generatorSnippets.generate()
 		# logger.warning(finalMd)
