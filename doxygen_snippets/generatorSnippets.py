@@ -53,6 +53,7 @@ class GeneratorSnippets:
 
 		matches = re.finditer(regexShort, self.markdown, re.MULTILINE)
 		for match in reversed(list(matches)):
+			snippet = match.group()
 			key = match.group('key')
 
 			keyLow = key.lower()
@@ -148,7 +149,8 @@ class GeneratorSnippets:
 
 
 	def doxyFunction(self, snippet, config):
-		if errorMsg := self.checkConfig(snippet, config, ["name"]):
+		errorMsg = self.checkConfig(snippet, config, ["name"])
+		if errorMsg:
 			return errorMsg
 
 		node = self.finder.doxyFunction(config.get("name"))
@@ -158,7 +160,8 @@ class GeneratorSnippets:
 		return self.doxyError(f"Did not find Function with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
 	def doxyClass(self, snippet, config):
-		if errorMsg := self.checkConfig(snippet, config, ["name"]):
+		errorMsg = self.checkConfig(snippet, config, ["name"])
+		if errorMsg:
 			return errorMsg
 
 		node = self.finder.doxyClass(config.get("name"))
@@ -168,7 +171,8 @@ class GeneratorSnippets:
 		return self.doxyError(f"Did not find Class with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
 	def doxyClassMethod(self, snippet, config):
-		if errorMsg := self.checkConfig(snippet, config, ["name", "method"]):
+		errorMsg = self.checkConfig(snippet, config, ["name", "method"])
+		if errorMsg:
 			return errorMsg
 
 		node = self.finder.doxyClassMethod(config.get("name"), config.get("method"))

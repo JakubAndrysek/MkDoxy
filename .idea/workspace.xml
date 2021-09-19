@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Change snippet handler from Jinja to own Regex" />
+    <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Change snippet handler from Jinja to own Regex">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -187,7 +194,8 @@
       <workItem from="1630836460062" duration="2602000" />
       <workItem from="1630844685431" duration="8564000" />
       <workItem from="1630861419602" duration="2475000" />
-      <workItem from="1632058429682" duration="5046000" />
+      <workItem from="1632058429682" duration="6100000" />
+      <workItem from="1632069361644" duration="5693000" />
     </task>
     <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
       <created>1629032602287</created>
@@ -278,7 +286,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py</url>
-          <line>121</line>
+          <line>122</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
       </breakpoints>

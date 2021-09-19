@@ -10,7 +10,7 @@ install: package
 	pip3 install --no-deps --force dist/*.whl
 
 release: package
-	twine upload dist/*
+	twine upload --repository pypi dist/*
 
 release-test: package
 	twine upload --repository testpypi dist/*

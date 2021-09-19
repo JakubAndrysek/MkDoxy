@@ -43,12 +43,30 @@ See live demo here for [Gitbook here](https://matusnovak.github.io/doxybook/gitb
 
 ## Requirements
 
-You need to have **python 3.6 or newer** and [Jinja2](http://jinja.pocoo.org/docs/2.10/intro/) package installed.
+### Apt
+- python 3.6 or newer -> `sudo apt install python3` 
+- Pip -> `sudo apt install python3-pip`
+- Git -> `sudo apt install git`
+- Doxygen -> `sudo apt install doxygen`
+
+### Pip
+- Jinja2 -> `pip install jinja2`
+- Mkdocs -> `pip install mkdocs`
+- ruamel.yaml -> `pip install ruamel.yaml`
+
+### Optional:
+- mkdocs-material -> `pip install mkdocs-material`
 
 
 ## Installation
 
 **Install using Python Pip: <https://pypi.org/project/mkdocs-doxygen-snippets-plugin/>**
+
+```bash
+pip install mkdocs-doxygen-snippets-plugin
+or
+pip3 install mkdocs-doxygen-snippets-plugin
+```
 
 **Or Install manually:**
 
