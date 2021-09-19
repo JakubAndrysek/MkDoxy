@@ -129,7 +129,7 @@ class GeneratorSnippets:
 		lang = matches.group("lang")
 		code = matches.group("code")
 
-		print(lang, code)
+		# print(lang, code)
 
 		lines = code.split("\n")
 		out = ""
@@ -138,7 +138,7 @@ class GeneratorSnippets:
 			return False
 
 		for num, line in enumerate(lines):
-			print(num, line)
+			# print(num, line)
 			if num >= start and num <= end:
 				out += line + "\n"
 			elif num >= start and end == 0:
