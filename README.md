@@ -1,11 +1,39 @@
 # Mkdocs doxygen snippets plugin
 
-### Forked from [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
+### Based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
 
 This python tool is extension for MkDocs. Extension will take your programme source code and runs Doxygen.
 Than converts exported XML into markdown and create new folder with full generated documentation. 
-Next usage is by snippets inside documentation markdown. Just place `{{ doxyClass("Foo") }}` to generate class `Foo` in your doc.
-Or place `{{ doxyDunction("main.cpp", "sayHello") }}` to generate function `sayHello` from `main.cpp`.
+Next usage is by snippets inside documentation markdown.
+
+## Example usage
+
+1.  Generate class with name `rb::MotorChangeBuilder` 
+```yaml
+::: doxy.Class
+    name: rb::MotorChangeBuilder
+```
+
+2. Generate method `brake (MotorId id, uint16_t brakingPower)` from class with name `rb::MotorChangeBuilderA`
+```yaml
+::: doxy.Class.Method
+    name: rb::MotorChangeBuilder
+    method: brake (MotorId id, uint16_t brakingPower)
+```
+
+3. Generate function with name `readUltra (bool async)` 
+```yaml
+::: doxy.Function
+    name: readUltra (bool async)
+```
+
+4. Generate code snippet from file `RBCXLeds.cpp` 
+```yaml
+::: doxy.Code
+    file: RBCXLeds.cpp
+    start: 21
+    end: 35
+```
 
 ![Basic-implementation](docs/media/Basic-implementation.png)
 
@@ -27,8 +55,7 @@ You need to have **python 3.6 or newer** and [Jinja2](http://jinja.pocoo.org/doc
 ```
 git clone https://github.com/JakubAndrysek/mkdocs-doxygen-snippets-plugin.git
 cd doxybook
-sudo python setup.py installClass rb::MotorChangeBuilder
-
+sudo python setup.py install
 ```
 
 
@@ -202,7 +229,7 @@ Use GitHub issues or contact me through my email (see my GitHub profile page). -
 ```
 MIT License
 
-Copyright (c) 2019 Matus Novak and 2021 Kuba Andrýsek
+Copyright (c) 2021 Kuba Andrýsek
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

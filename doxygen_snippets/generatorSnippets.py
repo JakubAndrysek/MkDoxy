@@ -114,9 +114,37 @@ class GeneratorSnippets:
 			return errorMsg
 		node = self.finder.doxyCode(config.get("file"))
 		if isinstance(node, Node):
-			md = self.generatorBase.programlisting(node, config)
+
+			progCode = self.codeStrip(node.programlisting, config.get("start", 1), config.get("end", 0))
+			if progCode == False:
+				return self.doxyError(f"Parameter start: {config.get('start')} is greater than end: {config.get('end')}",f"{snippet}", "yaml")
+
+			md = self.generatorBase.code(node, config, progCode)
 			return md
 		return self.doxyError(f"Did not find File: `{config.get('file')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+
+	def codeStrip(self, codeRaw, start: int = 1, end: int = None):
+		regex = r"(?s)````(?P<lang>[a-zA-Z.-_]+)\n(?P<code>.+)````.+"
+		matches = re.search(regex, codeRaw, re.MULTILINE)
+		lang = matches.group("lang")
+		code = matches.group("code")
+
+		print(lang, code)
+
+		lines = code.split("\n")
+		out = ""
+
+		if end and start > end:
+			return False
+
+		for num, line in enumerate(lines):
+			print(num, line)
+			if num >= start and num <= end:
+				out += line + "\n"
+			elif num >= start and end == 0:
+				out += line + "\n"
+
+		return f"```{lang} linenums='{start}'\n{out}```"
 
 
 	def doxyFunction(self, snippet, config):

@@ -20,6 +20,7 @@ from doxygen_snippets.templates.index import TEMPLATE as INDEX_TEMPLATE
 from doxygen_snippets.templates.modules import TEMPLATE as MODULES_TEMPLATE
 from doxygen_snippets.templates.files import TEMPLATE as FILES_TEMPLATE
 from doxygen_snippets.templates.programlisting import TEMPLATE as PROGRAMLISTING_TEMPLATE
+from doxygen_snippets.templates.code import TEMPLATE as CODE_TEMPLATE, CONFIG as CODE_CONFIG
 from doxygen_snippets.templates.page import TEMPLATE as PAGE_TEMPLATE
 from doxygen_snippets.templates.pages import TEMPLATE as PAGES_TEMPLATE
 from doxygen_snippets.templates.error import TEMPLATE as ERROR_TEMPLATE
@@ -68,6 +69,7 @@ class GeneratorBase:
 			self.modules_template = Template(MODULES_TEMPLATE, undefined=on_undefined_class)
 			self.files_template = Template(FILES_TEMPLATE, undefined=on_undefined_class)
 			self.programlisting_template = Template(PROGRAMLISTING_TEMPLATE, undefined=on_undefined_class)
+			self.code_template = Template(CODE_TEMPLATE, undefined=on_undefined_class)
 			self.page_template = Template(PAGE_TEMPLATE, undefined=on_undefined_class)
 			self.pages_template = Template(PAGES_TEMPLATE, undefined=on_undefined_class)
 			self.error_template = Template(ERROR_TEMPLATE, undefined=on_undefined_class)
@@ -130,12 +132,44 @@ class GeneratorBase:
 		}
 		return self.render(self.programlisting_template, data)
 
-	def code(self, node: [Node], config: dict = {}):
+	def code(self, node: [Node], config: dict = {}, code: str = ""):
+		newConfig = self.merge_two_dicts(CODE_CONFIG, config)
+
+		# if "start" in newConfig:
+		# 	code = self.codeStrip(node.programlisting, newConfig.get("start", 1), newConfig.get("end", 0))
+		# else:
+		# 	code = node.programlisting
 
 		data = {
-			'node': node
+			'node': node,
+			'config': newConfig,
+			'code': code
 		}
-		return self.render(self.programlisting_template, data)
+
+		return self.render(self.code_template, data)
+
+	# def codeStrip(self, codeRaw, start: int = 1, end: int = None):
+	# 	regex = r"(?s)````(?P<lang>[a-zA-Z.-_]+)\n(?P<code>.+)````.+"
+	# 	matches = re.search(regex, codeRaw, re.MULTILINE)
+	# 	lang = matches.group("lang")
+	# 	code = matches.group("code")
+	#
+	# 	print(lang, code)
+	#
+	# 	lines = code.split("\n")
+	# 	out = ""
+	#
+	# 	if end and start >= end:
+	# 		return None
+	#
+	# 	for num, line in enumerate(lines):
+	# 		print(num, line)
+	# 		if num >= start and num <= end:
+	# 			out += line + "\n"
+	# 		elif num >= start and end == 0:
+	# 			out += line + "\n"
+	#
+	# 	return f"```{lang}\n{out}```"
 
 	def fileindex(self, nodes: [Node], config: dict = {}):
 		data = {
