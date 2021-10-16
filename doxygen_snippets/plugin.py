@@ -37,7 +37,7 @@ class DoxygenSnippets(BasePlugin):
 		('debug', config_options.Type(bool, default=False)),
 		('full-doc', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
-		('link-prefix', config_options.Type(str, default='')),
+		# ('link-prefix', config_options.Type(str, default='')),
 	)
 
 	def __init__(self):
@@ -74,7 +74,7 @@ class DoxygenSnippets(BasePlugin):
 
 		self.options = {
 			'target': self.target,
-			'link_prefix': self.config["link-prefix"]
+			'link_prefix': ""
 		}
 
 		cache = Cache()

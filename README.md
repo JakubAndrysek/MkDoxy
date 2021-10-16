@@ -49,7 +49,7 @@ See live demo here for [Gitbook here](https://matusnovak.github.io/doxybook/gitb
 - Git -> `sudo apt install git`
 - Doxygen -> `sudo apt install doxygen`
 
-### Pip
+### Pipfi
 - Jinja2 -> `pip install jinja2`
 - Mkdocs -> `pip install mkdocs`
 - ruamel.yaml -> `pip install ruamel.yaml`
@@ -70,10 +70,10 @@ pip3 install mkdocs-doxygen-snippets-plugin
 
 **Or Install manually:**
 
-```
+```bash
 git clone https://github.com/JakubAndrysek/mkdocs-doxygen-snippets-plugin.git
-cd doxybook
-sudo python setup.py install
+cd mkdocs-doxygen-snippets-plugin
+python setup.py install
 ```
 
 
