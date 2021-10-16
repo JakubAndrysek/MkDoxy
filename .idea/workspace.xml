@@ -1,10 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Fix small bugs, readme - requirements">
+    <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Fix small bugs, readme">
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCX.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXAngle.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXAngle.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXBattery.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXBattery.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXButtons.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXButtons.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXLeds.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXLeds.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXManager.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXManager.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXMotor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXMotor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXNvs.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXNvs.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXPiezo.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXPiezo.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXPinout.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXSmartServo.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXSmartServo.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXStupidServo.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXStupidServo.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXTimers.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXTimers.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXUltrasound.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXUltrasound.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXUtil.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/files/src/RBCXVersion.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/examples/myExample.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/special/findTags.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/circle.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/circle.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/point.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/point.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/rectangle.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/rectangle.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/shape.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/shape.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/shapefactory.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/shapefactory.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/triangle.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src/triangle.h" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +96,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.stripCode">
+  <component name="RunManager" selected="Python.snippetsTest">
     <configuration name="doxygenSubprocess" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="master" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -162,8 +209,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.stripCode" />
         <item itemvalue="Python.snippetsTest" />
+        <item itemvalue="Python.stripCode" />
         <item itemvalue="Python.doxygenSubprocess" />
         <item itemvalue="Python.parseMdTags" />
         <item itemvalue="Python.originalTest" />
@@ -194,6 +241,7 @@
       <workItem from="1632058429682" duration="6100000" />
       <workItem from="1632069361644" duration="10752000" />
       <workItem from="1634331326704" duration="1865000" />
+      <workItem from="1634413847001" duration="3776000" />
     </task>
     <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
       <created>1629032602287</created>
@@ -209,7 +257,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632075532997</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Fix small bugs, readme">
+      <created>1634414181942</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1634414181942</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -230,7 +285,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Change snippet handler from Jinja to own Regex" />
     <MESSAGE value="Fix small bugs, readme - requirements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix small bugs, readme - requirements" />
+    <MESSAGE value="Fix small bugs, readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix small bugs, readme" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -295,15 +351,20 @@
           <line>122</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/doxygen_snippets/node.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1628957306493" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1630844863533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1634417476745" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629136660398" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$stripCode.coverage" NAME="stripCode Coverage Results" MODIFIED="1630861349130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$stripCode.coverage" NAME="stripCode Coverage Results" MODIFIED="1634414465384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628421513979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$doxygenSubprocess.coverage" NAME="doxygenSubprocess Coverage Results" MODIFIED="1629704217036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>

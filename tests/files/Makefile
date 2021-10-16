@@ -1,6 +1,5 @@
 
 clean:
-	rm -rf doxy
 	rm -rf docs
 
 serve:
