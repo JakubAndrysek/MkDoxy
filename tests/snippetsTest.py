@@ -63,8 +63,9 @@ if __name__ == "__main__":
 	# fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
 
 	generatorSnippets = GeneratorSnippets(markdown="", generatorBase=generatorBase, doxygen=doxygen, debug=debug)
-	func = generatorSnippets.doxyFunction("", {"name":"getRandomNumber()"})
+	# func = generatorSnippets.doxyFunction("", {"name":"getRandomNumber()"})
 
 	# func = generatorSnippets.doxyCode("", {"file":"shape.cppa"})
+	func = generatorSnippets.doxyClassMethod("", {"name":"asd", "method":"as"})
 
 	pp(func)

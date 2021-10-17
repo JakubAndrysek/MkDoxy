@@ -56,13 +56,19 @@ class Finder:
 	def doxyClassMethod(self, className: str, methodName: str):
 		findClass = self.doxyClass(className)
 		if findClass:
-			members = self._recursive_find(findClass.children, Kind.FUNCTION)
-			if members:
-				for member in members:
-					if self._normalize(methodName) in self._normalize(member.name_params):
+			if isinstance(findClass, list):
+				for member in findClass:
+					if self._normalize(methodName) in self._normalize(member):
 						return member
-				return self.listToNames(members)
-			return None
+				return findClass
+			else:
+				members = self._recursive_find(findClass.children, Kind.FUNCTION)
+				if members:
+					for member in members:
+						if self._normalize(methodName) in self._normalize(member.name_params):
+							return member
+					return self.listToNames(members)
+				return None
 		return None
 
 	def doxyFunction(self, functionName: str):

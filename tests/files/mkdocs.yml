@@ -7,8 +7,9 @@ use_directory_urls: True
 
 plugins:
     - doxygen-snippets:
-        doxygen-source: src-stm32
-#        doxygen-source: src-jac
+#        doxygen-source: src-esp
+#        doxygen-source: src-stm32
+        doxygen-source: src-jac
         api-path: api
         target: mkdocs
         full-doc: True

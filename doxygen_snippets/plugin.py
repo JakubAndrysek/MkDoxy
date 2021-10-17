@@ -29,13 +29,13 @@ class DoxygenSnippets(BasePlugin):
 	"""
 
 	config_scheme = (
-		('doxygen-source', config_options.Type(str, default='')),
-		('api-path', config_options.Type(str, default='api')),
-		('target', config_options.Type(str, default='mkdocs')),
-		('full-doc', config_options.Type(bool, default=False)),
-		('hints', config_options.Type(bool, default=False)),
-		('debug', config_options.Type(bool, default=False)),
-		('ignore-errors', config_options.Type(bool, default=False)),
+		# ('doxygen-source', config_options.Type(str, default='')),
+		# ('api-path', config_options.Type(str, default='api')),
+		# ('target', config_options.Type(str, default='mkdocs')),
+		# ('full-doc', config_options.Type(bool, default=False)),
+		# ('hints', config_options.Type(bool, default=False)),
+		# ('debug', config_options.Type(bool, default=False)),
+		# ('ignore-errors', config_options.Type(bool, default=False)),
 		# ('link-prefix', config_options.Type(str, default='')),
 	)
 
@@ -46,6 +46,8 @@ class DoxygenSnippets(BasePlugin):
 	def on_files(self, files: files.Files, config):
 		# Building Doxygen and parse XML
 		logger.warning("Building Doxygen and parse XML")
+		logger.warning(pformat(self.config))
+
 		self.doxygenSource = self.config["doxygen-source"]
 		self.apiPath = self.config["api-path"]
 		self.fullDoc = self.config["full-doc"]
