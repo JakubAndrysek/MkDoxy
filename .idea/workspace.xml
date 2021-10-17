@@ -2,24 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Fix small bugs, readme">
+      <change afterPath="$PROJECT_DIR$/tests/basic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/markdown.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/markdown.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/node.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/annotated.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/annotated.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/classes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/code.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/code.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/files.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/hierarchy.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/hierarchy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_definition.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member_definition.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/modules.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/namespaces.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/namespaces.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/pages.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/pages.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/programlisting.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/programlisting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/finder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/snippetsTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/snippetsTest.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +53,28 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.snippetsTest">
+    <configuration name="basic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/basic.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="doxygenSubprocess" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="master" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -79,28 +89,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/doxygenSubprocess.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="originalTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="master" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/originalTest.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -178,10 +166,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.snippetsTest" />
+        <item itemvalue="Python.basic" />
         <item itemvalue="Python.stripCode" />
         <item itemvalue="Python.doxygenSubprocess" />
         <item itemvalue="Python.parseMdTags" />
-        <item itemvalue="Python.originalTest" />
       </list>
     </recent_temporary>
   </component>
@@ -209,7 +197,7 @@
       <workItem from="1632058429682" duration="6100000" />
       <workItem from="1632069361644" duration="10752000" />
       <workItem from="1634331326704" duration="1865000" />
-      <workItem from="1634413847001" duration="17999000" />
+      <workItem from="1634413847001" duration="21090000" />
     </task>
     <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
       <created>1629032602287</created>
@@ -286,7 +274,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/snippetsTest.py</url>
-          <line>66</line>
+          <line>67</line>
           <option name="timeStamp" value="46" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -306,28 +294,35 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/snippetsTest.py</url>
-          <line>63</line>
+          <line>64</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/snippetsTest.py</url>
-          <line>64</line>
+          <line>65</line>
           <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/doxygen_snippets/generatorBase.py</url>
+          <line>207</line>
+          <option name="timeStamp" value="63" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="self._refid" />
+        <watch expression="klass.name_short[0].lower()" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1628957306493" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1634424356609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1634486372115" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629136660398" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$stripCode.coverage" NAME="stripCode Coverage Results" MODIFIED="1634414465384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$basic.coverage" NAME="basic Coverage Results" MODIFIED="1634486103829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628421513979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$doxygenSubprocess.coverage" NAME="doxygenSubprocess Coverage Results" MODIFIED="1629704217036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>

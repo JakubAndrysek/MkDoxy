@@ -15,7 +15,8 @@ from doxygen_snippets.doxyrun import DoxygenRun
 from pprint import *
 
 if __name__ == "__main__":
-	doxygenSource = "files/src"
+	doxygenSource = "files/src-stm32"
+	# doxygenSource = "files/src"
 	tempDoxyDir="files/doxy"
 	siteDir = "files/doxy"
 	apiPath="api"

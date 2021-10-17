@@ -25,7 +25,7 @@ from doxygen_snippets.templates.page import TEMPLATE as PAGE_TEMPLATE
 from doxygen_snippets.templates.pages import TEMPLATE as PAGES_TEMPLATE
 from doxygen_snippets.templates.error import TEMPLATE as ERROR_TEMPLATE
 
-LETTERS = string.ascii_lowercase + '~_@'
+LETTERS = string.ascii_lowercase + '~_@\\'
 
 ADDITIONAL_FILES = {
 	'Namespace List': 'namespaces.md',
@@ -205,7 +205,8 @@ class GeneratorBase:
 			dictionary[letter] = []
 
 		for klass in classes:
-			dictionary[klass.name_short[0].lower()].append(klass)
+			asd = klass.name_short[0].lower()
+			dictionary[asd].append(klass)
 
 		for letter in list(dictionary):
 			if len(dictionary[letter]) == 0:
