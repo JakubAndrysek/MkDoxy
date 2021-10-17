@@ -2,13 +2,18 @@ site_name: RBCX Docs Test
 theme:
   name: material
 
+use_directory_urls: True
+#use_directory_urls: False
+
 plugins:
     - doxygen-snippets:
         doxygen-source: src
         api-path: api
-        debug: False
-        hints: True
+        target: mkdocs
         full-doc: True
+        hints: True
+        debug: False
+        ignore-errors: False
 
 markdown_extensions:
   - pymdownx.highlight
@@ -16,6 +21,8 @@ markdown_extensions:
 
 nav:
     - 'Home': 'index.md'
+    - 'AS': 'tes/te2.md'
+    - 'tes/myfile/myM.md'
     - Runtime:
         - 'Classes':
             - 'Class List': 'api/annotated.md'

@@ -35,7 +35,6 @@ class DoxygenSnippets(BasePlugin):
 		('full-doc', config_options.Type(bool, default=False)),
 		('hints', config_options.Type(bool, default=False)),
 		('debug', config_options.Type(bool, default=False)),
-		('full-doc', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
 		# ('link-prefix', config_options.Type(str, default='')),
 	)
@@ -43,12 +42,6 @@ class DoxygenSnippets(BasePlugin):
 	def __init__(self):
 		self.enabled = True
 		self.total_time = 0
-
-	# def on_serve(self, server, config, **kwargs):
-	# # def on_serve(self, server: serve.LiveReloadServer, config, **kwargs):
-	# 	logger.error("Run on serve")
-	# 	logger.error(self.config)
-	# 	return server
 
 	def on_files(self, files: files.Files, config):
 		# Building Doxygen and parse XML
@@ -74,7 +67,7 @@ class DoxygenSnippets(BasePlugin):
 
 		self.options = {
 			'target': self.target,
-			'link_prefix': ""
+			'link_prefix': "" # relative path in api/
 		}
 
 		cache = Cache()
@@ -112,16 +105,23 @@ class DoxygenSnippets(BasePlugin):
 	) -> str:
 		# Parse markdown and include self.fullDoc snippets
 		# logger.warning("Parse markdown and include self.fullDoc snippets")
-		options = {
-			'target': self.target,
-			'link_prefix': self.apiPath+"/"
-		}
+
+		## FIX API Url
+		urlSlashCount = page.url.count("/") # count / in url
+		if page.url[-1:] == "/":
+			urlSlashCount = urlSlashCount - 1 # -1 if ends with / (fold/post/ -> fold/post -> 1 slash)
+		slashPrefix = ""
+		for i in range(urlSlashCount):
+			slashPrefix += "../"
+		self.generatorBase.options["link_prefix"] = slashPrefix + "api/" # fix api with ../
+		## FIX API Url END
+
 		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generatorBase, doxygen=self.doxygen,
 		                                      debug=self.debug)
 		finalMd = generatorSnippets.generate()
 		# logger.warning(finalMd)
 		return finalMd
-	# return markdown
+		# return markdown
 
 # def on_pre_build(self, config):
 

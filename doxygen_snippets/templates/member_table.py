@@ -6,7 +6,7 @@ TEMPLATE = """
 {%- else -%}
 ## {{title}} inherited from {{node.name}}
 
-See [{{node.name_long}}]({{node.url}})
+See [{{node.name_long}}]({{link_prefix}}{{node.url}})
 {%- endif %}
 
 | Type | Name |

@@ -4,6 +4,6 @@ TEMPLATE = """
 Here is a list of all related documentation pages:
 
 {% for page in nodes -%}
-* [*{{page.title}}*]({{page.url}}) {{page.brief}}
+* [*{{page.title}}*]({{link_prefix}}{{page.url}}) {{page.brief}}
 {% endfor -%}
 """

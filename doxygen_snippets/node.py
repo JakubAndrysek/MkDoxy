@@ -427,16 +427,16 @@ class Node:
 	@property
 	def url(self) -> str:
 		if self.is_parent or self.is_group or self.is_file or self.is_dir or self.is_page:
-			return self._options['link_prefix'] + self._refid + '.md'
+			return self._refid + '.md'
 		else:
 			return self._parent.url + '#' + self.anchor
 
 	@property
 	def url_source(self) -> str:
 		if self.is_parent or self.is_group or self.is_file or self.is_dir:
-			return self._options['link_prefix'] + self._refid + '_source.md'
+			return self._refid + '_source.md'
 		else:
-			return self._options['link_prefix'] + self._refid + '.md'
+			return self._refid + '.md'
 
 	@property
 	def filename(self) -> str:

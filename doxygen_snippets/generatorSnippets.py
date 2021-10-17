@@ -57,7 +57,7 @@ class GeneratorSnippets:
 			key = match.group('key')
 
 			keyLow = key.lower()
-			print(f"\nKey: {keyLow}")
+			logger.debug(f"\nKey: {keyLow}")
 
 			replaceStr = self.callDoxyByName(snippet, keyLow, {})
 			self.replaceMarkdown(match.start(), match.end(), replaceStr)
@@ -68,13 +68,14 @@ class GeneratorSnippets:
 				snippet = match.group()
 				key = match.group('key')
 				keyLow = key.lower()
-				print(f"\nKey: {keyLow}")
+				logger.debug(f"\nKey: {keyLow}")
 				yamlRaw = match.group('yaml')
 				if yamlRaw:
 					try:
 						yaml = YAML()
 						config = yaml.load(yamlRaw)
-						yaml.dump(config, sys.stdout)
+						# yaml.dump(config, sys.stdout)
+						logger.debug(pformat(config))
 					except YAMLError as e:
 						print(e)
 

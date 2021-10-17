@@ -153,7 +153,7 @@ class MdLink(Md):
 		f.write('[')
 		for child in self.children:
 			child.render(f, '')
-		f.write('](' + self.url + ')')
+		f.write('](' + self.url + ')') # TODO add {{link_prefix}}
 
 
 class MdList(Md):

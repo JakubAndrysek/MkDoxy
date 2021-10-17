@@ -38,7 +38,7 @@ TEMPLATE = """
 {% if node.has_base_classes %}
 Inherits the following classes:
 {%- for base in node.base_classes -%}
-{%- if base is string %} {{base}}{%- else %} [{{base.name_long}}]({{base.url}}){%- endif -%}
+{%- if base is string %} {{base}}{%- else %} [{{base.name_long}}]({{link_prefix}}{{base.url}}){%- endif -%}
 {{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endif %}
@@ -46,7 +46,7 @@ Inherits the following classes:
 {% if node.has_derived_classes %}
 Inherited by the following classes:
 {%- for derived in node.derived_classes -%}
-{%- if derived is string %} {{derived}}{%- else %} [{{derived.name_long}}]({{derived.url}}){%- endif -%}
+{%- if derived is string %} {{derived}}{%- else %} [{{derived.name_long}}]({{link_prefix}}{{derived.url}}){%- endif -%}
 {{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endif %}
