@@ -79,7 +79,7 @@ class XmlParser:
 			return ret
 		if p.text:
 			ret.append(p.text.strip())
-		for item in p.getchildren():
+		for item in list(p):
 			ret.extend(self.plain(item))
 		if p.tail:
 			ret.append(p.tail.strip())
@@ -95,7 +95,7 @@ class XmlParser:
 				line = ''
 				for highlight in codeline.findall('highlight'):
 					if not got_lang and len(
-							highlight.getchildren()) == 0 and highlight.text is not None and highlight.text.startswith(
+							list(highlight)) == 0 and highlight.text is not None and highlight.text.startswith(
 						'{') and highlight.text.endswith('}'):
 						lang = highlight.text[1:-1]
 						code.set_lang(lang)
@@ -104,7 +104,7 @@ class XmlParser:
 					else:
 						if highlight.text is not None:
 							line += highlight.text
-						for c in highlight.getchildren():
+						for c in list(highlight):
 							if c.tag == 'sp':
 								line += ' '
 							if c.text:
@@ -126,7 +126,7 @@ class XmlParser:
 				ret.append(Text(' '))
 			else:
 				ret.append(Text(p.text))
-		for item in p.getchildren():
+		for item in list(p):
 			# para
 			if item.tag == 'para':
 				ret.append(MdParagraph(self.paras(item)))
@@ -142,7 +142,7 @@ class XmlParser:
 				text = []
 				if item.text:
 					text.append(item.text)
-				for i in item.getchildren():
+				for i in list(item):
 					text.extend(self.plain(i))
 				ret.append(Code(' '.join(text)))
 
