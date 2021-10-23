@@ -351,7 +351,7 @@ class Node:
 	@property
 	def name_params(self) -> str:
 		name = self._name
-		type = self.type
+		type = self._type.plain()
 		params = self._specifiers.plain()
 		if params:
 			return type + " " + name + params

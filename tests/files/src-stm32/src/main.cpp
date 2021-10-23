@@ -24,6 +24,10 @@
 
 static TaskWrapper<3072> mainTask;
 
+typedef int _myint;
+
+_myint testInt() {}
+
 int main() {
     clocksInit();
     HAL_Init();
