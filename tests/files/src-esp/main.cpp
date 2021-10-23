@@ -4,6 +4,13 @@
 
 #include "RBCX.h"
 
+/**
+ * \brief My test function
+ * Som description
+ * \dec
+ * \param a float number
+ * \param b character [0-255]
+ */
 int testFnc(float a, char b) {
     return a;
 }

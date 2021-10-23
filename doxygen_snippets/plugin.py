@@ -29,14 +29,14 @@ class DoxygenSnippets(BasePlugin):
 	"""
 
 	config_scheme = (
-		# ('doxygen-source', config_options.Type(str, default='')),
-		# ('api-path', config_options.Type(str, default='api')),
-		# ('target', config_options.Type(str, default='mkdocs')),
-		# ('full-doc', config_options.Type(bool, default=False)),
-		# ('hints', config_options.Type(bool, default=False)),
-		# ('debug', config_options.Type(bool, default=False)),
-		# ('ignore-errors', config_options.Type(bool, default=False)),
-		# ('link-prefix', config_options.Type(str, default='')),
+		('doxygen-source', config_options.Type(str, default='')),
+		('api-path', config_options.Type(str, default='api')),
+		('target', config_options.Type(str, default='mkdocs')),
+		('full-doc', config_options.Type(bool, default=False)),
+		('hints', config_options.Type(bool, default=False)),
+		('debug', config_options.Type(bool, default=False)),
+		('ignore-errors', config_options.Type(bool, default=False)),
+		('link-prefix', config_options.Type(str, default='')),
 	)
 
 	def __init__(self):

@@ -2,63 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Fix small bugs, readme">
+      <change afterPath="$PROJECT_DIR$/tests/mkdocsValidateCfg.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/master.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/master.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/finder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/node.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_definition.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member_definition.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/Bsp.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/ButtonController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/CdcUartTunnel.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/ControlLink.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/DebugLink.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/Dispatcher.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/Esp32Manager.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/FreeRTOSCallbacks.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/I2cController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/MotorController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/MpuController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/OledController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/OledController_fonts.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/Power.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/StupidServoController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/UltrasoundController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/UsbCdcDescriptors.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/UsbCdcLink.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/bootloader/sboot.S" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/bootloader/sboot_v11.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/utils/Debug.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCX.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXAngle.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXAngle.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXBattery.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXBattery.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXButtons.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXButtons.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXLeds.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXLeds.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXManager.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXManager.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXMotor.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXMotor.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXNvs.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXNvs.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXPiezo.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXPiezo.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXPinout.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXSmartServo.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXSmartServo.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXStupidServo.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXStupidServo.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXTimers.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXTimers.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXUltrasound.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXUltrasound.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXUtil.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/RBCXVersion.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/snippetsTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/snippetsTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src-esp/RBCXBattery.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/src-esp/RBCXBattery.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src-esp/RBCXBattery.h" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/src-esp/RBCXBattery.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src-esp/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/src-esp/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,8 +45,8 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/doxygen_snippets/templates" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/files" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -103,7 +61,7 @@
       <recent name="$PROJECT_DIR$/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.snippetsTest">
+  <component name="RunManager" selected="Python.mkdocs-serve-3.10">
     <configuration name="basic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="master" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -148,7 +106,51 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="parseMdTags" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="mkdocs-serve-3.10" type="PythonConfigurationType" factoryName="Python">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.10" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/files" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="mkdocs" />
+      <option name="PARAMETERS" value="serve" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="mkdocs-serve-3.7" type="PythonConfigurationType" factoryName="Python">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.7" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/files" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="mkdocs" />
+      <option name="PARAMETERS" value="serve" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="mkdocs-serve-3.8" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="master" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -156,16 +158,38 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/files" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/parseMdTags.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SCRIPT_NAME" value="mkdocs" />
+      <option name="PARAMETERS" value="serve" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="mkdocs-serve-3.9" type="PythonConfigurationType" factoryName="Python">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.9" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/files" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="mkdocs" />
+      <option name="PARAMETERS" value="serve" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
       <method v="2" />
@@ -214,13 +238,23 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.mkdocs-serve-3.9" />
+      <item itemvalue="Python.mkdocs-serve-3.7" />
+      <item itemvalue="Python.mkdocs-serve-3.10" />
+      <item itemvalue="Python.basic" />
+      <item itemvalue="Python.doxygenSubprocess" />
+      <item itemvalue="Python.mkdocs-serve-3.8" />
+      <item itemvalue="Python.snippetsTest" />
+      <item itemvalue="Python.stripCode" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.mkdocs-serve-3.8" />
         <item itemvalue="Python.snippetsTest" />
         <item itemvalue="Python.basic" />
         <item itemvalue="Python.stripCode" />
         <item itemvalue="Python.doxygenSubprocess" />
-        <item itemvalue="Python.parseMdTags" />
       </list>
     </recent_temporary>
   </component>
@@ -248,7 +282,9 @@
       <workItem from="1632058429682" duration="6100000" />
       <workItem from="1632069361644" duration="10752000" />
       <workItem from="1634331326704" duration="1865000" />
-      <workItem from="1634413847001" duration="25740000" />
+      <workItem from="1634413847001" duration="29820000" />
+      <workItem from="1634742116988" duration="8462000" />
+      <workItem from="1635016504141" duration="12393000" />
     </task>
     <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
       <created>1629032602287</created>
@@ -323,11 +359,6 @@
           <line>35</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py</url>
-          <line>123</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/node.py</url>
           <line>431</line>
@@ -335,23 +366,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/plugin.py</url>
-          <line>120</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>84</line>
-          <option name="timeStamp" value="67" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>64</line>
-          <option name="timeStamp" value="71" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/finder.py</url>
-          <line>57</line>
-          <option name="timeStamp" value="72" />
+          <line>124</line>
+          <option name="timeStamp" value="88" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -359,17 +375,23 @@
       <configuration name="PythonConfigurationType">
         <watch expression="self._refid" />
         <watch expression="klass.name_short[0].lower()" language="Python" />
+        <watch expression="self.doxygen.files.children[0].children[12].children[1]" />
+        <watch expression="__py_debug_temp_var_1556687731.children[31]" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1628957306493" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1634490070418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1634731940573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629136660398" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_10.coverage" NAME="mkdocs-serve-3.10 Coverage Results" MODIFIED="1635028535063" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$stripCode.coverage" NAME="stripCode Coverage Results" MODIFIED="1634414465384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$basic.coverage" NAME="basic Coverage Results" MODIFIED="1634486103829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628421513979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_8.coverage" NAME="mkdocs-serve-3.8 Coverage Results" MODIFIED="1635027266505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$doxygenSubprocess.coverage" NAME="doxygenSubprocess Coverage Results" MODIFIED="1629704217036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_9.coverage" NAME="mkdocs-serve-3.9 Coverage Results" MODIFIED="1635027939562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_7.coverage" NAME="mkdocs-serve-3.7 Coverage Results" MODIFIED="1635028441588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
   </component>
 </project>

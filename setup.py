@@ -6,7 +6,7 @@ def readme():
 
 setup(
     name='mkdocs-doxygen-snippets-plugin',
-    version='0.1.3',
+    version='0.1.4',
     description='MkDocs Doxygen snippets plugin to create easy documentation',
     long_description=readme(),
     long_description_content_type='text/markdown',

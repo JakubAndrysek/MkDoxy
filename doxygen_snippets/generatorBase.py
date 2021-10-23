@@ -10,7 +10,7 @@ from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
 from doxygen_snippets.templates.annotated import TEMPLATE as ANNOTATED_TEMPLATE
-from doxygen_snippets.templates.member import TEMPLATE as MEMBER_TEMPLATE
+from doxygen_snippets.templates.member import TEMPLATE as MEMBER_TEMPLATE, CONFIG as MEMBER_CONFIG
 from doxygen_snippets.templates.member_definition import TEMPLATE as MEMBER_DEFINITION_TEMPLATE, CONFIG as MEMBER_DEFINITION_CONFIG
 from doxygen_snippets.templates.member_table import TEMPLATE as MEMBER_TABLE_TEMPLATE
 from doxygen_snippets.templates.namespaces import TEMPLATE as NAMESPACES_TEMPLATE
@@ -288,11 +288,12 @@ class GeneratorBase:
 		return self.render(self.member_definition_template, data)
 
 	def member(self, node: Node, config: dict = {}):
+		newConfig = self.merge_two_dicts(MEMBER_CONFIG, config)
 		data = {
 			'node': node,
 			'member_definition_template': self.member_definition_template,
 			'member_table_template': self.member_table_template,
-			'config': config
+			'config': newConfig
 		}
 		return self.render(self.member_template, data)
 

@@ -1,4 +1,5 @@
 CONFIG = {
+	"brief": True,
 	"details": True,
 	"implements": True
 }

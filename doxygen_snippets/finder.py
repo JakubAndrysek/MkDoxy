@@ -9,7 +9,7 @@ from jinja2 import StrictUndefined, Undefined
 from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
-from pprint import pp
+from pprint import pprint
 
 
 class Finder:

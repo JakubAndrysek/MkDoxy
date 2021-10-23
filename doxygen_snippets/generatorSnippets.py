@@ -20,6 +20,7 @@ from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
 from doxygen_snippets.generatorBase import GeneratorBase
+
 import logging
 
 logger = logging.getLogger("mkdocs")
@@ -112,7 +113,8 @@ class GeneratorSnippets:
 		return self.generatorBase.error(title, message, language)
 	
 	def doxyCode(self, snippet, config):
-		if errorMsg := self.checkConfig(snippet, config, ["file"]):
+		errorMsg = self.checkConfig(snippet, config, ["file"])
+		if errorMsg:
 			return errorMsg
 		node = self.finder.doxyCode(config.get("file"))
 		if isinstance(node, Node):
