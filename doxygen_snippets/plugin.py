@@ -29,72 +29,66 @@ class DoxygenSnippets(BasePlugin):
 	"""
 
 	config_scheme = (
-		('doxygen-source', config_options.Type(str, default='')),
-		('api-path', config_options.Type(str, default='api')),
-		('target', config_options.Type(str, default='mkdocs')),
-		('full-doc', config_options.Type(bool, default=False)),
-		('hints', config_options.Type(bool, default=False)),
+		('projects', config_options.Type(dict, default='')),
+		('full-doc', config_options.Type(bool, default=True)),
 		('debug', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
-		('link-prefix', config_options.Type(str, default='')),
 	)
 
-	def __init__(self):
-		self.enabled = True
-		self.total_time = 0
-
 	def on_files(self, files: files.Files, config):
-		# Building Doxygen and parse XML
-		logger.warning("Building Doxygen and parse XML")
-		logger.warning(pformat(self.config))
+		def tempDir(siteDir: str)->str:
+			tempDoxyDir = path.join(siteDir, "assets/.doxy")
+			makedirs(tempDoxyDir, exist_ok=True)
+			return tempDoxyDir
 
-		self.doxygenSource = self.config["doxygen-source"]
-		self.apiPath = self.config["api-path"]
-		self.fullDoc = self.config["full-doc"]
-		self.ignoreErrors = self.config["ignore-errors"]
-		self.target = self.config['target']
-		self.hints = self.config['hints']
-		self.useDirectoryUrls = config['use_directory_urls']
-		self.debug = False
+		self.doxygen = {}
+		self.generatorBase = {}
+		self.projects = self.config["projects"]
+		for projectName in self.projects:
 
-		self.siteDir = config['site_dir']
-		self.tempDoxyDir = path.join(self.siteDir, "assets/.doxy")
-		makedirs(self.tempDoxyDir, exist_ok=True)
+			self.proData = self.projects.get(projectName)
+			logger.info(f"Building project {projectName}")
 
-		doxygenRun = DoxygenRun(self.doxygenSource, self.tempDoxyDir)
-		doxygenRun.run()
+			# Check scr changes -> run Doxygen
+			doxygenRun = DoxygenRun(self.proData['src'], tempDir(config['site_dir']))
+			if doxygenRun.checkAndRun():
+				logger.info("- Running Doxygen")
+			else:
+				logger.info("- skipping Doxygen")
 
-		# logger.warning(pformat(config))
-		# logger.warning(doxygenRun.getDestination())
+			cache = Cache()
 
-		self.options = {
-			'target': self.target,
-			'link_prefix': "" # relative path in api/
-		}
+			self.debug = config.get('debug', False)
+			self.options = {
+				'link_prefix': "" # relative path in api/
+			}
 
-		cache = Cache()
-		parser = XmlParser(cache=cache, target=self.target, hints=self.config['hints'], debug=self.debug)
-		self.doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=self.options, debug=self.debug)
-		logger.warning(pformat(self.doxygen))
+			# Parse XML to bacic structure
+			parser = XmlParser(cache=cache, debug=self.debug)
 
-		if self.debug:
-			logger.warning(pformat(parser))
-			self.doxygen.print()
+			# Parse bacic structure to recursive Nodes
+			self.doxygen[projectName] = Doxygen(doxygenRun.path, parser=parser, cache=cache, options=self.options, debug=self.debug)
 
-		self.generatorBase = GeneratorBase(ignore_errors=self.ignoreErrors, options=self.options)
+			# Print parsed files
+			if self.debug:
+				logger.warning(pformat(parser))
+				self.doxygen[projectName].print()
 
-		if self.fullDoc:
-			self.fullDocFiles = []
-			generatorAuto = GeneratorAuto(generatorBase=self.generatorBase,
-			                              tempDoxyDir=self.tempDoxyDir,
-			                              siteDir=self.siteDir,
-			                              apiPath=self.apiPath,
-			                              useDirectoryUrls=self.useDirectoryUrls,
-			                              fullDocFiles=self.fullDocFiles,
-			                              debug=self.debug)
-			generatorAuto.fullDoc(self.doxygen)
-			for file in generatorAuto.fullDocFiles:
-				files.append(file)
+			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
+			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"], options=self.options) # options=self.options will be deleted
+
+			if self.config["full-doc"]:
+				fullDocFiles = []
+				generatorAuto = GeneratorAuto(generatorBase=self.generatorBase[projectName],
+											  tempDoxyDir=tempDir(config['site_dir']),
+											  siteDir=config['site_dir'],
+											  apiPath=projectName,
+											  useDirectoryUrls=config['use_directory_urls'],
+											  fullDocFiles=fullDocFiles,
+											  debug=self.debug)
+				generatorAuto.fullDoc(self.doxygen[projectName])
+				for file in generatorAuto.fullDocFiles:
+					files.append(file)
 
 		return files
 
@@ -115,10 +109,11 @@ class DoxygenSnippets(BasePlugin):
 		slashPrefix = ""
 		for i in range(urlSlashCount):
 			slashPrefix += "../"
-		self.generatorBase.options["link_prefix"] = slashPrefix + "api/" # fix api with ../
+		# for project in self.generatorBase:
+			# self.generatorBase[project].options["link_prefix"] = slashPrefix # fix api with ../
 		## FIX API Url END
 
-		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generatorBase, doxygen=self.doxygen,
+		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generatorBase, doxygen=self.doxygen, slashPrefix = slashPrefix,
 		                                      debug=self.debug)
 		finalMd = generatorSnippets.generate()
 		# logger.warning(finalMd)

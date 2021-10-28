@@ -25,18 +25,20 @@ import logging
 
 logger = logging.getLogger("mkdocs")
 
-regexLong= r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)" #https://regex101.com/r/lY9fgm/2
-regexShort = r"(?s)(?<!```yaml\n)(^::: doxy.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?=\n)|(?=:::)|\Z)" #https://regex101.com/r/i3e4g6/1
+regexLong= r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)" #https://regex101.com/r/lIgOij/2
+regexShort = r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?=\n)|(?=:::)|\Z)" # https://regex101.com/r/QnqxRc/1
 
 class GeneratorSnippets:
 	def __init__(self,
 	             markdown,
-	             generatorBase: GeneratorBase,
-	             doxygen: Doxygen,
+	             generatorBase, #: GeneratorBase,
+	             doxygen, # Dict[Doxygen],
+				 slashPrefix,
 	             debug: bool = False):
 		self.markdown = markdown
 		self.generatorBase = generatorBase
 		self.doxygen = doxygen
+		self.slashPrefix = slashPrefix
 		self.debug = debug
 		self.finder = Finder(doxygen, debug)
 
@@ -47,7 +49,9 @@ class GeneratorSnippets:
 			"class.method": self.doxyClassMethod,
 			"class.list":self.doxyClassList,
 			"class.index":self.doxyClassIndex,
-
+			"class.hierarchy":self.doxyClassHierarchy,
+			"namespace.list":self.doxyNamespaceList,
+			"file.list":self.doxyFileList,
 		}
 
 	def generate(self):
@@ -56,11 +60,12 @@ class GeneratorSnippets:
 		for match in reversed(list(matches)):
 			snippet = match.group()
 			key = match.group('key')
+			project = match.group('project')
 
 			keyLow = key.lower()
 			logger.debug(f"\nKey: {keyLow}")
 
-			replaceStr = self.callDoxyByName(snippet, keyLow, {})
+			replaceStr = self.callDoxyByName(snippet, project, keyLow, {})
 			self.replaceMarkdown(match.start(), match.end(), replaceStr)
 
 		matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
@@ -68,6 +73,7 @@ class GeneratorSnippets:
 			if match:
 				snippet = match.group()
 				key = match.group('key')
+				projec = match.group('project')
 				keyLow = key.lower()
 				logger.debug(f"\nKey: {keyLow}")
 				yamlRaw = match.group('yaml')
@@ -80,7 +86,7 @@ class GeneratorSnippets:
 					except YAMLError as e:
 						print(e)
 
-				replaceStr = self.callDoxyByName(snippet, keyLow, config)
+				replaceStr = self.callDoxyByName(snippet, project, keyLow, config)
 				self.replaceMarkdown(match.start(), match.end(), replaceStr)
 
 
@@ -89,43 +95,53 @@ class GeneratorSnippets:
 	def replaceMarkdown(self, start: int, end: int, newString: string):
 		self.markdown = self.markdown[:start] + newString + "\n" + self.markdown[end:]
 
+	# def modifyUrl(self, project):
+	# 	return f"{self.slashPrefix}{}"
 
-	def callDoxyByName(self, snippet, key, config):
+	# def _recursive_call(self, nodes: [Node], ):
+	# 	for node in nodes:
+	# 		if node.kind == kind:
+	# 			ret.append(node)
+	# 		if node.kind.is_parent():
+	# 			ret.extend(self._recursive_find(node.children, kind))
+	# 	return ret
+
+	def callDoxyByName(self, snippet, project: str, key: str, config):
 		if key in self.DOXY_CALL:
 			funcName = self.DOXY_CALL[key]
-			return funcName(snippet, config)
+			return funcName(snippet, project, config)
 		else:
-			return self.generatorBase.error(f"Did not exist key with name: {key}")
+			return self.generatorBase[project].error(f"Did not exist key with name: {key}", snippet, "yaml")
 
-	def checkConfig(self, snippet, config, params):
+	def checkConfig(self, snippet, project: str, config, params):
 		"""
 		returns false if config is correct
 		return error message if find problem in config
 		"""
 		for param in params:
 			if not config.get(param):
-				return self.doxyError(f"The requid parameter `{param}` is not configured!", snippet, "yaml")
+				return self.doxyError(project, f"The requid parameter `{param}` is not configured!", snippet, "yaml")
 		return False
 
 	### Create documentation generator callbacks
 
-	def doxyError(self, title: str = "", message: str = "", language: str = ""):
-		return self.generatorBase.error(title, message, language)
+	def doxyError(self, project, title: str = "", message: str = "", language: str = ""):
+		return self.generatorBase[project].error(title, message, language)
 	
-	def doxyCode(self, snippet, config):
-		errorMsg = self.checkConfig(snippet, config, ["file"])
+	def doxyCode(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, ["file"])
 		if errorMsg:
 			return errorMsg
-		node = self.finder.doxyCode(config.get("file"))
+		node = self.finder.doxyCode(project, config.get("file"))
 		if isinstance(node, Node):
 
 			progCode = self.codeStrip(node.programlisting, config.get("start", 1), config.get("end", 0))
 			if progCode == False:
-				return self.doxyError(f"Parameter start: {config.get('start')} is greater than end: {config.get('end')}",f"{snippet}", "yaml")
-
-			md = self.generatorBase.code(node, config, progCode)
+				return self.doxyError(project, f"Parameter start: {config.get('start')} is greater than end: {config.get('end')}",f"{snippet}", "yaml")
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+			md = self.generatorBase[project].code(node, config, progCode)
 			return md
-		return self.doxyError(f"Did not find File: `{config.get('file')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+		return self.doxyError(project, f"Did not find File: `{config.get('file')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
 	def codeStrip(self, codeRaw, start: int = 1, end: int = None):
 		regex = r"(?s)````(?P<lang>[a-zA-Z.-_]+)\n(?P<code>.+)````.+"
@@ -151,58 +167,76 @@ class GeneratorSnippets:
 		return f"```{lang} linenums='{start}'\n{out}```"
 
 
-	def doxyFunction(self, snippet, config):
-		errorMsg = self.checkConfig(snippet, config, ["name"])
+	def doxyFunction(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, ["name"])
 		if errorMsg:
 			return errorMsg
 
-		node = self.finder.doxyFunction(config.get("name"))
+		node = self.finder.doxyFunction(project, config.get("name"))
 		if isinstance(node, Node):
-			md = self.generatorBase.function(node, config)
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+			md = self.generatorBase[project].function(node, config)
 			return md
-		return self.doxyError(f"Did not find Function with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+		return self.doxyError(project, f"Did not find Function with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
-	def doxyClass(self, snippet, config):
-		errorMsg = self.checkConfig(snippet, config, ["name"])
+	def doxyClass(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, ["name"])
 		if errorMsg:
 			return errorMsg
 
-		node = self.finder.doxyClass(config.get("name"))
+		node = self.finder.doxyClass(project, config.get("name"))
 		if isinstance(node, Node):
-			md = self.generatorBase.member(node, config)
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+			md = self.generatorBase[project].member(node, config)
 			return md
-		return self.doxyError(f"Did not find Class with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+		return self.doxyError(project, f"Did not find Class with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
-	def doxyClassMethod(self, snippet, config):
-		errorMsg = self.checkConfig(snippet, config, ["name", "method"])
+	def doxyClassMethod(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, ["name", "method"])
 		if errorMsg:
 			return errorMsg
 
-		node = self.finder.doxyClassMethod(config.get("name"), config.get("method"))
+		node = self.finder.doxyClassMethod(project, config.get("name"), config.get("method"))
 		if isinstance(node, Node):
-			md = self.generatorBase.function(node, config)
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+			md = self.generatorBase[project].function(node, config)
 			return md
-		return self.doxyError(f"Did not find Class with name: `{config.get('name')}` and method: `{config.get('method')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
+		return self.doxyError(project, f"Did not find Class with name: `{config.get('name')}` and method: `{config.get('method')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
 
-	def doxyClassList(self, snippet, config):
-		md = self.generatorBase.annotated(self.doxygen.root.children)
+	def doxyClassList(self, snippet, project: str, config):
+		nodes = self.doxygen[project].root.children
+		for node in nodes:
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+		md = self.generatorBase[project].annotated(nodes)
 		return md
 
-	def doxyClassIndex(self, snippet, config):
-		md = self.generatorBase.classes(self.doxygen.root.children)
+	def doxyClassIndex(self, snippet, project: str, config):
+		nodes = self.doxygen[project].root.children
+		for node in nodes:
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+		md = self.generatorBase[project].classes(nodes)
 		return md
 
-	def doxyClassHierarchy(self, snippet, config):
-		md = self.generatorBase.hierarchy(self.doxygen.root.children)
+	def doxyClassHierarchy(self, snippet, project: str, config):
+		nodes = self.doxygen[project].root.children
+		for node in nodes:
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+		md = self.generatorBase[project].hierarchy(nodes)
 		return md
 
-	def doxyNamespaceList(self, snippet, config):
-		md = self.generatorBase.namespaces(self.doxygen.root.children)
+	def doxyNamespaceList(self, snippet, project: str, config):
+		nodes = self.doxygen[project].root.children
+		for node in nodes:
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+		md = self.generatorBase[project].namespaces(nodes)
 		return md
 
-	def doxyFileList(self, snippet, config):
-		md = self.generatorBase.fileindex(self.doxygen.files.children)
+	def doxyFileList(self, snippet, project: str, config):
+		nodes = self.doxygen[project].files.children
+		for node in nodes:
+			node.setLinkPrefix(self.slashPrefix + project + "/")
+		md = self.generatorBase[project].fileindex(nodes)
 		return md
 
 ### Create documentation generator callbacks END

@@ -20,6 +20,7 @@ class Node:
 		self._parent = parent
 		self._options = options
 		self.debug = debug
+		self.linkPrefix = ""
 
 		if xml_file == 'root':
 			self._refid = 'root'
@@ -76,6 +77,9 @@ class Node:
 		self._initializer = Property.Initializer(self._xml, parser, self._kind)
 		self._definition = Property.Definition(self._xml, parser, self._kind)
 		self._programlisting = Property.Programlisting(self._xml, parser, self._kind)
+
+	def setLinkPrefix(self, linkPrefix: str):
+		self.linkPrefix = linkPrefix
 
 	def add_child(self, child: 'Node'):
 		self._children.append(child)
@@ -394,10 +398,7 @@ class Node:
 	@property
 	def name_url_safe(self) -> str:
 		name = self.name_tokens[-1]
-		if self._options['target'] == 'docsify':
-			name = name.replace(' ', '-').replace('=', '').replace('~', '').lower()
-		else:
-			name = name.replace(' ', '-').replace('_', '-').replace('=', '').replace('~', '').lower()
+		name = name.replace(' ', '-').replace('=', '').replace('~', '').lower()
 		return name
 
 	@property
@@ -406,19 +407,11 @@ class Node:
 		if self._name.replace(' ', '') in OVERLOAD_OPERATORS:
 			num = self.operator_num
 			if num > 1:
-				if self._options['target'] == 'docsify':
-					name = 'operator-' + str(self.operator_num - 1)
-				elif self._options['target'] == 'mkdocs':
-					name = 'operator_' + str(self.operator_num - 1)
-				else:
-					name = 'operator-' + str(self.operator_num)
+				name = 'operator_' + str(self.operator_num - 1)
 			else:
 				name = 'operator'
 		elif self.is_overloaded:
-			if self._options['target'] in ['docsify', 'mkdocs']:
-				name = self.name_url_safe + '-' + str(self.overload_num) + str(self.overload_total)
-			else:
-				name = self.name_url_safe + '-' + str(self.overload_num) + '-' + str(self.overload_total)
+			name = self.name_url_safe + '-' + str(self.overload_num) + str(self.overload_total)
 		else:
 			name = self.name_url_safe
 
@@ -429,7 +422,7 @@ class Node:
 	@property
 	def url(self) -> str:
 		if self.is_parent or self.is_group or self.is_file or self.is_dir or self.is_page:
-			return self._refid + '.md'
+			return self.linkPrefix + self._refid + '.md'
 		else:
 			return self._parent.url + '#' + self.anchor
 
