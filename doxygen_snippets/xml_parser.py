@@ -28,18 +28,9 @@ SIMPLE_SECTIONS = {
 	'date': 'Date:'
 }
 
-SIMPLE_SECTIONS_HINTS_VUEPRESS = {
-	'note': 'tip',
-	'bug': 'danger',
-	'warning': 'warning'
-}
-
-
 class XmlParser:
-	def __init__(self, cache: Cache, target: str = 'gitbook', hints: bool = True, debug: bool = False):
-		self.target = target
+	def __init__(self, cache: Cache, debug: bool = False):
 		self.cache = cache
-		self.hints = hints
 		self.debug = debug
 
 	def anchor(self, name: str) -> str:
@@ -266,48 +257,32 @@ class XmlParser:
 			# simplesect
 			elif item.tag == 'simplesect':
 				kind = item.get('kind')
-				if self.hints and self.target == 'vuepress' and kind in SIMPLE_SECTIONS_HINTS_VUEPRESS:
+				ret.append(Br())
+				ret.append(MdBold([Text(SIMPLE_SECTIONS[kind])]))
+				if kind != 'see':
 					ret.append(Br())
-					children = []
-					for sp in item.findall('para'):
-						children.extend(self.paras(sp))
-						children.append(Br())
-					ret.append(MdHint(children, SIMPLE_SECTIONS_HINTS_VUEPRESS[kind], SIMPLE_SECTIONS[kind]))
-
 				else:
-					ret.append(Br())
-					ret.append(MdBold([Text(SIMPLE_SECTIONS[kind])]))
-					if kind != 'see':
-						ret.append(Br())
-					else:
-						ret.append(Text(' '))
+					ret.append(Text(' '))
 
-					for sp, has_more in lookahead(item.findall('para')):
-						ret.extend(self.paras(sp))
-						if kind == 'see':
-							if has_more:
-								ret.append(Text(', '))
-						else:
-							ret.append(Br())
+				for sp, has_more in lookahead(item.findall('para')):
+					ret.extend(self.paras(sp))
+					if kind == 'see':
+						if has_more:
+							ret.append(Text(', '))
+					else:
+						ret.append(Br())
 
 			# xrefsect
 			elif item.tag == 'xrefsect':
 				xreftitle = item.find('xreftitle')
 				xrefdescription = item.find('xrefdescription')
 				kind = xreftitle.text.lower()
-				if self.hints and self.target == 'vuepress' and kind in SIMPLE_SECTIONS_HINTS_VUEPRESS:
-					children = []
-					for sp in xrefdescription.findall('para'):
-						children.extend(self.paras(sp))
-						children.append(Br())
-					ret.append(MdHint(children, SIMPLE_SECTIONS_HINTS_VUEPRESS[kind], SIMPLE_SECTIONS[kind]))
-				else:
+				ret.append(Br())
+				ret.append(MdBold(self.paras(xreftitle)))
+				ret.append(Br())
+				for sp in xrefdescription.findall('para'):
+					ret.extend(self.paras(sp))
 					ret.append(Br())
-					ret.append(MdBold(self.paras(xreftitle)))
-					ret.append(Br())
-					for sp in xrefdescription.findall('para'):
-						ret.extend(self.paras(sp))
-						ret.append(Br())
 
 			# Hard link
 			elif item.tag == 'ulink':
