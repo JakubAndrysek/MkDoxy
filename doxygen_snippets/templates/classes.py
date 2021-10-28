@@ -5,9 +5,9 @@ TEMPLATE = """
 ## {{letter}}
 
 {% for node in children -%}
-* [**{{node.name_short}}**]({{link_prefix}}{{node.url}})
+* [**{{node.name_short}}**]({{node.url}})
 {% if node.parent.is_language -%}
- ([**{{node.parent.name_long}}**]({{link_prefix}}{{node.parent.url}}))
+ ([**{{node.parent.name_long}}**]({{node.parent.url}}))
 {% endif -%}
 {% endfor %}
 {% endfor %}

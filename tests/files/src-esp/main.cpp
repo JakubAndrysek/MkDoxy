@@ -4,6 +4,8 @@
 
 #include "RBCX.h"
 
+#define MY_MACRO (A | B)
+
 /**
  * \brief My test function
  * Som description

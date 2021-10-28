@@ -22,15 +22,16 @@ class GeneratorAuto:
 	             tempDoxyDir: str,
 	             siteDir: str,
 	             apiPath: str,
+				 doxygen: Doxygen,
 	             useDirectoryUrls: bool,
-	             fullDocFiles: dict = [],
 	             debug: bool = False):
 		self.generatorBase = generatorBase
 		self.tempDoxyDir = tempDoxyDir
 		self.siteDir = siteDir
 		self.apiPath = apiPath
+		self.doxygen = doxygen
 		self.useDirectoryUrls = useDirectoryUrls,
-		self.fullDocFiles = fullDocFiles
+		self.fullDocFiles = []
 		self.debug = debug
 		os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
 
@@ -40,37 +41,37 @@ class GeneratorAuto:
 		with open(os.path.join(self.tempDoxyDir, pathRel), 'w', encoding='utf-8') as file:
 			file.write(output)
 
-	def fullDoc(self, nodes: Doxygen):
-		self.annotated(nodes.root.children)
-		self.fileindex(nodes.files.children)
-		self.members(nodes.root.children)
-		self.members(nodes.groups.children)
-		self.files(nodes.files.children)
-		self.namespaces(nodes.root.children)
-		self.classes(nodes.root.children)
-		self.hierarchy(nodes.root.children)
-		self.modules(nodes.groups.children)
-		self.pages(nodes.pages.children)
-		self.relatedpages(nodes.pages.children)
-		self.index(nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
+	def fullDoc(self):
+		self.annotated(self.doxygen.root.children)
+		self.fileindex(self.doxygen.files.children)
+		self.members(self.doxygen.root.children)
+		self.members(self.doxygen.groups.children)
+		self.files(self.doxygen.files.children)
+		self.namespaces(self.doxygen.root.children)
+		self.classes(self.doxygen.root.children)
+		self.hierarchy(self.doxygen.root.children)
+		self.modules(self.doxygen.groups.children)
+		self.pages(self.doxygen.pages.children)
+		self.relatedpages(self.doxygen.pages.children)
+		self.index(self.doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
 		           [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
-		self.index(nodes.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(self.doxygen.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Functions')
-		self.index(nodes.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(self.doxygen.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Variables')
-		self.index(nodes.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(self.doxygen.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Typedefs')
-		self.index(nodes.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
+		self.index(self.doxygen.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
 		           'Class Member Enums')
-		self.index(nodes.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
+		self.index(self.doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
 		           [Kind.NAMESPACE], 'Namespace Members')
-		self.index(nodes.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions')
-		self.index(nodes.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables')
-		self.index(nodes.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs')
-		self.index(nodes.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums')
-		self.index(nodes.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions')
-		self.index(nodes.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros')
-		self.index(nodes.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE],
+		self.index(self.doxygen.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions')
+		self.index(self.doxygen.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables')
+		self.index(self.doxygen.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs')
+		self.index(self.doxygen.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums')
+		self.index(self.doxygen.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions')
+		self.index(self.doxygen.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros')
+		self.index(self.doxygen.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE],
 		           'Variables')
 
 	def annotated(self, nodes: [Node]):

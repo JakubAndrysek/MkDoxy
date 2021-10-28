@@ -3,9 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Fix small bugs, readme">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/markdown.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/markdown.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/node.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/src-stm32/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/src-stm32/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +21,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1w5pkwXpFBhiNzXvOVMtbVsxlFi" />
@@ -35,7 +41,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/files" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -91,6 +97,28 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="mkdocs-Build-3.9" type="PythonConfigurationType" factoryName="Python">
+      <module name="master" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.9" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/files" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="mkdocs" />
+      <option name="PARAMETERS" value="build" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
       <method v="2" />
@@ -229,6 +257,7 @@
     </configuration>
     <list>
       <item itemvalue="Python.mkdocs-serve-3.9" />
+      <item itemvalue="Python.mkdocs-Build-3.9" />
       <item itemvalue="Python.mkdocs-serve-3.7" />
       <item itemvalue="Python.mkdocs-serve-3.10" />
       <item itemvalue="Python.basic" />
@@ -273,7 +302,10 @@
       <workItem from="1634331326704" duration="1865000" />
       <workItem from="1634413847001" duration="29820000" />
       <workItem from="1634742116988" duration="8462000" />
-      <workItem from="1635016504141" duration="16665000" />
+      <workItem from="1635016504141" duration="24944000" />
+      <workItem from="1635338587317" duration="940000" />
+      <workItem from="1635339580166" duration="43399000" />
+      <workItem from="1635450602679" duration="3606000" />
     </task>
     <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
       <created>1629032602287</created>
@@ -348,20 +380,15 @@
           <line>35</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
-        <line-breakpoint suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/node.py</url>
-          <line>431</line>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/plugin.py</url>
-          <line>124</line>
-          <option name="timeStamp" value="88" />
+          <line>132</line>
+          <option name="timeStamp" value="105" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py</url>
-          <line>180</line>
-          <option name="timeStamp" value="90" />
+          <url>file://$PROJECT_DIR$/doxygen_snippets/doxyrun.py</url>
+          <line>28</line>
+          <option name="timeStamp" value="107" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -375,17 +402,18 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_10.coverage" NAME="mkdocs-serve-3.10 Coverage Results" MODIFIED="1635030376714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
+    <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_8.coverage" NAME="mkdocs-serve-3.8 Coverage Results" MODIFIED="1635030346871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_Build_3_9.coverage" NAME="mkdocs-Build-3.9 Coverage Results" MODIFIED="1635419460531" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_9.coverage" NAME="mkdocs-serve-3.9 Coverage Results" MODIFIED="1635454145732" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1634490070418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1634731940573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629136660398" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_10.coverage" NAME="mkdocs-serve-3.10 Coverage Results" MODIFIED="1635030376714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
-    <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$stripCode.coverage" NAME="stripCode Coverage Results" MODIFIED="1634414465384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$basic.coverage" NAME="basic Coverage Results" MODIFIED="1634486103829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628421513979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_8.coverage" NAME="mkdocs-serve-3.8 Coverage Results" MODIFIED="1635030346871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$doxygenSubprocess.coverage" NAME="doxygenSubprocess Coverage Results" MODIFIED="1629704217036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_7.coverage" NAME="mkdocs-serve-3.7 Coverage Results" MODIFIED="1635030151492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
-    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_9.coverage" NAME="mkdocs-serve-3.9 Coverage Results" MODIFIED="1635033136611" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
   </component>
 </project>

@@ -6,11 +6,7 @@ CONFIG = {
 }
 
 TEMPLATE = """
-{% if target == 'gitbook' %}
-### <a href="#{{node.anchor}}" id="{{node.anchor}}">{{node.kind.value}} {{node.name_long if node.is_group else node.name_short}} {{node.overload_suffix}}</a>
-{% else %}
 ### {{node.kind.value}} {{node.name_long if node.is_group else node.name_short}} {{node.overload_suffix}}
-{% endif %}
 
 {% if config.get('brief') -%}
 {% if node.has_brief -%}
@@ -31,7 +27,7 @@ TEMPLATE = """
 
 {% if config.get('implements') -%}
 {% if node.reimplements %}
-Implements [*{{node.reimplements.name_long}}*]({{link_prefix}}{{node.reimplements.url}})
+Implements [*{{node.reimplements.name_long}}*]({{node.reimplements.url}})
 {% endif %}
 {%- endif -%}
 

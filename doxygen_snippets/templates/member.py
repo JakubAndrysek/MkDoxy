@@ -10,15 +10,10 @@ TEMPLATE = """
 **template &lt;{{node.templateparams}}&gt;**
 {% endif %}
 
-{% if node.is_group -%}
-[**Modules**]({{link_prefix}}modules.md)
-{% elif node.is_file or node.is_dir -%}
-[**File List**]({{link_prefix}}files.md)
-{%- else -%}
-[**Class List**]({{link_prefix}}annotated.md)
-{%- endif %}
+
+[**{{node.base_name}}**]({{node.base_url}})
 {%- for parent in node.parents -%}
-{{'**>**'|indent(1, true)}} [**{{parent.name_long if node.is_group else parent.name_short}}**]({{link_prefix}}{{parent.url}})
+{{'**>**'|indent(1, true)}} [**{{parent.name_long if node.is_group else parent.name_short}}**]({{parent.url}})
 {%- endfor %}
 
 {% if node.is_file and node.has_programlisting -%}
@@ -39,7 +34,7 @@ TEMPLATE = """
 {% if node.has_base_classes %}
 Inherits the following classes:
 {%- for base in node.base_classes -%}
-{%- if base is string %} {{base}}{%- else %} [{{base.name_long}}]({{link_prefix}}{{base.url}}){%- endif -%}
+{%- if base is string %} {{base}}{%- else %} [{{base.name_long}}]({{base.url}}){%- endif -%}
 {{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endif %}
@@ -47,30 +42,30 @@ Inherits the following classes:
 {% if node.has_derived_classes %}
 Inherited by the following classes:
 {%- for derived in node.derived_classes -%}
-{%- if derived is string %} {{derived}}{%- else %} [{{derived.name_long}}]({{link_prefix}}{{derived.url}}){%- endif -%}
+{%- if derived is string %} {{derived}}{%- else %} [{{derived.name_long}}]({{derived.url}}){%- endif -%}
 {{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endif %}
 
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Files', 'visibility': 'public', 'kinds': ['file'], 'static': False, 'link_prefix': link_prefix}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Directories', 'visibility': 'public', 'kinds': ['dir'], 'static': False, 'link_prefix': link_prefix}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Modules', 'visibility': 'public', 'kinds': ['group'], 'static': False, 'link_prefix': link_prefix}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Namespaces', 'visibility': 'public', 'kinds': ['namespace'], 'static': False, 'link_prefix': link_prefix}) }}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Classes', 'visibility': 'public', 'kinds': ['class', 'struct', 'interface'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': node, 'parent': None, 'title': 'Files', 'visibility': 'public', 'kinds': ['file'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': node, 'parent': None, 'title': 'Directories', 'visibility': 'public', 'kinds': ['dir'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': node, 'parent': None, 'title': 'Modules', 'visibility': 'public', 'kinds': ['group'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': node, 'parent': None, 'title': 'Namespaces', 'visibility': 'public', 'kinds': ['namespace'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': node, 'parent': None, 'title': 'Classes', 'visibility': 'public', 'kinds': ['class', 'struct', 'interface'], 'static': False, 'link_prefix': link_prefix}) }}
 
 {%- for visibility in ['public', 'protected'] -%}
 {%- for query in [['types', ['enum', 'union', 'typedef']], ['attributes', ['variable']], ['functions', ['function']]] -%}
 {%- for static in [['', False], ['static ', True]] %}
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1], 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': node, 'parent': None, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1], 'link_prefix': link_prefix}) }}
 {%- for child in node.base_classes recursive -%}{%- if child is not string %}
-{{ member_table_template.render({'target': target, 'node': child, 'parent': node, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1], 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': child, 'parent': node, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1], 'link_prefix': link_prefix}) }}
 {{- loop(child.base_classes)}}
 {%- endif -%}{%- endfor -%}
 {%- endfor -%}
 {%- endfor -%}
 {%- endfor -%}
 
-{{ member_table_template.render({'target': target, 'node': node, 'parent': None, 'title': 'Macros', 'visibility': 'public', 'kinds': ['define'], 'static': False, 'link_prefix': link_prefix}) }}
+{{ member_table_template.render({'node': node, 'parent': None, 'title': 'Macros', 'visibility': 'public', 'kinds': ['define'], 'static': False, 'link_prefix': link_prefix}) }}
 
 {%- if node.has_details %}
 # Detailed Description
@@ -84,7 +79,7 @@ Inherited by the following classes:
 {%- if node.has(visibility, query[1], static[1]) %}
 ## {{visibility|title}} {{static[0]|title}}{{query[0]|title}} Documentation
 {% for member in node.query(visibility, query[1], static[1]) -%}
-{{ member_definition_template.render({'target': target, 'node': member, 'config': config}) }}
+{{ member_definition_template.render({'node': member, 'config': config}) }}
 {%- endfor %}
 {%- endif -%}
 {%- endfor -%}
@@ -95,7 +90,7 @@ Inherited by the following classes:
 ## Macro Definition Documentation
 
 {% for member in node.query('public', ['define'], False) -%}
-{{ member_definition_template.render({'target': target, 'node': member, 'config': config}) }}
+{{ member_definition_template.render({'node': member, 'config': config}) }}
 {%- endfor -%}
 {%- endif %}
 
@@ -103,7 +98,7 @@ Inherited by the following classes:
 ## Friends Documentation
 
 {% for member in node.query('public', ['friend'], False) -%}
-{{ member_definition_template.render({'target': target, 'node': member, 'config': config}) }}
+{{ member_definition_template.render({'node': member, 'config': config}) }}
 {%- endfor %}
 {%- endif %}
 

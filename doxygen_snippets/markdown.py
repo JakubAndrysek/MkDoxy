@@ -1,24 +1,12 @@
 from typing import List
 
-
 def escape(s: str) -> str:
-	ret = s.replace('<', '&lt;')
+	ret = s.replace('*', '\\*')
+	ret = ret.replace('_', '\\_')
+	ret = ret.replace('<', '&lt;')
 	ret = ret.replace('>', '&gt;')
-
-	# ret[0] = ret[0].replace('*', '\\*')
-	# ret[0] = ret[0].replace('_', '\\_')
-	#
-	# ret[-1] = ret[-1].replace('*', '\\*')
-	# ret[-1] = ret[-1].replace('_', '\\_')
-
+	ret = ret.replace('|', '\|')
 	return ret
-
-# def escape(s: str) -> str:
-# 	ret = s.replace('*', '\\*')
-# 	ret = ret.replace('_', '\\_')
-# 	ret = ret.replace('<', '&lt;')
-# 	ret = ret.replace('>', '&gt;')
-# 	return ret
 
 
 

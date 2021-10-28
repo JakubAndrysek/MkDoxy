@@ -49,8 +49,8 @@ def generate_link(name, url) -> str:
 
 
 class GeneratorBase:
-	def __init__(self, ignore_errors: bool = False, options: dict = {}, debug: bool = False):
-		self.options = options
+	def __init__(self, ignore_errors: bool = False, debug: bool = False):
+		self.options = {} # will be deleted
 		self.debug = debug
 
 		on_undefined_class = Undefined

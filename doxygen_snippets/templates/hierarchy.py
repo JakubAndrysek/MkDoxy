@@ -1,5 +1,3 @@
-# TODO not working {{link_prefix}}
-
 TEMPLATE = """
 # Class Hierarchy
 

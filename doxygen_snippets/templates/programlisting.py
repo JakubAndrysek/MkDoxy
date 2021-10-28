@@ -6,12 +6,12 @@
 TEMPLATE = """
 # {{node.kind.value|title}} {{node.name_long}}
 
-[**File List**]({{link_prefix}}files.md)
+[**File List**](files.md)
 {%- for child in node.parents -%}
-{{'**>**'|indent(1, true)}} [**{{child.name_long if node.is_group else child.name_short}}**]({{link_prefix}}{{child.url}})
+{{'**>**'|indent(1, true)}} [**{{child.name_long if node.is_group else child.name_short}}**]({{child.url}})
 {%- endfor %}
 
-[Go to the documentation of this file.]({{link_prefix}}{{node.url}}) 
+[Go to the documentation of this file.]({{node.url}}) 
 
 {{node.programlisting}}
 """
@@ -22,14 +22,14 @@ TEMPLATE = """
 # {%- endif %}
 #
 # {% if config.get('implements') -%}
-# [**File List**]({{link_prefix}}files.md)
+# [**File List**](files.md)
 # {%- for child in node.parents -%}
-# {{'**>**'|indent(1, true)}} [**{{child.name_long if node.is_group else child.name_short}}**]({{link_prefix}}{{child.url}})
+# {{'**>**'|indent(1, true)}} [**{{child.name_long if node.is_group else child.name_short}}**]({{child.url}})
 # {%- endfor %}
 # {%- endif %}
 #
 # {% if config.get('doc') -%}
-# [Go to the documentation of this file.]({{link_prefix}}{{node.url}})
+# [Go to the documentation of this file.]({{node.url}})
 # {%- endif %}
 #
 # {{node.programlisting}}
