@@ -23,7 +23,7 @@ from doxygen_snippets.generatorBase import GeneratorBase
 
 import logging
 
-logger = logging.getLogger("mkdocs")
+log = logging.getLogger("mkdocs")
 
 regexLong= r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)" #https://regex101.com/r/lIgOij/2
 regexShort = r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?=\n)|(?=:::)|\Z)" # https://regex101.com/r/QnqxRc/1
@@ -63,7 +63,7 @@ class GeneratorSnippets:
 			project = match.group('project')
 
 			keyLow = key.lower()
-			logger.debug(f"\nKey: {keyLow}")
+			log.debug(f"\nKey: {keyLow}")
 
 			replaceStr = self.callDoxyByName(snippet, project, keyLow, {})
 			self.replaceMarkdown(match.start(), match.end(), replaceStr)
@@ -75,14 +75,14 @@ class GeneratorSnippets:
 				key = match.group('key')
 				projec = match.group('project')
 				keyLow = key.lower()
-				logger.debug(f"\nKey: {keyLow}")
+				log.debug(f"\nKey: {keyLow}")
 				yamlRaw = match.group('yaml')
 				if yamlRaw:
 					try:
 						yaml = YAML()
 						config = yaml.load(yamlRaw)
 						# yaml.dump(config, sys.stdout)
-						logger.debug(pformat(config))
+						log.debug(pformat(config))
 					except YAMLError as e:
 						print(e)
 
@@ -95,11 +95,18 @@ class GeneratorSnippets:
 	def replaceMarkdown(self, start: int, end: int, newString: string):
 		self.markdown = self.markdown[:start] + newString + "\n" + self.markdown[end:]
 
-	def _recursive_setLinkPrefix(self, nodes: [Node], linkPrefix: str):
+	def checkProjectExist(self, project: str, snippet):
+
+		return True
+
+	def _recurs_setLinkPrefixNode(self, node: Node, linkPrefix: str):
+		node.setLinkPrefix(linkPrefix)
+		if node.kind.is_parent():
+			self._recurs_setLinkPrefixNodes(node.children, linkPrefix)
+
+	def _recurs_setLinkPrefixNodes(self, nodes: [Node], linkPrefix: str):
 		for node in nodes:
-			node.setLinkPrefix(linkPrefix)
-			if node.kind.is_parent():
-				self._recursive_setLinkPrefix(node.children, linkPrefix)
+			self._recurs_setLinkPrefixNode(node, linkPrefix)
 
 	def callDoxyByName(self, snippet, project: str, key: str, config):
 		if key in self.DOXY_CALL:
@@ -111,8 +118,10 @@ class GeneratorSnippets:
 	def checkConfig(self, snippet, project: str, config, params):
 		"""
 		returns false if config is correct
-		return error message if find problem in config
+		return error message if project not exist or find problem in config
 		"""
+		if not project in self.generatorBase:
+			return self.generatorBase[list(self.generatorBase)[0]].error(f"Did not exist project with name: {project}", snippet, "yaml")
 		for param in params:
 			if not config.get(param):
 				return self.doxyError(project, f"The requid parameter `{param}` is not configured!", snippet, "yaml")
@@ -133,7 +142,7 @@ class GeneratorSnippets:
 			progCode = self.codeStrip(node.programlisting, config.get("start", 1), config.get("end", 0))
 			if progCode == False:
 				return self.doxyError(project, f"Parameter start: {config.get('start')} is greater than end: {config.get('end')}",f"{snippet}", "yaml")
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+			self._recurs_setLinkPrefixNode(node, self.slashPrefix + project + "/")
 			md = self.generatorBase[project].code(node, config, progCode)
 			return md
 		return self.doxyError(project, f"Did not find File: `{config.get('file')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
@@ -169,7 +178,7 @@ class GeneratorSnippets:
 
 		node = self.finder.doxyFunction(project, config.get("name"))
 		if isinstance(node, Node):
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+			self._recurs_setLinkPrefixNode(node, self.slashPrefix + project + "/")
 			md = self.generatorBase[project].function(node, config)
 			return md
 		return self.doxyError(project, f"Did not find Function with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
@@ -181,7 +190,7 @@ class GeneratorSnippets:
 
 		node = self.finder.doxyClass(project, config.get("name"))
 		if isinstance(node, Node):
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+			self._recurs_setLinkPrefixNode(node, self.slashPrefix + project + "/")
 			md = self.generatorBase[project].member(node, config)
 			return md
 		return self.doxyError(project, f"Did not find Class with name: `{config.get('name')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
@@ -193,39 +202,54 @@ class GeneratorSnippets:
 
 		node = self.finder.doxyClassMethod(project, config.get("name"), config.get("method"))
 		if isinstance(node, Node):
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+			self._recurs_setLinkPrefixNode(node, self.slashPrefix + project + "/")
 			md = self.generatorBase[project].function(node, config)
 			return md
 		return self.doxyError(project, f"Did not find Class with name: `{config.get('name')}` and method: `{config.get('method')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
 
 	def doxyClassList(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, [])
+		if errorMsg:
+			return errorMsg
 		nodes = self.doxygen[project].root.children
-		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
+		self._recurs_setLinkPrefixNodes(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].annotated(nodes)
 		return md
 
 	def doxyClassIndex(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, [])
+		if errorMsg:
+			return errorMsg
 		nodes = self.doxygen[project].root.children
-		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
+		self._recurs_setLinkPrefixNodes(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].classes(nodes)
 		return md
 
 	def doxyClassHierarchy(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, [])
+		if errorMsg:
+			return errorMsg
 		nodes = self.doxygen[project].root.children
-		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
+		self._recurs_setLinkPrefixNodes(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].hierarchy(nodes)
 		return md
 
 	def doxyNamespaceList(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, [])
+		if errorMsg:
+			return errorMsg
 		nodes = self.doxygen[project].root.children
-		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
+		self._recurs_setLinkPrefixNodes(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].namespaces(nodes)
 		return md
 
 	def doxyFileList(self, snippet, project: str, config):
+		errorMsg = self.checkConfig(snippet, project, config, [])
+		if errorMsg:
+			return errorMsg
 		nodes = self.doxygen[project].files.children
-		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
+		self._recurs_setLinkPrefixNodes(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].fileindex(nodes)
 		return md
 

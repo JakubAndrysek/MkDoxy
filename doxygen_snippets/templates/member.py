@@ -13,7 +13,7 @@ TEMPLATE = """
 
 [**{{node.base_name}}**]({{node.base_url}})
 {%- for parent in node.parents -%}
-{{'**>**'|indent(1, true)}} [**{{parent.name_long if node.is_group else parent.name_short}}**]({{link_prefix}}{{parent.url}})
+{{'**>**'|indent(1, true)}} [**{{parent.name_long if node.is_group else parent.name_short}}**]({{parent.url}})
 {%- endfor %}
 
 {% if node.is_file and node.has_programlisting -%}
@@ -34,7 +34,7 @@ TEMPLATE = """
 {% if node.has_base_classes %}
 Inherits the following classes:
 {%- for base in node.base_classes -%}
-{%- if base is string %} {{base}}{%- else %} [{{base.name_long}}]({{link_prefix}}{{base.url}}){%- endif -%}
+{%- if base is string %} {{base}}{%- else %} [{{base.name_long}}]({{base.url}}){%- endif -%}
 {{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endif %}
@@ -42,7 +42,7 @@ Inherits the following classes:
 {% if node.has_derived_classes %}
 Inherited by the following classes:
 {%- for derived in node.derived_classes -%}
-{%- if derived is string %} {{derived}}{%- else %} [{{derived.name_long}}]({{link_prefix}}{{derived.url}}){%- endif -%}
+{%- if derived is string %} {{derived}}{%- else %} [{{derived.name_long}}]({{derived.url}}){%- endif -%}
 {{ ', ' if not loop.last else '' }}
 {%- endfor -%}
 {%- endif %}

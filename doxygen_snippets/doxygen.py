@@ -7,7 +7,7 @@ from doxygen_snippets.xml_parser import XmlParser
 
 
 class Doxygen:
-	def __init__(self, index_path: str, parser: XmlParser, cache: Cache, options: dict = {}, debug: bool = False):
+	def __init__(self, index_path: str, parser: XmlParser, cache: Cache, debug: bool = False):
 		self.debug = debug
 		path = os.path.join(index_path, 'index.xml')
 		if self.debug:
@@ -16,7 +16,7 @@ class Doxygen:
 
 		self.parser = parser
 		self.cache = cache
-		self.options = options
+		self.options = {} # will be deleted
 
 		self.root = Node('root', None, self.cache, self.parser, None, options=self.options)
 		self.groups = Node('root', None, self.cache, self.parser, None, options=self.options)

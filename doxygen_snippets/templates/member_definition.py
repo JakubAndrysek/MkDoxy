@@ -27,7 +27,7 @@ TEMPLATE = """
 
 {% if config.get('implements') -%}
 {% if node.reimplements %}
-Implements [*{{node.reimplements.name_long}}*]({{link_prefix}}{{node.reimplements.url}})
+Implements [*{{node.reimplements.name_long}}*]({{node.reimplements.url}})
 {% endif %}
 {%- endif -%}
 

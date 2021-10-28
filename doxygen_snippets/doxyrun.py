@@ -3,7 +3,7 @@ from subprocess import Popen, PIPE, STDOUT
 import shlex
 import logging
 
-logger = logging.getLogger("mkdocs")
+log = logging.getLogger("mkdocs")
 
 
 class DoxygenRun:
@@ -29,8 +29,8 @@ class DoxygenRun:
 	def run(self):
 		doxyBuilder = Popen(['doxygen', '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 		stdout_data = doxyBuilder.communicate(self.doxyConfig.encode('utf-8'))[0].decode().strip()
-		# logger.info(self.destinationDir)
-		# logger.info(stdout_data)
+		# log.info(self.destinationDir)
+		# log.info(stdout_data)
 
 	def checkAndRun(self):
 		if self.hasChanged():

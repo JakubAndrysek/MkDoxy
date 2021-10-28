@@ -454,13 +454,13 @@ class Node:
 	@property
 	def url_source(self) -> str:
 		if self.is_parent or self.is_group or self.is_file or self.is_dir:
-			return self._refid + '_source.md'
+			return self.linkPrefix + self._refid + '_source.md'
 		else:
-			return self._refid + '.md'
+			return self.linkPrefix + self._refid + '.md'
 
 	@property
 	def filename(self) -> str:
-		return self._refid + '.md'
+		return self.linkPrefix + self._refid + '.md'
 
 	@property
 	def root(self) -> 'Node':

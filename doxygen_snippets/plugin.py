@@ -4,6 +4,7 @@ from mkdocs.plugins import BasePlugin
 from mkdocs.config import base, config_options, Config
 from mkdocs.structure import files, pages
 from mkdocs.commands import serve
+from mkdocs import exceptions
 
 from doxygen_snippets.doxyrun import DoxygenRun
 from doxygen_snippets.doxygen import Doxygen
@@ -18,7 +19,9 @@ from doxygen_snippets.finder import Finder
 import logging
 from pprint import *
 
-logger = logging.getLogger("mkdocs")
+log = logging.getLogger("mkdocs")
+
+pluginName = "DoxyPets"
 
 
 class DoxygenSnippets(BasePlugin):
@@ -35,7 +38,28 @@ class DoxygenSnippets(BasePlugin):
 		('ignore-errors', config_options.Type(bool, default=False)),
 	)
 
+	config_project = (
+		('src', config_options.Type(str)),
+		('full-doc', config_options.Type(bool, default=True)),
+		('debug', config_options.Type(bool, default=False)),
+		('ignore-errors', config_options.Type(bool, default=False)),
+	)
+
 	def on_files(self, files: files.Files, config):
+		def checkConfig(config_project, proData, strict: bool):
+			cfg = Config(config_project, '')
+			cfg.load_dict(proData)
+			errors, warnings = cfg.validate()
+			for config_name, warning in warnings:
+				log.warning(f"  -> Config value: '{config_name}' in project '{projectName}'. Warning: {warning}")
+			for config_name, error in errors:
+				log.error(f"  -> Config value: '{config_name}' in project '{projectName}'. Error: {error}")
+
+			if len(errors) > 0:
+				raise exceptions.Abort("Aborted with {} Configuration Errors!".format(len(errors)))
+			elif strict and len(warnings) > 0:
+				raise exceptions.Abort("Aborted with {} Configuration Warnings in 'strict' mode!".format(len(warnings)))
+
 		def tempDir(siteDir: str)->str:
 			tempDoxyDir = path.join(siteDir, "assets/.doxy")
 			makedirs(tempDoxyDir, exist_ok=True)
@@ -44,38 +68,39 @@ class DoxygenSnippets(BasePlugin):
 		self.doxygen = {}
 		self.generatorBase = {}
 		self.projects = self.config["projects"]
-		for projectName in self.projects:
 
+		log.info(f"Start plugin {pluginName}")
+
+		for projectName in self.projects:
 			self.proData = self.projects.get(projectName)
-			logger.info(f"Building project {projectName}")
+			log.info(f"-> Start project '{projectName}'")
+
+			# Check project config -> raise exceptions
+			checkConfig(self.config_project, self.proData, config['strict'])
 
 			# Check scr changes -> run Doxygen
 			doxygenRun = DoxygenRun(self.proData['src'], tempDir(config['site_dir']))
 			if doxygenRun.checkAndRun():
-				logger.info("- Running Doxygen")
+				log.info("  -> Running Doxygen")
 			else:
-				logger.info("- skipping Doxygen")
-
-			cache = Cache()
+				log.info("  -> skipping Doxygen")
 
 			self.debug = config.get('debug', False)
-			self.options = {
-				'link_prefix': "" # relative path in api/
-			}
 
 			# Parse XML to bacic structure
+			cache = Cache()
 			parser = XmlParser(cache=cache, debug=self.debug)
 
 			# Parse bacic structure to recursive Nodes
-			self.doxygen[projectName] = Doxygen(doxygenRun.path, parser=parser, cache=cache, options=self.options, debug=self.debug)
+			self.doxygen[projectName] = Doxygen(doxygenRun.path, parser=parser, cache=cache, debug=self.debug)
 
 			# Print parsed files
 			if self.debug:
-				logger.warning(pformat(parser))
+				log.warning(pformat(parser))
 				self.doxygen[projectName].print()
 
 			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
-			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"], options=self.options) # options=self.options will be deleted
+			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"]) # options=self.options will be deleted
 
 			if self.config["full-doc"]:
 				fullDocFiles = []
@@ -100,7 +125,7 @@ class DoxygenSnippets(BasePlugin):
 			files: files.Files,
 	) -> str:
 		# Parse markdown and include self.fullDoc snippets
-		# logger.warning("Parse markdown and include self.fullDoc snippets")
+		# log.warning("Parse markdown and include self.fullDoc snippets")
 
 		## FIX API Url
 		urlSlashCount = page.url.count("/") # count / in url
@@ -116,7 +141,7 @@ class DoxygenSnippets(BasePlugin):
 		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generatorBase, doxygen=self.doxygen, slashPrefix = slashPrefix,
 		                                      debug=self.debug)
 		finalMd = generatorSnippets.generate()
-		# logger.warning(finalMd)
+		# log.warning(finalMd)
 		return finalMd
 		# return markdown
 
