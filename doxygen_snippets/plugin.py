@@ -32,7 +32,7 @@ class DoxygenSnippets(BasePlugin):
 	"""
 
 	config_scheme = (
-		('projects', config_options.Type(dict, default='')),
+		('projects', config_options.Type(dict, default={})),
 		('full-doc', config_options.Type(bool, default=True)),
 		('debug', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
@@ -43,6 +43,7 @@ class DoxygenSnippets(BasePlugin):
 		('full-doc', config_options.Type(bool, default=True)),
 		('debug', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
+		('doxy-cfg', config_options.Type(dict, default={}, required=False)),
 	)
 
 	def on_files(self, files: files.Files, config):
@@ -79,7 +80,7 @@ class DoxygenSnippets(BasePlugin):
 			checkConfig(self.config_project, self.proData, config['strict'])
 
 			# Check scr changes -> run Doxygen
-			doxygenRun = DoxygenRun(self.proData['src'], tempDir(config['site_dir']))
+			doxygenRun = DoxygenRun(self.proData.get('src'), tempDir(config['site_dir']), self.proData.get('doxy-cfg', {}))
 			if doxygenRun.checkAndRun():
 				log.info("  -> Running Doxygen")
 			else:

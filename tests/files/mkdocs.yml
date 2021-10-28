@@ -11,15 +11,20 @@ plugins:
             esp:
                 src: src-esp
                 full-doc: True
+                doxy-cfg:
+                    FILE_PATTERNS: "*.cpp *.h*"
+                    EXAMPLE_PATH: examples
+                    RECURSIVE: True
             stm:
                 src: src-stm32
                 full-doc: True
-#            - src-stm32
-#            - src-jac/
+            jac:
+                src: src-jac/components src-jac/main
+                doxy-cfg:
+                    FILE_PATTERNS: "*.c* *.h*"
         full-doc: True
         debug: False
         ignore-errors: False
-
 
 markdown_extensions:
   - pymdownx.highlight
@@ -30,7 +35,7 @@ nav:
     - 'AS': 'tes/te2.md'
     - 'tes/myfile/myM.md'
     - API:
-        - ESP:
+        - ESP-32:
             - 'Classes':
                 - 'Class List': 'esp/annotated.md'
                 - 'Class Index': 'esp/classes.md'
@@ -48,10 +53,10 @@ nav:
                 - 'Namespace Member Typedefs': 'esp/namespace_member_typedefs.md'
                 - 'Namespace Member Enumerations': 'esp/namespace_member_enums.md'
             - 'Functions': 'esp/functions.md'
-            - 'Variables': 'esp/variables'
+            - 'Variables': 'esp/variables.md'
             - 'Macros': 'esp/macros.md'
             - 'Files': 'esp/files.md'
-        - STM:
+        - STM-32:
             - 'Classes':
                 - 'Class List': 'stm/annotated.md'
                 - 'Class Index': 'stm/classes.md'
@@ -69,6 +74,27 @@ nav:
                 - 'Namespace Member Typedefs': 'stm/namespace_member_typedefs.md'
                 - 'Namespace Member Enumerations': 'stm/namespace_member_enums.md'
             - 'Functions': 'stm/functions.md'
-            - 'Variables': 'stm/variables'
+            - 'Variables': 'stm/variables.md'
             - 'Macros': 'stm/macros.md'
             - 'Files': 'stm/files.md'
+        - Jaculus:
+            - 'Classes':
+                - 'Class List': 'jac/annotated.md'
+                - 'Class Index': 'jac/classes.md'
+                - 'Class Hierarchy': 'jac/hierarchy.md'
+                - 'Class Members': 'jac/class_members.md'
+                - 'Class Member Functions': 'jac/class_member_functions.md'
+                - 'Class Member Variables': 'jac/class_member_variables.md'
+                - 'Class Member Typedefs': 'jac/class_member_typedefs.md'
+                - 'Class Member Enumerations': 'jac/class_member_enums.md'
+            - 'Namespaces':
+                - 'Namespace List': 'jac/namespaces.md'
+                - 'Namespace Members': 'jac/namespace_members.md'
+                - 'Namespace Member Functions': 'jac/namespace_member_functions.md'
+                - 'Namespace Member Variables': 'jac/namespace_member_variables.md'
+                - 'Namespace Member Typedefs': 'jac/namespace_member_typedefs.md'
+                - 'Namespace Member Enumerations': 'jac/namespace_member_enums.md'
+            - 'Functions': 'jac/functions.md'
+            - 'Variables': 'jac/variables.md'
+            - 'Macros': 'jac/macros.md'
+            - 'Files': 'jac/files.md'
