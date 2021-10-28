@@ -100,21 +100,20 @@ class DoxygenSnippets(BasePlugin):
 				self.doxygen[projectName].print()
 
 			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
-			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"]) # options=self.options will be deleted
+			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"])
 
 			if self.config["full-doc"]:
-				fullDocFiles = []
 				generatorAuto = GeneratorAuto(generatorBase=self.generatorBase[projectName],
 											  tempDoxyDir=tempDir(config['site_dir']),
 											  siteDir=config['site_dir'],
 											  apiPath=projectName,
+											  doxygen=self.doxygen[projectName],
 											  useDirectoryUrls=config['use_directory_urls'],
-											  fullDocFiles=fullDocFiles,
 											  debug=self.debug)
-				generatorAuto.fullDoc(self.doxygen[projectName])
+				# generate automatic documentation and append files into files
+				generatorAuto.fullDoc()
 				for file in generatorAuto.fullDocFiles:
 					files.append(file)
-
 		return files
 
 	def on_page_markdown(
@@ -124,26 +123,14 @@ class DoxygenSnippets(BasePlugin):
 			config: base.Config,
 			files: files.Files,
 	) -> str:
-		# Parse markdown and include self.fullDoc snippets
-		# log.warning("Parse markdown and include self.fullDoc snippets")
-
-		## FIX API Url
-		urlSlashCount = page.url.count("/") # count / in url
-		if page.url[-1:] == "/":
-			urlSlashCount = urlSlashCount - 1 # -1 if ends with / (fold/post/ -> fold/post -> 1 slash)
-		slashPrefix = ""
-		for i in range(urlSlashCount):
-			slashPrefix += "../"
-		# for project in self.generatorBase:
-			# self.generatorBase[project].options["link_prefix"] = slashPrefix # fix api with ../
-		## FIX API Url END
-
-		generatorSnippets = GeneratorSnippets(markdown=markdown, generatorBase=self.generatorBase, doxygen=self.doxygen, slashPrefix = slashPrefix,
+		generatorSnippets = GeneratorSnippets(markdown=markdown,
+											  generatorBase=self.generatorBase,
+											  doxygen=self.doxygen,
+											  useDirectoryUrls=config['use_directory_urls'],
+											  page = page,
 		                                      debug=self.debug)
 		finalMd = generatorSnippets.generate()
-		# log.warning(finalMd)
 		return finalMd
-		# return markdown
 
 # def on_pre_build(self, config):
 
