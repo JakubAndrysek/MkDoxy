@@ -95,16 +95,11 @@ class GeneratorSnippets:
 	def replaceMarkdown(self, start: int, end: int, newString: string):
 		self.markdown = self.markdown[:start] + newString + "\n" + self.markdown[end:]
 
-	# def modifyUrl(self, project):
-	# 	return f"{self.slashPrefix}{}"
-
-	# def _recursive_call(self, nodes: [Node], ):
-	# 	for node in nodes:
-	# 		if node.kind == kind:
-	# 			ret.append(node)
-	# 		if node.kind.is_parent():
-	# 			ret.extend(self._recursive_find(node.children, kind))
-	# 	return ret
+	def _recursive_setLinkPrefix(self, nodes: [Node], linkPrefix: str):
+		for node in nodes:
+			node.setLinkPrefix(linkPrefix)
+			if node.kind.is_parent():
+				self._recursive_setLinkPrefix(node.children, linkPrefix)
 
 	def callDoxyByName(self, snippet, project: str, key: str, config):
 		if key in self.DOXY_CALL:
@@ -206,36 +201,31 @@ class GeneratorSnippets:
 
 	def doxyClassList(self, snippet, project: str, config):
 		nodes = self.doxygen[project].root.children
-		for node in nodes:
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].annotated(nodes)
 		return md
 
 	def doxyClassIndex(self, snippet, project: str, config):
 		nodes = self.doxygen[project].root.children
-		for node in nodes:
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].classes(nodes)
 		return md
 
 	def doxyClassHierarchy(self, snippet, project: str, config):
 		nodes = self.doxygen[project].root.children
-		for node in nodes:
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].hierarchy(nodes)
 		return md
 
 	def doxyNamespaceList(self, snippet, project: str, config):
 		nodes = self.doxygen[project].root.children
-		for node in nodes:
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].namespaces(nodes)
 		return md
 
 	def doxyFileList(self, snippet, project: str, config):
 		nodes = self.doxygen[project].files.children
-		for node in nodes:
-			node.setLinkPrefix(self.slashPrefix + project + "/")
+		self._recursive_setLinkPrefix(nodes, self.slashPrefix + project + "/")
 		md = self.generatorBase[project].fileindex(nodes)
 		return md
 

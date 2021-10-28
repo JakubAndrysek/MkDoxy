@@ -427,6 +427,31 @@ class Node:
 			return self._parent.url + '#' + self.anchor
 
 	@property
+	def base_url(self) -> str:
+		def prefix(page: str):
+			return self.linkPrefix + page
+
+		if self.is_group:
+			return prefix("modules.md")
+		elif self.is_file or self.is_dir:
+			return prefix("files.md")
+		elif self.is_namespace:
+			return prefix("namespaces.md")
+		else:
+			return prefix("annotated.md")
+
+	@property
+	def base_name(self) -> str:
+		if self.is_group:
+			return "Modules"
+		elif self.is_file or self.is_dir:
+			return "FileList"
+		elif self.is_namespace:
+			return "Namespace List"
+		else:
+			return "ClassList"
+
+	@property
 	def url_source(self) -> str:
 		if self.is_parent or self.is_group or self.is_file or self.is_dir:
 			return self._refid + '_source.md'

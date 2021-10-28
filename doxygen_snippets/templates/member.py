@@ -10,13 +10,8 @@ TEMPLATE = """
 **template &lt;{{node.templateparams}}&gt;**
 {% endif %}
 
-{% if node.is_group -%}
-[**Modules**]({{link_prefix}}modules.md)
-{% elif node.is_file or node.is_dir -%}
-[**File List**]({{link_prefix}}files.md)
-{%- else -%}
-[**Class List**]({{link_prefix}}annotated.md)
-{%- endif %}
+
+[**{{node.base_name}}**]({{node.base_url}})
 {%- for parent in node.parents -%}
 {{'**>**'|indent(1, true)}} [**{{parent.name_long if node.is_group else parent.name_short}}**]({{link_prefix}}{{parent.url}})
 {%- endfor %}
