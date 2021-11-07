@@ -9,6 +9,9 @@ from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.markdown import escape
 from doxygen_snippets.utils import split_safe
 from doxygen_snippets.property import Property
+import logging
+
+log = logging.getLogger("mkdocs")
 
 
 class Node:
@@ -30,7 +33,7 @@ class Node:
 
 		elif xml is None:
 			if self.debug:
-				print('Loading XML from: ' + xml_file)
+				log.info('Loading XML from: ' + xml_file)
 			self._dirname = os.path.dirname(xml_file)
 			self._xml = ElementTree.parse(xml_file).getroot().find('compounddef')
 			if self._xml is None:
@@ -42,7 +45,7 @@ class Node:
 			self._static = False
 
 			if self.debug:
-				print('Parsing: ' + self._refid)
+				log.info('Parsing: ' + self._refid)
 			self._check_for_children()
 
 			title = self._xml.find('title')
@@ -61,7 +64,7 @@ class Node:
 			self._cache.add(self._refid, self)
 
 			if self.debug:
-				print('Parsing: ' + self._refid)
+				log.info('Parsing: ' + self._refid)
 			self._check_attrs()
 			self._title = self._name
 

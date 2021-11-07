@@ -4,6 +4,10 @@ from doxygen_snippets.node import Node
 from doxygen_snippets.constants import Kind, Visibility
 from doxygen_snippets.cache import Cache
 from doxygen_snippets.xml_parser import XmlParser
+import logging
+
+log = logging.getLogger("mkdocs")
+
 
 
 class Doxygen:
@@ -11,7 +15,7 @@ class Doxygen:
 		self.debug = debug
 		path = os.path.join(index_path, 'index.xml')
 		if self.debug:
-			print('Loading XML from: ' + path)
+			log.info('Loading XML from: ' + path)
 		xml = ElementTree.parse(path).getroot()
 
 		self.parser = parser
@@ -48,7 +52,7 @@ class Doxygen:
 				self.pages.add_child(node)
 
 		if self.debug:
-			print('Deduplicating data... (may take a minute!)')
+			log.info('Deduplicating data... (may take a minute!)')
 		for i, child in enumerate(self.root.children.copy()):
 			self._fix_duplicates(child, self.root, [])
 
@@ -61,7 +65,7 @@ class Doxygen:
 		self._fix_parents(self.files)
 
 		if self.debug:
-			print('Sorting...')
+			log.info('Sorting...')
 		self._recursive_sort(self.root)
 		self._recursive_sort(self.groups)
 		self._recursive_sort(self.files)
@@ -100,25 +104,25 @@ class Doxygen:
 				self._remove_from_root(child.refid, root)
 			self._fix_duplicates(child, root, filter)
 
-	def print(self):
+	def printStructure(self):
 		if self.debug:
 			print('\n')
-			print("Print root")
+			log.info("Print root")
 			for node in self.root.children:
 				self.print_node(node, '')
 			print('\n')
 
-			print("Print groups")
+			log.info("Print groups")
 			for node in self.groups.children:
 				self.print_node(node, '')
 			print('\n')
 
-			print("Print files")
+			log.info("Print files")
 			for node in self.files.children:
 				self.print_node(node, '')
 
 	def print_node(self, node: Node, indent: str):
 		if self.debug:
-			print(indent, node.kind, node.name)
+			log.info(f"{indent} {node.kind} {node.name}")
 		for child in node.children:
 			self.print_node(child, indent + '  ')

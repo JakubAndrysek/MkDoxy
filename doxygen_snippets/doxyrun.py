@@ -62,7 +62,7 @@ class DoxygenRun:
 
 		def hashRead(filename: str) -> str:
 			with open(filename, "r") as file:
-				return str(f.read())
+				return str(file.read())
 
 		sha1 = hashlib.sha1()
 		srcs = self.doxygenSource.split(" ")
@@ -81,7 +81,7 @@ class DoxygenRun:
 
 		hahsNew = sha1.hexdigest()
 		if Path(self.hashFilePath).is_file():
-			hashOld = hashRead(self.yamlHashFilePath)
+			hashOld = hashRead(self.hashFilePath)
 			if hahsNew == hashOld:
 				return False
 

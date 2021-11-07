@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Fix small bugs, readme">
+      <change afterPath="$PROJECT_DIR$/tests/exceptKeyboardInterrupt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/files/src-esp/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/src-esp/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +83,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="doxygenSubprocess" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="exceptKeyboardInterrupt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="master" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -90,7 +96,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/doxygenSubprocess.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/exceptKeyboardInterrupt.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -259,18 +265,18 @@
       <item itemvalue="Python.mkdocs-serve-3.7" />
       <item itemvalue="Python.mkdocs-serve-3.10" />
       <item itemvalue="Python.basic" />
-      <item itemvalue="Python.doxygenSubprocess" />
       <item itemvalue="Python.mkdocs-serve-3.8" />
       <item itemvalue="Python.snippetsTest" />
       <item itemvalue="Python.stripCode" />
+      <item itemvalue="Python.exceptKeyboardInterrupt" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.exceptKeyboardInterrupt" />
         <item itemvalue="Python.mkdocs-serve-3.8" />
         <item itemvalue="Python.snippetsTest" />
         <item itemvalue="Python.basic" />
         <item itemvalue="Python.stripCode" />
-        <item itemvalue="Python.doxygenSubprocess" />
       </list>
     </recent_temporary>
   </component>
@@ -304,6 +310,9 @@
       <workItem from="1635338587317" duration="940000" />
       <workItem from="1635339580166" duration="43399000" />
       <workItem from="1635450602679" duration="3606000" />
+      <workItem from="1636135122161" duration="1196000" />
+      <workItem from="1636300121134" duration="533000" />
+      <workItem from="1636300936658" duration="6945000" />
     </task>
     <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
       <created>1629032602287</created>
@@ -379,14 +388,9 @@
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/doxyrun.py</url>
-          <line>84</line>
-          <option name="timeStamp" value="113" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/doxyrun.py</url>
-          <line>82</line>
-          <option name="timeStamp" value="114" />
+          <url>file://$PROJECT_DIR$/doxygen_snippets/plugin.py</url>
+          <line>144</line>
+          <option name="timeStamp" value="128" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -395,14 +399,15 @@
     <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_10.coverage" NAME="mkdocs-serve-3.10 Coverage Results" MODIFIED="1635030376714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_8.coverage" NAME="mkdocs-serve-3.8 Coverage Results" MODIFIED="1635030346871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
-    <SUITE FILE_PATH="coverage/master$mkdocs_Build_3_9.coverage" NAME="mkdocs-Build-3.9 Coverage Results" MODIFIED="1635419460531" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
-    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_9.coverage" NAME="mkdocs-serve-3.9 Coverage Results" MODIFIED="1635459180754" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_Build_3_9.coverage" NAME="mkdocs-Build-3.9 Coverage Results" MODIFIED="1636304552748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_9.coverage" NAME="mkdocs-serve-3.9 Coverage Results" MODIFIED="1636307823895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1634490070418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1634731940573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629136660398" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$stripCode.coverage" NAME="stripCode Coverage Results" MODIFIED="1634414465384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$basic.coverage" NAME="basic Coverage Results" MODIFIED="1634486103829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$testTemplate.coverage" NAME="testTemplate Coverage Results" MODIFIED="1628421513979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/master$exceptKeyboardInterrupt.coverage" NAME="exceptKeyboardInterrupt Coverage Results" MODIFIED="1636135804740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$doxygenSubprocess.coverage" NAME="doxygenSubprocess Coverage Results" MODIFIED="1629704217036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_7.coverage" NAME="mkdocs-serve-3.7 Coverage Results" MODIFIED="1635030151492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
   </component>
