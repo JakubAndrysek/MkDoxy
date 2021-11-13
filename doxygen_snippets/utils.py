@@ -1,3 +1,15 @@
+import re
+import sys
+from pprint import *
+from ruamel.yaml import YAML
+
+import logging
+
+log = logging.getLogger("mkdocs")
+
+
+regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
+
 # Credits: https://stackoverflow.com/a/1630350
 def lookahead(iterable):
 	"""Pass through all values from the given iterable, augmented by the
@@ -55,3 +67,22 @@ def split_safe(s: str, delim: str) -> [str]:
 			last = i
 		i += 1
 	return tokens
+
+
+def parseTemplateFile(templateFile: str):
+	match = re.match(regex, templateFile, re.MULTILINE)
+	if match:
+		template = match.group("template")
+		meta = match.group("meta")
+		yaml = YAML(typ='safe')
+		metaData = yaml.load(meta)
+		# yaml.dump(metaData, sys.stdout)
+		return template, metaData
+	return templateFile, {}
+
+
+def merge_two_dicts(base, new):
+	"https://stackoverflow.com/a/26853961"
+	result = base.copy()  # start with keys and values of x
+	result.update(new)  # modifies z with keys and values of y
+	return result

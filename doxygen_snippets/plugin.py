@@ -1,3 +1,4 @@
+import sys
 from os import path, makedirs
 from pathlib import Path, PurePath
 from mkdocs import utils as mkdocs_utils
@@ -58,9 +59,9 @@ class DoxygenSnippets(BasePlugin):
 				log.error(f"  -> Config value: '{config_name}' in project '{projectName}'. Error: {error}")
 
 			if len(errors) > 0:
-				raise exceptions.Abort("Aborted with {} Configuration Errors!".format(len(errors)))
+				raise exceptions.Abort(f"Aborted with {len(errors)} Configuration Errors!")
 			elif strict and len(warnings) > 0:
-				raise exceptions.Abort("Aborted with {} Configuration Warnings in 'strict' mode!".format(len(warnings)))
+				raise exceptions.Abort(f"Aborted with {len(warnings)} Configuration Warnings in 'strict' mode!")
 
 		def tempDir(siteDir: str, tempDir:str, projectName: str) ->str:
 			tempDoxyDir = PurePath.joinpath(Path(siteDir), Path(tempDir), Path(projectName))
@@ -109,13 +110,16 @@ class DoxygenSnippets(BasePlugin):
 			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"])
 
 			if self.config["full-doc"]:
-				generatorAuto = GeneratorAuto(generatorBase=self.generatorBase[projectName],
-											  tempDoxyDir=tempDirApi,
-											  siteDir=config['site_dir'],
-											  apiPath=projectName,
-											  doxygen=self.doxygen[projectName],
-											  useDirectoryUrls=config['use_directory_urls'],
-											  debug=self.debug)
+				generatorAuto = GeneratorAuto(
+					generatorBase=self.generatorBase[projectName],
+					tempDoxyDir=tempDirApi,
+					siteDir=config['site_dir'],
+					apiPath=projectName,
+					doxygen=self.doxygen[projectName],
+					useDirectoryUrls=config['use_directory_urls'],
+					debug=self.debug
+				)
+
 				# generate automatic documentation and append files into files
 				generatorAuto.fullDoc()
 				for file in generatorAuto.fullDocFiles:
@@ -129,12 +133,15 @@ class DoxygenSnippets(BasePlugin):
 			config: base.Config,
 			files: files.Files,
 	) -> str:
-		generatorSnippets = GeneratorSnippets(markdown=markdown,
-											  generatorBase=self.generatorBase,
-											  doxygen=self.doxygen,
-											  useDirectoryUrls=config['use_directory_urls'],
-											  page = page,
-		                                      debug=self.debug)
+		generatorSnippets = GeneratorSnippets(
+			markdown=markdown,
+			generatorBase=self.generatorBase,
+			doxygen=self.doxygen,
+			useDirectoryUrls=config['use_directory_urls'],
+			page = page,
+  			debug=self.debug
+		)
+
 		finalMd = generatorSnippets.generate()
 		return finalMd
 

@@ -20,7 +20,6 @@ from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
 from doxygen_snippets.generatorBase import GeneratorBase
-
 import logging
 
 log = logging.getLogger("mkdocs")
@@ -80,7 +79,7 @@ class GeneratorSnippets:
 			if match:
 				snippet = match.group()
 				key = match.group('key')
-				projec = match.group('project')
+				project = match.group('project')
 				keyLow = key.lower()
 				log.debug(f"\nKey: {keyLow}")
 				yamlRaw = match.group('yaml')
@@ -112,11 +111,11 @@ class GeneratorSnippets:
 			self._recurs_setLinkPrefixNode(node, linkPrefix)
 
 	def callDoxyByName(self, snippet, project: str, key: str, config):
-		if key in self.DOXY_CALL:
-			funcName = self.DOXY_CALL[key]
-			return funcName(snippet, project, config)
-		else:
+		if key not in self.DOXY_CALL:
 			return self.generatorBase[project].error(f"Did not exist key with name: {key}", snippet, "yaml")
+
+		funcName = self.DOXY_CALL[key]
+		return funcName(snippet, project, config)
 
 	def checkConfig(self, snippet, project: str, config, params):
 		"""
@@ -124,7 +123,7 @@ class GeneratorSnippets:
 		return error message if project not exist or find problem in config
 		"""
 		# Project is exist
-		if not project in self.generatorBase:
+		if project not in self.generatorBase:
 			return self.generatorBase[list(self.generatorBase)[0]].error(f"Did not exist project with name: {project}", snippet, "yaml")
 		# Project has got parameters
 		for param in params:

@@ -2,28 +2,23 @@ import os
 import re
 import string
 import traceback
+from dataclasses import dataclass, field
+from typing import Tuple
 from typing import TextIO
-from jinja2 import Template
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
+from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
+import doxygen_snippets
 from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
-from doxygen_snippets.templates.annotated import TEMPLATE as ANNOTATED_TEMPLATE
-from doxygen_snippets.templates.member import TEMPLATE as MEMBER_TEMPLATE, CONFIG as MEMBER_CONFIG
-from doxygen_snippets.templates.member_definition import TEMPLATE as MEMBER_DEFINITION_TEMPLATE, CONFIG as MEMBER_DEFINITION_CONFIG
-from doxygen_snippets.templates.member_table import TEMPLATE as MEMBER_TABLE_TEMPLATE
-from doxygen_snippets.templates.namespaces import TEMPLATE as NAMESPACES_TEMPLATE
-from doxygen_snippets.templates.classes import TEMPLATE as CLASSES_TEMPLATE
-from doxygen_snippets.templates.hierarchy import TEMPLATE as HIEARARCHY_TEMPLATE
-from doxygen_snippets.templates.index import TEMPLATE as INDEX_TEMPLATE
-from doxygen_snippets.templates.modules import TEMPLATE as MODULES_TEMPLATE
-from doxygen_snippets.templates.files import TEMPLATE as FILES_TEMPLATE
-from doxygen_snippets.templates.programlisting import TEMPLATE as PROGRAMLISTING_TEMPLATE
-from doxygen_snippets.templates.code import TEMPLATE as CODE_TEMPLATE, CONFIG as CODE_CONFIG
-from doxygen_snippets.templates.page import TEMPLATE as PAGE_TEMPLATE
-from doxygen_snippets.templates.pages import TEMPLATE as PAGES_TEMPLATE
-from doxygen_snippets.templates.error import TEMPLATE as ERROR_TEMPLATE
+from doxygen_snippets.utils import parseTemplateFile, merge_two_dicts
+from mkdocs import exceptions
+from markdown import extensions, preprocessors
+import logging
+
+log = logging.getLogger("mkdocs")
+
 
 LETTERS = string.ascii_lowercase + '~_@\\'
 
@@ -47,7 +42,6 @@ ADDITIONAL_FILES = {
 def generate_link(name, url) -> str:
 	return '* [' + name + '](' + url + ')\n'
 
-
 class GeneratorBase:
 	def __init__(self, ignore_errors: bool = False, debug: bool = False):
 		self.options = {} # will be deleted
@@ -57,24 +51,28 @@ class GeneratorBase:
 		if not ignore_errors:
 			on_undefined_class = StrictUndefined
 
-		try:
-			self.annotated_template = Template(ANNOTATED_TEMPLATE, undefined=on_undefined_class)
-			self.member_template = Template(MEMBER_TEMPLATE, undefined=on_undefined_class)
-			self.member_definition_template = Template(MEMBER_DEFINITION_TEMPLATE, undefined=on_undefined_class)
-			self.member_table_template = Template(MEMBER_TABLE_TEMPLATE, undefined=on_undefined_class)
-			self.namespaces_template = Template(NAMESPACES_TEMPLATE, undefined=on_undefined_class)
-			self.classes_template = Template(CLASSES_TEMPLATE, undefined=on_undefined_class)
-			self.hiearchy_template = Template(HIEARARCHY_TEMPLATE, undefined=on_undefined_class)
-			self.index_template = Template(INDEX_TEMPLATE, undefined=on_undefined_class)
-			self.modules_template = Template(MODULES_TEMPLATE, undefined=on_undefined_class)
-			self.files_template = Template(FILES_TEMPLATE, undefined=on_undefined_class)
-			self.programlisting_template = Template(PROGRAMLISTING_TEMPLATE, undefined=on_undefined_class)
-			self.code_template = Template(CODE_TEMPLATE, undefined=on_undefined_class)
-			self.page_template = Template(PAGE_TEMPLATE, undefined=on_undefined_class)
-			self.pages_template = Template(PAGES_TEMPLATE, undefined=on_undefined_class)
-			self.error_template = Template(ERROR_TEMPLATE, undefined=on_undefined_class)
-		except TemplateSyntaxError as e:
-			raise Exception(str(e) + ' at line: ' + str(e.lineno))
+		self.templates: Dict[str, Template] = {}
+		self.metaData: Dict[str, list[str]] = {}
+
+		# code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
+		path = os.path.join(os.path.dirname(doxygen_snippets.__file__), "templates")
+		for fileName in os.listdir(path):
+			filePath = os.path.join(path, fileName)
+			if fileName.endswith(".jinja2"):
+				with open(filePath, "r") as file:
+					name = os.path.splitext(fileName)[0]
+					fileTemplate, metaData = parseTemplateFile(file.read())
+					self.templates[name] = Template(fileTemplate)
+					self.metaData[name] = metaData
+			else:
+				log.error(f"Trying to load unsupported file '{filePath}'. Supported file ends with '.jinja2'.")
+				
+	def loadConfigAndTemplate(self, name: str) -> [Template, dict]:
+		template = self.templates.get(name)
+		if not template:
+			raise exceptions.Abort(f"Trying to load unexisting template '{name}'. Please create a new template file with name '{name}.jinja2'")
+		metaData = self.metaData.get(name, {})
+		return template, metaData
 
 	def render(self, tmpl: Template, data: dict) -> str:
 		try:
@@ -82,7 +80,6 @@ class GeneratorBase:
 				print('Generating', path)
 			data.update(self.options)
 			output = tmpl.render(data)
-
 			return output
 		except TemplateError as e:
 			raise Exception(str(e))
@@ -106,11 +103,7 @@ class GeneratorBase:
 		return ret
 
 
-	def merge_two_dicts(self, x, y):
-		"https://stackoverflow.com/a/26853961"
-		z = x.copy()  # start with keys and values of x
-		z.update(y)  # modifies z with keys and values of y
-		return z
+
 
 	def error(self, title: str = "", message: str = "", language: str = ""):
 		data = {
@@ -118,27 +111,24 @@ class GeneratorBase:
 			'message': message,
 			'language': language,
 		}
-		return self.render(self.error_template, data)
+		return self.render(self.templates.get("error"), data)
 
 	def annotated(self, nodes: [Node]):
 		data = {
 			'nodes': nodes
 		}
-		return self.render(self.annotated_template, data)
+		# return self.render(self.annotated_template, data)
+		return self.render(self.templates.get("annotated"), data)
 
 	def programlisting(self, node: [Node], config: dict = {}):
 		data = {
 			'node': node
 		}
-		return self.render(self.programlisting_template, data)
+		return self.render(self.templates.get("programlisting"), data)
 
 	def code(self, node: [Node], config: dict = {}, code: str = ""):
-		newConfig = self.merge_two_dicts(CODE_CONFIG, config)
-
-		# if "start" in newConfig:
-		# 	code = self.codeStrip(node.programlisting, newConfig.get("start", 1), newConfig.get("end", 0))
-		# else:
-		# 	code = node.programlisting
+		newConfig = config
+		# newConfig = merge_two_dicts(CODE_CONFIG, config)
 
 		data = {
 			'node': node,
@@ -146,54 +136,31 @@ class GeneratorBase:
 			'code': code
 		}
 
-		return self.render(self.code_template, data)
-
-	# def codeStrip(self, codeRaw, start: int = 1, end: int = None):
-	# 	regex = r"(?s)````(?P<lang>[a-zA-Z.-_]+)\n(?P<code>.+)````.+"
-	# 	matches = re.search(regex, codeRaw, re.MULTILINE)
-	# 	lang = matches.group("lang")
-	# 	code = matches.group("code")
-	#
-	# 	print(lang, code)
-	#
-	# 	lines = code.split("\n")
-	# 	out = ""
-	#
-	# 	if end and start >= end:
-	# 		return None
-	#
-	# 	for num, line in enumerate(lines):
-	# 		print(num, line)
-	# 		if num >= start and num <= end:
-	# 			out += line + "\n"
-	# 		elif num >= start and end == 0:
-	# 			out += line + "\n"
-	#
-	# 	return f"```{lang}\n{out}```"
+		return self.render(self.templates.get("code"), data)
 
 	def fileindex(self, nodes: [Node], config: dict = {}):
 		data = {
 			'nodes': nodes
 		}
-		return self.render(self.files_template, data)
+		return self.render(self.templates.get("files"), data)
 
 	def namespaces(self, nodes: [Node], config: dict = {}):
 		data = {
 			'nodes': nodes
 		}
-		return self.render(self.namespaces_template, data)
+		return self.render(self.templates.get("namespaces"), data)
 
 	def page(self, node: Node):
 		data = {
 			'node': node
 		}
-		return self.render(self.page_template, data)
+		return self.render(self.templates.get("page"), data)
 
 	def relatedpages(self, nodes: [Node], config: dict = {}):
 		data = {
 			'nodes': nodes
 		}
-		return self.render(self.pages_template, data)
+		return self.render(self.templates.get("page"), data)
 
 	def classes(self, nodes: [Node], config: dict = {}):
 		classes = self.recursive_find(nodes, Kind.CLASS)
@@ -215,7 +182,7 @@ class GeneratorBase:
 		data = {
 			'dictionary': dictionary
 		}
-		return self.render(self.classes_template, data)
+		return self.render(self.templates.get("classes"), data)
 
 	def _find_base_classes(self, nodes: [Node], derived: Node):
 		ret = []
@@ -237,7 +204,7 @@ class GeneratorBase:
 		data = {
 			'nodes': nodes
 		}
-		return self.render(self.modules_template, data)
+		return self.render(self.templates.get("modules"), data)
 
 	def hierarchy(self, nodes: [Node], config: dict = {}):
 		classes = self.recursive_find(nodes, Kind.CLASS)
@@ -277,34 +244,42 @@ class GeneratorBase:
 		data = {
 			'classes': deduplicated_arr
 		}
-		return self.render(self.hiearchy_template, data)
+		return self.render(self.templates.get("hierarchy"), data)
 
 	def function(self, node: Node, config: dict = {}):
-		newConfig = self.merge_two_dicts(MEMBER_DEFINITION_CONFIG, config)
+		newConfig = config
+		# newConfig = merge_two_dicts(MEMBER_DEFINITION_CONFIG, config)
 		data = {
 			'node': node,
 			'config': newConfig
 		}
-		return self.render(self.member_definition_template, data)
+		return self.render(self.templates.get("member_definition"), data)
 
 	def member(self, node: Node, config: dict = {}):
-		newConfig = self.merge_two_dicts(MEMBER_CONFIG, config)
+		template, metaConfig = self.loadConfigAndTemplate("member")
+		# templateMd, metaConfigMd = self.loadConfigAndTemplate("member_definition")
+		# templateMt, metaConfigMt = self.loadConfigAndTemplate("member_table")
+
 		data = {
 			'node': node,
-			'member_definition_template': self.member_definition_template,
-			'member_table_template': self.member_table_template,
-			'config': newConfig
+			# 'member_definition_template': templateMt,
+			# 'member_definition_config': metaConfigMt,
+			# 'member_table_template': templateMt,
+			'member_definition_template': self.templates.get("member_definition"),
+			'member_table_template': self.templates.get("member_table"),
+			'config': merge_two_dicts(config, metaConfig)
 		}
-		return self.render(self.member_template, data)
+		return self.render(template, data)
+		# return self.render(self.templates.get("member"), data)
 
 	def file(self, node: Node, config: dict = {}):
 		data = {
 			'node': node,
-			'member_definition_template': self.member_definition_template,
-			'member_table_template': self.member_table_template,
+			'member_definition_template': self.templates.get("member_definition"),
+			'member_table_template': self.templates.get("member_table"),
 			'config': config
 		}
-		return self.render(self.member_template, data)
+		return self.render(self.templates.get("member"), data)
 
 	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str):
 		found_nodes = self.recursive_find_with_parent(nodes, kind_filters, kind_parents)
@@ -351,4 +326,4 @@ class GeneratorBase:
 			'title': title,
 			'dictionary': sorted_dictionary
 		}
-		return self.render(self.index_template, data)
+		return self.render(self.templates.get("index"), data)
