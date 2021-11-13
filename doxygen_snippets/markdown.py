@@ -218,7 +218,7 @@ class MdTable(Md):
 		for child in self.children:
 			child.render(f, '')
 			if is_first:
-				for i in range(0, len(child.children)):
+				for _ in range(len(child.children)):
 					f.write('|-----')
 				f.write('|')
 			is_first = False
