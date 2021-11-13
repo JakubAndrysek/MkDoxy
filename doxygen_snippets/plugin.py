@@ -41,7 +41,7 @@ class DoxygenSnippets(BasePlugin):
 	)
 
 	config_project = (
-		('src', config_options.Type(str)),
+		('src-dirs', config_options.Type(str)),
 		('full-doc', config_options.Type(bool, default=True)),
 		('debug', config_options.Type(bool, default=False)),
 		# ('ignore-errors', config_options.Type(bool, default=False)),
@@ -87,7 +87,7 @@ class DoxygenSnippets(BasePlugin):
 				tempDirApi = tempDir(config['site_dir'], "assets/.doxy/", projectName)
 
 			# Check scr changes -> run Doxygen
-			doxygenRun = DoxygenRun(self.proData.get('src'), tempDirApi, self.proData.get('doxy-cfg', {}))
+			doxygenRun = DoxygenRun(self.proData.get('src-dirs'), tempDirApi, self.proData.get('doxy-cfg', {}))
 			if doxygenRun.checkAndRun():
 				log.info("  -> generating Doxygen filese")
 			else:
@@ -109,7 +109,7 @@ class DoxygenSnippets(BasePlugin):
 			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
 			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"])
 
-			if self.config["full-doc"]:
+			if self.config["full-doc"] and self.proData.get("full-doc", True):
 				generatorAuto = GeneratorAuto(
 					generatorBase=self.generatorBase[projectName],
 					tempDoxyDir=tempDirApi,
@@ -122,6 +122,9 @@ class DoxygenSnippets(BasePlugin):
 
 				# generate automatic documentation and append files into files
 				generatorAuto.fullDoc()
+
+				generatorAuto.summary()
+
 				for file in generatorAuto.fullDocFiles:
 					files.append(file)
 		return files

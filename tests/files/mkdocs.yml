@@ -9,19 +9,27 @@ plugins:
     - doxygen-snippets:
         projects:
             esp:
-                src: src-esp
+                src-dirs: src-esp
+                full-doc: True
+                doxy-cfg:
+                    FILE_PATTERNS: "*.cpp *.h*"
+                    EXAMPLE_PATH: examples
+                    RECURSIVE: True
+            animal:
+                src-dirs: src-animal
                 full-doc: True
                 doxy-cfg:
                     FILE_PATTERNS: "*.cpp *.h*"
                     EXAMPLE_PATH: examples
                     RECURSIVE: True
             stm:
-                src: src-stm32
+                src-dirs: src-stm32
                 full-doc: True
             jac:
-                src: src-jac/components src-jac/main
+                src-dirs: src-jac/components src-jac/main
                 doxy-cfg:
                     FILE_PATTERNS: "*.c* *.h*"
+
         save-api: .doxy
         full-doc: True
         debug: False
@@ -37,6 +45,7 @@ nav:
     - '2 folders': 'tes/myfile/myM.md'
     - API:
         - ESP-32:
+            - 'Links': 'esp/links.md'
             - 'Classes':
                 - 'Class List': 'esp/annotated.md'
                 - 'Class Index': 'esp/classes.md'
@@ -58,6 +67,7 @@ nav:
             - 'Macros': 'esp/macros.md'
             - 'Files': 'esp/files.md'
         - STM-32:
+            - 'Links': 'stm/links.md'
             - 'Classes':
                 - 'Class List': 'stm/annotated.md'
                 - 'Class Index': 'stm/classes.md'
@@ -79,6 +89,7 @@ nav:
             - 'Macros': 'stm/macros.md'
             - 'Files': 'stm/files.md'
         - Jaculus:
+            - 'Links': 'jac/links.md'
             - 'Classes':
                 - 'Class List': 'jac/annotated.md'
                 - 'Class Index': 'jac/classes.md'
@@ -99,3 +110,25 @@ nav:
             - 'Variables': 'jac/variables.md'
             - 'Macros': 'jac/macros.md'
             - 'Files': 'jac/files.md'
+        - Animal:
+            - 'Links': 'animal/links.md'
+            - 'Classes':
+                - 'Class List': 'animal/annotated.md'
+                - 'Class Index': 'animal/classes.md'
+                - 'Class Hierarchy': 'animal/hierarchy.md'
+                - 'Class Members': 'animal/class_members.md'
+                - 'Class Member Functions': 'animal/class_member_functions.md'
+                - 'Class Member Variables': 'animal/class_member_variables.md'
+                - 'Class Member Typedefs': 'animal/class_member_typedefs.md'
+                - 'Class Member Enumerations': 'animal/class_member_enums.md'
+            - 'Namespaces':
+                - 'Namespace List': 'animal/namespaces.md'
+                - 'Namespace Members': 'animal/namespace_members.md'
+                - 'Namespace Member Functions': 'animal/namespace_member_functions.md'
+                - 'Namespace Member Variables': 'animal/namespace_member_variables.md'
+                - 'Namespace Member Typedefs': 'animal/namespace_member_typedefs.md'
+                - 'Namespace Member Enumerations': 'animal/namespace_member_enums.md'
+            - 'Functions': 'animal/functions.md'
+            - 'Variables': 'animal/variables.md'
+            - 'Macros': 'animal/macros.md'
+            - 'Files': 'animal/files.md'
