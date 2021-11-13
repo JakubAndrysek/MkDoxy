@@ -144,7 +144,7 @@ class GeneratorSnippets:
 		node = self.finder.doxyCode(project, config.get("file"))
 		if isinstance(node, Node):
 
-			progCode = self.codeStrip(node.programlisting, config.get("start", 1), config.get("end", 0))
+			progCode = self.codeStrip(node.programlisting, node.code_language, config.get("start", 1), config.get("end", 0))
 			if progCode == False:
 				return self.doxyError(project, f"Parameter start: {config.get('start')} is greater than end: {config.get('end')}",f"{snippet}", "yaml")
 			self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
@@ -152,20 +152,13 @@ class GeneratorSnippets:
 			return md
 		return self.doxyError(project, f"Did not find File: `{config.get('file')}`", f"{snippet}\nAvailable:\n{pformat(node)}", "yaml")
 
-	def codeStrip(self, codeRaw, start: int = 1, end: int = None):
-		regex = r"(?s)````(?P<lang>[a-zA-Z.-_]+)\n(?P<code>.+)````.+"
-		matches = re.search(regex, codeRaw, re.MULTILINE)
-		lang = matches.group("lang")
-		code = matches.group("code")
-
-		# print(lang, code)
-
-		lines = code.split("\n")
-		out = ""
+	def codeStrip(self, codeRaw, codeLanguage: str, start: int = 1, end: int = None):
+		lines = codeRaw.split("\n")
 
 		if end and start > end:
 			return False
 
+		out = ""
 		for num, line in enumerate(lines):
 			# print(num, line)
 			if num >= start and num <= end:
@@ -173,7 +166,7 @@ class GeneratorSnippets:
 			elif num >= start and end == 0:
 				out += line + "\n"
 
-		return f"```{lang} linenums='{start}'\n{out}```"
+		return f"```{codeLanguage} linenums='{start}'\n{out}```"
 
 
 	def doxyFunction(self, snippet, project: str, config):

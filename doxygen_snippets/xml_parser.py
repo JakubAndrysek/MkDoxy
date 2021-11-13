@@ -85,23 +85,15 @@ class XmlParser:
 			for codeline in p.findall('codeline'):
 				line = ''
 				for highlight in codeline.findall('highlight'):
-					if not got_lang and len(
-							list(highlight)) == 0 and highlight.text is not None and highlight.text.startswith(
-						'{') and highlight.text.endswith('}'):
-						lang = highlight.text[1:-1]
-						code.set_lang(lang)
-						got_lang = True
-						continue
-					else:
-						if highlight.text is not None:
-							line += highlight.text
-						for c in list(highlight):
-							if c.tag == 'sp':
-								line += ' '
-							if c.text:
-								line += c.text
-							if c.tail:
-								line += c.tail
+					if highlight.text is not None:
+						line += highlight.text
+					for c in list(highlight):
+						if c.tag == 'sp':
+							line += ' '
+						if c.text:
+							line += c.text
+						if c.tail:
+							line += c.tail
 				code.append(line)
 			ret.append(Text('\n'))
 			ret.append(code)

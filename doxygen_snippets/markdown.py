@@ -94,22 +94,16 @@ class Code():
 
 
 class MdCodeBlock:
-	def __init__(self, lines: List[str], lang: str = 'cpp'):
+	def __init__(self, lines: List[str]):
 		self.lines = lines
-		self.lang = lang
-
-	def set_lang(self, lang: str):
-		self.lang = lang
 
 	def append(self, line: str):
 		self.lines.append(line)
 
 	def render(self, f: MdRenderer, indent: str):
-		f.write('````' + self.lang + '\n')
 		for line in self.lines:
 			f.write(line)
 			f.write('\n')
-		f.write('````\n\n')
 
 
 class MdBlockQuote(Md):
