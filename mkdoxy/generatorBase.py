@@ -8,11 +8,11 @@ from typing import TextIO
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
 from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
-import doxygen_snippets
-from doxygen_snippets.node import Node, DummyNode
-from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.constants import Kind
-from doxygen_snippets.utils import parseTemplateFile, merge_two_dicts, recursive_find_with_parent, recursive_find
+import mkdoxy
+from mkdoxy.node import Node, DummyNode
+from mkdoxy.doxygen import Doxygen
+from mkdoxy.constants import Kind
+from mkdoxy.utils import parseTemplateFile, merge_two_dicts, recursive_find_with_parent, recursive_find
 from mkdocs import exceptions
 from markdown import extensions, preprocessors
 import logging
@@ -34,7 +34,7 @@ class GeneratorBase:
 		self.metaData: Dict[str, list[str]] = {}
 
 		# code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
-		path = os.path.join(os.path.dirname(doxygen_snippets.__file__), "templates")
+		path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates")
 		for fileName in os.listdir(path):
 			filePath = os.path.join(path, fileName)
 			if fileName.endswith(".jinja2"):

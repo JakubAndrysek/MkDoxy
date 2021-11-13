@@ -2,8 +2,8 @@ import re
 import sys
 from pprint import *
 from ruamel.yaml import YAML
-# from doxygen_snippets.node import Node
-# from doxygen_snippets.constants import Kind
+# from mkdoxy.node import Node
+# from mkdoxy.constants import Kind
 
 import logging
 

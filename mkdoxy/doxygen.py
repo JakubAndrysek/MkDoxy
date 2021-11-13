@@ -1,9 +1,9 @@
 import os
 from xml.etree import ElementTree
-from doxygen_snippets.node import Node
-from doxygen_snippets.constants import Kind, Visibility
-from doxygen_snippets.cache import Cache
-from doxygen_snippets.xml_parser import XmlParser
+from mkdoxy.node import Node
+from mkdoxy.constants import Kind, Visibility
+from mkdoxy.cache import Cache
+from mkdoxy.xml_parser import XmlParser
 import logging
 
 log = logging.getLogger("mkdocs")

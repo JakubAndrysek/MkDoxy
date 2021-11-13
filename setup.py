@@ -5,19 +5,18 @@ def readme():
         return f.read()
 
 setup(
-    name='mkdocs-doxygen-snippets-plugin',
-    version='0.1.4',
-    description='MkDocs Doxygen snippets plugin to create easy documentation',
+    name='mkdoxy',
+    version='1.0.0',
+    description='MkDoxy -> MkDocs + Doxygen. Easy documentation with code snippets.',
     long_description=readme(),
     long_description_content_type='text/markdown',
-    keywords='mkdocs',
-    url='https://github.com/JakubAndrysek/mkdocs-doxygen-snippets-plugin',
+    keywords=['python', 'open-source', 'documentation', 'mkdocs', 'doxygen', 'multilanguage'],
+    url='https://github.com/JakubAndrysek/mkdoxy',
     author='Jakub Andrýsek',
     author_email='email@kubaandrysek.cz',
     license='MIT',
     python_requires='>=3.7',
     install_requires=[
-        'mkdocs>=1.0.4',
         'mkdocs',
         'Jinja2',
         'ruamel.yaml',
@@ -32,7 +31,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'mkdocs.plugins': [
-            'doxygen-snippets = doxygen_snippets.plugin:DoxygenSnippets'
+            'mkdoxy = mkdoxy.plugin:MkDoxy'
         ]
     }
 )

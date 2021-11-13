@@ -8,11 +8,11 @@ from typing import TextIO
 from jinja2 import Template
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
-from doxygen_snippets.node import Node, DummyNode
-from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.constants import Kind
-from doxygen_snippets.generatorBase import GeneratorBase
-from doxygen_snippets.utils import recursive_find, recursive_find_with_parent
+from mkdoxy.node import Node, DummyNode
+from mkdoxy.doxygen import Doxygen
+from mkdoxy.constants import Kind
+from mkdoxy.generatorBase import GeneratorBase
+from mkdoxy.utils import recursive_find, recursive_find_with_parent
 from pprint import *
 from pathlib import Path, PurePath
 import logging

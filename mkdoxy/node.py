@@ -3,12 +3,12 @@ import re
 import traceback
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as Element
-from doxygen_snippets.constants import Kind, Visibility, OVERLOAD_OPERATORS
-from doxygen_snippets.cache import Cache
-from doxygen_snippets.xml_parser import XmlParser
-from doxygen_snippets.markdown import escape
-from doxygen_snippets.utils import split_safe
-from doxygen_snippets.property import Property
+from mkdoxy.constants import Kind, Visibility, OVERLOAD_OPERATORS
+from mkdoxy.cache import Cache
+from mkdoxy.xml_parser import XmlParser
+from mkdoxy.markdown import escape
+from mkdoxy.utils import split_safe
+from mkdoxy.property import Property
 import logging
 
 log = logging.getLogger("mkdocs")

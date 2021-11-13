@@ -1,8 +1,8 @@
 from xml.etree.ElementTree import Element as Element
-from doxygen_snippets.markdown import Md, MdRenderer, MdParagraph, MdTable, Code, MdTableRow, MdCodeBlock, MdTableCell, \
+from mkdoxy.markdown import Md, MdRenderer, MdParagraph, MdTable, Code, MdTableRow, MdCodeBlock, MdTableCell, \
 	MdHeader, MdImage, MdList, MdBlockQuote, MdLink, MdBold, MdItalic, MdHint, Text, Br
-from doxygen_snippets.cache import Cache
-from doxygen_snippets.utils import lookahead
+from mkdoxy.cache import Cache
+from mkdoxy.utils import lookahead
 
 SIMPLE_SECTIONS = {
 	'see': 'See also:',

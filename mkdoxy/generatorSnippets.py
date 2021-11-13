@@ -4,8 +4,8 @@ from typing import *
 from jinja2 import Template
 from mkdocs.config import base
 from mkdocs.structure import files, pages
-from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.finder import Finder
+from mkdoxy.doxygen import Doxygen
+from mkdoxy.finder import Finder
 import re
 from ruamel.yaml import YAML, YAMLError
 from pprint import *
@@ -16,10 +16,10 @@ from typing import TextIO
 from jinja2 import Template
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
-from doxygen_snippets.node import Node, DummyNode
-from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.constants import Kind
-from doxygen_snippets.generatorBase import GeneratorBase
+from mkdoxy.node import Node, DummyNode
+from mkdoxy.doxygen import Doxygen
+from mkdoxy.constants import Kind
+from mkdoxy.generatorBase import GeneratorBase
 import logging
 
 log = logging.getLogger("mkdocs")

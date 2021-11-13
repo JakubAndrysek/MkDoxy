@@ -2,11 +2,11 @@ site_name: RBCX Docs Test
 theme:
   name: material
 
-use_directory_urls: True
-#use_directory_urls: False
+#use_directory_urls: True
+use_directory_urls: False
 
 plugins:
-    - doxygen-snippets:
+    - mkdoxy:
         projects:
             esp:
                 src-dirs: src-esp
@@ -30,7 +30,7 @@ plugins:
                 doxy-cfg:
                     FILE_PATTERNS: "*.c* *.h*"
 
-        save-api: .doxy
+        save-api: .mkdoxy
         full-doc: True
         debug: False
         ignore-errors: False
@@ -41,8 +41,6 @@ markdown_extensions:
 
 nav:
     - 'Home': 'index.md'
-    - '1 folder': 'tes/te2.md'
-    - '2 folders': 'tes/myfile/myM.md'
     - API:
         - ESP-32:
             - 'Links': 'esp/links.md'
