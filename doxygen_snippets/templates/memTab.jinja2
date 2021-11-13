@@ -1,5 +1,5 @@
-# This template is used inside of member.py
-TEMPLATE = """
+{# This template is used inside of member.py #}
+
 {%- if node.has(visibility, kinds, static) -%}
 {%- if parent is none -%}
 ## {{title}}
@@ -30,4 +30,3 @@ See [{{node.name_long}}]({{node.url}})
 {% endfor -%}
 
 {%- endif -%}
-"""

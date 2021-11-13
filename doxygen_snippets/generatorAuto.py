@@ -3,6 +3,8 @@ import re
 import string
 import traceback
 from mkdocs.structure import files
+from io import StringIO
+from typing import TextIO
 from jinja2 import Template
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
@@ -10,11 +12,34 @@ from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
 from doxygen_snippets.generatorBase import GeneratorBase
+from doxygen_snippets.utils import recursive_find, recursive_find_with_parent
+from pprint import *
+from pathlib import Path, PurePath
+import logging
 
+log = logging.getLogger("mkdocs")
+
+ADDITIONAL_FILES = {
+	'Namespace ListNamespace List': 'namespaces.md',
+	'Namespace Members': 'namespace_members.md',
+	'Namespace Member Functions': 'namespace_member_functions.md',
+	'Namespace Member Variables': 'namespace_member_variables.md',
+	'Namespace Member Typedefs': 'namespace_member_typedefs.md',
+	'Namespace Member Enumerations': 'namespace_member_enums.md',
+	'Class Index': 'classes.md',
+	'Class Hierarchy': 'hierarchy.md',
+	'Class Members': 'class_members.md',
+	'Class Member Functions': 'class_member_functions.md',
+	'Class Member Variables': 'class_member_variables.md',
+	'Class Member Typedefs': 'class_member_typedefs.md',
+	'Class Member Enumerations': 'class_member_enums.md',
+}
 
 def generate_link(name, url) -> str:
 	return '* [' + name + '](' + url + ')\n'
 
+# def generate_link(name, url) -> str:
+# 	return f"\t\t- '{name}': '{url}'\n"
 
 class GeneratorAuto:
 	def __init__(self,
@@ -33,6 +58,7 @@ class GeneratorAuto:
 		self.useDirectoryUrls = useDirectoryUrls,
 		self.fullDocFiles = []
 		self.debug = debug
+		self.outputSumm = ""
 		os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
 
 	def save(self, path: str, output: str):
@@ -167,3 +193,56 @@ class GeneratorAuto:
 
 		output = self.generatorBase.index(nodes, kind_filters, kind_parents, title)
 		self.save(path, output)
+
+	def _generate_recursive(self, node: Node, level: int):
+		if node.kind.is_parent():
+			self.outputSumm += str(' ' * level + generate_link(node.kind.value + ' ' + node.name, node.refid + '.md'))
+			for child in node.children:
+				self._generate_recursive(child, level + 2)
+
+	def _generate_recursive_files(self, node: Node, level: int):
+		if node.kind.is_file() or node.kind.is_dir():
+			self.outputSumm += str(' ' * level + generate_link(node.name, node.refid + '.md'))
+			if node.kind.is_file():
+				self.outputSumm += str(' ' * level + generate_link(node.name + ' source', node.refid + '_source.md'))
+			for child in node.children:
+				self._generate_recursive_files(child, level + 2)
+
+	def _generate_recursive_groups(self, node: Node, level: int):
+		if node.kind.is_group():
+			self.outputSumm += str(' ' * level + generate_link(node.title, node.refid + '.md'))
+			for child in node.children:
+				self._generate_recursive_groups(child, level + 2)
+
+	def _generate_recursive_pages(self, node: Node, level: int):
+		if node.kind.is_page():
+			self.outputSumm += str(' ' * level + generate_link(node.title, node.refid + '.md'))
+			for child in node.children:
+				self._generate_recursive_pages(child, level + 2)
+
+	def summary(self):
+		offset = 0
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('Related Pages',  'pages.md'))
+		for node in self.doxygen.pages.children:
+			self._generate_recursive_pages(node, offset + 4)
+
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('Modules', 'modules.md'))
+		for node in self.doxygen.groups.children:
+			self._generate_recursive_groups(node, offset + 4)
+
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('Class List', 'annotated.md'))
+		for node in self.doxygen.root.children:
+			self._generate_recursive(node, offset + 4)
+
+		for key, val in ADDITIONAL_FILES.items():
+			self.outputSumm += str(' ' * (offset + 2) + generate_link(key, val))
+
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('Files', 'files.md'))
+		for node in self.doxygen.files.children:
+			self._generate_recursive_files(node, offset + 4)
+
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Variables', 'variables.md'))
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Functions', 'functions.md'))
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Macros', 'macros.md'))
+
+		self.save("links.md", self.outputSumm)

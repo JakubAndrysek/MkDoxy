@@ -1,12 +1,12 @@
-CONFIG = {
-	"header": False,
-	"breadcrumbs": True,
-	"source": False,
-	"start": 1,
-	"end": 0,
-}
+---
+header: False
+breadcrumbs: True
+source: False
+start: 1
+end: 0
+---
 
-TEMPLATE = """
+
 {% if config.get('header') -%}
 # {{node.kind.value|title}} {{node.name_long}}
 {%- endif %}
@@ -21,4 +21,3 @@ TEMPLATE = """
 # {%- endif %}
 
 {{code}}
-"""

@@ -9,16 +9,17 @@ from doxygen_snippets.xml_parser import XmlParser
 from doxygen_snippets.markdown import escape
 from doxygen_snippets.utils import split_safe
 from doxygen_snippets.property import Property
+import logging
+
+log = logging.getLogger("mkdocs")
 
 
 class Node:
-	def __init__(self, xml_file: str, xml: Element, cache: Cache, parser: XmlParser, parent: 'Node', refid: str = None,
-	             options: dict = {}, debug: bool = False):
+	def __init__(self, xml_file: str, xml: Element, cache: Cache, parser: XmlParser, parent: 'Node', refid: str = None, debug: bool = False):
 		self._children: ['Node'] = []
 		self._cache: Cache = cache
 		self._parser: XmlParser = parser
 		self._parent = parent
-		self._options = options
 		self.debug = debug
 		self.linkPrefix = ""
 
@@ -30,38 +31,33 @@ class Node:
 
 		elif xml is None:
 			if self.debug:
-				print('Loading XML from: ' + xml_file)
+				log.info('Loading XML from: ' + xml_file)
 			self._dirname = os.path.dirname(xml_file)
 			self._xml = ElementTree.parse(xml_file).getroot().find('compounddef')
 			if self._xml is None:
 				raise Exception('File ' + xml_file + ' has no <compounddef>')
 			self._kind = Kind.from_str(self._xml.get('kind'))
 			self._refid = self._xml.get('id')
+			self._language = self._xml.get('language')
 			self._name = self._xml.find('compoundname').text
 			self._cache.add(self._refid, self)
 			self._static = False
 
 			if self.debug:
-				print('Parsing: ' + self._refid)
+				log.info('Parsing: ' + self._refid)
 			self._check_for_children()
 
 			title = self._xml.find('title')
-			if title is not None:
-				self._title = title.text
-			else:
-				self._title = self._name
-
+			self._title = title.text if title is not None else self._name
 		else:
 			self._xml = xml
 			self._kind = Kind.from_str(self._xml.get('kind'))
-			if refid is not None:
-				self._refid = refid
-			else:
-				self._refid = self._xml.get('id')
+			self._language = parent.code_language
+			self._refid = refid if refid is not None else self._xml.get('id')
 			self._cache.add(self._refid, self)
 
 			if self.debug:
-				print('Parsing: ' + self._refid)
+				log.info('Parsing: ' + self._refid)
 			self._check_attrs()
 			self._title = self._name
 
@@ -90,15 +86,14 @@ class Node:
 	def _check_for_children(self):
 		for innergroup in self._xml.findall('innergroup'):
 			refid = innergroup.get('refid')
-			if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+			if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 				try:
 					child = self._cache.get(refid)
 					self.add_child(child)
 					continue
 				except:
 					pass
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -108,7 +103,7 @@ class Node:
 			if prot == Visibility.PRIVATE:
 				continue
 
-			if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+			if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 				try:
 					child = self._cache.get(refid)
 					self.add_child(child)
@@ -117,11 +112,10 @@ class Node:
 					pass
 
 			try:
-				child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-				             options=self._options)
+				child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			except FileNotFoundError as e:
 				child = Node(os.path.join(self._dirname, refid + '.xml'), Element('compounddef'), self._cache,
-				             self._parser, self, refid=refid, options=self._options)
+				             self._parser, self, refid=refid)
 				child._name = innerclass.text
 			child._visibility = prot
 			self.add_child(child)
@@ -136,8 +130,7 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -151,15 +144,14 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
 		for innernamespace in self._xml.findall('innernamespace'):
 			refid = innernamespace.get('refid')
 
-			if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+			if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 				try:
 					child = self._cache.get(refid)
 					self.add_child(child)
@@ -167,8 +159,7 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -176,7 +167,7 @@ class Node:
 			for memberdef in sectiondef.findall('memberdef'):
 				kind = Kind.from_str(memberdef.get('kind'))
 				if kind.is_language():
-					if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+					if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 						refid = memberdef.get('id')
 						try:
 							child = self._cache.get(refid)
@@ -184,7 +175,7 @@ class Node:
 							continue
 						except:
 							pass
-					child = Node(None, memberdef, self._cache, self._parser, self, options=self._options)
+					child = Node(None, memberdef, self._cache, self._parser, self)
 					self.add_child(child)
 
 	def _check_attrs(self):
@@ -207,14 +198,10 @@ class Node:
 		self._const = const == 'yes'
 
 		name = self._xml.find('name')
-		if name is not None:
-			self._name = name.text
-		else:
-			self._name = ''
-
+		self._name = name.text if name is not None else ''
 		virt = self._xml.get('virt')
 		if virt:
-			self._virtual = virt == 'virtual' or virt == 'pure-virtual'
+			self._virtual = virt in ['virtual', 'pure-virtual']
 			self._pure = virt == 'pure-virtual'
 		else:
 			self._virtual = False
@@ -224,13 +211,12 @@ class Node:
 		return len(self.query(visibility, kinds, static)) > 0
 
 	def query(self, visibility: str, kinds: [str], static: bool) -> ['Node']:
-		ret = []
 		visibility = Visibility(visibility)
 		kinds = list(map(lambda kind: Kind.from_str(kind), kinds))
-		for child in self._children:
-			if child._visibility == visibility and child._kind in kinds and child._static == static:
-				ret.append(child)
-		return ret
+		return [
+		    child for child in self._children if child._visibility == visibility
+		    and child._kind in kinds and child._static == static
+		]
 
 	@property
 	def is_static(self) -> bool:
@@ -379,11 +365,7 @@ class Node:
 
 	@property
 	def operators_total(self) -> int:
-		total = 0
-		for child in self.children:
-			if child.name in OVERLOAD_OPERATORS:
-				total += 1
-		return total
+		return sum(child.name in OVERLOAD_OPERATORS for child in self.children)
 
 	@property
 	def operator_num(self) -> int:
@@ -406,10 +388,7 @@ class Node:
 		name = ''
 		if self._name.replace(' ', '') in OVERLOAD_OPERATORS:
 			num = self.operator_num
-			if num > 1:
-				name = 'operator_' + str(self.operator_num - 1)
-			else:
-				name = 'operator'
+			name = 'operator_' + str(self.operator_num - 1) if num > 1 else 'operator'
 		elif self.is_overloaded:
 			name = self.name_url_safe + '-' + str(self.overload_num) + str(self.overload_total)
 		else:
@@ -499,26 +478,20 @@ class Node:
 
 	@property
 	def overload_total(self) -> int:
-		if self._parent is not None:
-			if self._parent.is_class_or_struct:
-				count = 0
-				for neighbour in self._parent.children:
-					if neighbour.name == self.name:
-						count += 1
-				return count
+		if self._parent is not None and self._parent.is_class_or_struct:
+			return sum(neighbour.name == self.name for neighbour in self._parent.children)
 		return 0
 
 	@property
 	def overload_num(self) -> int:
-		if self._parent is not None:
-			if self._parent.is_class_or_struct:
-				count = 0
-				for neighbour in self._parent.children:
-					if neighbour.name == self.name:
-						count += 1
-					if neighbour.refid == self.refid:
-						break
-				return count
+		if self._parent is not None and self._parent.is_class_or_struct:
+			count = 0
+			for neighbour in self._parent.children:
+				if neighbour.name == self.name:
+					count += 1
+				if neighbour.refid == self.refid:
+					break
+			return count
 		return 0
 
 	@property
@@ -539,9 +512,9 @@ class Node:
 	@property
 	def parents(self) -> ['Node']:
 		ret = []
-		if self._parent is not None:
-			if self._parent.is_language or self._parent.is_dir:
-				ret.extend(self.parent.parents)
+		if self._parent is not None and (self._parent.is_language
+		                                 or self._parent.is_dir):
+			ret.extend(self.parent.parents)
 		ret.append(self)
 		return ret
 
@@ -578,6 +551,10 @@ class Node:
 			return ''
 		else:
 			return self.kind.value
+
+	@property
+	def code_language(self) -> str:
+		return self._language
 
 	@property
 	def codeblock(self) -> str:

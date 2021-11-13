@@ -1,4 +1,6 @@
+import sys
 from os import path, makedirs
+from pathlib import Path, PurePath
 from mkdocs import utils as mkdocs_utils
 from mkdocs.plugins import BasePlugin
 from mkdocs.config import base, config_options, Config
@@ -16,11 +18,10 @@ from doxygen_snippets.constants import Kind
 from doxygen_snippets.generatorSnippets import GeneratorSnippets
 from doxygen_snippets.finder import Finder
 
-import logging
 from pprint import *
+import logging
 
 log = logging.getLogger("mkdocs")
-
 pluginName = "DoxyPets"
 
 
@@ -36,13 +37,14 @@ class DoxygenSnippets(BasePlugin):
 		('full-doc', config_options.Type(bool, default=True)),
 		('debug', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
+		('save-api', config_options.Type(str, default="")),
 	)
 
 	config_project = (
-		('src', config_options.Type(str)),
+		('src-dirs', config_options.Type(str)),
 		('full-doc', config_options.Type(bool, default=True)),
 		('debug', config_options.Type(bool, default=False)),
-		('ignore-errors', config_options.Type(bool, default=False)),
+		# ('ignore-errors', config_options.Type(bool, default=False)),
 		('doxy-cfg', config_options.Type(dict, default={}, required=False)),
 	)
 
@@ -57,14 +59,14 @@ class DoxygenSnippets(BasePlugin):
 				log.error(f"  -> Config value: '{config_name}' in project '{projectName}'. Error: {error}")
 
 			if len(errors) > 0:
-				raise exceptions.Abort("Aborted with {} Configuration Errors!".format(len(errors)))
+				raise exceptions.Abort(f"Aborted with {len(errors)} Configuration Errors!")
 			elif strict and len(warnings) > 0:
-				raise exceptions.Abort("Aborted with {} Configuration Warnings in 'strict' mode!".format(len(warnings)))
+				raise exceptions.Abort(f"Aborted with {len(warnings)} Configuration Warnings in 'strict' mode!")
 
-		def tempDir(siteDir: str)->str:
-			tempDoxyDir = path.join(siteDir, "assets/.doxy")
-			makedirs(tempDoxyDir, exist_ok=True)
-			return tempDoxyDir
+		def tempDir(siteDir: str, tempDir:str, projectName: str) ->str:
+			tempDoxyDir = PurePath.joinpath(Path(siteDir), Path(tempDir), Path(projectName))
+			tempDoxyDir.mkdir(parents=True, exist_ok=True)
+			return str(tempDoxyDir)
 
 		self.doxygen = {}
 		self.generatorBase = {}
@@ -79,14 +81,19 @@ class DoxygenSnippets(BasePlugin):
 			# Check project config -> raise exceptions
 			checkConfig(self.config_project, self.proData, config['strict'])
 
-			# Check scr changes -> run Doxygen
-			doxygenRun = DoxygenRun(self.proData.get('src'), tempDir(config['site_dir']), self.proData.get('doxy-cfg', {}))
-			if doxygenRun.checkAndRun():
-				log.info("  -> Running Doxygen")
+			if self.config.get("save-api"):
+				tempDirApi = tempDir("", self.config.get("save-api"), projectName)
 			else:
-				log.info("  -> skipping Doxygen")
+				tempDirApi = tempDir(config['site_dir'], "assets/.doxy/", projectName)
 
-			self.debug = config.get('debug', False)
+			# Check scr changes -> run Doxygen
+			doxygenRun = DoxygenRun(self.proData.get('src-dirs'), tempDirApi, self.proData.get('doxy-cfg', {}))
+			if doxygenRun.checkAndRun():
+				log.info("  -> generating Doxygen filese")
+			else:
+				log.info("  -> skip generating Doxygen files (nothing changes)")
+
+			self.debug = self.config.get('debug', False)
 
 			# Parse XML to bacic structure
 			cache = Cache()
@@ -97,22 +104,27 @@ class DoxygenSnippets(BasePlugin):
 
 			# Print parsed files
 			if self.debug:
-				log.warning(pformat(parser))
-				self.doxygen[projectName].print()
+				self.doxygen[projectName].printStructure()
 
 			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
 			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"])
 
-			if self.config["full-doc"]:
-				generatorAuto = GeneratorAuto(generatorBase=self.generatorBase[projectName],
-											  tempDoxyDir=tempDir(config['site_dir']),
-											  siteDir=config['site_dir'],
-											  apiPath=projectName,
-											  doxygen=self.doxygen[projectName],
-											  useDirectoryUrls=config['use_directory_urls'],
-											  debug=self.debug)
+			if self.config["full-doc"] and self.proData.get("full-doc", True):
+				generatorAuto = GeneratorAuto(
+					generatorBase=self.generatorBase[projectName],
+					tempDoxyDir=tempDirApi,
+					siteDir=config['site_dir'],
+					apiPath=projectName,
+					doxygen=self.doxygen[projectName],
+					useDirectoryUrls=config['use_directory_urls'],
+					debug=self.debug
+				)
+
 				# generate automatic documentation and append files into files
 				generatorAuto.fullDoc()
+
+				generatorAuto.summary()
+
 				for file in generatorAuto.fullDocFiles:
 					files.append(file)
 		return files
@@ -124,14 +136,16 @@ class DoxygenSnippets(BasePlugin):
 			config: base.Config,
 			files: files.Files,
 	) -> str:
-		generatorSnippets = GeneratorSnippets(markdown=markdown,
-											  generatorBase=self.generatorBase,
-											  doxygen=self.doxygen,
-											  useDirectoryUrls=config['use_directory_urls'],
-											  page = page,
-		                                      debug=self.debug)
-		finalMd = generatorSnippets.generate()
-		return finalMd
+		generatorSnippets = GeneratorSnippets(
+			markdown=markdown,
+			generatorBase=self.generatorBase,
+			doxygen=self.doxygen,
+			useDirectoryUrls=config['use_directory_urls'],
+			page = page,
+		debug=self.debug
+		)
+
+		return generatorSnippets.generate()
 
 # def on_pre_build(self, config):
 

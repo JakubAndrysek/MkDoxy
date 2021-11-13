@@ -8,8 +8,8 @@
 
 /**
  * \brief My test function
- * Som description
- * \dec
+ * Some description. \n
+ * Next line
  * \param a float number
  * \param b character [0-255]
  */

@@ -1,8 +1,13 @@
-from os import path, makedirs
 from subprocess import Popen, PIPE, STDOUT
 import shlex
 import logging
 from pprint import *
+import sys
+import hashlib
+import glob
+import ruamel.yaml as yaml
+from pathlib import Path, PurePath
+import tempfile
 
 log = logging.getLogger("mkdocs")
 
@@ -12,6 +17,8 @@ class DoxygenRun:
 		self.doxygenSource = doxygenSource
 		self.tempDoxyFolder = tempDoxyFolder
 		self.doxyCfgNew = doxyCfgNew
+		self.hashFileName = "hashChanges.yaml"
+		self.hashFilePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
 
 		self.doxyCfg = {
 			"INPUT": self.doxygenSource,
@@ -27,6 +34,8 @@ class DoxygenRun:
 
 		self.doxyCfg.update(self.doxyCfgNew)
 		self.doxyCfgStr = self.dox_dict2str(self.doxyCfg)
+
+		new_file, filename = tempfile.mkstemp()
 
 	# Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
 	def dox_dict2str(self, dox_dict):
@@ -47,6 +56,36 @@ class DoxygenRun:
 		return s.strip()
 
 	def hasChanged(self):
+		def heshWrite(filename: str, hash: str):
+			with open(filename, "w") as file:
+				file.write(hash)
+
+		def hashRead(filename: str) -> str:
+			with open(filename, "r") as file:
+				return str(file.read())
+
+		sha1 = hashlib.sha1()
+		srcs = self.doxygenSource.split(" ")
+		for src in srcs:
+			for path in Path(src).rglob('*.*'):
+				# # Code from https://stackoverflow.com/a/22058673/15411117
+				# # BUF_SIZE is totally arbitrary, change for your app!
+				BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
+				with open(path, 'rb') as f:
+					while True:
+						data = f.read(BUF_SIZE)
+						if not data:
+							break
+						sha1.update(data)
+				# print(f"{path}: {sha1.hexdigest()}")
+
+		hahsNew = sha1.hexdigest()
+		if Path(self.hashFilePath).is_file():
+			hashOld = hashRead(self.hashFilePath)
+			if hahsNew == hashOld:
+				return False
+
+		heshWrite(self.hashFilePath, hahsNew)
 		return True
 
 	def run(self):
@@ -65,4 +104,4 @@ class DoxygenRun:
 
 	@property
 	def path(self):
-		return path.join(self.tempDoxyFolder, "xml")
+		return Path.joinpath(Path(self.tempDoxyFolder), Path("xml"))
