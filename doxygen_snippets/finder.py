@@ -9,6 +9,7 @@ from jinja2 import StrictUndefined, Undefined
 from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
+from doxygen_snippets.utils import recursive_find, recursive_find_with_parent
 from pprint import pprint
 
 
@@ -16,24 +17,6 @@ class Finder:
 	def __init__(self, doxygen: Doxygen, debug: bool = False):
 		self.doxygen = doxygen
 		self.debug = debug
-
-	def _recursive_find(self, nodes: [Node], kind: Kind):
-		ret = []
-		for node in nodes:
-			if node.kind == kind:
-				ret.append(node)
-			if node.kind.is_parent():
-				ret.extend(self._recursive_find(node.children, kind))
-		return ret
-
-	def _recursive_find_with_parent(self, nodes: [Node], kinds: [Kind], parent_kinds: [Kind]):
-		ret = []
-		for node in nodes:
-			if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
-				ret.append(node)
-			if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
-				ret.extend(self._recursive_find_with_parent(node.children, kinds, parent_kinds))
-		return ret
 
 	def _normalize(self, name: str) -> str:
 		return name.replace(" ", "")
@@ -45,7 +28,7 @@ class Finder:
 		return names
 
 	def doxyClass(self, project, className: str):
-		classes = self._recursive_find(self.doxygen[project].root.children, Kind.CLASS)
+		classes = recursive_find(self.doxygen[project].root.children, Kind.CLASS)
 		if classes:
 			for findClass in classes:
 				if findClass.name_long == className:
@@ -62,7 +45,7 @@ class Finder:
 						return member
 				return findClass
 			else:
-				members = self._recursive_find(findClass.children, Kind.FUNCTION)
+				members = recursive_find(findClass.children, Kind.FUNCTION)
 				if members:
 					for member in members:
 						if self._normalize(methodName) in self._normalize(member.name_params):
@@ -72,7 +55,7 @@ class Finder:
 		return None
 
 	def doxyFunction(self, project, functionName: str):
-		functions = self._recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE])
+		functions = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE])
 		if functions:
 			for function in functions:
 				if self._normalize(functionName) == self._normalize(function.name_params):
@@ -81,7 +64,7 @@ class Finder:
 		return None
 
 	def doxyCode(self, project, fileName):
-		files = self._recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FILE], [Kind.DIR])
+		files = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FILE], [Kind.DIR])
 		if files:
 			for file in files:
 				if self._normalize(fileName) == self._normalize(file.name_long):

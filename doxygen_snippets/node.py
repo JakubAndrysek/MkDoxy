@@ -15,13 +15,11 @@ log = logging.getLogger("mkdocs")
 
 
 class Node:
-	def __init__(self, xml_file: str, xml: Element, cache: Cache, parser: XmlParser, parent: 'Node', refid: str = None,
-	             options: dict = {}, debug: bool = False):
+	def __init__(self, xml_file: str, xml: Element, cache: Cache, parser: XmlParser, parent: 'Node', refid: str = None, debug: bool = False):
 		self._children: ['Node'] = []
 		self._cache: Cache = cache
 		self._parser: XmlParser = parser
 		self._parent = parent
-		self._options = options
 		self.debug = debug
 		self.linkPrefix = ""
 
@@ -100,8 +98,7 @@ class Node:
 					continue
 				except:
 					pass
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -120,11 +117,10 @@ class Node:
 					pass
 
 			try:
-				child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-				             options=self._options)
+				child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			except FileNotFoundError as e:
 				child = Node(os.path.join(self._dirname, refid + '.xml'), Element('compounddef'), self._cache,
-				             self._parser, self, refid=refid, options=self._options)
+				             self._parser, self, refid=refid)
 				child._name = innerclass.text
 			child._visibility = prot
 			self.add_child(child)
@@ -139,8 +135,7 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -154,8 +149,7 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -170,8 +164,7 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self,
-			             options=self._options)
+			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -187,7 +180,7 @@ class Node:
 							continue
 						except:
 							pass
-					child = Node(None, memberdef, self._cache, self._parser, self, options=self._options)
+					child = Node(None, memberdef, self._cache, self._parser, self)
 					self.add_child(child)
 
 	def _check_attrs(self):

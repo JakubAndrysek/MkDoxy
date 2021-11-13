@@ -1,13 +1,13 @@
 ---
 brief: True
 details: True
-implements: Tru
+implements: True
 ---
 {# This template is used inside of member.py #}
 
 ### {{node.kind.value}} {{node.name_long if node.is_group else node.name_short}} {{node.overload_suffix}}
 
-{% if config.get('brief') -%}
+{% if configMemDef.get('brief') -%}
 {% if node.has_brief -%}
 {{node.brief + "\n"}}
 {%- endif -%}
@@ -18,13 +18,13 @@ implements: Tru
 ```
 
 
-{% if config.get('details') -%}
+{% if configMemDef.get('details') -%}
 {% if node.has_details -%}
 {{node.details}}
 {%- endif -%}
 {%- endif -%}
 
-{% if config.get('implements') -%}
+{% if configMemDef.get('implements') -%}
 {% if node.reimplements %}
 Implements [*{{node.reimplements.name_long}}*]({{node.reimplements.url}})
 {% endif %}

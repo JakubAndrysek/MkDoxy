@@ -2,6 +2,8 @@ import re
 import sys
 from pprint import *
 from ruamel.yaml import YAML
+# from doxygen_snippets.node import Node
+# from doxygen_snippets.constants import Kind
 
 import logging
 
@@ -86,3 +88,23 @@ def merge_two_dicts(base, new):
 	result = base.copy()  # start with keys and values of x
 	result.update(new)  # modifies z with keys and values of y
 	return result
+
+# def recursive_find(nodes: [Node], kind: Kind):
+def recursive_find(nodes, kind):
+	ret = []
+	for node in nodes:
+		if node.kind == kind:
+			ret.append(node)
+		if node.kind.is_parent():
+			ret.extend(recursive_find(node.children, kind))
+	return ret
+
+# def recursive_find_with_parent(nodes: [Node], kinds: [Kind], parent_kinds: [Kind]):
+def recursive_find_with_parent(nodes, kinds, parent_kinds):
+	ret = []
+	for node in nodes:
+		if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
+			ret.append(node)
+		if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
+			ret.extend(recursive_find_with_parent(node.children, kinds, parent_kinds))
+	return ret

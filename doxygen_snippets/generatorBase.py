@@ -12,7 +12,7 @@ import doxygen_snippets
 from doxygen_snippets.node import Node, DummyNode
 from doxygen_snippets.doxygen import Doxygen
 from doxygen_snippets.constants import Kind
-from doxygen_snippets.utils import parseTemplateFile, merge_two_dicts
+from doxygen_snippets.utils import parseTemplateFile, merge_two_dicts, recursive_find_with_parent, recursive_find
 from mkdocs import exceptions
 from markdown import extensions, preprocessors
 import logging
@@ -23,7 +23,7 @@ log = logging.getLogger("mkdocs")
 LETTERS = string.ascii_lowercase + '~_@\\'
 
 ADDITIONAL_FILES = {
-	'Namespace List': 'namespaces.md',
+	'Namespace ListNamespace List': 'namespaces.md',
 	'Namespace Members': 'namespace_members.md',
 	'Namespace Member Functions': 'namespace_member_functions.md',
 	'Namespace Member Variables': 'namespace_member_variables.md',
@@ -38,13 +38,8 @@ ADDITIONAL_FILES = {
 	'Class Member Enumerations': 'class_member_enums.md',
 }
 
-
-def generate_link(name, url) -> str:
-	return '* [' + name + '](' + url + ')\n'
-
 class GeneratorBase:
 	def __init__(self, ignore_errors: bool = False, debug: bool = False):
-		self.options = {} # will be deleted
 		self.debug = debug
 
 		on_undefined_class = Undefined
@@ -78,94 +73,89 @@ class GeneratorBase:
 		try:
 			if self.debug:
 				print('Generating', path)
-			data.update(self.options)
 			output = tmpl.render(data)
 			return output
 		except TemplateError as e:
 			raise Exception(str(e))
 
-	def recursive_find(self, nodes: [Node], kind: Kind):
-		ret = []
-		for node in nodes:
-			if node.kind == kind:
-				ret.append(node)
-			if node.kind.is_parent():
-				ret.extend(self.recursive_find(node.children, kind))
-		return ret
-
-	def recursive_find_with_parent(self, nodes: [Node], kinds: [Kind], parent_kinds: [Kind]):
-		ret = []
-		for node in nodes:
-			if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
-				ret.append(node)
-			if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
-				ret.extend(self.recursive_find_with_parent(node.children, kinds, parent_kinds))
-		return ret
-
-
-
-
 	def error(self, title: str = "", message: str = "", language: str = ""):
+		template, metaConfig = self.loadConfigAndTemplate("error")
+
 		data = {
 			'title': title,
 			'message': message,
 			'language': language,
-		}
-		return self.render(self.templates.get("error"), data)
 
-	def annotated(self, nodes: [Node]):
-		data = {
-			'nodes': nodes
 		}
-		# return self.render(self.annotated_template, data)
-		return self.render(self.templates.get("annotated"), data)
+		return self.render(template, data)
+
+	def annotated(self, nodes: [Node], config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("annotated")
+		data = {
+			'nodes': nodes,
+			'config': merge_two_dicts(config, metaConfig),
+		}
+		return self.render(template, data)
 
 	def programlisting(self, node: [Node], config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("programlisting")
 		data = {
-			'node': node
+			'node': node,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("programlisting"), data)
+		return self.render(template, data)
 
 	def code(self, node: [Node], config: dict = {}, code: str = ""):
+		template, metaConfig = self.loadConfigAndTemplate("code")
 		newConfig = config
 		# newConfig = merge_two_dicts(CODE_CONFIG, config)
 
 		data = {
 			'node': node,
-			'config': newConfig,
+			'config': merge_two_dicts(config, metaConfig),
 			'code': code
 		}
 
-		return self.render(self.templates.get("code"), data)
+		return self.render(template, data)
 
 	def fileindex(self, nodes: [Node], config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("files")
 		data = {
-			'nodes': nodes
+			'nodes': nodes,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("files"), data)
+		return self.render(template, data)
 
 	def namespaces(self, nodes: [Node], config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("namespaces")
 		data = {
-			'nodes': nodes
+			'nodes': nodes,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("namespaces"), data)
+		return self.render(template, data)
 
-	def page(self, node: Node):
+	def page(self, node: Node, config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("page")
 		data = {
-			'node': node
+			'node': node,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("page"), data)
+		return self.render(template, data)
 
 	def relatedpages(self, nodes: [Node], config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("page")
 		data = {
-			'nodes': nodes
+			'nodes': nodes,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("page"), data)
+		return self.render(template, data)
 
 	def classes(self, nodes: [Node], config: dict = {}):
-		classes = self.recursive_find(nodes, Kind.CLASS)
-		classes.extend(self.recursive_find(nodes, Kind.STRUCT))
-		classes.extend(self.recursive_find(nodes, Kind.INTERFACE))
+		template, metaConfig = self.loadConfigAndTemplate("classes")
+
+		classes = recursive_find(nodes, Kind.CLASS)
+		classes.extend(recursive_find(nodes, Kind.STRUCT))
+		classes.extend(recursive_find(nodes, Kind.INTERFACE))
 		dictionary = {}
 
 		for letter in LETTERS:
@@ -180,9 +170,10 @@ class GeneratorBase:
 				del dictionary[letter]
 
 		data = {
-			'dictionary': dictionary
+			'dictionary': dictionary,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("classes"), data)
+		return self.render(template, data)
 
 	def _find_base_classes(self, nodes: [Node], derived: Node):
 		ret = []
@@ -201,15 +192,19 @@ class GeneratorBase:
 		return ret
 
 	def modules(self, nodes: [Node], config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("modules")
 		data = {
-			'nodes': nodes
+			'nodes': nodes,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("modules"), data)
+		return self.render(template, data)
 
 	def hierarchy(self, nodes: [Node], config: dict = {}):
-		classes = self.recursive_find(nodes, Kind.CLASS)
-		classes.extend(self.recursive_find(nodes, Kind.STRUCT))
-		classes.extend(self.recursive_find(nodes, Kind.INTERFACE))
+		template, metaConfig = self.loadConfigAndTemplate("hierarchy")
+
+		classes = recursive_find(nodes, Kind.CLASS)
+		classes.extend(recursive_find(nodes, Kind.STRUCT))
+		classes.extend(recursive_find(nodes, Kind.INTERFACE))
 
 		bases = self._find_base_classes(classes, None)
 		deduplicated = {}
@@ -242,47 +237,54 @@ class GeneratorBase:
 					deduplicated_arr.append(found)
 
 		data = {
-			'classes': deduplicated_arr
+			'classes': deduplicated_arr,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("hierarchy"), data)
+		return self.render(template, data)
 
 	def function(self, node: Node, config: dict = {}):
-		newConfig = config
-		# newConfig = merge_two_dicts(MEMBER_DEFINITION_CONFIG, config)
+		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
+
 		data = {
 			'node': node,
-			'config': newConfig
+			'configMemDef': merge_two_dicts(config, metaConfigMemDef)
 		}
-		return self.render(self.templates.get("member_definition"), data)
+		return self.render(templateMemDef, data)
 
 	def member(self, node: Node, config: dict = {}):
 		template, metaConfig = self.loadConfigAndTemplate("member")
-		# templateMd, metaConfigMd = self.loadConfigAndTemplate("member_definition")
-		# templateMt, metaConfigMt = self.loadConfigAndTemplate("member_table")
+		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
+		templateMemTab, metaConfigMemTab = self.loadConfigAndTemplate("memTab")
 
 		data = {
 			'node': node,
-			# 'member_definition_template': templateMt,
-			# 'member_definition_config': metaConfigMt,
-			# 'member_table_template': templateMt,
-			'member_definition_template': self.templates.get("member_definition"),
-			'member_table_template': self.templates.get("member_table"),
+			'templateMemDef': templateMemDef,
+			'configMemDef': metaConfigMemDef,
+			'templateMemTab': templateMemTab,
+			'configMemTab': metaConfigMemTab,
 			'config': merge_two_dicts(config, metaConfig)
 		}
 		return self.render(template, data)
-		# return self.render(self.templates.get("member"), data)
 
 	def file(self, node: Node, config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("member")
+		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
+		templateMemTab, metaConfigMemTab = self.loadConfigAndTemplate("memTab")
+
 		data = {
 			'node': node,
-			'member_definition_template': self.templates.get("member_definition"),
-			'member_table_template': self.templates.get("member_table"),
-			'config': config
+			'templateMemDef': templateMemDef,
+			'configMemDef': metaConfigMemDef,
+			'templateMemTab': templateMemTab,
+			'configMemTab': metaConfigMemTab,
+			'config': merge_two_dicts(config, metaConfig)
 		}
-		return self.render(self.templates.get("member"), data)
+		return self.render(template, data)
 
-	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str):
-		found_nodes = self.recursive_find_with_parent(nodes, kind_filters, kind_parents)
+	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str, config: dict = {}):
+		template, metaConfig = self.loadConfigAndTemplate("index")
+
+		found_nodes = recursive_find_with_parent(nodes, kind_filters, kind_parents)
 		dictionary = {}
 
 		# Populate initial dictionary
@@ -324,6 +326,7 @@ class GeneratorBase:
 
 		data = {
 			'title': title,
-			'dictionary': sorted_dictionary
+			'dictionary': sorted_dictionary,
+			'config': merge_two_dicts(config, metaConfig),
 		}
-		return self.render(self.templates.get("index"), data)
+		return self.render(template, data)

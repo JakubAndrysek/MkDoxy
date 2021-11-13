@@ -2,27 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4a231495-2bc3-42b0-8cd5-5e6297ef9c8b" name="Default Changelist" comment="Fix small bugs, readme">
-      <change afterPath="$PROJECT_DIR$/tests/metaDataParse.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/finder.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/finder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/node.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/annotated.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/classes.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/code.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/error.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/files.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/hierarchy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/index.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_definition.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/modules.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/namespaces.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/page.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/pages.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/programlisting.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/member.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_definition.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/memDef.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member_table.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/templates/memTab.jinja2" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doxygen_snippets/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/doxygen_snippets/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
     </list>
@@ -336,7 +324,7 @@
       <workItem from="1636300121134" duration="533000" />
       <workItem from="1636300936658" duration="16184000" />
       <workItem from="1636745795570" duration="190000" />
-      <workItem from="1636746036568" duration="9686000" />
+      <workItem from="1636746036568" duration="14937000" />
     </task>
     <task id="LOCAL-00001" summary="Change snippet handler from Jinja to own Regex">
       <created>1629032602287</created>
@@ -412,24 +400,24 @@
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/doxygen_snippets/plugin.py</url>
-          <line>150</line>
-          <option name="timeStamp" value="128" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/metaDataParse.py</url>
           <line>8</line>
           <option name="timeStamp" value="138" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/doxygen_snippets/generatorBase.py</url>
-          <line>272</line>
+          <line>265</line>
           <option name="timeStamp" value="140" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/metaDataParse.py</url>
           <line>50</line>
           <option name="timeStamp" value="141" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/doxygen_snippets/xml_parser.py</url>
+          <line>81</line>
+          <option name="timeStamp" value="147" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -439,7 +427,7 @@
     <SUITE FILE_PATH="coverage/master$testDoxyrun.coverage" NAME="testDoxyrun Coverage Results" MODIFIED="1628367665807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_8.coverage" NAME="mkdocs-serve-3.8 Coverage Results" MODIFIED="1635030346871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$mkdocs_Build_3_9.coverage" NAME="mkdocs-Build-3.9 Coverage Results" MODIFIED="1636322489672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
-    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_9.coverage" NAME="mkdocs-serve-3.9 Coverage Results" MODIFIED="1636801986833" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
+    <SUITE FILE_PATH="coverage/master$mkdocs_serve_3_9.coverage" NAME="mkdocs-serve-3.9 Coverage Results" MODIFIED="1636808052838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/master$snippetsTest.coverage" NAME="snippetsTest Coverage Results" MODIFIED="1634490070418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$originalTest.coverage" NAME="originalTest Coverage Results" MODIFIED="1634731940573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/master$parseMdTags.coverage" NAME="parseMdTags Coverage Results" MODIFIED="1629136660398" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
