@@ -22,10 +22,7 @@ class Finder:
 		return name.replace(" ", "")
 
 	def listToNames(self, list):
-		names = []
-		for part in list:
-			names.append(part.name_params)
-		return names
+		return [part.name_params for part in list]
 
 	def doxyClass(self, project, className: str):
 		classes = recursive_find(self.doxygen[project].root.children, Kind.CLASS)

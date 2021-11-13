@@ -48,19 +48,12 @@ class Node:
 			self._check_for_children()
 
 			title = self._xml.find('title')
-			if title is not None:
-				self._title = title.text
-			else:
-				self._title = self._name
-
+			self._title = title.text if title is not None else self._name
 		else:
 			self._xml = xml
 			self._kind = Kind.from_str(self._xml.get('kind'))
 			self._language = parent.code_language
-			if refid is not None:
-				self._refid = refid
-			else:
-				self._refid = self._xml.get('id')
+			self._refid = refid if refid is not None else self._xml.get('id')
 			self._cache.add(self._refid, self)
 
 			if self.debug:
@@ -93,7 +86,7 @@ class Node:
 	def _check_for_children(self):
 		for innergroup in self._xml.findall('innergroup'):
 			refid = innergroup.get('refid')
-			if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+			if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 				try:
 					child = self._cache.get(refid)
 					self.add_child(child)
@@ -110,7 +103,7 @@ class Node:
 			if prot == Visibility.PRIVATE:
 				continue
 
-			if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+			if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 				try:
 					child = self._cache.get(refid)
 					self.add_child(child)
@@ -158,7 +151,7 @@ class Node:
 		for innernamespace in self._xml.findall('innernamespace'):
 			refid = innernamespace.get('refid')
 
-			if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+			if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 				try:
 					child = self._cache.get(refid)
 					self.add_child(child)
@@ -174,7 +167,7 @@ class Node:
 			for memberdef in sectiondef.findall('memberdef'):
 				kind = Kind.from_str(memberdef.get('kind'))
 				if kind.is_language():
-					if self._kind == Kind.GROUP or self._kind == Kind.DIR or self._kind == Kind.FILE:
+					if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
 						refid = memberdef.get('id')
 						try:
 							child = self._cache.get(refid)
@@ -205,14 +198,10 @@ class Node:
 		self._const = const == 'yes'
 
 		name = self._xml.find('name')
-		if name is not None:
-			self._name = name.text
-		else:
-			self._name = ''
-
+		self._name = name.text if name is not None else ''
 		virt = self._xml.get('virt')
 		if virt:
-			self._virtual = virt == 'virtual' or virt == 'pure-virtual'
+			self._virtual = virt in ['virtual', 'pure-virtual']
 			self._pure = virt == 'pure-virtual'
 		else:
 			self._virtual = False
@@ -222,13 +211,12 @@ class Node:
 		return len(self.query(visibility, kinds, static)) > 0
 
 	def query(self, visibility: str, kinds: [str], static: bool) -> ['Node']:
-		ret = []
 		visibility = Visibility(visibility)
 		kinds = list(map(lambda kind: Kind.from_str(kind), kinds))
-		for child in self._children:
-			if child._visibility == visibility and child._kind in kinds and child._static == static:
-				ret.append(child)
-		return ret
+		return [
+		    child for child in self._children if child._visibility == visibility
+		    and child._kind in kinds and child._static == static
+		]
 
 	@property
 	def is_static(self) -> bool:
@@ -377,11 +365,7 @@ class Node:
 
 	@property
 	def operators_total(self) -> int:
-		total = 0
-		for child in self.children:
-			if child.name in OVERLOAD_OPERATORS:
-				total += 1
-		return total
+		return sum(child.name in OVERLOAD_OPERATORS for child in self.children)
 
 	@property
 	def operator_num(self) -> int:
@@ -404,10 +388,7 @@ class Node:
 		name = ''
 		if self._name.replace(' ', '') in OVERLOAD_OPERATORS:
 			num = self.operator_num
-			if num > 1:
-				name = 'operator_' + str(self.operator_num - 1)
-			else:
-				name = 'operator'
+			name = 'operator_' + str(self.operator_num - 1) if num > 1 else 'operator'
 		elif self.is_overloaded:
 			name = self.name_url_safe + '-' + str(self.overload_num) + str(self.overload_total)
 		else:
@@ -497,26 +478,20 @@ class Node:
 
 	@property
 	def overload_total(self) -> int:
-		if self._parent is not None:
-			if self._parent.is_class_or_struct:
-				count = 0
-				for neighbour in self._parent.children:
-					if neighbour.name == self.name:
-						count += 1
-				return count
+		if self._parent is not None and self._parent.is_class_or_struct:
+			return sum(neighbour.name == self.name for neighbour in self._parent.children)
 		return 0
 
 	@property
 	def overload_num(self) -> int:
-		if self._parent is not None:
-			if self._parent.is_class_or_struct:
-				count = 0
-				for neighbour in self._parent.children:
-					if neighbour.name == self.name:
-						count += 1
-					if neighbour.refid == self.refid:
-						break
-				return count
+		if self._parent is not None and self._parent.is_class_or_struct:
+			count = 0
+			for neighbour in self._parent.children:
+				if neighbour.name == self.name:
+					count += 1
+				if neighbour.refid == self.refid:
+					break
+			return count
 		return 0
 
 	@property
@@ -537,9 +512,9 @@ class Node:
 	@property
 	def parents(self) -> ['Node']:
 		ret = []
-		if self._parent is not None:
-			if self._parent.is_language or self._parent.is_dir:
-				ret.extend(self.parent.parents)
+		if self._parent is not None and (self._parent.is_language
+		                                 or self._parent.is_dir):
+			ret.extend(self.parent.parents)
 		ret.append(self)
 		return ret
 

@@ -52,11 +52,11 @@ def split_safe(s: str, delim: str) -> [str]:
 		c = s[i]
 		if i == len(s) - 1:
 			tokens.append(s[last:i + 1])
-		if c == '<' or c == '[' or c == '{' or c == '(':
+		if c in ['<', '[', '{', '(']:
 			inside += 1
 			i += 1
 			continue
-		if c == '>' or c == ']' or c == '}' or c == ')':
+		if c in ['>', ']', '}', ')']:
 			inside -= 1
 			i += 1
 			continue

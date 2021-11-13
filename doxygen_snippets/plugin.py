@@ -142,11 +142,10 @@ class DoxygenSnippets(BasePlugin):
 			doxygen=self.doxygen,
 			useDirectoryUrls=config['use_directory_urls'],
 			page = page,
-  			debug=self.debug
+		debug=self.debug
 		)
 
-		finalMd = generatorSnippets.generate()
-		return finalMd
+		return generatorSnippets.generate()
 
 # def on_pre_build(self, config):
 
