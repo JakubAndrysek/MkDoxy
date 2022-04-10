@@ -1,4 +1,6 @@
-# Mkdocs doxygen snippets plugin
+# MkDoxy
+
+## MkDoxy -> MkDocs + Doxygen. Easy documentation with code snippets.
 
 ### Based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
 
@@ -49,7 +51,7 @@ See live demo here for [Gitbook here](https://matusnovak.github.io/doxybook/gitb
 - Git -> `sudo apt install git`
 - Doxygen -> `sudo apt install doxygen`
 
-### Pipfi
+### Pip
 - Jinja2 -> `pip install jinja2`
 - Mkdocs -> `pip install mkdocs`
 - ruamel.yaml -> `pip install ruamel.yaml`
@@ -64,8 +66,6 @@ See live demo here for [Gitbook here](https://matusnovak.github.io/doxybook/gitb
 
 ```bash
 pip install mkdocs-doxygen-snippets-plugin
-or
-pip3 install mkdocs-doxygen-snippets-plugin
 ```
 
 **Or Install manually:**

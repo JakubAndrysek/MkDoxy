@@ -29,6 +29,7 @@ setup(
         'Operating System :: OS Independent',
     ],
     packages=find_packages(),
+    package_data={'mkdoxy': ['templates/*.jinja2']},
     entry_points={
         'mkdocs.plugins': [
             'mkdoxy = mkdoxy.plugin:MkDoxy'
