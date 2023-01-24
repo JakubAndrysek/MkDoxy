@@ -284,3 +284,6 @@ cython_debug/
 
 # My own gitignore
 tests/files/.mkdoxy
+
+.DS_Store
+.mkdoxy/
