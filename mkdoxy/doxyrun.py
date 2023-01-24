@@ -32,7 +32,7 @@ class DoxygenRun:
 			"GENERATE_LATEX": "NO",
 		}
 
-		self.doxyCfg.update(self.doxyCfgNew)
+		self.doxyCfg |= self.doxyCfgNew
 		self.doxyCfgStr = self.dox_dict2str(self.doxyCfg)
 
 		new_file, filename = tempfile.mkstemp()

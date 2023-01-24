@@ -2,7 +2,7 @@ from subprocess import Popen, PIPE, STDOUT
 
 p = Popen(['doxygen', '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 
-input = f"""
+input = """
 INPUT = files/src
 OUTPUT_DIRECTORY = files/doxy2
 DOXYFILE_ENCODING = UTF-8

@@ -25,8 +25,7 @@ class Finder:
 		return [part.name_params for part in list]
 
 	def doxyClass(self, project, className: str):
-		classes = recursive_find(self.doxygen[project].root.children, Kind.CLASS)
-		if classes:
+		if classes := recursive_find(self.doxygen[project].root.children, Kind.CLASS):
 			for findClass in classes:
 				if findClass.name_long == className:
 					return findClass
@@ -34,16 +33,14 @@ class Finder:
 		return None
 
 	def doxyClassMethod(self, project, className: str, methodName: str):
-		findClass = self.doxyClass(project, className)
-		if findClass:
+		if findClass := self.doxyClass(project, className):
 			if isinstance(findClass, list):
 				for member in findClass:
 					if self._normalize(methodName) in self._normalize(member):
 						return member
 				return findClass
 			else:
-				members = recursive_find(findClass.children, Kind.FUNCTION)
-				if members:
+				if members := recursive_find(findClass.children, Kind.FUNCTION):
 					for member in members:
 						if self._normalize(methodName) in self._normalize(member.name_params):
 							return member
@@ -52,8 +49,9 @@ class Finder:
 		return None
 
 	def doxyFunction(self, project, functionName: str):
-		functions = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE])
-		if functions:
+		if functions := recursive_find_with_parent(
+			self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE]
+		):
 			for function in functions:
 				if self._normalize(functionName) == self._normalize(function.name_params):
 					return function
@@ -61,8 +59,9 @@ class Finder:
 		return None
 
 	def doxyCode(self, project, fileName):
-		files = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FILE], [Kind.DIR])
-		if files:
+		if files := recursive_find_with_parent(
+			self.doxygen[project].files.children, [Kind.FILE], [Kind.DIR]
+		):
 			for file in files:
 				if self._normalize(fileName) == self._normalize(file.name_long):
 					return file

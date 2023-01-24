@@ -25,8 +25,7 @@ if __name__ == '__main__':
 		title = match.group('title')
 		print(f"Title: {title}")
 
-		yamlRaw = match.group('yaml')
-		if yamlRaw:
+		if yamlRaw := match.group('yaml'):
 			try:
 				yaml = YAML()
 				config = yaml.load(yamlRaw)
