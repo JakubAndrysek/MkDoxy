@@ -15,7 +15,7 @@ class Doxygen:
 		self.debug = debug
 		path = os.path.join(index_path, 'index.xml')
 		if self.debug:
-			log.info('Loading XML from: ' + path)
+			log.info(f'Loading XML from: {path}')
 		xml = ElementTree.parse(path).getroot()
 
 		self.parser = parser
@@ -30,31 +30,55 @@ class Doxygen:
 			kind = Kind.from_str(compound.get('kind'))
 			refid = compound.get('refid')
 			if kind.is_language():
-				node = Node(os.path.join(index_path, refid + '.xml'), None, self.cache, self.parser, self.root)
+				node = Node(
+					os.path.join(index_path, f'{refid}.xml'),
+					None,
+					self.cache,
+					self.parser,
+					self.root,
+				)
 				node._visibility = Visibility.PUBLIC
 				self.root.add_child(node)
 			if kind == Kind.GROUP:
-				node = Node(os.path.join(index_path, refid + '.xml'), None, self.cache, self.parser, self.root)
+				node = Node(
+					os.path.join(index_path, f'{refid}.xml'),
+					None,
+					self.cache,
+					self.parser,
+					self.root,
+				)
 				node._visibility = Visibility.PUBLIC
 				self.groups.add_child(node)
 			if kind in [Kind.FILE, Kind.DIR]:
-				node = Node(os.path.join(index_path, refid + '.xml'), None, self.cache, self.parser, self.root)
+				node = Node(
+					os.path.join(index_path, f'{refid}.xml'),
+					None,
+					self.cache,
+					self.parser,
+					self.root,
+				)
 				node._visibility = Visibility.PUBLIC
 				self.files.add_child(node)
 			if kind == Kind.PAGE:
-				node = Node(os.path.join(index_path, refid + '.xml'), None, self.cache, self.parser, self.root)
+				node = Node(
+					os.path.join(index_path, f'{refid}.xml'),
+					None,
+					self.cache,
+					self.parser,
+					self.root,
+				)
 				node._visibility = Visibility.PUBLIC
 				self.pages.add_child(node)
 
 		if self.debug:
 			log.info('Deduplicating data... (may take a minute!)')
-		for i, child in enumerate(self.root.children.copy()):
+		for child in self.root.children.copy():
 			self._fix_duplicates(child, self.root, [])
 
-		for i, child in enumerate(self.groups.children.copy()):
+		for child in self.groups.children.copy():
 			self._fix_duplicates(child, self.groups, [Kind.GROUP])
 
-		for i, child in enumerate(self.files.children.copy()):
+		for child in self.files.children.copy():
 			self._fix_duplicates(child, self.files, [Kind.FILE, Kind.DIR])
 
 		self._fix_parents(self.files)
@@ -118,4 +142,4 @@ class Doxygen:
 		if self.debug:
 			log.info(f"{indent} {node.kind} {node.name}")
 		for child in node.children:
-			self.print_node(child, indent + '  ')
+			self.print_node(child, f'{indent}  ')

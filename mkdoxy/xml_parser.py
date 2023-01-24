@@ -93,8 +93,7 @@ class XmlParser:
 						if c.tail:
 							line += c.tail
 				code.append(line)
-			ret.append(Text('\n'))
-			ret.append(code)
+			ret.extend((Text('\n'), code))
 		return ret
 
 	def paras(self, p: Element, italic: bool = False) -> [Md]:

@@ -36,7 +36,7 @@ ADDITIONAL_FILES = {
 }
 
 def generate_link(name, url) -> str:
-	return '* [' + name + '](' + url + ')\n'
+	return f'* [{name}]({url}' + ')\n'
 
 # def generate_link(name, url) -> str:
 # 	return f"\t\t- '{name}': '{url}'\n"
@@ -106,7 +106,7 @@ class GeneratorAuto:
 		self.save(path, output)
 
 	def programlisting(self, node: [Node]):
-		path = node.refid + '_source.md'
+		path = f'{node.refid}_source.md'
 
 		output = self.generatorBase.programlisting(node)
 		self.save(path, output)
@@ -124,7 +124,7 @@ class GeneratorAuto:
 		self.save(path, output)
 
 	def page(self, node: Node):
-		path = node.name + '.md'
+		path = f'{node.name}.md'
 
 		output = self.generatorBase.page(node)
 		self.save(path, output)
@@ -196,27 +196,39 @@ class GeneratorAuto:
 
 	def _generate_recursive(self, node: Node, level: int):
 		if node.kind.is_parent():
-			self.outputSumm += str(' ' * level + generate_link(node.kind.value + ' ' + node.name, node.refid + '.md'))
+			self.outputSumm += str(
+				' ' * level
+				+ generate_link(f'{node.kind.value} {node.name}', f'{node.refid}.md')
+			)
 			for child in node.children:
 				self._generate_recursive(child, level + 2)
 
 	def _generate_recursive_files(self, node: Node, level: int):
 		if node.kind.is_file() or node.kind.is_dir():
-			self.outputSumm += str(' ' * level + generate_link(node.name, node.refid + '.md'))
+			self.outputSumm += str(
+				' ' * level + generate_link(node.name, f'{node.refid}.md')
+			)
 			if node.kind.is_file():
-				self.outputSumm += str(' ' * level + generate_link(node.name + ' source', node.refid + '_source.md'))
+				self.outputSumm += str(
+					' ' * level
+					+ generate_link(f'{node.name} source', f'{node.refid}_source.md')
+				)
 			for child in node.children:
 				self._generate_recursive_files(child, level + 2)
 
 	def _generate_recursive_groups(self, node: Node, level: int):
 		if node.kind.is_group():
-			self.outputSumm += str(' ' * level + generate_link(node.title, node.refid + '.md'))
+			self.outputSumm += str(
+				' ' * level + generate_link(node.title, f'{node.refid}.md')
+			)
 			for child in node.children:
 				self._generate_recursive_groups(child, level + 2)
 
 	def _generate_recursive_pages(self, node: Node, level: int):
 		if node.kind.is_page():
-			self.outputSumm += str(' ' * level + generate_link(node.title, node.refid + '.md'))
+			self.outputSumm += str(
+				' ' * level + generate_link(node.title, f'{node.refid}.md')
+			)
 			for child in node.children:
 				self._generate_recursive_pages(child, level + 2)
 

@@ -14,7 +14,7 @@ class Property:
 
 		def md(self, plain: bool = False) -> str:
 			detaileddescription = self.xml.find('detaileddescription')
-			if len(list(detaileddescription)) > 0:
+			if list(detaileddescription):
 				return self.parser.paras_as_str(detaileddescription, plain=plain)
 			else:
 				return ''
@@ -39,9 +39,10 @@ class Property:
 
 			paras = briefdescription.findall('para')
 			if len(paras) > 0:
-				text = []
-				for para in paras:
-					text.append(self.parser.paras_as_str(para, italic=True, plain=plain))
+				text = [
+					self.parser.paras_as_str(para, italic=True, plain=plain)
+					for para in paras
+				]
 				return ' '.join(text)
 			else:
 				return ''
@@ -68,18 +69,13 @@ class Property:
 		def array(self, plain: bool = False) -> [str]:
 			ret = []
 			for includes in self.xml.findall('includes'):
-				if plain:
-					incl = includes.text
-				else:
-					incl = self.parser.reference_as_str(includes)
-
+				incl = includes.text if plain else self.parser.reference_as_str(includes)
 				if includes.get('local') == 'yes':
-					ret.append('"' + incl + '"')
+					ret.append(f'"{incl}"')
+				elif plain:
+					ret.append(f'<{incl}>')
 				else:
-					if plain:
-						ret.append('<' + incl + '>')
-					else:
-						ret.append('&lt;' + incl + '&gt;')
+					ret.append(f'&lt;{incl}&gt;')
 			return ret
 
 		def has(self) -> bool:
@@ -93,10 +89,7 @@ class Property:
 
 		def md(self, plain: bool = False) -> str:
 			para = self.xml.find('type')
-			if para is not None:
-				return self.parser.paras_as_str(para, plain=plain)
-			else:
-				return ''
+			return self.parser.paras_as_str(para, plain=plain) if para is not None else ''
 
 		def plain(self) -> str:
 			return self.md(plain=True)
@@ -115,10 +108,7 @@ class Property:
 
 		def plain(self) -> str:
 			loc = self.xml.find('location')
-			if loc is not None:
-				return loc.get('file')
-			else:
-				return ''
+			return loc.get('file') if loc is not None else ''
 
 		def has(self) -> bool:
 			return self.xml.find('location') is not None
@@ -144,15 +134,15 @@ class Property:
 
 				declname = param.find('declname')
 				if declname is not None:
-					p += ' ' + self.parser.paras_as_str(declname, plain=plain)
+					p += f' {self.parser.paras_as_str(declname, plain=plain)}'
 				else:
 					defname = param.find('defname')
 					if defname is not None:
-						p += ' ' + self.parser.paras_as_str(defname, plain=plain)
+						p += f' {self.parser.paras_as_str(defname, plain=plain)}'
 
 				defval = param.find('defval')
 				if defval is not None:
-					p += '=' + self.parser.paras_as_str(defval, plain=plain)
+					p += f'={self.parser.paras_as_str(defval, plain=plain)}'
 
 				ret.append(p.strip())
 			return ret
@@ -188,8 +178,8 @@ class Property:
 						if declname is None:
 							declname = param.find('type')
 						ret.append(
-							self.parser.paras_as_str(type, plain=plain) + ' ' + self.parser.paras_as_str(declname,
-							                                                                             plain=plain))
+							f'{self.parser.paras_as_str(type, plain=plain)} {self.parser.paras_as_str(declname, plain=plain)}'
+						)
 			return ret
 
 		def has(self) -> bool:
@@ -221,9 +211,7 @@ class Property:
 
 		def plain(self) -> str:
 			argss = self.xml.find('argsstring')
-			if argss is None or argss.text is None:
-				return ''
-			return argss.text
+			return '' if argss is None or argss.text is None else argss.text
 
 		def parsed(self) -> str:
 			argss = self.xml.find('argsstring')
@@ -282,15 +270,12 @@ class Property:
 					p = '**' + escape(enumvalue.find('name').text) + '**'
 					initializer = enumvalue.find('initializer')
 					if initializer is not None:
-						p += ' ' + self.parser.paras_as_str(initializer, plain=plain)
+						p += f' {self.parser.paras_as_str(initializer, plain=plain)}'
 					ret.append(p)
 			return ret
 
 		def has(self) -> bool:
-			if self.kind.is_enum():
-				return self.xml.find('enumvalue') is not None
-			else:
-				return False
+			return self.xml.find('enumvalue') is not None if self.kind.is_enum() else False
 
 	class Initializer:
 		def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
@@ -323,7 +308,7 @@ class Property:
 		def plain(self) -> str:
 			definition = self.xml.find('definition')
 			if definition is not None and definition.text:
-				return definition.text + ';'
+				return f'{definition.text};'
 			else:
 				return ''
 

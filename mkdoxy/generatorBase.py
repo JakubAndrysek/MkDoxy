@@ -26,10 +26,7 @@ class GeneratorBase:
 	def __init__(self, ignore_errors: bool = False, debug: bool = False):
 		self.debug = debug
 
-		on_undefined_class = Undefined
-		if not ignore_errors:
-			on_undefined_class = StrictUndefined
-
+		on_undefined_class = Undefined if ignore_errors else StrictUndefined
 		self.templates: Dict[str, Template] = {}
 		self.metaData: Dict[str, list[str]] = {}
 
@@ -206,14 +203,8 @@ class GeneratorBase:
 					list(map(lambda x: x['derived'], children)),
 					Kind.CLASS
 				))
-			else:
-				found: Node = None
-				for klass in classes:
-					if klass.refid == key:
-						found = klass
-						break
-				if found:
-					deduplicated_arr.append(found)
+			elif found := next((klass for klass in classes if klass.refid == key), None):
+				deduplicated_arr.append(found)
 
 		data = {
 			'classes': deduplicated_arr,
