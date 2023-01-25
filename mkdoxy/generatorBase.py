@@ -26,10 +26,7 @@ class GeneratorBase:
 	def __init__(self, ignore_errors: bool = False, debug: bool = False):
 		self.debug = debug
 
-		on_undefined_class = Undefined
-		if not ignore_errors:
-			on_undefined_class = StrictUndefined
-
+		on_undefined_class = Undefined if ignore_errors else StrictUndefined
 		self.templates: Dict[str, Template] = {}
 		self.metaData: Dict[str, list[str]] = {}
 
@@ -59,7 +56,7 @@ class GeneratorBase:
 				print('Generating', path)
 			return tmpl.render(data)
 		except TemplateError as e:
-			raise Exception(str(e))
+			raise Exception(str(e)) from e
 
 	def error(self, title: str = "", message: str = "", language: str = ""):
 		template, metaConfig = self.loadConfigAndTemplate("error")
@@ -72,7 +69,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def annotated(self, nodes: [Node], config: dict = {}):
+	def annotated(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("annotated")
 		data = {
 			'nodes': nodes,
@@ -80,7 +79,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def programlisting(self, node: [Node], config: dict = {}):
+	def programlisting(self, node: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("programlisting")
 		data = {
 			'node': node,
@@ -88,7 +89,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def code(self, node: [Node], config: dict = {}, code: str = ""):
+	def code(self, node: [Node], config: dict = None, code: str = ""):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("code")
 		newConfig = config
 		# newConfig = merge_two_dicts(CODE_CONFIG, config)
@@ -101,7 +104,9 @@ class GeneratorBase:
 
 		return self.render(template, data)
 
-	def fileindex(self, nodes: [Node], config: dict = {}):
+	def fileindex(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("files")
 		data = {
 			'nodes': nodes,
@@ -109,7 +114,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def namespaces(self, nodes: [Node], config: dict = {}):
+	def namespaces(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("namespaces")
 		data = {
 			'nodes': nodes,
@@ -117,7 +124,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def page(self, node: Node, config: dict = {}):
+	def page(self, node: Node, config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("page")
 		data = {
 			'node': node,
@@ -125,7 +134,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def relatedpages(self, nodes: [Node], config: dict = {}):
+	def relatedpages(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("page")
 		data = {
 			'nodes': nodes,
@@ -133,7 +144,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def classes(self, nodes: [Node], config: dict = {}):
+	def classes(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("classes")
 
 		classes = recursive_find(nodes, Kind.CLASS)
@@ -171,7 +184,9 @@ class GeneratorBase:
 					ret.extend(self._find_base_classes(bases, node))
 		return ret
 
-	def modules(self, nodes: [Node], config: dict = {}):
+	def modules(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("modules")
 		data = {
 			'nodes': nodes,
@@ -179,7 +194,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def hierarchy(self, nodes: [Node], config: dict = {}):
+	def hierarchy(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("hierarchy")
 
 		classes = recursive_find(nodes, Kind.CLASS)
@@ -207,11 +224,7 @@ class GeneratorBase:
 					Kind.CLASS
 				))
 			else:
-				found: Node = None
-				for klass in classes:
-					if klass.refid == key:
-						found = klass
-						break
+				found: Node = next((klass for klass in classes if klass.refid == key), None)
 				if found:
 					deduplicated_arr.append(found)
 
@@ -221,7 +234,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def function(self, node: Node, config: dict = {}):
+	def function(self, node: Node, config: dict = None):
+		if config is None:
+			config = {}
 		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
 
 		data = {
@@ -230,7 +245,9 @@ class GeneratorBase:
 		}
 		return self.render(templateMemDef, data)
 
-	def member(self, node: Node, config: dict = {}):
+	def member(self, node: Node, config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("member")
 		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
 		templateMemTab, metaConfigMemTab = self.loadConfigAndTemplate("memTab")
@@ -245,7 +262,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def file(self, node: Node, config: dict = {}):
+	def file(self, node: Node, config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("member")
 		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
 		templateMemTab, metaConfigMemTab = self.loadConfigAndTemplate("memTab")
@@ -260,7 +279,9 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str, config: dict = {}):
+	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str, config: dict = None):
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("index")
 
 		found_nodes = recursive_find_with_parent(nodes, kind_filters, kind_parents)

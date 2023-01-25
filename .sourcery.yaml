@@ -1,0 +1,4 @@
+refactor:
+  skip:
+    - use-named-expression  # Python 3.8+
+    - dict-assign-update-to-union # Python 3.8+

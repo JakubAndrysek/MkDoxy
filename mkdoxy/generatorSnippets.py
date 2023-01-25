@@ -58,7 +58,7 @@ class GeneratorSnippets:
 
 		# fix absolute path
 		path = pathlib.PurePath(self.page.url).parts
-		self.pageUrlPrefix = ''.join("../" for i in range(len(path)-1))
+		self.pageUrlPrefix = ''.join("../" for _ in range(len(path)-1))
 
 	def generate(self):
 
@@ -125,11 +125,19 @@ class GeneratorSnippets:
 		# Project is exist
 		if project not in self.generatorBase:
 			return self.generatorBase[list(self.generatorBase)[0]].error(f"Did not exist project with name: {project}", snippet, "yaml")
-		# Project has got parameters
-		for param in params:
-			if not config.get(param):
-				return self.doxyError(project, f"The requid parameter `{param}` is not configured!", snippet, "yaml")
-		return False
+		return next(
+			(
+				self.doxyError(
+					project,
+					f"The requid parameter `{param}` is not configured!",
+					snippet,
+					"yaml",
+				)
+				for param in params
+				if not config.get(param)
+			),
+			False,
+		)
 
 	### Create documentation generator callbacks
 

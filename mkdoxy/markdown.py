@@ -5,8 +5,7 @@ def escape(s: str) -> str:
 	ret = ret.replace('_', '\\_')
 	ret = ret.replace('<', '&lt;')
 	ret = ret.replace('>', '&gt;')
-	ret = ret.replace('|', '\|')
-	return ret
+	return ret.replace('|', '\|')
 
 
 
@@ -60,7 +59,7 @@ class MdHint(Md):
 		self.typ = typ
 
 	def render(self, f: MdRenderer, indent: str):
-		f.write('::: ' + self.typ + ' ' + self.title + '\n')
+		f.write(f'::: {self.typ} {self.title}' + '\n')
 		for child in self.children:
 			child.render(f, '')
 		f.write(':::\n')
@@ -82,7 +81,7 @@ class MdImage:
 		self.url = url
 
 	def render(self, f: MdRenderer, indent: str):
-		f.write('![Image](' + self.url + ')')
+		f.write(f'![Image]({self.url})')
 
 
 class Code():
@@ -90,7 +89,7 @@ class Code():
 		self.text = text
 
 	def render(self, f: MdRenderer, indent: str):
-		f.write('`' + self.text + '`')
+		f.write(f'`{self.text}`')
 
 
 class MdCodeBlock:
@@ -148,7 +147,7 @@ class MdLink(Md):
 		f.write('[')
 		for child in self.children:
 			child.render(f, '')
-		f.write('](' + self.url + ')') # TODO add {{link_prefix}}
+		f.write(f']({self.url})')
 
 
 class MdList(Md):
@@ -159,8 +158,8 @@ class MdList(Md):
 		f.eol()
 		for child in self.children:
 			if not isinstance(child, MdList):
-				f.write(indent + '* ')
-			child.render(f, indent + '  ')
+				f.write(f'{indent}* ')
+			child.render(f, f'{indent}  ')
 
 
 class MdLine:
@@ -181,7 +180,7 @@ class MdHeader(Md):
 	def render(self, f: MdRenderer, indent: str):
 		f.write('#' * self.level + ' ')
 		for child in self.children:
-			child.render(f, indent + '')
+			child.render(f, f'{indent}')
 		f.write('\n')
 		f.eol()
 

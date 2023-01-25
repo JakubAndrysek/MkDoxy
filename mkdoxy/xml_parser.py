@@ -93,8 +93,7 @@ class XmlParser:
 						if c.tail:
 							line += c.tail
 				code.append(line)
-			ret.append(Text('\n'))
-			ret.append(code)
+			ret.extend((Text('\n'), code))
 		return ret
 
 	def paras(self, p: Element, italic: bool = False) -> [Md]:
@@ -103,16 +102,13 @@ class XmlParser:
 			return ret
 		if p.text:
 			if italic:
-				ret.append(MdItalic([Text(p.text.strip())]))
-				ret.append(Text(' '))
+				ret.extend((MdItalic([Text(p.text.strip())]), Text(' ')))
 			else:
 				ret.append(Text(p.text))
 		for item in list(p):
 			# para
 			if item.tag == 'para':
-				ret.append(MdParagraph(self.paras(item)))
-				ret.append(Text('\n'))
-
+				ret.extend((MdParagraph(self.paras(item)), Text('\n')))
 			elif item.tag == 'image':
 				url = item.get('name')
 				ret.append(MdImage(url))
@@ -169,7 +165,7 @@ class XmlParser:
 						ret.append(MdLink([MdBold([Text(item.text)])], ref.url))
 					else:
 						ret.append(MdLink([MdBold([Text(ref.get_full_name())])], ref.url))
-				except:
+				except Exception:
 					if item.text:
 						ret.append(Text(item.text))
 
@@ -205,9 +201,7 @@ class XmlParser:
 
 				term = varlistentry.find('term')
 				for listitem in item.findall('listitem'):
-					for para in listitem.findall('para'):
-						ret.append(MdParagraph(self.paras(para)))
-
+					ret.extend(MdParagraph(self.paras(para)) for para in listitem.findall('para'))
 			elif item.tag == 'parameterlist':
 				parameteritems = item.findall('parameteritem')
 				lst = MdList([])
@@ -223,15 +217,12 @@ class XmlParser:
 					for ip in description:
 						par.extend(self.paras(ip))
 					lst.append(par)
-				ret.append(Br())
-				ret.append(MdBold([Text(SIMPLE_SECTIONS[item.get('kind')])]))
-				ret.append(Br())
-				ret.append(lst)
-
+				ret.extend(
+					(Br(), MdBold([Text(SIMPLE_SECTIONS[item.get('kind')])]), Br(), lst)
+				)
 			elif item.tag == 'simplesect':
 				kind = item.get('kind')
-				ret.append(Br())
-				ret.append(MdBold([Text(SIMPLE_SECTIONS[kind])]))
+				ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
 				if kind != 'see':
 					ret.append(Br())
 				else:
@@ -249,9 +240,7 @@ class XmlParser:
 				xreftitle = item.find('xreftitle')
 				xrefdescription = item.find('xrefdescription')
 				kind = xreftitle.text.lower()
-				ret.append(Br())
-				ret.append(MdBold(self.paras(xreftitle)))
-				ret.append(Br())
+				ret.extend((Br(), MdBold(self.paras(xreftitle)), Br()))
 				for sp in xrefdescription.findall('para'):
 					ret.extend(self.paras(sp))
 					ret.append(Br())
@@ -267,8 +256,7 @@ class XmlParser:
 
 			if item.tail:
 				if italic:
-					ret.append(Text(' '))
-					ret.append(MdItalic([Text(item.tail.strip())]))
+					ret.extend((Text(' '), MdItalic([Text(item.tail.strip())])))
 				else:
 					ret.append(Text(item.tail))
 		return ret

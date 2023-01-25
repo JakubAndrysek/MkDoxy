@@ -33,7 +33,7 @@ def lookahead(iterable):
 def contains(a, pos, b):
 	ai = pos
 	bi = 0
-	if len(b) > len(a) - pos:
+	if len(b) > len(a) - ai:
 		return False
 	while bi < len(b):
 		if a[ai] != b[bi]:
@@ -74,8 +74,8 @@ def split_safe(s: str, delim: str) -> [str]:
 def parseTemplateFile(templateFile: str):
 	match = re.match(regex, templateFile, re.MULTILINE)
 	if match:
-		template = match.group("template")
-		meta = match.group("meta")
+		template = match["template"]
+		meta = match["meta"]
 		yaml = YAML(typ='safe')
 		metaData = yaml.load(meta)
 		# yaml.dump(metaData, sys.stdout)

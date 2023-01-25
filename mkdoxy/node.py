@@ -31,11 +31,11 @@ class Node:
 
 		elif xml is None:
 			if self.debug:
-				log.info('Loading XML from: ' + xml_file)
+				log.info(f'Loading XML from: {xml_file}')
 			self._dirname = os.path.dirname(xml_file)
 			self._xml = ElementTree.parse(xml_file).getroot().find('compounddef')
 			if self._xml is None:
-				raise Exception('File ' + xml_file + ' has no <compounddef>')
+				raise Exception(f'File {xml_file} has no <compounddef>')
 			self._kind = Kind.from_str(self._xml.get('kind'))
 			self._refid = self._xml.get('id')
 			self._language = self._xml.get('language')
@@ -44,7 +44,7 @@ class Node:
 			self._static = False
 
 			if self.debug:
-				log.info('Parsing: ' + self._refid)
+				log.info(f'Parsing: {self._refid}')
 			self._check_for_children()
 
 			title = self._xml.find('title')
@@ -57,7 +57,7 @@ class Node:
 			self._cache.add(self._refid, self)
 
 			if self.debug:
-				log.info('Parsing: ' + self._refid)
+				log.info(f'Parsing: {self._refid}')
 			self._check_attrs()
 			self._title = self._name
 
@@ -91,9 +91,15 @@ class Node:
 					child = self._cache.get(refid)
 					self.add_child(child)
 					continue
-				except:
+				except Exception:
 					pass
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
+			child = Node(
+				os.path.join(self._dirname, f'{refid}.xml'),
+				None,
+				self._cache,
+				self._parser,
+				self,
+			)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -112,10 +118,22 @@ class Node:
 					pass
 
 			try:
-				child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
+				child = Node(
+					os.path.join(self._dirname, f'{refid}.xml'),
+					None,
+					self._cache,
+					self._parser,
+					self,
+				)
 			except FileNotFoundError as e:
-				child = Node(os.path.join(self._dirname, refid + '.xml'), Element('compounddef'), self._cache,
-				             self._parser, self, refid=refid)
+				child = Node(
+					os.path.join(self._dirname, f'{refid}.xml'),
+					Element('compounddef'),
+					self._cache,
+					self._parser,
+					self,
+					refid=refid,
+				)
 				child._name = innerclass.text
 			child._visibility = prot
 			self.add_child(child)
@@ -130,7 +148,13 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
+			child = Node(
+				os.path.join(self._dirname, f'{refid}.xml'),
+				None,
+				self._cache,
+				self._parser,
+				self,
+			)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -144,7 +168,13 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
+			child = Node(
+				os.path.join(self._dirname, f'{refid}.xml'),
+				None,
+				self._cache,
+				self._parser,
+				self,
+			)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -159,7 +189,13 @@ class Node:
 				except:
 					pass
 
-			child = Node(os.path.join(self._dirname, refid + '.xml'), None, self._cache, self._parser, self)
+			child = Node(
+				os.path.join(self._dirname, f'{refid}.xml'),
+				None,
+				self._cache,
+				self._parser,
+				self,
+			)
 			child._visibility = Visibility.PUBLIC
 			self.add_child(child)
 
@@ -343,9 +379,7 @@ class Node:
 		name = self._name
 		type = self._type.plain()
 		params = self._specifiers.plain()
-		if params:
-			return type + " " + name + params
-		return self.name_long
+		return f"{type} {name}{params}" if params else self.name_long
 
 	@property
 	def title(self) -> str:
@@ -380,30 +414,29 @@ class Node:
 	@property
 	def name_url_safe(self) -> str:
 		name = self.name_tokens[-1]
-		name = name.replace(' ', '-').replace('=', '').replace('~', '').lower()
-		return name
+		return name.replace(' ', '-').replace('=', '').replace('~', '').lower()
 
 	@property
 	def anchor(self) -> str:
 		name = ''
 		if self._name.replace(' ', '') in OVERLOAD_OPERATORS:
 			num = self.operator_num
-			name = 'operator_' + str(self.operator_num - 1) if num > 1 else 'operator'
+			name = f'operator_{str(self.operator_num - 1)}' if num > 1 else 'operator'
 		elif self.is_overloaded:
-			name = self.name_url_safe + '-' + str(self.overload_num) + str(self.overload_total)
+			name = f'{self.name_url_safe}-{str(self.overload_num)}{str(self.overload_total)}'
 		else:
 			name = self.name_url_safe
 
 		if name.startswith('-'):
 			name = name[1:]
-		return self._kind.value + '-' + name
+		return f'{self._kind.value}-{name}'
 
 	@property
 	def url(self) -> str:
 		if self.is_parent or self.is_group or self.is_file or self.is_dir or self.is_page:
 			return self.linkPrefix + self._refid + '.md'
 		else:
-			return self._parent.url + '#' + self.anchor
+			return f'{self._parent.url}#{self.anchor}'
 
 	@property
 	def base_url(self) -> str:
@@ -443,10 +476,7 @@ class Node:
 
 	@property
 	def root(self) -> 'Node':
-		if self._kind == Kind.ROOT:
-			return self
-		else:
-			return self._parent.root
+		return self if self._kind == Kind.ROOT else self._parent.root
 
 	@property
 	def name_tokens(self) -> [str]:
@@ -462,7 +492,7 @@ class Node:
 	def name_long(self) -> str:
 		try:
 			if self._parent.is_parent:
-				return self._parent.name_long + '::' + escape(self.name_tokens[-1])
+				return f'{self._parent.name_long}::{escape(self.name_tokens[-1])}'
 			else:
 				return escape(self._name)
 		except Exception as e:
@@ -472,7 +502,7 @@ class Node:
 	@property
 	def name_full_unescaped(self) -> str:
 		if self._parent is not None and not self._parent.is_root and self._parent.is_parent:
-			return self._parent.name_full_unescaped + '::' + self.name_tokens[-1]
+			return f'{self._parent.name_full_unescaped}::{self.name_tokens[-1]}'
 		else:
 			return self.name_tokens[-1]
 
@@ -504,10 +534,7 @@ class Node:
 			return ''
 
 		total = self.overload_total
-		if total > 1:
-			return '[' + str(self.overload_num) + '/' + str(total) + ']'
-		else:
-			return ''
+		return f'[{str(self.overload_num)}/{str(total)}]' if total > 1 else ''
 
 	@property
 	def parents(self) -> ['Node']:
@@ -528,15 +555,10 @@ class Node:
 		elif self.is_function:
 			return self._specifiers.md()
 		elif self.is_variable:
-			if self._initializer.has():
-				return ' = ' + self._initializer.md()
-			else:
-				return ''
+			return f' = {self._initializer.md()}' if self._initializer.has() else ''
 		elif self.is_define:
 			test = self._initializer.md()
-			if '\n' in test:
-				return ''
-			return test
+			return '' if '\n' in test else test
 		else:
 			return ''
 
@@ -561,65 +583,65 @@ class Node:
 		code = []
 		if self.is_function or self.is_friend:
 			if self._templateparams.has():
-				code.append('template<' + self._templateparams.plain() + '>')
+				code.append(f'template<{self._templateparams.plain()}>')
 
 			typ = self._type.plain()
 			if typ:
 				typ += ' '
 			if self.is_virtual:
-				typ = 'virtual ' + typ
+				typ = f'virtual {typ}'
 			if self.is_explicit:
-				typ = 'explicit ' + typ
+				typ = f'explicit {typ}'
 			if self.is_inline:
-				typ = 'inline ' + typ
+				typ = f'inline {typ}'
 			if self.is_static:
-				typ = 'static ' + typ
+				typ = f'static {typ}'
 
 			if self._params.has():
 				code.append(typ + self.name_full_unescaped + ' (')
 				params = self._params.array(plain=True)
 				for i, param in enumerate(params):
 					if i + 1 >= len(params):
-						code.append('    ' + param)
+						code.append(f'    {param}')
 					else:
-						code.append('    ' + param + ',')
-				code.append(') ' + self._specifiers.parsed())
+						code.append(f'    {param},')
+				code.append(f') {self._specifiers.parsed()}')
 			else:
 				code.append(typ + self.name_full_unescaped + ' () ' + self._specifiers.parsed())
 
 		elif self.is_enum:
 			if self._values.has():
-				code.append('enum ' + self.name_full_unescaped + ' {')
+				code.append(f'enum {self.name_full_unescaped}' + ' {')
 
 				values = []
 				for enumvalue in self._xml.findall('enumvalue'):
 					p = enumvalue.find('name').text
 					initializer = enumvalue.find('initializer')
 					if initializer is not None:
-						p += ' ' + self._parser.paras_as_str(initializer, plain=True)
+						p += f' {self._parser.paras_as_str(initializer, plain=True)}'
 					values.append(p)
 
 				for i, value in enumerate(values):
 					if i + 1 >= len(values):
-						code.append('    ' + value)
+						code.append(f'    {value}')
 					else:
-						code.append('    ' + value + ',')
+						code.append(f'    {value},')
 				code.append('};')
 			else:
-				code.append('enum ' + self.name_full_unescaped + ';')
+				code.append(f'enum {self.name_full_unescaped};')
 
 		elif self.is_define:
 			if self._params.has():
-				code.append('#define ' + self.name_full_unescaped + ' (')
+				code.append(f'#define {self.name_full_unescaped} (')
 				params = self._params.array(plain=True)
 				for i, param in enumerate(params):
 					if i + 1 >= len(params):
-						code.append('    ' + param)
+						code.append(f'    {param}')
 					else:
-						code.append('    ' + param + ',')
-				code.append(') ' + self._initializer.plain())
+						code.append(f'    {param},')
+				code.append(f') {self._initializer.plain()}')
 			else:
-				code.append('#define ' + self.name_full_unescaped + ' ' + self._initializer.plain())
+				code.append(f'#define {self.name_full_unescaped} {self._initializer.plain()}')
 
 		else:
 			code.append(self._definition.plain())
@@ -702,7 +724,7 @@ class Node:
 	@property
 	def params(self) -> str:
 		if self._params.has():
-			return '(' + self._params.md() + ')'
+			return f'({self._params.md()})'
 		elif self.is_function:
 			return '()'
 		else:
@@ -763,10 +785,7 @@ class Node:
 	@property
 	def reimplements(self) -> 'Node':
 		reimp = self._xml.find('reimplements')
-		if reimp is not None:
-			return self._cache.get(reimp.get('refid'))
-		else:
-			return None
+		return self._cache.get(reimp.get('refid')) if reimp is not None else None
 
 
 class DummyNode:
