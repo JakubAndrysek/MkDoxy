@@ -6,7 +6,7 @@ def readme():
 
 setup(
     name='mkdoxy',
-    version='1.0.1',
+    version='1.0.2',
     description='MkDoxy → MkDocs + Doxygen. Easy documentation generator with code snippets.',
     long_description=readme(),
     long_description_content_type='text/markdown',
