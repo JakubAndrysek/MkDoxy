@@ -1,50 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tests/files/docs/index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/master.iml" beforeDir="false" />
+    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Update version">
+      <change beforePath="$PROJECT_DIR$/.idea/main-mkdoxy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/main-mkdoxy.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/cache.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/constants.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxygen.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/doxyrun.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/finder.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorAuto.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorBase.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/generatorSnippets.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/markdown.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/node.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/plugin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/property.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/annotated.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/classes.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/code.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/error.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/files.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/hierarchy.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/index.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/memDef.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/memTab.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/member.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/modules.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/namespaces.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/page.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/pages.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/templates/programlisting.jinja2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doxygen_snippets/xml_parser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/Doxyfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/doxygen.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/files/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/tests/files/mkdocs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.sourcery.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.sourcery.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mkdocs.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +20,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="20sSF9RtRyYPthPvI9bA0t9QgTh" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -61,14 +30,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/files" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/kuba/Documents/git/kuba/mkdoxy/main-mkdoxy",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Makefile Target.reviewCode">
+    <configuration name="reviewCode" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="reviewCode" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <configuration name="mkdocs-serve-vPy3.9" type="PythonConfigurationType" factoryName="Python">
       <module name="main-mkdoxy" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -91,6 +77,11 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Makefile Target.reviewCode" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -102,7 +93,23 @@
       <updated>1636831708250</updated>
       <workItem from="1636831718804" duration="2308000" />
       <workItem from="1636834092012" duration="698000" />
+      <workItem from="1676220120127" duration="1316000" />
     </task>
+    <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
+      <created>1674630349699</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1674630349699</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Update version">
+      <created>1674631616905</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1674631616905</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -118,7 +125,11 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Optimise code by sourcery.ai" />
+    <MESSAGE value="Update version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update version" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_mkdoxy$mkdocs_serve_py3_9.coverage" NAME="mkdocs-serve-py3.9 Coverage Results" MODIFIED="1636834417383" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />

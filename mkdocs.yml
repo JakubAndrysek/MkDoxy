@@ -1,12 +1,12 @@
 site_name: MkDoxy
-site_url: https://jakubandrysek.github.io/mkdoxy/
+site_url: https://jakubandrysek.github.io/MkDoxy/
 site_author: Jakub Andrýsek
 site_description: >-
   MkDoxy -> MkDocs + Doxygen. Easy documentation generator with code snippets.
 
 # Repository
-repo_name: JakubAndrysek/mkdoxy
-repo_url: https://github.com/JakubAndrysek/mkdoxy/
+repo_name: JakubAndrysek/MkDoxy/
+repo_url: https://github.com/JakubAndrysek/MkDoxy/
 
 # Copyright
 copyright: Copyright © 2023 Jakub Andrýsek

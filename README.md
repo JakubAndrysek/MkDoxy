@@ -2,16 +2,16 @@
 
 ## MkDoxy → MkDocs + Doxygen. Easy documentation generator with code snippets.
 
-### [MkDoxy](https://github.com/JakubAndrysek/mkdoxy) is based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
+### [MkDoxy](https://github.com/JakubAndrysek/MkDoxy) is based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
 
 This python tool is extension for MkDocs. Extension will take your programme source code and runs Doxygen.
 Then converts exported XML into markdown and create new folder with full generated documentation.
 Next usage is by snippets inside documentation markdown.
 
-## [Online Demo](https://jakubandrysek.github.io/mkdoxy-demo/) and [Demo Source](https://github.com/JakubAndrysek/mkdoxy-demo)
+## [Online Demo](https://jakubandrysek.github.io/MkDoxy-demo/) and [Demo Source](https://github.com/JakubAndrysek/MkDoxy-demo)
 
 
-![Basic-implementation](https://github.com/JakubAndrysek/mkdoxy/raw/main/docs/media/Basic-implementation.png)
+![Basic-implementation](https://github.com/JakubAndrysek/MkDoxy/raw/main/docs/media/Basic-implementation.png)
 
 ## Requirements
 
@@ -34,7 +34,7 @@ Next usage is by snippets inside documentation markdown.
 
 ## Installation
 
-**Install using Python Pip: <https://pypi.org/project/mkdoxy/>**
+**Install using Python Pip: <https://pypi.org/project/MkDoxy/>**
 
 ```bash
 pip install mkdoxy
@@ -43,24 +43,28 @@ pip install mkdoxy
 **Or Install manually:**
 
 ```bash
-git clone https://github.com/JakubAndrysek/mkdoxy.git
+git clone https://github.com/JakubAndrysek/MkDoxy.git
 cd mkdoxy
 python setup.py install
 ```
 
 ## Example usage
 
+Set `[PROJECT]` according to your project names configured in `mkdocs.yml`.
+
+```bash 
+
 1. Generate class with name `rb::MotorChangeBuilder`
 
 ```yaml
-::: doxy.Class
+::: doxy.[PROJECT].Class
   name: rb::MotorChangeBuilder
 ```
 
 2. Generate method `brake (MotorId id, uint16_t brakingPower)` from class with name `rb::MotorChangeBuilderA`
 
 ```yaml
-::: doxy.Class.Method
+::: doxy.[PROJECT].Class.Method
   name: rb::MotorChangeBuilder
   method: brake (MotorId id, uint16_t brakingPower)
 ```
@@ -68,14 +72,14 @@ python setup.py install
 3. Generate function with name `readUltra (bool async)`
 
 ```yaml
-::: doxy.Function
+::: doxy.[PROJECT].Function
   name: readUltra (bool async)
 ```
 
 4. Generate code snippet from file `RBCXLeds.cpp`
 
 ```yaml
-::: doxy.Code
+::: doxy.[PROJECT].Code
   file: RBCXLeds.cpp
   start: 21
   end: 35
