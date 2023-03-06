@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Update version">
-      <change beforePath="$PROJECT_DIR$/.idea/main-mkdoxy.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/main-mkdoxy.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.sourcery.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.sourcery.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mkdocs.yml" afterDir="false" />
-    </list>
+    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Update version" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,7 +86,7 @@
       <updated>1636831708250</updated>
       <workItem from="1636831718804" duration="2308000" />
       <workItem from="1636834092012" duration="698000" />
-      <workItem from="1676220120127" duration="1316000" />
+      <workItem from="1676220120127" duration="1916000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
