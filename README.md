@@ -4,8 +4,8 @@
 
 
 <p align="center">
-<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FJakubAndrysek%2Fmkdoxy&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true"/></a>
-<img src="https://img.shields.io/github/license/JakubAndrysek/mkdoxy?style=flat-square">
+<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FJakubAndrysek%2FMkDoxy&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true"/></a>
+<img src="https://img.shields.io/github/license/JakubAndrysek/MkDoxy?style=flat-square">
 </p>
 
 ### [MkDoxy](https://github.com/JakubAndrysek/MkDoxy) is based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
