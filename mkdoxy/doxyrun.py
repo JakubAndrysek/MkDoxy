@@ -71,12 +71,13 @@ class DoxygenRun:
 				# # Code from https://stackoverflow.com/a/22058673/15411117
 				# # BUF_SIZE is totally arbitrary, change for your app!
 				BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
-				with open(path, 'rb') as f:
-					while True:
-						data = f.read(BUF_SIZE)
-						if not data:
-							break
-						sha1.update(data)
+				if path.is_file():
+					with open(path, 'rb') as f:
+						while True:
+							data = f.read(BUF_SIZE)
+							if not data:
+								break
+							sha1.update(data)
 				# print(f"{path}: {sha1.hexdigest()}")
 
 		hahsNew = sha1.hexdigest()
