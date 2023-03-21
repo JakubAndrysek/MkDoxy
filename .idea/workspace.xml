@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Build and deploy docs to GitHub Pages">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/mkdoxy-build-test.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CNAME" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +125,7 @@
       <workItem from="1636831718804" duration="2308000" />
       <workItem from="1636834092012" duration="698000" />
       <workItem from="1676220120127" duration="1916000" />
-      <workItem from="1679397312754" duration="6025000" />
+      <workItem from="1679397312754" duration="6415000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
