@@ -55,7 +55,7 @@ class GeneratorAuto:
 		self.siteDir = siteDir
 		self.apiPath = apiPath
 		self.doxygen = doxygen
-		self.useDirectoryUrls = useDirectoryUrls,
+		self.useDirectoryUrls = useDirectoryUrls
 		self.fullDocFiles = []
 		self.debug = debug
 		self.outputSumm = ""
