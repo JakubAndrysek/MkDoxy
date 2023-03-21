@@ -143,8 +143,6 @@ use_directory_urls: true # (optional) for better links without .html extension
 ## Known issues
 1. **Doxygen** is not able to parse **Python** code. 
    - **Solution**: Use `OPTIMIZE_OUTPUT_JAVA: True` and `JAVADOC_AUTOBRIEF: True` in `doxy-cfg` section of `mkdocs.yml`.
-2. `use_directory_urls: false` doesn't work with Mkdoxy. 
-   - **Not fixed yet**
 
 
 ## License

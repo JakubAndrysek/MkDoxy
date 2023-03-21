@@ -11,7 +11,7 @@ def requirements():
 # https://pypi.org/project/mkdoxy/
 setup(
     name='mkdoxy',
-    version='1.0.3',
+    version='1.0.4',
     description='MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets',
     long_description=readme(),
     long_description_content_type='text/markdown',

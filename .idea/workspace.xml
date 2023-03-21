@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Fix url">
+    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Fix use_directory_urls problem, close #30">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/generatorAuto.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/generatorAuto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,9 +44,9 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.mkdocs-serve-vPy3.11">
-    <configuration name="docs-serve" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="docs-serve" workingDirectory="" arguments="">
+  <component name="RunManager" selected="Makefile Target.release">
+    <configuration name="clean" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="clean" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -65,6 +65,12 @@
     </configuration>
     <configuration name="package" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/Makefile" target="package" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="release-test" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="release-test" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -99,18 +105,20 @@
     </configuration>
     <list>
       <item itemvalue="Makefile Target.install" />
+      <item itemvalue="Makefile Target.clean" />
+      <item itemvalue="Makefile Target.release-test" />
       <item itemvalue="Makefile Target.install-dev" />
       <item itemvalue="Makefile Target.package" />
       <item itemvalue="Makefile Target.release" />
-      <item itemvalue="Makefile Target.docs-serve" />
       <item itemvalue="Python.mkdocs-serve-vPy3.11" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Makefile Target.release" />
+        <item itemvalue="Makefile Target.release-test" />
+        <item itemvalue="Makefile Target.clean" />
         <item itemvalue="Makefile Target.package" />
         <item itemvalue="Makefile Target.install-dev" />
-        <item itemvalue="Makefile Target.docs-serve" />
       </list>
     </recent_temporary>
   </component>
@@ -125,7 +133,7 @@
       <workItem from="1636831718804" duration="2308000" />
       <workItem from="1636834092012" duration="698000" />
       <workItem from="1676220120127" duration="1916000" />
-      <workItem from="1679397312754" duration="10643000" />
+      <workItem from="1679397312754" duration="10971000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
@@ -162,7 +170,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679406849683</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Fix use_directory_urls problem, close #30">
+      <created>1679412445947</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1679412445947</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,7 +200,8 @@
     <MESSAGE value="Build and deploy docs to GitHub Pages" />
     <MESSAGE value="Add CNAME" />
     <MESSAGE value="Fix url" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix url" />
+    <MESSAGE value="Fix use_directory_urls problem, close #30" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix use_directory_urls problem, close #30" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
