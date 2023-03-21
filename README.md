@@ -1,6 +1,6 @@
 # MkDoxy
 
-## MkDoxy → MkDocs + Doxygen. Easy documentation generator with code snippets.
+## MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets
 
 
 <p align="center">
@@ -8,7 +8,12 @@
 <img src="https://img.shields.io/github/license/JakubAndrysek/MkDoxy?style=flat-square">
 </p>
 
-### [MkDoxy](https://github.com/JakubAndrysek/MkDoxy) is based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
+
+> **Warning**
+> **Extension is in development** and few features are not working properly. 
+> More information in [Known issues](#known-issues) section and [Issues](https://github.com/JakubAndrysek/MkDoxy/issues) page.
+
+#### [MkDoxy](https://github.com/JakubAndrysek/MkDoxy) is based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
 
 This python tool is extension for MkDocs. Extension will take your programme source code and runs Doxygen.
 Then converts exported XML into markdown and create new folder with full generated documentation.
@@ -21,22 +26,10 @@ Next usage is by snippets inside documentation markdown.
 
 ## Requirements
 
-### Tools
-
-- python 3.6 or newer → `sudo apt install python3`
+- python 3.8 or newer → `sudo apt install python3`
 - Pip → `sudo apt install python3-pip`
-- Git → `sudo apt install git`
 - Doxygen → `sudo apt install doxygen`
-
-### Pip
-
-- Jinja2 → `pip install jinja2`
-- Mkdocs → `pip install mkdocs`
-- ruamel.yaml → `pip install ruamel.yaml`
-
-### Optional:
-
-- mkdocs-material → `pip install mkdocs-material`
+- Git → `sudo apt install git` (optional)
 
 ## Installation
 
@@ -46,12 +39,13 @@ Next usage is by snippets inside documentation markdown.
 pip install mkdoxy
 ```
 
-**Or Install manually:**
+**Or installation from source:**
 
 ```bash
 git clone https://github.com/JakubAndrysek/MkDoxy.git
 cd mkdoxy
-python setup.py install
+python setup.py install # for normal usage
+pip install -e . # for development (source code changes are applied immediately)
 ```
 
 ## Example usage
@@ -105,7 +99,7 @@ plugins:
             EXAMPLE_PATH: examples
             RECURSIVE: True
         apiProject2:
-          src-dirs: sw/python-wrapper/
+          src-dirs: path/to/src/project2
           full-doc: True
           doxy-cfg:
             FILE_PATTERNS: "*.py"
@@ -116,7 +110,7 @@ plugins:
             EXTRACT_ALL: True
 ...
 nav:
-  - 'Home': 'index.md'
+  - Home: 'index.md'
   - API:
       - Project 1:
           - 'Links': 'apiProject1/links.md'
@@ -142,7 +136,15 @@ nav:
           - 'Files': 'apiProject1/files.md'
       - Project 2:
 ...
+
+use_directory_urls: true # (optional) for better links without .html extension
 ```
+
+## Known issues
+1. **Doxygen** is not able to parse **Python** code. 
+   - **Solution**: Use `OPTIMIZE_OUTPUT_JAVA: True` and `JAVADOC_AUTOBRIEF: True` in `doxy-cfg` section of `mkdocs.yml`.
+2. `use_directory_urls: false` doesn't work with Mkdoxy. 
+   - **Not fixed yet**
 
 
 ## License

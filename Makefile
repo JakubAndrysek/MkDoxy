@@ -1,7 +1,6 @@
-.PHONY: package release
+.PHONY: package release release-test clean reviewCode docs-serve docs-build
 
-all: package
-
+# Packaging
 package:
 	rm -f dist/*
 	python3 setup.py sdist bdist_wheel
@@ -18,5 +17,17 @@ release-test: package
 clean:
 	rm -rf dist build
 
+
+# Testing
 reviewCode:
 	sourcery review mkdoxy --in-place
+
+install-dev:
+	python3.11 -m pip install --force --editable .
+
+# Documentation
+docs-serve:
+	mkdocs serve
+
+docs-build: # results in site directory
+	mkdocs build
