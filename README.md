@@ -108,6 +108,10 @@ plugins:
             OPTIMIZE_OUTPUT_JAVA: True
             JAVADOC_AUTOBRIEF: True
             EXTRACT_ALL: True
+        predefinedProject3:
+          doxy-cfg:
+            PREDEFINED: __cplusplus # https://github.com/kuba2k2/libretuya/blob/master/mkdocs.yml
+            CASE_SENSE_NAMES: NO
 ...
 nav:
   - Home: 'index.md'
@@ -143,6 +147,9 @@ use_directory_urls: true # (optional) for better links without .html extension
 ## Known issues
 1. **Doxygen** is not able to parse **Python** code. 
    - **Solution**: Use `OPTIMIZE_OUTPUT_JAVA: True` and `JAVADOC_AUTOBRIEF: True` in `doxy-cfg` section of `mkdocs.yml`.
+2. **Relative links from snippets** are not working properly.
+   - In some cases, relative links are not working properly.
+   - For example link [on test page](https://mkdoxy-demo.kubaandrysek.cz/api/#:~:text=Class%20rb%3A%3AMotorChangeBuilder-,ClassList,-%3E%20rb%20%3E) - `ClassList` under `Class rb::MotorChangeBuilder` is not working. 
 
 
 ## License

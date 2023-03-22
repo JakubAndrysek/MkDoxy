@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Fix use_directory_urls problem, close #30">
+    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Upgrade version, doc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +133,7 @@
       <workItem from="1636831718804" duration="2308000" />
       <workItem from="1636834092012" duration="698000" />
       <workItem from="1676220120127" duration="1916000" />
-      <workItem from="1679397312754" duration="10971000" />
+      <workItem from="1679397312754" duration="12669000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
@@ -177,7 +177,21 @@
       <option name="project" value="LOCAL" />
       <updated>1679412445947</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Upgrade version, doc">
+      <created>1679412916914</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1679412916914</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Upgrade version, doc">
+      <created>1679412944638</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1679412944638</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,7 +215,8 @@
     <MESSAGE value="Add CNAME" />
     <MESSAGE value="Fix url" />
     <MESSAGE value="Fix use_directory_urls problem, close #30" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix use_directory_urls problem, close #30" />
+    <MESSAGE value="Upgrade version, doc" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upgrade version, doc" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
