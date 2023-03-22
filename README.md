@@ -13,7 +13,7 @@
 > **Extension is in development** and few features are not working properly. 
 > More information in [Known issues](#known-issues) section and [Issues](https://github.com/JakubAndrysek/MkDoxy/issues) page.
 
-#### [MkDoxy](https://github.com/JakubAndrysek/MkDoxy) is based on  [matusnovak/doxybook](https://matusnovak.github.io/doxybook)
+#### [MkDoxy](https://github.com/JakubAndrysek/MkDoxy) is based on  [matusnovak/doxybook](https://github.com/matusnovak/doxybook)
 
 This python tool is extension for MkDocs. Extension will take your programme source code and runs Doxygen.
 Then converts exported XML into markdown and create new folder with full generated documentation.
@@ -91,7 +91,7 @@ Set `[PROJECT]` according to your project names configured in `mkdocs.yml`.
 plugins:
   - mkdoxy:
       projects:
-        apiProject1:
+        apiProject1: # name of project must be alphanumeric + numbers (without spaces)
           src-dirs: path/to/src/project1
           full-doc: True
           doxy-cfg:
@@ -110,7 +110,7 @@ plugins:
             EXTRACT_ALL: True
         predefinedProject3:
           doxy-cfg:
-            PREDEFINED: __cplusplus # https://github.com/kuba2k2/libretuya/blob/master/mkdocs.yml
+            PREDEFINED: __cplusplus # example there: https://github.com/kuba2k2/libretuya/blob/master/mkdocs.yml
             CASE_SENSE_NAMES: NO
 ...
 nav:
