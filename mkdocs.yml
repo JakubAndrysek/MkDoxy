@@ -14,8 +14,8 @@ copyright: Copyright © 2023 Jakub Andrýsek
 theme:
   name: material
   language: en
-  # logo: assets/logo.png
-  # favicon: images/favicon.png
+  logo: assets/logo.png
+  favicon: assets/logo.png
   features:
     - navigation.tabs
     - navigation.indexes
@@ -26,8 +26,8 @@ theme:
 
   palette:
     - scheme: slate
-      primary: blue
-      accent: blue
+      primary: orange
+      accent: orange
 
 extra:
   social:

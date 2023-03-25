@@ -23,7 +23,7 @@ reviewCode:
 	sourcery review mkdoxy --in-place
 
 install-dev:
-	python3.11 -m pip install --force --editable .
+	python3 -m pip install --force --editable .
 
 # Documentation
 docs-serve:

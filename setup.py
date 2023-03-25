@@ -15,7 +15,7 @@ setup(
     description='MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets',
     long_description=readme(),
     long_description_content_type='text/markdown',
-    keywords=['mkdoxy', 'python', 'open-source', 'documentation', 'mkdocs', 'doxygen', 'multilanguage', 'code-snippets', 'code', 'snippets', 'documentation-generator'],
+    keywords='mkdoxy, python, open-source, documentation, mkdocs, doxygen, multilanguage, code-snippets, code, snippets, documentation-generator',
     url='https://github.com/JakubAndrysek/MkDoxy',
     author='Jakub Andrýsek',
     author_email='email@kubaandrysek.cz',
