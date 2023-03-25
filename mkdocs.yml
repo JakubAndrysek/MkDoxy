@@ -67,6 +67,9 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
 
+extra_javascript:
+  - assets/js/open_in_new_tab.js
+
 nav:
   - Home: 'README.md'
   - MkDocs API:
