@@ -6,11 +6,18 @@
 <p align="center">
 <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FJakubAndrysek%2FMkDoxy&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true"/></a>
 <img src="https://img.shields.io/github/license/JakubAndrysek/MkDoxy?style=flat-square">
+<img src="https://img.shields.io/github/v/release/JakubAndrysek/MkDoxy?style=flat-square">
+<img src="https://img.shields.io/github/stars/JakubAndrysek/MkDoxy?style=flat-square">
+<img src="https://img.shields.io/github/forks/JakubAndrysek/MkDoxy?style=flat-square">
+<img src="https://img.shields.io/github/issues/JakubAndrysek/MkDoxy?style=flat-square">
+<img src="https://static.pepy.tech/personalized-badge/mkdoxy?period=month&units=international_system&left_color=black&right_color=orange&left_text=Downloads">
+
+
 </p>
 
 
 > **Warning**
-> **Extension is in development** and few features are not working properly. 
+> **Extension is in development** and few features are not working properly.
 > More information in [Known issues](#known-issues) section and [Issues](https://github.com/JakubAndrysek/MkDoxy/issues) page.
 
 #### [MkDoxy](https://github.com/JakubAndrysek/MkDoxy) is based on  [matusnovak/doxybook](https://github.com/matusnovak/doxybook)
@@ -145,11 +152,11 @@ use_directory_urls: true # (optional) for better links without .html extension
 ```
 
 ## Known issues
-1. **Doxygen** is not able to parse **Python** code. 
+1. **Doxygen** is not able to parse **Python** code.
    - **Solution**: Use `OPTIMIZE_OUTPUT_JAVA: True` and `JAVADOC_AUTOBRIEF: True` in `doxy-cfg` section of `mkdocs.yml`.
 2. **Relative links from snippets** are not working properly.
    - In some cases, relative links are not working properly.
-   - For example link [on test page](https://mkdoxy-demo.kubaandrysek.cz/api/#:~:text=Class%20rb%3A%3AMotorChangeBuilder-,ClassList,-%3E%20rb%20%3E) - `ClassList` under `Class rb::MotorChangeBuilder` is not working. 
+   - For example link [on test page](https://mkdoxy-demo.kubaandrysek.cz/api/#:~:text=Class%20rb%3A%3AMotorChangeBuilder-,ClassList,-%3E%20rb%20%3E) - `ClassList` under `Class rb::MotorChangeBuilder` is not working.
 
 
 ## License
