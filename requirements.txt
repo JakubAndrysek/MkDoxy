@@ -1,3 +1,4 @@
 mkdocs
 Jinja2
 ruamel.yaml
+mkdocs-open-in-new-tab
