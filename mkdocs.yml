@@ -1,5 +1,5 @@
 site_name: MkDoxy
-site_url: https://jakubandrysek.github.io/MkDoxy/
+site_url: https://mkdoxy.kubaandrysek.cz/
 site_author: Jakub Andrýsek
 site_description: >-
   MkDoxy -> MkDocs + Doxygen. Easy documentation generator with code snippets.
@@ -37,14 +37,29 @@ extra:
       link: https://twitter.com/KubaAndrysek
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/jakub-andrysek/
-#    analytics:
-#        provider: google
-#        property: G-XXXXXXXXXX
+  analytics:
+    provider: google
+    property: G-8WHJ2N4SHC
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for your feedback!
 
 use_directory_urls: True
 #use_directory_urls: False
 
 plugins:
+  - search
+  - open-in-new-tab
   - mkdoxy:
       projects:
         mkdoxyApi:
@@ -62,36 +77,32 @@ plugins:
       debug: False
       ignore-errors: False
 
-
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
 
-extra_javascript:
-  - assets/js/open_in_new_tab.js
-
 nav:
-  - Home: 'README.md'
+  - Home: "README.md"
   - MkDocs API:
       - mkdoxyApi/index.md
-      - 'Links': 'mkdoxyApi/links.md'
-      - 'Classes':
-          - 'Class List': 'mkdoxyApi/annotated.md'
-          - 'Class Index': 'mkdoxyApi/classes.md'
-          - 'Class Hierarchy': 'mkdoxyApi/hierarchy.md'
-          - 'Class Members': 'mkdoxyApi/class_members.md'
-          - 'Class Member Functions': 'mkdoxyApi/class_member_functions.md'
-          - 'Class Member Variables': 'mkdoxyApi/class_member_variables.md'
-          - 'Class Member Typedefs': 'mkdoxyApi/class_member_typedefs.md'
-          - 'Class Member Enumerations': 'mkdoxyApi/class_member_enums.md'
-      - 'Namespaces':
-          - 'Namespace List': 'mkdoxyApi/namespaces.md'
-          - 'Namespace Members': 'mkdoxyApi/namespace_members.md'
-          - 'Namespace Member Functions': 'mkdoxyApi/namespace_member_functions.md'
-          - 'Namespace Member Variables': 'mkdoxyApi/namespace_member_variables.md'
-          - 'Namespace Member Typedefs': 'mkdoxyApi/namespace_member_typedefs.md'
-          - 'Namespace Member Enumerations': 'mkdoxyApi/namespace_member_enums.md'
-      - 'Functions': 'mkdoxyApi/functions.md'
-      - 'Variables': 'mkdoxyApi/variables.md'
-      - 'Macros': 'mkdoxyApi/macros.md'
-      - 'Files': 'mkdoxyApi/files.md'
+      - "Links": "mkdoxyApi/links.md"
+      - "Classes":
+          - "Class List": "mkdoxyApi/annotated.md"
+          - "Class Index": "mkdoxyApi/classes.md"
+          - "Class Hierarchy": "mkdoxyApi/hierarchy.md"
+          - "Class Members": "mkdoxyApi/class_members.md"
+          - "Class Member Functions": "mkdoxyApi/class_member_functions.md"
+          - "Class Member Variables": "mkdoxyApi/class_member_variables.md"
+          - "Class Member Typedefs": "mkdoxyApi/class_member_typedefs.md"
+          - "Class Member Enumerations": "mkdoxyApi/class_member_enums.md"
+      - "Namespaces":
+          - "Namespace List": "mkdoxyApi/namespaces.md"
+          - "Namespace Members": "mkdoxyApi/namespace_members.md"
+          - "Namespace Member Functions": "mkdoxyApi/namespace_member_functions.md"
+          - "Namespace Member Variables": "mkdoxyApi/namespace_member_variables.md"
+          - "Namespace Member Typedefs": "mkdoxyApi/namespace_member_typedefs.md"
+          - "Namespace Member Enumerations": "mkdoxyApi/namespace_member_enums.md"
+      - "Functions": "mkdoxyApi/functions.md"
+      - "Variables": "mkdoxyApi/variables.md"
+      - "Macros": "mkdoxyApi/macros.md"
+      - "Files": "mkdoxyApi/files.md"
