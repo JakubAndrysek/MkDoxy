@@ -4,15 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Add support for template overwrite instead of changing template directory">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Fix PR url" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="kg-intec-userdefined-templates" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -135,7 +138,7 @@
       <workItem from="1676220120127" duration="1916000" />
       <workItem from="1679397312754" duration="14033000" />
       <workItem from="1679477334958" duration="1480000" />
-      <workItem from="1680339123883" duration="5663000" />
+      <workItem from="1680339123883" duration="6030000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
@@ -207,7 +210,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680348700460</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Fix PR url">
+      <created>1680349313071</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1680349313071</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,7 +244,8 @@
     <MESSAGE value="Upgrade version, doc" />
     <MESSAGE value="Add more info about issues, close #27" />
     <MESSAGE value="Add support for template overwrite instead of changing template directory" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add support for template overwrite instead of changing template directory" />
+    <MESSAGE value="Fix PR url" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix PR url" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

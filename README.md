@@ -177,11 +177,11 @@ use_directory_urls: true # (optional) for better links without .html extension
 ## Changes
 
 - **v1.0.0** - 2021-08-01
-  - Initial release
+    - Initial release
 - **v1.0.3** - 2023-03-21
-  - Fix: Hash function [support subfolders](https://github.com/JakubAndrysek/MkDoxy/pull/29)
+    - Fix: Hash function [support subfolders](https://github.com/JakubAndrysek/MkDoxy/pull/29)
 - **v1.0.5** - 2023-04-01
-  - Fix: Add support for [custom templates](https://github.com/JakubAndrysek/MkDoxy/pull/39)
+    - Fix: Add support for [custom templates](https://github.com/JakubAndrysek/MkDoxy/pull/39)
 
 ## License
 
