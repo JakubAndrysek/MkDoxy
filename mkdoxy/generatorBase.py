@@ -31,7 +31,11 @@ class GeneratorBase:
 		self.metaData: Dict[str, list[str]] = {}
 
 		# code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
-		path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates") if templateDir == "" else os.path.join(os.getcwd(), templateDir)
+		path = (
+			os.path.join(os.getcwd(), templateDir)
+			if templateDir
+			else os.path.join(os.path.dirname(mkdoxy.__file__), "templates")
+		)
 		for fileName in os.listdir(path):
 			filePath = os.path.join(path, fileName)
 			if fileName.endswith(".jinja2"):
