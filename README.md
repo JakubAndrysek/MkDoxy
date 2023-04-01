@@ -108,6 +108,7 @@ plugins:
         apiProject2:
           src-dirs: path/to/src/project2
           full-doc: True
+          template-dir: path/to/userdefined/templates
           doxy-cfg:
             FILE_PATTERNS: "*.py"
             EXAMPLE_PATH: ""

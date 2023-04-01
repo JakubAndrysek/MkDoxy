@@ -3,7 +3,7 @@ import re
 import string
 import traceback
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Dict, Tuple
 from typing import TextIO
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
@@ -23,7 +23,7 @@ log = logging.getLogger("mkdocs")
 LETTERS = string.ascii_lowercase + '~_@\\'
 
 class GeneratorBase:
-	def __init__(self, ignore_errors: bool = False, debug: bool = False):
+	def __init__(self, templateDir: str = "", ignore_errors: bool = False, debug: bool = False):
 		self.debug = debug
 
 		on_undefined_class = Undefined if ignore_errors else StrictUndefined
@@ -31,7 +31,7 @@ class GeneratorBase:
 		self.metaData: Dict[str, list[str]] = {}
 
 		# code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
-		path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates")
+		path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates") if templateDir == "" else os.path.join(os.getcwd(), templateDir)
 		for fileName in os.listdir(path):
 			filePath = os.path.join(path, fileName)
 			if fileName.endswith(".jinja2"):

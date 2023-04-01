@@ -46,6 +46,7 @@ class MkDoxy(BasePlugin):
 		('debug', config_options.Type(bool, default=False)),
 		# ('ignore-errors', config_options.Type(bool, default=False)),
 		('doxy-cfg', config_options.Type(dict, default={}, required=False)),
+		('template-dir', config_options.Type(str, default="", required=False)),
 	)
 
 	def on_files(self, files: files.Files, config):
@@ -107,7 +108,7 @@ class MkDoxy(BasePlugin):
 				self.doxygen[projectName].printStructure()
 
 			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
-			self.generatorBase[projectName] = GeneratorBase(ignore_errors=self.config["ignore-errors"])
+			self.generatorBase[projectName] = GeneratorBase(self.proData.get('template-dir',""), ignore_errors=self.config["ignore-errors"])
 
 			if self.config["full-doc"] and self.proData.get("full-doc", True):
 				generatorAuto = GeneratorAuto(
