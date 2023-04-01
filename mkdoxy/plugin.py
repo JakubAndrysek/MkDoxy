@@ -108,7 +108,7 @@ class MkDoxy(BasePlugin):
 				self.doxygen[projectName].printStructure()
 
 			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
-			self.generatorBase[projectName] = GeneratorBase(self.proData.get('template-dir',""), ignore_errors=self.config["ignore-errors"])
+			self.generatorBase[projectName] = GeneratorBase(self.proData.get('template-dir',""), ignore_errors=self.config["ignore-errors"], debug=self.debug)
 
 			if self.config["full-doc"] and self.proData.get("full-doc", True):
 				generatorAuto = GeneratorAuto(
