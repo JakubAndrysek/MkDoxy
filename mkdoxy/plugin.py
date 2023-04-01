@@ -38,6 +38,7 @@ class MkDoxy(BasePlugin):
 		('debug', config_options.Type(bool, default=False)),
 		('ignore-errors', config_options.Type(bool, default=False)),
 		('save-api', config_options.Type(str, default="")),
+		("enabled", config_options.Type(bool, default=True)),
 	)
 
 	config_project = (
@@ -49,7 +50,13 @@ class MkDoxy(BasePlugin):
 		('template-dir', config_options.Type(str, default="", required=False)),
 	)
 
+	def is_enabled(self):
+		return self.config.get("enabled")
+
 	def on_files(self, files: files.Files, config):
+
+		if not self.is_enabled():
+			return files
 		def checkConfig(config_project, proData, strict: bool):
 			cfg = Config(config_project, '')
 			cfg.load_dict(proData)
@@ -137,6 +144,9 @@ class MkDoxy(BasePlugin):
 			config: base.Config,
 			files: files.Files,
 	) -> str:
+		if not self.is_enabled():
+			return markdown
+
 		generatorSnippets = GeneratorSnippets(
 			markdown=markdown,
 			generatorBase=self.generatorBase,

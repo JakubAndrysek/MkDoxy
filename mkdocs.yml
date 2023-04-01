@@ -61,6 +61,7 @@ plugins:
   - search
   - open-in-new-tab
   - mkdoxy:
+      enabled: !ENV [ENABLE_MKDOXY, True]
       projects:
         mkdoxyApi:
           src-dirs: mkdoxy

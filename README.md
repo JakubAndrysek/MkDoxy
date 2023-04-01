@@ -100,7 +100,7 @@ Set `[PROJECT]` according to your project names configured in `mkdocs.yml`.
   end: 35
 ```
 
-### Mkdocs.yml configuration
+## Mkdocs.yml configuration
 
 <details>
 <summary>Click to expand</summary>
@@ -176,37 +176,34 @@ use_directory_urls: true # (optional) for better links without .html extension
 
 ## Changes
 
-- **v1.0.0** - 2021-08-01
+- **v1.0.0** - 2023-01-24
     - Initial release
 - **v1.0.3** - 2023-03-21
     - Fix: Hash function [support subfolders](https://github.com/JakubAndrysek/MkDoxy/pull/29)
 - **v1.0.5** - 2023-04-01
-    - Fix: Add support for [custom templates](https://github.com/JakubAndrysek/MkDoxy/pull/39)
+    - Add support for [custom templates](https://github.com/JakubAndrysek/MkDoxy/pull/39)
+- **v1.0.6** - 2023-04-01
+    - Add support disable plugin [using environment variable](#disabling-the-plugin)
+
+
+## Disabling the plugin
+You can use the `enabled` option to optionally disable this plugin. A possible use case is local development where you might want faster build times.
+
+```yaml
+plugins:
+  - mkdoxy:
+      enabled: !ENV [ENABLE_MKDOXY, True]
+      ...
+```
+
+This will disable the plugin if the `ENABLE_MKDOXY` environment variable is not set or is set to `False`.
+Inspirated by [mkdocs-simple-hooks](https://github.com/aklajnert/mkdocs-simple-hooks)
+
+```bash
+export ENABLE_MKDOXY=False
+mkdocs serve
+```
 
 ## License
 
-```
-
-MIT License
-
-Copyright (c) 2021 Kuba Andrýsek
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-```
+This project is licensed under the terms of the [MIT license]([/LICENSE](https://github.com/JakubAndrysek/MkDoxy/blob/main/LICENSE))
