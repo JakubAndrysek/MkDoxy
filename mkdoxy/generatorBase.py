@@ -3,7 +3,7 @@ import re
 import string
 import traceback
 from dataclasses import dataclass, field
-from typing import Tuple
+from typing import Dict, Tuple
 from typing import TextIO
 from jinja2.exceptions import TemplateSyntaxError, TemplateError
 from jinja2 import StrictUndefined, Undefined
@@ -23,10 +23,10 @@ log = logging.getLogger("mkdocs")
 LETTERS = string.ascii_lowercase + '~_@\\'
 
 class GeneratorBase:
-	def __init__(self, ignore_errors: bool = False, debug: bool = False):
+	def __init__(self, templateDir: str = "", ignore_errors: bool = False, debug: bool = False):
 		self.debug = debug
 
-		on_undefined_class = Undefined if ignore_errors else StrictUndefined
+
 		self.templates: Dict[str, Template] = {}
 		self.metaData: Dict[str, list[str]] = {}
 
@@ -42,6 +42,23 @@ class GeneratorBase:
 					self.metaData[name] = metaData
 			else:
 				log.error(f"Trying to load unsupported file '{filePath}'. Supported file ends with '.jinja2'.")
+
+		# test if templateDir is existing
+		if templateDir:
+			if not os.path.exists(templateDir):
+				raise exceptions.ConfigurationError(f"Custom template directory '{templateDir}' does not exist.")
+			# load custom templates and overwrite default templates - if they exist
+			for fileName in os.listdir(templateDir):
+				filePath = os.path.join(templateDir, fileName)
+				if fileName.endswith(".jinja2"):
+					with open(filePath, "r") as file:
+						name = os.path.splitext(fileName)[0]
+						fileTemplate, metaData = parseTemplateFile(file.read())
+						self.templates[name] = Template(fileTemplate)
+						self.metaData[name] = metaData
+						log.info(f"Overwriting template '{name}' with custom template.")
+				else:
+					log.error(f"Trying to load unsupported file '{filePath}'. Supported file ends with '.jinja2'.")
 				
 	def loadConfigAndTemplate(self, name: str) -> [Template, dict]:
 		template = self.templates.get(name)
@@ -52,8 +69,8 @@ class GeneratorBase:
 
 	def render(self, tmpl: Template, data: dict) -> str:
 		try:
-			if self.debug:
-				print('Generating', path)
+			# if self.debug:
+				# print('Generating', path) # TODO: add path to data
 			return tmpl.render(data)
 		except TemplateError as e:
 			raise Exception(str(e)) from e

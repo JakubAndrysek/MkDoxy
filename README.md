@@ -31,6 +31,14 @@ Next usage is by snippets inside documentation markdown.
 
 ![Basic-implementation](https://github.com/JakubAndrysek/MkDoxy/raw/main/docs/media/Basic-implementation.png)
 
+## Features
+- **Easy to use:** just add `mkdoxy` to your `mkdocs.yml` and config path to your project `src` folder.
+- **Code snippets:** `mkdoxy` supports code snippets in your documentation. Just add `::: <project_name>.<command_name>` to your markdown file and `mkdoxy` will generate code just in the place where you want it. Inspired from [mkdocstrings](https://mkdocstrings.github.io/).
+- **Multiple projects:** `mkdoxy` supports multiple projects. You can add multiple source folders and generate documentation for all of them. For example, you can generate documentation for your C++ project and your Python project like in [this example](https://mkdoxy-demo.kubaandrysek.cz/api/).
+- **Custom API documentation structure** is allowed using Jinja2 templates. You can add your own templates and generate documentation in any structure you want.
+
+
+
 ## Requirements
 
 - python 3.8 or newer → `sudo apt install python3`
@@ -92,7 +100,10 @@ Set `[PROJECT]` according to your project names configured in `mkdocs.yml`.
   end: 35
 ```
 
-### Mkdocs.yml
+### Mkdocs.yml configuration
+
+<details>
+<summary>Click to expand</summary>
 
 ```yaml
 plugins:
@@ -108,6 +119,8 @@ plugins:
         apiProject2:
           src-dirs: path/to/src/project2
           full-doc: True
+          template-dir: path/to/userDefined/templates # optional (default is mkdoxy/templates) - custom template will replace default template
+          # Example of custom template: https://mkdoxy-demo.kubaandrysek.cz/esp/annotated/
           doxy-cfg:
             FILE_PATTERNS: "*.py"
             EXAMPLE_PATH: ""
@@ -116,6 +129,8 @@ plugins:
             JAVADOC_AUTOBRIEF: True
             EXTRACT_ALL: True
         predefinedProject3:
+          src-dirs: path/to/src/project3
+          full-doc: False
           doxy-cfg:
             PREDEFINED: __cplusplus # example there: https://github.com/kuba2k2/libretuya/blob/master/mkdocs.yml
             CASE_SENSE_NAMES: NO
@@ -150,14 +165,23 @@ nav:
 
 use_directory_urls: true # (optional) for better links without .html extension
 ```
+</details>
 
 ## Known issues
 1. **Doxygen** is not able to parse **Python** code.
-   - **Solution**: Use `OPTIMIZE_OUTPUT_JAVA: True` and `JAVADOC_AUTOBRIEF: True` in `doxy-cfg` section of `mkdocs.yml`.
+    - **Solution**: Use `OPTIMIZE_OUTPUT_JAVA: True` and `JAVADOC_AUTOBRIEF: True` in `doxy-cfg` section of `mkdocs.yml`.
 2. **Relative links from snippets** are not working properly.
-   - In some cases, relative links are not working properly.
-   - For example link [on test page](https://mkdoxy-demo.kubaandrysek.cz/api/#:~:text=Class%20rb%3A%3AMotorChangeBuilder-,ClassList,-%3E%20rb%20%3E) - `ClassList` under `Class rb::MotorChangeBuilder` is not working.
+    - In some cases, relative links are not working properly.
+    - For example link [on test page](https://mkdoxy-demo.kubaandrysek.cz/api/#:~:text=Class%20rb%3A%3AMotorChangeBuilder-,ClassList,-%3E%20rb%20%3E) - `ClassList` under `Class rb::MotorChangeBuilder` is not working.
 
+## Changes
+
+- **v1.0.0** - 2021-08-01
+  - Initial release
+- **v1.0.3** - 2023-03-21
+  - Fix: Hash function [support subfolders](https://github.com/JakubAndrysek/MkDoxy/pull/29)
+- **v1.0.5** - 2023-04-01
+  - Fix: Add support for [custom templates](https://github.com/JakubAndrysek/MkDoxy/pull/39)
 
 ## License
 

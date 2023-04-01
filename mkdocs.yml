@@ -65,6 +65,7 @@ plugins:
         mkdoxyApi:
           src-dirs: mkdoxy
           full-doc: True
+          # template-dir: templates-custom
           doxy-cfg:
             FILE_PATTERNS: "*.py"
             EXAMPLE_PATH: ""
