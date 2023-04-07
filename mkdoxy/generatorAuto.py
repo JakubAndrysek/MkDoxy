@@ -78,6 +78,7 @@ class GeneratorAuto:
 		self.hierarchy(self.doxygen.root.children)
 		self.modules(self.doxygen.groups.children)
 		self.pages(self.doxygen.pages.children)
+		self.examples(self.doxygen.examples.children)
 		self.relatedpages(self.doxygen.pages.children)
 		self.index(self.doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
 		           [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
@@ -137,6 +138,24 @@ class GeneratorAuto:
 		path = 'pages.md'
 
 		output = self.generatorBase.annotated(nodes)
+		self.save(path, output)
+
+	def example(self, node: Node):
+		path = f'{node.refid}.md'
+
+		output = self.generatorBase.example(node)
+		self.save(path, output)
+
+	def examples(self, nodes: [Node]):
+		for node in nodes:
+			if node.is_example:
+				if node.has_programlisting:
+					print(f'Generating example {node.name}...')
+				self.example(node)
+
+		path = 'examples.md'
+
+		output = self.generatorBase.examples(nodes)
 		self.save(path, output)
 
 	def classes(self, nodes: [Node]):
@@ -216,6 +235,14 @@ class GeneratorAuto:
 			for child in node.children:
 				self._generate_recursive_files(child, level + 2)
 
+	def _generate_recursive_examples(self, node: Node, level: int):
+		if node.kind.is_example():
+			self.outputSumm += str(
+				' ' * level + generate_link(node.name, f'{node.refid}.md')
+			)
+			for child in node.children:
+				self._generate_recursive_examples(child, level + 2)
+
 	def _generate_recursive_groups(self, node: Node, level: int):
 		if node.kind.is_group():
 			self.outputSumm += str(
@@ -252,6 +279,10 @@ class GeneratorAuto:
 		self.outputSumm += str(' ' * (offset + 2) + generate_link('Files', 'files.md'))
 		for node in self.doxygen.files.children:
 			self._generate_recursive_files(node, offset + 4)
+
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
+		for node in self.doxygen.examples.children:
+			self._generate_recursive_examples(node, offset + 4)
 
 		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Variables', 'variables.md'))
 		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Functions', 'functions.md'))

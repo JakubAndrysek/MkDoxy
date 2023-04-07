@@ -116,6 +116,9 @@ class Kind(Enum):
 	def is_page(self) -> bool:
 		return self == Kind.PAGE
 
+	def is_example(self) -> bool:
+		return self == Kind.EXAMPLE
+
 	def is_language(self) -> bool:
 		LANGUAGE = [
 			Kind.FUNCTION,

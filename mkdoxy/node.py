@@ -214,6 +214,20 @@ class Node:
 					child = Node(None, memberdef, self._cache, self._parser, self)
 					self.add_child(child)
 
+		# for detaileddescription in self._xml.findall('detaileddescription'):
+		# 	for para in detaileddescription.findall('para'):
+		# 		for programlisting in para.findall('programlisting'):
+		# 			pass
+
+
+
+			# # kind = Kind.from_str(memberdef.get('kind'))
+			# # 	if kind.is_language():
+			# if self._kind in [Kind.EXAMPLE]:
+			# 	log.info(f'programlisting: {para.text}')
+			# if para.find('programlisting') is not None:
+			# 	self._programlisting = Property.Programlisting(para, self._parser, self._kind)
+
 	def _check_attrs(self):
 		prot = self._xml.get('prot')
 		self._visibility = Visibility(prot) if prot is not None else Visibility.PUBLIC
@@ -369,6 +383,10 @@ class Node:
 	@property
 	def is_page(self) -> bool:
 		return self._kind.is_page()
+
+	@property
+	def is_example(self) -> bool:
+		return self._kind.is_example()
 
 	@property
 	def name(self) -> str:

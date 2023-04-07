@@ -1,0 +1,16 @@
+# Examples
+
+Here is a list of all the examples in the documentation.
+
+{% for page in nodes -%}
+    * [*{{page.title}}*]({{page.url}}) {{page.brief}}
+{% endfor -%}
+
+{#{% for node in nodes recursive %}#}
+{#    {%- if node.is_dir or node.is_example %}#}
+{#        * **{{node.kind.value}}** [**{{node.name_short}}**]({{node.url}}) {{node.brief}}#}
+{#        {%- if node.has_children %}#}
+{#            {{- loop(node.children)|indent(2, true) }}#}
+{#        {%- endif %}#}
+{#    {%- endif -%}#}
+{#{%- endfor %}#}

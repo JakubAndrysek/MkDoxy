@@ -96,6 +96,16 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
+	def examples(self, nodes: [Node], config: dict = None):
+		if config is None:
+			config = {}
+		template, metaConfig = self.loadConfigAndTemplate("examples")
+		data = {
+			'nodes': nodes,
+			'config': merge_two_dicts(config, metaConfig),
+		}
+		return self.render(template, data)
+
 	def programlisting(self, node: [Node], config: dict = None):
 		if config is None:
 			config = {}
@@ -145,6 +155,16 @@ class GeneratorBase:
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("page")
+		data = {
+			'node': node,
+			'config': merge_two_dicts(config, metaConfig),
+		}
+		return self.render(template, data)
+
+	def example(self, node: Node, config: dict = None):
+		if config is None:
+			config = {}
+		template, metaConfig = self.loadConfigAndTemplate("example")
 		data = {
 			'node': node,
 			'config': merge_two_dicts(config, metaConfig),

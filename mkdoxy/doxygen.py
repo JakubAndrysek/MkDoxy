@@ -25,6 +25,7 @@ class Doxygen:
 		self.groups = Node('root', None, self.cache, self.parser, None)
 		self.files = Node('root', None, self.cache, self.parser, None)
 		self.pages = Node('root', None, self.cache, self.parser, None)
+		self.examples = Node('root', None, self.cache, self.parser, None)
 
 		for compound in xml.findall('compound'):
 			kind = Kind.from_str(compound.get('kind'))
@@ -69,6 +70,16 @@ class Doxygen:
 				)
 				node._visibility = Visibility.PUBLIC
 				self.pages.add_child(node)
+			if kind == Kind.EXAMPLE:
+				node = Node(
+					os.path.join(index_path, f'{refid}.xml'),
+					None,
+					self.cache,
+					self.parser,
+					self.root,
+				)
+				node._visibility = Visibility.PUBLIC
+				self.examples.add_child(node)
 
 		if self.debug:
 			log.info('Deduplicating data... (may take a minute!)')
@@ -81,6 +92,9 @@ class Doxygen:
 		for child in self.files.children.copy():
 			self._fix_duplicates(child, self.files, [Kind.FILE, Kind.DIR])
 
+		for child in self.examples.children.copy():
+			self._fix_duplicates(child, self.examples, [Kind.EXAMPLE])
+
 		self._fix_parents(self.files)
 
 		if self.debug:
@@ -89,6 +103,7 @@ class Doxygen:
 		self._recursive_sort(self.groups)
 		self._recursive_sort(self.files)
 		self._recursive_sort(self.pages)
+		self._recursive_sort(self.examples)
 
 	def _fix_parents(self, node: Node):
 		if node.is_dir or node.is_root:

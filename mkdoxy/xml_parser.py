@@ -25,7 +25,8 @@ SIMPLE_SECTIONS = {
 	'attention': 'Attention:',
 	'invariant': 'Invariant:',
 	'exception': 'Exception:',
-	'date': 'Date:'
+	'date': 'Date:',
+	'version': 'Version:',
 }
 
 class XmlParser:
