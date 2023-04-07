@@ -27,7 +27,7 @@ install-dev:
 
 # Documentation
 docs-serve:
-	mkdocs serve
+	mkdocs serve --strict
 
 docs-build: # results in site directory
 	mkdocs build

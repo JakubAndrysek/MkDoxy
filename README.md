@@ -10,6 +10,7 @@
 <img src="https://img.shields.io/github/stars/JakubAndrysek/MkDoxy?style=flat-square">
 <img src="https://img.shields.io/github/forks/JakubAndrysek/MkDoxy?style=flat-square">
 <img src="https://img.shields.io/github/issues/JakubAndrysek/MkDoxy?style=flat-square">
+<img src="https://img.shields.io/github/discussions/JakubAndrysek/MkDoxy?style=flat-square">
 <img src="https://static.pepy.tech/personalized-badge/mkdoxy?period=month&units=international_system&left_color=black&right_color=orange&left_text=Downloads">
 
 
