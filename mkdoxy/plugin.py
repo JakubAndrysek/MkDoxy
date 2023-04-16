@@ -12,6 +12,7 @@ from mkdoxy.doxyrun import DoxygenRun
 from mkdoxy.generatorAuto import GeneratorAuto
 from mkdoxy.generatorBase import GeneratorBase
 from mkdoxy.generatorSnippets import GeneratorSnippets
+from mkdoxy.utils import check_enabled_markdown_extensions
 from mkdoxy.xml_parser import XmlParser
 
 log = logging.getLogger("mkdocs")
@@ -32,6 +33,7 @@ class MkDoxy(BasePlugin):
 		('ignore-errors', config_options.Type(bool, default=False)),
 		('save-api', config_options.Type(str, default="")),
 		("enabled", config_options.Type(bool, default=True)),
+		("emojis-enabled", config_options.Type(bool, default=False)),
 	)
 
 	config_project = (
@@ -44,10 +46,33 @@ class MkDoxy(BasePlugin):
 	)
 
 	def is_enabled(self):
+		"""
+		Checks if the plugin is enabled.
+		"""
 		return self.config.get("enabled")
 
-	def on_files(self, files: files.Files, config):
+	def on_pre_build(self, config: base.Config):
+		"""
+		Checks if the required markdown extensions are enabled.
+		Check if the required markdown extensions are enabled (example: pymdownx.emoji).
 
+		:param config: The MkDocs config.
+		"""
+		if not self.is_enabled():
+			return
+		check_enabled_markdown_extensions(config, self.config)
+
+
+	def on_files(self, files: files.Files, config):
+		"""
+		Run Doxygen if needed and parse XML to basic structure.
+		Then prepare generator for future use (GeneratorAuto, SnippetGenerator)
+		Generate full documentation if enabled.
+		Appends the generated files to the MkDocs files.
+		:param files: The MkDocs files.
+		:param config: The MkDocs config.
+		:return: The MkDocs files.
+		"""
 		if not self.is_enabled():
 			return files
 		def checkConfig(config_project, proData, strict: bool):
@@ -121,10 +146,14 @@ class MkDoxy(BasePlugin):
 					debug=self.debug
 				)
 
-				# generate automatic documentation and append files into files
-				generatorAuto.fullDoc()
+				# generate automatic documentation and append files in the list of files to be processed by mkdocs
+				defaultTemplateConfig: dict = {
+					"emojis_enabled": self.config.get("emojis-enabled", False),
+				}
 
-				generatorAuto.summary()
+				generatorAuto.fullDoc(defaultTemplateConfig)
+
+				generatorAuto.summary(defaultTemplateConfig)
 
 				for file in generatorAuto.fullDocFiles:
 					files.append(file)
@@ -137,6 +166,14 @@ class MkDoxy(BasePlugin):
 			config: base.Config,
 			files: files.Files,
 	) -> str:
+		"""
+		Generate snippets and append them to the markdown.
+		:param markdown: The markdown.
+		:param page: The page.
+		:param config: The MkDocs config.
+		:param files: The MkDocs files.
+		:return: The markdown.
+		"""
 		if not self.is_enabled():
 			return markdown
 
@@ -150,8 +187,6 @@ class MkDoxy(BasePlugin):
 		)
 
 		return generatorSnippets.generate()
-
-# def on_pre_build(self, config):
 
 # def on_serve(self, server):
 #     return server

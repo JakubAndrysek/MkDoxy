@@ -1,10 +1,8 @@
 import logging
 import re
 
+from mkdocs.config import Config
 from ruamel.yaml import YAML
-
-# from mkdoxy.node import Node
-# from mkdoxy.constants import Kind
 
 log = logging.getLogger("mkdocs")
 
@@ -107,3 +105,13 @@ def recursive_find_with_parent(nodes, kinds, parent_kinds):
 		if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
 			ret.extend(recursive_find_with_parent(node.children, kinds, parent_kinds))
 	return ret
+
+def check_enabled_markdown_extensions(config: Config, mkdoxyConfig: Config) -> None:
+	"""
+	Checks if the required markdown extensions are enabled.
+	:param config: The MkDocs config.
+	"""
+	enabled_extensions = config['markdown_extensions']
+	if mkdoxyConfig.get("emojis-enabled", False):
+		if 'pymdownx.emoji' not in enabled_extensions:
+			log.warning("The 'pymdownx.emoji' extension is not enabled. Some emojis may not be rendered correctly. https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#configuration")

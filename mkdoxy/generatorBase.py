@@ -58,7 +58,7 @@ class GeneratorBase:
 	def loadConfigAndTemplate(self, name: str) -> [Template, dict]:
 		template = self.templates.get(name)
 		if not template:
-			raise exceptions.Abort(f"Trying to load unexisting template '{name}'. Please create a new template file with name '{name}.jinja2'")
+			raise exceptions.Abort(f"Trying to load unexciting template '{name}'. Please create a new template file with name '{name}.jinja2'")
 		metaData = self.metaData.get(name, {})
 		return template, metaData
 
@@ -169,7 +169,7 @@ class GeneratorBase:
 	def relatedpages(self, nodes: [Node], config: dict = None):
 		if config is None:
 			config = {}
-		template, metaConfig = self.loadConfigAndTemplate("page")
+		template, metaConfig = self.loadConfigAndTemplate("relatedPages")
 		data = {
 			'nodes': nodes,
 			'config': merge_two_dicts(config, metaConfig),
