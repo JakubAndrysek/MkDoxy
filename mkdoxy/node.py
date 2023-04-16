@@ -1,15 +1,14 @@
+import logging
 import os
-import re
-import traceback
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as Element
-from mkdoxy.constants import Kind, Visibility, OVERLOAD_OPERATORS
+
 from mkdoxy.cache import Cache
-from mkdoxy.xml_parser import XmlParser
+from mkdoxy.constants import Kind, Visibility, OVERLOAD_OPERATORS
 from mkdoxy.markdown import escape
-from mkdoxy.utils import split_safe
 from mkdoxy.property import Property
-import logging
+from mkdoxy.utils import split_safe
+from mkdoxy.xml_parser import XmlParser
 
 log = logging.getLogger("mkdocs")
 
@@ -820,9 +819,9 @@ class Node:
 		return self._print_node_recursive_md(self._xml, 0)
 
 	def _print_node_recursive_md(self, node: Element, depth: int) -> str:
-		# print as markdown code block
+		# print as Markdown code block
 		indent = "	" * depth
-		ret = f'{indent} * {node.tag} {node.attrib}\n'
+		ret = f'{indent} * {node.tag} {node.attrib} -> Text: {node.text}\n'
 		for child in node.findall('*'):
 			ret += self._print_node_recursive_md(child, depth + 1)
 

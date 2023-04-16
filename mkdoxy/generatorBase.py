@@ -1,21 +1,16 @@
-import os
-import re
-import string
-import traceback
-from dataclasses import dataclass, field
-from typing import Dict, Tuple
-from typing import TextIO
-from jinja2.exceptions import TemplateSyntaxError, TemplateError
-from jinja2 import StrictUndefined, Undefined
-from jinja2 import Environment, FileSystemLoader, Template, select_autoescape
-import mkdoxy
-from mkdoxy.node import Node, DummyNode
-from mkdoxy.doxygen import Doxygen
-from mkdoxy.constants import Kind
-from mkdoxy.utils import parseTemplateFile, merge_two_dicts, recursive_find_with_parent, recursive_find
-from mkdocs import exceptions
-from markdown import extensions, preprocessors
 import logging
+import os
+import string
+from typing import Dict
+
+from jinja2 import Template
+from jinja2.exceptions import TemplateError
+from mkdocs import exceptions
+
+import mkdoxy
+from mkdoxy.constants import Kind
+from mkdoxy.node import Node, DummyNode
+from mkdoxy.utils import parseTemplateFile, merge_two_dicts, recursive_find_with_parent, recursive_find
 
 log = logging.getLogger("mkdocs")
 
@@ -275,10 +270,13 @@ class GeneratorBase:
 		if config is None:
 			config = {}
 		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
+		templateCode, metaConfigCode = self.loadConfigAndTemplate("code")
 
 		data = {
 			'node': node,
-			'configMemDef': merge_two_dicts(config, metaConfigMemDef)
+			'configMemDef': merge_two_dicts(config, metaConfigMemDef),
+			'templateCode': templateCode,
+			'configCode': metaConfigCode,
 		}
 		return self.render(templateMemDef, data)
 
@@ -288,6 +286,7 @@ class GeneratorBase:
 		template, metaConfig = self.loadConfigAndTemplate("member")
 		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
 		templateMemTab, metaConfigMemTab = self.loadConfigAndTemplate("memTab")
+		templateCode, metaConfigCode = self.loadConfigAndTemplate("code")
 
 		data = {
 			'node': node,
@@ -295,6 +294,8 @@ class GeneratorBase:
 			'configMemDef': metaConfigMemDef,
 			'templateMemTab': templateMemTab,
 			'configMemTab': metaConfigMemTab,
+			'templateCode': templateCode,
+			'configCode': metaConfigCode,
 			'config': merge_two_dicts(config, metaConfig)
 		}
 		return self.render(template, data)

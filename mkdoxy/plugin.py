@@ -1,25 +1,18 @@
-import sys
-from os import path, makedirs
-from pathlib import Path, PurePath
-from mkdocs import utils as mkdocs_utils
-from mkdocs.plugins import BasePlugin
-from mkdocs.config import base, config_options, Config
-from mkdocs.structure import files, pages
-from mkdocs.commands import serve
-from mkdocs import exceptions
-
-from mkdoxy.doxyrun import DoxygenRun
-from mkdoxy.doxygen import Doxygen
-from mkdoxy.generatorBase import GeneratorBase
-from mkdoxy.generatorAuto import GeneratorAuto
-from mkdoxy.xml_parser import XmlParser
-from mkdoxy.cache import Cache
-from mkdoxy.constants import Kind
-from mkdoxy.generatorSnippets import GeneratorSnippets
-from mkdoxy.finder import Finder
-
-from pprint import *
 import logging
+from pathlib import Path, PurePath
+
+from mkdocs import exceptions
+from mkdocs.config import base, config_options, Config
+from mkdocs.plugins import BasePlugin
+from mkdocs.structure import files, pages
+
+from mkdoxy.cache import Cache
+from mkdoxy.doxygen import Doxygen
+from mkdoxy.doxyrun import DoxygenRun
+from mkdoxy.generatorAuto import GeneratorAuto
+from mkdoxy.generatorBase import GeneratorBase
+from mkdoxy.generatorSnippets import GeneratorSnippets
+from mkdoxy.xml_parser import XmlParser
 
 log = logging.getLogger("mkdocs")
 pluginName = "MkDoxy"

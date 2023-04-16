@@ -1,11 +1,10 @@
+import logging
 import re
-import sys
-from pprint import *
+
 from ruamel.yaml import YAML
+
 # from mkdoxy.node import Node
 # from mkdoxy.constants import Kind
-
-import logging
 
 log = logging.getLogger("mkdocs")
 

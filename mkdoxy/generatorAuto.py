@@ -1,21 +1,12 @@
-import os
-import re
-import string
-import traceback
-from mkdocs.structure import files
-from io import StringIO
-from typing import TextIO
-from jinja2 import Template
-from jinja2.exceptions import TemplateSyntaxError, TemplateError
-from jinja2 import StrictUndefined, Undefined
-from mkdoxy.node import Node, DummyNode
-from mkdoxy.doxygen import Doxygen
-from mkdoxy.constants import Kind
-from mkdoxy.generatorBase import GeneratorBase
-from mkdoxy.utils import recursive_find, recursive_find_with_parent
-from pprint import *
-from pathlib import Path, PurePath
 import logging
+import os
+
+from mkdocs.structure import files
+
+from mkdoxy.constants import Kind
+from mkdoxy.doxygen import Doxygen
+from mkdoxy.generatorBase import GeneratorBase
+from mkdoxy.node import Node
 
 log = logging.getLogger("mkdocs")
 

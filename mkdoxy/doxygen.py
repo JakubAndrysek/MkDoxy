@@ -1,10 +1,11 @@
+import logging
 import os
 from xml.etree import ElementTree
-from mkdoxy.node import Node
-from mkdoxy.constants import Kind, Visibility
+
 from mkdoxy.cache import Cache
+from mkdoxy.constants import Kind, Visibility
+from mkdoxy.node import Node
 from mkdoxy.xml_parser import XmlParser
-import logging
 
 log = logging.getLogger("mkdocs")
 

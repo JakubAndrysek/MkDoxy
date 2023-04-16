@@ -1,8 +1,9 @@
 import re
 from xml.etree.ElementTree import Element as Element
-from mkdoxy.xml_parser import XmlParser
+
 from mkdoxy.constants import Kind
 from mkdoxy.markdown import escape
+from mkdoxy.xml_parser import XmlParser
 
 
 class Property:

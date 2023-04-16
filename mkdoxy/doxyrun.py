@@ -1,13 +1,8 @@
-from subprocess import Popen, PIPE, STDOUT
-import shlex
-import logging
-from pprint import *
-import sys
 import hashlib
-import glob
-import ruamel.yaml as yaml
-from pathlib import Path, PurePath
+import logging
 import tempfile
+from pathlib import Path, PurePath
+from subprocess import Popen, PIPE
 
 log = logging.getLogger("mkdocs")
 
