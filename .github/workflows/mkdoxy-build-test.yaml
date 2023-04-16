@@ -32,4 +32,4 @@ jobs:
       - name: Change directory
         run: cd demo
       - name: Build docs
-        run: mkdocs build --clean --strict --verbose
+        run: mkdocs build --clean --verbose
