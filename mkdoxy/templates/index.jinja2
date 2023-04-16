@@ -1,5 +1,6 @@
 # {{title}}
 
+{% if dictionary %}
 {% for letter, items in dictionary.items() %}
 ## {{letter}}
 
@@ -8,3 +9,6 @@
 {%- for parent in parents -%}[**{{parent.name_long}}**]({{parent.url}}){{ ', ' if not loop.last else '' }}{% endfor -%} )
 {% endfor %}
 {% endfor %}
+{% else %}
+Nothing related to **{{title}}** found.
+{% endif %}

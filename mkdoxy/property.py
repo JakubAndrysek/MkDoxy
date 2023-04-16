@@ -110,8 +110,25 @@ class Property:
 			loc = self.xml.find('location')
 			return loc.get('file') if loc is not None else ''
 
+		def line(self) -> int:
+			loc = self.xml.find('location')
+			return int(loc.get('line')) if loc is not None else 0
+
+		def column(self) -> int:
+			loc = self.xml.find('location')
+			return int(loc.get('column')) if loc is not None else 0
+
+		def bodystart(self) -> int:
+			loc = self.xml.find('location')
+			return int(loc.get('bodystart')) if loc is not None else 0
+
+		def bodyend(self) -> int:
+			loc = self.xml.find('location')
+			return int(loc.get('bodyend')) if loc is not None else 0
+
 		def has(self) -> bool:
 			return self.xml.find('location') is not None
+
 
 	class Params:
 		def __init__(self, xml: Element, parser: XmlParser, kind: Kind):

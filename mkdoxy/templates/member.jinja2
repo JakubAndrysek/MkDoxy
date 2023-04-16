@@ -16,7 +16,7 @@ implements: True
 {%- endfor %}
 
 {% if node.is_file and node.has_programlisting -%}
-[Go to the source code of this file.]({{node.url_source}})
+[Go to the source code of this file :octicons-file-code-16:]({{node.url_source}})
 {%- endif %}
 
 {{node.brief}}

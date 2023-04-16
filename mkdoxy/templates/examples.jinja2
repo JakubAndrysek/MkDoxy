@@ -10,7 +10,7 @@ Here is a list of all the examples in the documentation.
 {#    {%- if node.is_dir or node.is_example %}#}
 {#        * **{{node.kind.value}}** [**{{node.name_short}}**]({{node.url}}) {{node.brief}}#}
 {#        {%- if node.has_children %}#}
-{#            {{- loop(node.children)|indent(2, true) }}#}
+{#            {{- loop(node.children)|indent(4, true) }}#}
 {#        {%- endif %}#}
 {#    {%- endif -%}#}
 {#{%- endfor %}#}

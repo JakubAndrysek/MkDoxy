@@ -9,6 +9,6 @@ This inheritance list is sorted roughly, but not completely, alphabetically:
 * **{{node.kind.value}}** **{{node.name_long}}**
 {%- endif %}
 {%- if node.derived_classes %}
-  {{- loop(node.derived_classes)|indent(2, true) }}
+  {{- loop(node.derived_classes)|indent(4, true) }}
 {%- endif %}
 {%- endfor %}

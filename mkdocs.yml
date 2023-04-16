@@ -82,6 +82,10 @@ plugins:
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - def_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 nav:
   - Home: "README.md"

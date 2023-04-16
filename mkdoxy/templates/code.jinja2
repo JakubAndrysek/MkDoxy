@@ -17,7 +17,9 @@ end: 0
 {%- endif %}
 
 {% if config.get('source') -%}
-# [Go to the documentation of this file.]({{node.url}})
+# [Go to the documentation of this file :material-file-document:]({{node.url}})
 # {%- endif %}
 
 {{code}}
+
+{{ node.print_node_recursive }}

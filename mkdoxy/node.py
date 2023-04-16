@@ -736,6 +736,14 @@ class Node:
 		return self._location.plain()
 
 	@property
+	def location_bodystart(self) -> int:
+		return self._location.bodystart()
+
+	@property
+	def location_bodyend(self) -> int:
+		return self._location.bodyend()
+
+	@property
 	def has_params(self) -> bool:
 		return self._params.has()
 
@@ -804,6 +812,21 @@ class Node:
 	def reimplements(self) -> 'Node':
 		reimp = self._xml.find('reimplements')
 		return self._cache.get(reimp.get('refid')) if reimp is not None else None
+
+	@property
+	def print_node_recursive(self) -> str:
+		# code_block = f'```md\n{self._print_node_recursive_md(self._xml, 0)}```'
+		# return code_block
+		return self._print_node_recursive_md(self._xml, 0)
+
+	def _print_node_recursive_md(self, node: Element, depth: int) -> str:
+		# print as markdown code block
+		indent = "	" * depth
+		ret = f'{indent} * {node.tag} {node.attrib}\n'
+		for child in node.findall('*'):
+			ret += self._print_node_recursive_md(child, depth + 1)
+
+		return ret
 
 
 class DummyNode:

@@ -20,6 +20,6 @@ jobs:
           path: .cache
       - run: pip install -r requirements.txt
       - run: pip install mkdocs-material # not in requirements.txt because it's not needed for the build
-      - run: pip install mkdoxy
+      - run: pip install . # install the plugin itself (mkdoxy)
       - run: sudo apt-get install doxygen
       - run: mkdocs gh-deploy --force

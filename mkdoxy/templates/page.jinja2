@@ -1,3 +1,7 @@
-# {{node.title}}
+{% if nodes.title %}{{nodes.title}}{% else %}# Related Pages{% endif %}
 
-{{node.details}}
+{% if nodes.details %}
+{{nodes.details}}
+{% else %}
+No related pages found.
+{% endif %}

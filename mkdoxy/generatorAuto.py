@@ -35,8 +35,13 @@ ADDITIONAL_FILES = {
 	'Class Member Enumerations': 'class_member_enums.md',
 }
 
-def generate_link(name, url) -> str:
-	return f'* [{name}]({url}' + ')\n'
+def generate_link(name, url, end="\n") -> str:
+	def normalize(name):
+		if name.startswith("__"):
+			return "\\" + name
+		return name
+
+	return f'- [{normalize(name)}]({url}){end}'
 
 # def generate_link(name, url) -> str:
 # 	return f"\t\t- '{name}': '{url}'\n"
@@ -78,7 +83,7 @@ class GeneratorAuto:
 		self.hierarchy(self.doxygen.root.children)
 		self.modules(self.doxygen.groups.children)
 		self.pages(self.doxygen.pages.children)
-		self.examples(self.doxygen.examples.children)
+		# self.examples(self.doxygen.examples.children) # TODO examples
 		self.relatedpages(self.doxygen.pages.children)
 		self.index(self.doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
 		           [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
@@ -137,7 +142,8 @@ class GeneratorAuto:
 	def relatedpages(self, nodes: [Node]):
 		path = 'pages.md'
 
-		output = self.generatorBase.annotated(nodes)
+		# output = self.generatorBase.annotated(nodes)
+		output = self.generatorBase.relatedpages(nodes)
 		self.save(path, output)
 
 	def example(self, node: Node):
@@ -225,13 +231,15 @@ class GeneratorAuto:
 	def _generate_recursive_files(self, node: Node, level: int):
 		if node.kind.is_file() or node.kind.is_dir():
 			self.outputSumm += str(
-				' ' * level + generate_link(node.name, f'{node.refid}.md')
+				' ' * int(level +2 ) +generate_link(node.name, f'{node.refid}.md', end='')
+				# ' ' * level + " * " + generate_link(node.name, f'{node.refid}.md')
 			)
+
 			if node.kind.is_file():
-				self.outputSumm += str(
-					' ' * level
-					+ generate_link(f'{node.name} source', f'{node.refid}_source.md')
-				)
+				self.outputSumm += f" [:octicons-file-code-16:]({node.refid}_source.md) \n"
+			else:
+				self.outputSumm += "\n"
+
 			for child in node.children:
 				self._generate_recursive_files(child, level + 2)
 
@@ -276,13 +284,13 @@ class GeneratorAuto:
 		for key, val in ADDITIONAL_FILES.items():
 			self.outputSumm += str(' ' * (offset + 2) + generate_link(key, val))
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Files', 'files.md'))
+		self.outputSumm += str(' ' * (offset + 2) + generate_link('Files', 'files.md', end='\n'))
 		for node in self.doxygen.files.children:
 			self._generate_recursive_files(node, offset + 4)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
-		for node in self.doxygen.examples.children:
-			self._generate_recursive_examples(node, offset + 4)
+		# self.outputSumm += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
+		# for node in self.doxygen.examples.children:
+		# 	self._generate_recursive_examples(node, offset + 4)
 
 		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Variables', 'variables.md'))
 		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Functions', 'functions.md'))

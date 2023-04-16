@@ -1,12 +1,17 @@
 # Class List
 
-Here are the classes, structs, unions and interfaces with brief descriptions:
 
+
+{% if nodes|length > 0 %}
+Here are the classes, structs, unions and interfaces with brief descriptions:
 {% for node in nodes recursive %}
 {%- if node.is_parent %}
 * **{{node.kind.value}}** [**{{node.name_short}}**]({{node.url}}) {{node.brief}}
 {%- if node.has_children %}
-  {{- loop(node.children)|indent(2, true) }}
+  {{- loop(node.children)|indent(4, true) }}
 {%- endif %}
 {%- endif -%}
 {%- endfor %}
+{% else %}
+No classes, structs, unions or interfaces found.
+{% endif %}

@@ -5,20 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Fix changes list">
-      <change afterPath="$PROJECT_DIR$/tests-old/gpt-example-parser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests-old/snippetsTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy-web.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy-web.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/mkdoxy-build-test.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/mkdoxy-build-test.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/doxygen.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/doxygen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/basic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/basic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/callDoxyByName.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/callDoxyByName.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/doxygenSubprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/doxygenSubprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/exceptKeyboardInterrupt.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/exceptKeyboardInterrupt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/metaDataParse.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/metaDataParse.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/mkdocsValidateCfg.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/mkdocsValidateCfg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/originalTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/originalTest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/parseMdTags.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/parseMdTags.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/snippetsTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/snippetsTest-examples.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/testTemplate.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests-old/testTemplate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.sourcery.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.sourcery.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/mkdoxyApi/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/mkdoxyApi/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mkdocs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/generatorAuto.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/generatorAuto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/generatorBase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/property.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/property.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/annotated.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/annotated.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/code.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/code.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/examples.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/examples.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/files.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/files.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/hierarchy.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/hierarchy.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/index.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/index.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/memDef.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/memDef.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/member.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/member.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/modules.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/modules.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/namespaces.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/namespaces.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/page.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/page.jinja2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/templates/programlisting.jinja2" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/templates/programlisting.jinja2" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +38,17 @@
       <list>
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -50,19 +69,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/kuba/Documents/git/kuba/mkdoxy/main-mkdoxy/tests-old",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/kuba/Documents/git/kuba/mkdoxy/mkdoxy-base/mkdoxy-new-templates&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tests-old" />
@@ -71,7 +91,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.snippetsTest-examples">
+  <component name="RunManager" selected="Python.mkdocs-serve-vPy3.11">
     <configuration name="install-dev" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
       <makefile filename="$PROJECT_DIR$/Makefile" target="install-dev" workingDirectory="" arguments="">
         <envs />
@@ -204,6 +224,8 @@
       <workItem from="1680339123883" duration="8172000" />
       <workItem from="1680876763462" duration="12840000" />
       <workItem from="1681278348567" duration="5374000" />
+      <workItem from="1681594377508" duration="5815000" />
+      <workItem from="1681600219558" duration="10490000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
@@ -324,29 +346,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/plugin.py</url>
-          <line>119</line>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/doxygen.py</url>
-          <line>105</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/generatorAuto.py</url>
-          <line>150</line>
+          <line>156</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/generatorAuto.py</url>
-          <line>239</line>
+          <line>247</line>
           <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/doxygen.py</url>
-          <line>73</line>
-          <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
@@ -359,28 +366,8 @@
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/doxygen.py</url>
-          <line>83</line>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/doxygen.py</url>
-          <line>97</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/plugin.py</url>
-          <line>137</line>
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/property.py</url>
-          <line>324</line>
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/generatorAuto.py</url>
-          <line>152</line>
+          <line>158</line>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -389,49 +376,9 @@
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/doxygen.py</url>
-          <line>25</line>
-          <option name="timeStamp" value="46" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/property.py</url>
-          <line>323</line>
-          <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/property.py</url>
-          <line>331</line>
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
-          <line>47</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/xml_parser.py</url>
-          <line>100</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/doxygen.py</url>
-          <line>61</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
           <line>87</line>
           <option name="timeStamp" value="58" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
-          <line>106</line>
-          <option name="timeStamp" value="59" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
-          <line>141</line>
-          <option name="timeStamp" value="60" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
@@ -439,14 +386,29 @@
           <option name="timeStamp" value="61" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
-          <line>181</line>
-          <option name="timeStamp" value="62" />
+          <url>file://$PROJECT_DIR$/mkdoxy/generatorBase.py</url>
+          <line>282</line>
+          <option name="timeStamp" value="73" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mkdoxy/generatorBase.py</url>
+          <line>278</line>
+          <option name="timeStamp" value="74" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/node.py</url>
-          <line>202</line>
-          <option name="timeStamp" value="63" />
+          <line>825</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mkdoxy/generatorAuto.py</url>
+          <line>144</line>
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mkdoxy/generatorAuto.py</url>
+          <line>145</line>
+          <option name="timeStamp" value="78" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="jinja2-line">
           <url>file://$PROJECT_DIR$/mkdoxy/templates/pages.jinja2</url>
@@ -458,10 +420,12 @@
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="kind" />
+        <watch expression="self._refid" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/mkdoxy_new_templates$mkdocs_serve_vPy3_11.coverage" NAME="mkdocs-serve-vPy3.11 Coverage Results" MODIFIED="1681656123965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
     <SUITE FILE_PATH="coverage/main_mkdoxy$mkdocs_serve_py3_9.coverage" NAME="mkdocs-serve-py3.9 Coverage Results" MODIFIED="1636834417383" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/main_mkdoxy$mkdoxy_demo_vPy3_11.coverage" NAME="mkdoxy-demo-vPy3.11 Coverage Results" MODIFIED="1680895787944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../mkdoxy-demo" />
     <SUITE FILE_PATH="coverage/main_mkdoxy$mkdocs_serve_vPy3_9.coverage" NAME="mkdocs-serve-vPy3.9 Coverage Results" MODIFIED="1636834436573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />

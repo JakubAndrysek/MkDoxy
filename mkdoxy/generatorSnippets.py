@@ -1,26 +1,14 @@
-import os
-import sys
-from typing import *
-from jinja2 import Template
-from mkdocs.config import base
-from mkdocs.structure import files, pages
-from mkdoxy.doxygen import Doxygen
-from mkdoxy.finder import Finder
-import re
-from ruamel.yaml import YAML, YAMLError
-from pprint import *
-import pathlib
-import string
-import traceback
-from typing import TextIO
-from jinja2 import Template
-from jinja2.exceptions import TemplateSyntaxError, TemplateError
-from jinja2 import StrictUndefined, Undefined
-from mkdoxy.node import Node, DummyNode
-from mkdoxy.doxygen import Doxygen
-from mkdoxy.constants import Kind
-from mkdoxy.generatorBase import GeneratorBase
 import logging
+import pathlib
+import re
+import string
+from pprint import *
+
+from mkdocs.structure import pages
+from ruamel.yaml import YAML, YAMLError
+
+from mkdoxy.finder import Finder
+from mkdoxy.node import Node
 
 log = logging.getLogger("mkdocs")
 
