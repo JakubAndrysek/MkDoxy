@@ -3,7 +3,7 @@ import os
 import string
 from typing import Dict
 
-from jinja2 import Template
+from jinja2 import Template, FileSystemLoader, Environment, ChoiceLoader
 from jinja2.exceptions import TemplateError
 from mkdocs import exceptions
 
@@ -12,16 +12,23 @@ from mkdoxy.constants import Kind
 from mkdoxy.node import Node, DummyNode
 from mkdoxy.utils import parseTemplateFile, merge_two_dicts, recursive_find_with_parent, recursive_find
 
-log = logging.getLogger("mkdocs")
+log: logging.Logger = logging.getLogger("mkdocs")
 
 
 LETTERS = string.ascii_lowercase + '~_@\\'
 
 class GeneratorBase:
+	"""! Base class for all generators.
+	"""
 	def __init__(self, templateDir: str = "", ignore_errors: bool = False, debug: bool = False):
-		self.debug = debug
+		"""! Constructor.
+		@details
+		@param templateDir (str): Path to the directory with custom templates (default: "")
+		@param ignore_errors (bool): If True, errors will be ignored (default: False)
+		@param debug (bool): If True, debug messages will be printed (default: False)
+		"""
 
-
+		self.debug: bool = debug # if True, debug messages will be printed
 		self.templates: Dict[str, Template] = {}
 		self.metaData: Dict[str, list[str]] = {}
 
@@ -54,7 +61,17 @@ class GeneratorBase:
 						log.info(f"Overwriting template '{name}' with custom template.")
 				else:
 					log.error(f"Trying to load unsupported file '{filePath}'. Supported file ends with '.jinja2'.")
-				
+
+	@staticmethod
+	def shift_each_line(value: str, shift_char: str = '\t') -> str:
+		"""! Shift each line of a given string for a given character.
+		@details It is used to shift the content for Markdown code blocks or other content that should be shifted.
+		@param value (str): String to shift.
+		@param shift_char (str): Character to shift the string (default: '\t').
+		@return (str): Shifted string.
+		"""
+		return '\n'.join(shift_char + line for line in value.split('\n'))
+
 	def loadConfigAndTemplate(self, name: str) -> [Template, dict]:
 		template = self.templates.get(name)
 		if not template:
@@ -63,14 +80,28 @@ class GeneratorBase:
 		return template, metaData
 
 	def render(self, tmpl: Template, data: dict) -> str:
+		"""! Render a template with given data.
+		@details
+		@param tmpl (Template): Template to render.
+		@param data (dict): Data to render the template.
+		@return (str): Rendered template.
+		"""
 		try:
 			# if self.debug:
 				# print('Generating', path) # TODO: add path to data
-			return tmpl.render(data)
+			rendered: str = tmpl.render(data)
+			return rendered
 		except TemplateError as e:
 			raise Exception(str(e)) from e
 
 	def error(self, title: str = "", message: str = "", language: str = ""):
+		"""! Render an error page.
+		@details
+		@param title (str): Title of the error page (default: "")
+		@param message (str): Message of the error page (default: "")
+		@param language (str): Programming language of the error page (default: "")
+		@return (str): Rendered error page.
+		"""
 		template, metaConfig = self.loadConfigAndTemplate("error")
 
 		data = {
@@ -81,9 +112,13 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def annotated(self, nodes: [Node], config: dict = None):
-		if config is None:
-			config = {}
+	def annotated(self, nodes: [Node], config: dict = {}):
+		"""! Render an annotated page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template (default: None)
+		@return (str): Rendered annotated page.
+		"""
 		template, metaConfig = self.loadConfigAndTemplate("annotated")
 		data = {
 			'nodes': nodes,
@@ -91,7 +126,13 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def examples(self, nodes: [Node], config: dict = None):
+	def examples(self, nodes: [Node], config=None):
+		"""! Render an examples page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template (default: None)
+		@return (str): Rendered examples page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("examples")
@@ -102,6 +143,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def programlisting(self, node: [Node], config: dict = None):
+		"""! Render a programlisting page.
+		@details
+		@param node ([Node]): Node to render.
+		@param config (dict): Config for the template (default: None)
+		@return (str): Rendered programlisting page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("programlisting")
@@ -112,6 +159,13 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def code(self, node: [Node], config: dict = None, code: str = ""):
+		"""! Render a code page.
+		@details
+		@param node ([Node]): Node to render.
+		@param config (dict): Config for the template (default: None)
+		@param code (str): Code to render (default: "")
+		@return (str): Rendered code page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("code")
@@ -127,6 +181,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def fileindex(self, nodes: [Node], config: dict = None):
+		"""! Render a fileindex page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template (default: None)
+		@return (str): Rendered fileindex page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("files")
@@ -137,6 +197,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def namespaces(self, nodes: [Node], config: dict = None):
+		"""! Render a namespaces page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered namespaces page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("namespaces")
@@ -147,6 +213,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def page(self, node: Node, config: dict = None):
+		"""! Render a page.
+		@details
+		@param node (Node): Node to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("page")
@@ -157,6 +229,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def example(self, node: Node, config: dict = None):
+		"""! Render an example page.
+		@details
+		@param node (Node): Node to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered example page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("example")
@@ -167,6 +245,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def relatedpages(self, nodes: [Node], config: dict = None):
+		"""! Render a related pages page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered related pages page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("relatedPages")
@@ -177,6 +261,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def classes(self, nodes: [Node], config: dict = None):
+		"""! Render a classes page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered classes page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("classes")
@@ -201,6 +291,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def _find_base_classes(self, nodes: [Node], derived: Node):
+		"""! Find base classes of a node.
+		@details
+		@param nodes ([Node]): List of nodes to search.
+		@param derived (Node): Derived node.
+		@return ([Node]): List of base classes.
+		"""
 		ret = []
 		for node in nodes:
 			if isinstance(node, str):
@@ -217,6 +313,12 @@ class GeneratorBase:
 		return ret
 
 	def modules(self, nodes: [Node], config: dict = None):
+		"""! Render a modules page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered modules page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("modules")
@@ -227,6 +329,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def hierarchy(self, nodes: [Node], config: dict = None):
+		"""! Render a hierarchy page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered hierarchy page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("hierarchy")
@@ -267,6 +375,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def function(self, node: Node, config: dict = None):
+		"""! Render a function page.
+		@details
+		@param node (Node): Node to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered function page.
+		"""
 		if config is None:
 			config = {}
 		templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
@@ -277,10 +391,17 @@ class GeneratorBase:
 			'configMemDef': merge_two_dicts(config, metaConfigMemDef),
 			'templateCode': templateCode,
 			'configCode': metaConfigCode,
+			'config': merge_two_dicts(config, metaConfigMemDef),
 		}
 		return self.render(templateMemDef, data)
 
 	def member(self, node: Node, config: dict = None):
+		"""! Render a member page.
+		@details
+		@param node (Node): Node to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered member page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("member")
@@ -301,6 +422,12 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def file(self, node: Node, config: dict = None):
+		"""! Render a file page.
+		@details
+		@param node (Node): Node to render.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered file page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("member")
@@ -318,6 +445,15 @@ class GeneratorBase:
 		return self.render(template, data)
 
 	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str, config: dict = None):
+		"""! Render an index page.
+		@details
+		@param nodes ([Node]): List of nodes to render.
+		@param kind_filters (Kind): Kind of nodes to render.
+		@param kind_parents ([Kind]): List of parent kinds of nodes to render.
+		@param title (str): Title of the index page.
+		@param config (dict): Config for the template. (default: None)
+		@return (str): Rendered index page.
+		"""
 		if config is None:
 			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("index")

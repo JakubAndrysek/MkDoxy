@@ -10,7 +10,7 @@ from mkdoxy.property import Property
 from mkdoxy.utils import split_safe
 from mkdoxy.xml_parser import XmlParser
 
-log = logging.getLogger("mkdocs")
+log: logging.Logger = logging.getLogger("mkdocs")
 
 
 class Node:

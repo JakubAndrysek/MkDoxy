@@ -1,3 +1,4 @@
+{% filter indent(config.get('indent_level', 0), True) %}
 # Related Pages
 
 Here is a list of all related documentation pages:
@@ -6,3 +7,5 @@ Here is a list of all related documentation pages:
 {% for page in nodes -%}
 * [*{{page.title}}*]({{page.url}}) {{page.brief}}
 {% endfor -%}
+
+{% endfilter %}

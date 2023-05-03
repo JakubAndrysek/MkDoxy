@@ -8,7 +8,7 @@ from mkdoxy.doxygen import Doxygen
 from mkdoxy.generatorBase import GeneratorBase
 from mkdoxy.node import Node
 
-log = logging.getLogger("mkdocs")
+log: logging.Logger = logging.getLogger("mkdocs")
 
 ADDITIONAL_FILES = {
 	'Namespace ListNamespace List': 'namespaces.md',

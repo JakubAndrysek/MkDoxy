@@ -4,18 +4,39 @@ import tempfile
 from pathlib import Path, PurePath
 from subprocess import Popen, PIPE
 
-log = logging.getLogger("mkdocs")
+log: logging.Logger = logging.getLogger("mkdocs")
 
 
 class DoxygenRun:
-	def __init__(self, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew):
-		self.doxygenSource = doxygenSource
-		self.tempDoxyFolder = tempDoxyFolder
-		self.doxyCfgNew = doxyCfgNew
-		self.hashFileName = "hashChanges.yaml"
-		self.hashFilePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
+	"""! Class for running Doxygen.
+	@details This class is used to run Doxygen and parse the XML output.
+	"""
+	def __init__(self, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew: dict):
+		"""! Constructor.
+		Default Doxygen config options:
 
-		self.doxyCfg = {
+		- INPUT: <doxygenSource>
+		- OUTPUT_DIRECTORY: <tempDoxyFolder>
+		- DOXYFILE_ENCODING: UTF-8
+		- GENERATE_XML: YES
+		- RECURSIVE: YES
+		- EXAMPLE_PATH: examples
+		- SHOW_NAMESPACES: YES
+		- GENERATE_HTML: NO
+		- GENERATE_LATEX: NO
+
+		@details
+		@param doxygenSource: (str) Source files for Doxygen.
+		@param tempDoxyFolder: (str) Temporary folder for Doxygen.
+		@param doxyCfgNew: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
+		"""
+		self.doxygenSource: str = doxygenSource
+		self.tempDoxyFolder: str = tempDoxyFolder
+		self.doxyCfgNew: dict = doxyCfgNew
+		self.hashFileName: str = "hashChanges.yaml"
+		self.hashFilePath: PurePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
+
+		self.doxyCfg: dict = {
 			"INPUT": self.doxygenSource,
 			"OUTPUT_DIRECTORY": self.tempDoxyFolder,
 			"DOXYFILE_ENCODING": "UTF-8",
@@ -28,12 +49,17 @@ class DoxygenRun:
 		}
 
 		self.doxyCfg.update(self.doxyCfgNew)
-		self.doxyCfgStr = self.dox_dict2str(self.doxyCfg)
+		self.doxyCfgStr: str = self.dox_dict2str(self.doxyCfg)
 
 		new_file, filename = tempfile.mkstemp()
 
 	# Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
-	def dox_dict2str(self, dox_dict):
+	def dox_dict2str(self, dox_dict: dict) -> str:
+		"""! Convert a dictionary to a string that can be written to a doxygen config file.
+		@details
+		@param dox_dict: (dict) Dictionary to convert.
+		@return: (str) String that can be written to a doxygen config file.
+		"""
 		s = ""
 		new_line = '{option} = {value}\n'
 		for key, value in dox_dict.items():
@@ -51,6 +77,10 @@ class DoxygenRun:
 		return s.strip()
 
 	def hasChanged(self):
+		"""! Check if the source files have changed since the last run.
+		@details
+		@return: (bool) True if the source files have changed since the last run.
+		"""
 		def heshWrite(filename: str, hash: str):
 			with open(filename, "w") as file:
 				file.write(hash)
@@ -85,12 +115,19 @@ class DoxygenRun:
 		return True
 
 	def run(self):
+		"""! Run Doxygen with the current configuration using the Popen class.
+		@details
+		"""
 		doxyBuilder = Popen(['doxygen', '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 		stdout_data = doxyBuilder.communicate(self.doxyCfgStr.encode('utf-8'))[0].decode().strip()
 		# log.info(self.destinationDir)
 		# log.info(stdout_data)
 
 	def checkAndRun(self):
+		"""! Check if the source files have changed since the last run and run Doxygen if they have.
+		@details
+		@return: (bool) True if Doxygen was run.
+		"""
 		if self.hasChanged():
 			self.run()
 			return True
@@ -99,5 +136,9 @@ class DoxygenRun:
 
 
 	@property
-	def path(self):
+	def path(self) -> PurePath:
+		"""! Get the path to the XML output folder.
+		@details
+		@return: (PurePath) Path to the XML output folder.
+		"""
 		return Path.joinpath(Path(self.tempDoxyFolder), Path("xml"))

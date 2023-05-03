@@ -1,3 +1,4 @@
+{% filter indent(config.get('indent_level', 0), True) %}
 # {{title}}
 
 {% if dictionary %}
@@ -12,3 +13,5 @@
 {% else %}
 Nothing related to **{{title}}** found.
 {% endif %}
+
+{% endfilter %}

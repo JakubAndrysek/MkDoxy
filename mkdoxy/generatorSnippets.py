@@ -10,10 +10,10 @@ from ruamel.yaml import YAML, YAMLError
 from mkdoxy.finder import Finder
 from mkdoxy.node import Node
 
-log = logging.getLogger("mkdocs")
+log: logging.Logger = logging.getLogger("mkdocs")
 
-regexLong= r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)" #https://regex101.com/r/lIgOij/2
-regexShort = r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?=\n)|(?=:::)|\Z)" # https://regex101.com/r/QnqxRc/1
+regexLong= r"(?s)(?<!```yaml\n)(^[\t]?::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)" #https://regex101.com/r/lIgOij/2
+regexShort = r"(?s)(?<!```yaml\n)(^[\t]?::: doxy\.(?P<project>[a-zA-Z]+)\.(?P<key>[a-zA-Z.-_]+))\s*\n(?:(?=\n)|(?=:::)|\Z)" # https://regex101.com/r/QnqxRc/1
 
 class GeneratorSnippets:
 	def __init__(self,
@@ -132,7 +132,7 @@ class GeneratorSnippets:
 	def doxyError(self, project, title: str = "", message: str = "", language: str = ""):
 		log.error(f"  -> {title} -> page: {self.page.canonical_url}")
 		return self.generatorBase[project].error(title, message, language)
-	
+
 	def doxyCode(self, snippet, project: str, config):
 		errorMsg = self.checkConfig(snippet, project, config, ["file"])
 		if errorMsg:
@@ -198,7 +198,7 @@ class GeneratorSnippets:
 			return errorMsg
 		nodes = self.doxygen[project].root.children
 		self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
-		return self.generatorBase[project].annotated(nodes)
+		return self.generatorBase[project].annotated(nodes, config)
 
 	def doxyClassIndex(self, snippet, project: str, config):
 		errorMsg = self.checkConfig(snippet, project, config, [])
@@ -206,7 +206,7 @@ class GeneratorSnippets:
 			return errorMsg
 		nodes = self.doxygen[project].root.children
 		self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
-		return self.generatorBase[project].classes(nodes)
+		return self.generatorBase[project].classes(nodes, config)
 
 	def doxyClassHierarchy(self, snippet, project: str, config):
 		errorMsg = self.checkConfig(snippet, project, config, [])
@@ -214,7 +214,7 @@ class GeneratorSnippets:
 			return errorMsg
 		nodes = self.doxygen[project].root.children
 		self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
-		return self.generatorBase[project].hierarchy(nodes)
+		return self.generatorBase[project].hierarchy(nodes, config)
 
 	def doxyNamespaceList(self, snippet, project: str, config):
 		errorMsg = self.checkConfig(snippet, project, config, [])
@@ -222,7 +222,7 @@ class GeneratorSnippets:
 			return errorMsg
 		nodes = self.doxygen[project].root.children
 		self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
-		return self.generatorBase[project].namespaces(nodes)
+		return self.generatorBase[project].namespaces(nodes, config)
 
 	def doxyFileList(self, snippet, project: str, config):
 		errorMsg = self.checkConfig(snippet, project, config, [])
@@ -230,7 +230,7 @@ class GeneratorSnippets:
 			return errorMsg
 		nodes = self.doxygen[project].files.children
 		self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
-		return self.generatorBase[project].fileindex(nodes)
+		return self.generatorBase[project].fileindex(nodes, config)
 
 ### Create documentation generator callbacks END
 

@@ -5,7 +5,7 @@ source: False
 start: 1
 end: 0
 ---
-
+{% filter indent(config.get('indent_level', 0), True) %}
 
 {% if config.get('header') -%}
 # {{node.kind.value|title}} {{node.name_long}}
@@ -23,3 +23,4 @@ end: 0
 {{code}}
 
 {#{{ node.print_node_recursive }}#}
+{% endfilter %}

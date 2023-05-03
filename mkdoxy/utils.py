@@ -4,7 +4,7 @@ import re
 from mkdocs.config import Config
 from ruamel.yaml import YAML
 
-log = logging.getLogger("mkdocs")
+log: logging.Logger = logging.getLogger("mkdocs")
 
 
 regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"

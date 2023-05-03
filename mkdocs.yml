@@ -20,6 +20,7 @@ theme:
     - navigation.tabs
     - navigation.indexes
     - navigation.top
+    - content.tabs.link
 
   icon:
     repo: fontawesome/brands/github
@@ -84,10 +85,38 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - def_list
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - markdown.extensions.md_in_html
+  - pymdownx.blocks.admonition:
+      types:
+        - new
+        - settings
+        - note
+        - abstract
+        - info
+        - tip
+        - success
+        - question
+        - warning
+        - failure
+        - danger
+        - bug
+        - example
+        - quote
+  - pymdownx.blocks.details:
+  - pymdownx.blocks.html:
+  - pymdownx.blocks.definition:
+  - pymdownx.blocks.tab:
+  - pymdownx.tabbed:
+      alternate_style: true
 
 
 nav:
   - Home: "README.md"
+  - Snippets: "mkdoxyApi/snippets.md"
   - MkDocs API:
       - mkdoxyApi/index.md
       - "Links": "mkdoxyApi/links.md"

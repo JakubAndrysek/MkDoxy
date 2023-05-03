@@ -1,3 +1,4 @@
+{% filter indent(config.get('indent_level', 0), True) %}
 # Examples
 
 Here is a list of all the examples in the documentation.
@@ -14,3 +15,5 @@ Here is a list of all the examples in the documentation.
 {#        {%- endif %}#}
 {#    {%- endif -%}#}
 {#{%- endfor %}#}
+
+{% endfilter %}

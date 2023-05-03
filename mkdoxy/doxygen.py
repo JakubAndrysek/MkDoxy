@@ -7,7 +7,7 @@ from mkdoxy.constants import Kind, Visibility
 from mkdoxy.node import Node
 from mkdoxy.xml_parser import XmlParser
 
-log = logging.getLogger("mkdocs")
+log: logging.Logger = logging.getLogger("mkdocs")
 
 
 

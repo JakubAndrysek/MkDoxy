@@ -1,3 +1,9 @@
+"""@package mkdoxy.plugin
+MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets
+
+MkDoxy is a MkDocs plugin for generating documentation from Doxygen XML files.
+"""
+
 import logging
 from pathlib import Path, PurePath
 
@@ -15,17 +21,15 @@ from mkdoxy.generatorSnippets import GeneratorSnippets
 from mkdoxy.utils import check_enabled_markdown_extensions
 from mkdoxy.xml_parser import XmlParser
 
-log = logging.getLogger("mkdocs")
-pluginName = "MkDoxy"
+log: logging.Logger = logging.getLogger("mkdocs")
+pluginName: str = "MkDoxy"
 
 
 class MkDoxy(BasePlugin):
-	"""
-	plugins:
-	- search
-	- mkdoxy
+	"""! MkDocs plugin for generating documentation from Doxygen XML files.
 	"""
 
+	# Config options for the plugin
 	config_scheme = (
 		('projects', config_options.Type(dict, default={})),
 		('full-doc', config_options.Type(bool, default=True)),
@@ -36,6 +40,7 @@ class MkDoxy(BasePlugin):
 		("emojis-enabled", config_options.Type(bool, default=False)),
 	)
 
+	# Config options for each project
 	config_project = (
 		('src-dirs', config_options.Type(str)),
 		('full-doc', config_options.Type(bool, default=True)),
@@ -45,27 +50,28 @@ class MkDoxy(BasePlugin):
 		('template-dir', config_options.Type(str, default="", required=False)),
 	)
 
-	def is_enabled(self):
-		"""
-		Checks if the plugin is enabled.
+	def is_enabled(self) -> bool:
+		"""! Checks if the plugin is enabled
+		@details
+		@return: (bool) True if the plugin is enabled.
 		"""
 		return self.config.get("enabled")
 
 	def on_pre_build(self, config: base.Config):
-		"""
-		Checks if the required markdown extensions are enabled.
-		Check if the required markdown extensions are enabled (example: pymdownx.emoji).
-
-		:param config: The MkDocs config.
+		"""! Checks if the required markdown extensions are enabled (example: pymdownx.emoji).
+		@details
+		@param config (Config): The MkDocs config.
 		"""
 		if not self.is_enabled():
 			return
 		check_enabled_markdown_extensions(config, self.config)
 
 
-	def on_files(self, files: files.Files, config):
+	def on_files(self, files: files.Files, config: base.Config) -> files.Files:
 		"""
 		Run Doxygen if needed and parse XML to basic structure.
+
+		The basic structure is parsed to recursive Nodes.
 		Then prepare generator for future use (GeneratorAuto, SnippetGenerator)
 		Generate full documentation if enabled.
 		Appends the generated files to the MkDocs files.
@@ -149,6 +155,7 @@ class MkDoxy(BasePlugin):
 				# generate automatic documentation and append files in the list of files to be processed by mkdocs
 				defaultTemplateConfig: dict = {
 					"emojis_enabled": self.config.get("emojis-enabled", False),
+					"indent_level": 0,
 				}
 
 				generatorAuto.fullDoc(defaultTemplateConfig)
@@ -166,13 +173,14 @@ class MkDoxy(BasePlugin):
 			config: base.Config,
 			files: files.Files,
 	) -> str:
-		"""
-		Generate snippets and append them to the markdown.
-		:param markdown: The markdown.
-		:param page: The page.
-		:param config: The MkDocs config.
-		:param files: The MkDocs files.
-		:return: The markdown.
+		"""! Generate snippets and append them to the markdown.
+		@details
+
+		@param markdown (str): The markdown.
+		@param page (Page): The MkDocs page.
+		@param config (Config): The MkDocs config.
+		@param files (Files): The MkDocs files.
+		@return: (str) The markdown.
 		"""
 		if not self.is_enabled():
 			return markdown
