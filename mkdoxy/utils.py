@@ -112,6 +112,8 @@ def check_enabled_markdown_extensions(config: Config, mkdoxyConfig: Config) -> N
 	:param config: The MkDocs config.
 	"""
 	enabled_extensions = config['markdown_extensions']
-	if mkdoxyConfig.get("emojis-enabled", False):
-		if 'pymdownx.emoji' not in enabled_extensions:
-			log.warning("The 'pymdownx.emoji' extension is not enabled. Some emojis may not be rendered correctly. https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#configuration")
+	if (
+		mkdoxyConfig.get("emojis-enabled", False)
+		and 'pymdownx.emoji' not in enabled_extensions
+	):
+		log.warning("The 'pymdownx.emoji' extension is not enabled. Some emojis may not be rendered correctly. https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#configuration")
