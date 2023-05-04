@@ -112,13 +112,15 @@ class GeneratorBase:
 		}
 		return self.render(template, data)
 
-	def annotated(self, nodes: [Node], config: dict = {}):
+	def annotated(self, nodes: [Node], config: dict = None):
 		"""! Render an annotated page.
 		@details
 		@param nodes ([Node]): List of nodes to render.
 		@param config (dict): Config for the template (default: None)
 		@return (str): Rendered annotated page.
 		"""
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("annotated")
 		data = {
 			'nodes': nodes,

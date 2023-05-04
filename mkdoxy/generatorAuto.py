@@ -28,9 +28,7 @@ ADDITIONAL_FILES = {
 
 def generate_link(name, url, end="\n") -> str:
 	def normalize(name):
-		if name.startswith("__"):
-			return "\\" + name
-		return name
+		return "\\" + name if name.startswith("__") else name
 
 	return f'- [{normalize(name)}]({url}){end}'
 
