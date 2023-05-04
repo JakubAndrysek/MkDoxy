@@ -90,6 +90,8 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.superfences
   - markdown.extensions.md_in_html
+  - pymdownx.snippets:
+      check_paths: true
   - pymdownx.blocks.admonition:
       types:
         - new
@@ -113,12 +115,25 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
 
-
 nav:
-  - Home: "README.md"
-  - Snippets: "mkdoxyApi/snippets.md"
-  - MkDocs API:
-      - mkdoxyApi/index.md
+  - Home:
+      - "README.md"
+      - "Changelog": "changelog.md"
+      - "License": "license.md"
+  - "Usage":
+      - "usage/index.md"
+      - "Advanced Usage": "usage/advanced.md"
+
+  - Snippets:
+      - "snippets/index.md"
+      - "Classes": "snippets/classes.md"
+      - "Source code": "snippets/source_code.md"
+      - "Links": "snippets/links.md"
+      - "Functions": "snippets/functions.md"
+      - "Namespaces": "snippets/namespaces.md"
+      - "Other": "snippets/other.md"
+  - MkDoxy API:
+      - "mkdoxyApi/index.md"
       - "Links": "mkdoxyApi/links.md"
       - "Classes":
           - "Class List": "mkdoxyApi/annotated.md"
