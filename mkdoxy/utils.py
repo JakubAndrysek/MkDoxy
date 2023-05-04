@@ -107,6 +107,7 @@ def recursive_find_with_parent(nodes, kinds, parent_kinds):
 	return ret
 
 def check_enabled_markdown_extensions(config: Config, mkdoxyConfig: Config) -> None:
+	# sourcery skip: merge-nested-ifs
 	"""
 	Checks if the required markdown extensions are enabled.
 	:param config: The MkDocs config.
