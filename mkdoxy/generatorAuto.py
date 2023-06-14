@@ -261,8 +261,9 @@ class GeneratorAuto:
 
 	def summary(self, defaultTemplateConfig: dict):
 		offset = 0
-		output_summary = ""
-		output_summary += str(' ' * (offset + 2) + generate_link('Related Pages',  'pages.md'))
+		output_summary = "" + str(
+			' ' * (offset + 2) + generate_link('Related Pages', 'pages.md')
+		)
 		for node in self.doxygen.pages.children:
 			self._generate_recursive_pages(output_summary, node, offset + 4)
 
