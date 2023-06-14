@@ -20,7 +20,7 @@ theme:
     - navigation.tabs
     - navigation.indexes
     - navigation.top
-    - content.tabs.link
+#    - content.tabs.link
 
   icon:
     repo: fontawesome/brands/github
@@ -75,6 +75,13 @@ plugins:
             OPTIMIZE_OUTPUT_JAVA: True
             JAVADOC_AUTOBRIEF: True
             EXTRACT_ALL: True
+        animal:
+          src-dirs: demo-projects/animal
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.cpp *.h*"
+            EXAMPLE_PATH: examples
+            RECURSIVE: True
       save-api: .mkdoxy
       full-doc: True
       debug: False
@@ -114,6 +121,9 @@ markdown_extensions:
   - pymdownx.blocks.tab:
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 nav:
   - Home:
@@ -126,6 +136,7 @@ nav:
 
   - Snippets:
       - "snippets/index.md"
+      - "Intelli sense and errors": "snippets/intelli_sense_and_errors.md"
       - "Classes": "snippets/classes.md"
       - "Source code": "snippets/source_code.md"
       - "Links": "snippets/links.md"
@@ -155,3 +166,27 @@ nav:
       - "Variables": "mkdoxyApi/variables.md"
       - "Macros": "mkdoxyApi/macros.md"
       - "Files": "mkdoxyApi/files.md"
+  - Demo API:
+      - "animal/index.md"
+      - "Links": "animal/links.md"
+      - "Classes":
+          - "Class List": "animal/annotated.md"
+          - "Class Index": "animal/classes.md"
+          - "Class Hierarchy": "animal/hierarchy.md"
+          - "Class Members": "animal/class_members.md"
+          - "Class Member Functions": "animal/class_member_functions.md"
+          - "Class Member Variables": "animal/class_member_variables.md"
+          - "Class Member Typedefs": "animal/class_member_typedefs.md"
+          - "Class Member Enumerations": "animal/class_member_enums.md"
+      - "Namespaces":
+          - "Namespace List": "animal/namespaces.md"
+          - "Namespace Members": "animal/namespace_members.md"
+          - "Namespace Member Functions": "animal/namespace_member_functions.md"
+          - "Namespace Member Variables": "animal/namespace_member_variables.md"
+          - "Namespace Member Typedefs": "animal/namespace_member_typedefs.md"
+          - "Namespace Member Enumerations": "animal/namespace_member_enums.md"
+      - "Functions": "animal/functions.md"
+      - "Variables": "animal/variables.md"
+      - "Macros": "animal/macros.md"
+      - "Files": "animal/files.md"
+  - Advanced Demo: "https://mkdoxy-demo.kubaandrysek.cz/"

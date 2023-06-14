@@ -1,5 +1,3 @@
-
-
 # MkDoxy
 
 **[MkDoxy](https://mkdoxy.kubaandrysek.cz/)** plugin for **[MkDocs](https://www.mkdocs.org/)** generates API documentation based on **[Doxygen](https://www.doxygen.nl)** comments and **[code snippets](/intro)** in your markdown files.
@@ -18,6 +16,10 @@
 > **Warning**
 > **Extension is in development** and few features are not working properly.
 > More information in [Discussions](https://github.com/JakubAndrysek/MkDoxy/discussions) and [Issues](https://github.com/JakubAndrysek/MkDoxy/issues) pages.
+
+---
+
+## [:material-home-edit: Online Demo](https://jakubandrysek.github.io/MkDoxy-demo/) and [:simple-github: Demo source-code ](https://github.com/JakubAndrysek/MkDoxy-demo)
 
 ---
 

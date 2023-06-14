@@ -42,7 +42,6 @@ class DoxygenRun:
 			"DOXYFILE_ENCODING": "UTF-8",
 			"GENERATE_XML": "YES",
 			"RECURSIVE": "YES",
-			"EXAMPLE_PATH": "examples",
 			"SHOW_NAMESPACES": "YES",
 			"GENERATE_HTML": "NO",
 			"GENERATE_LATEX": "NO",
@@ -135,8 +134,7 @@ class DoxygenRun:
 			return False
 
 
-	@property
-	def path(self) -> PurePath:
+	def getOutputFolder(self) -> PurePath:
 		"""! Get the path to the XML output folder.
 		@details
 		@return: (PurePath) Path to the XML output folder.

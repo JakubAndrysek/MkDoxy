@@ -42,8 +42,8 @@ class GeneratorAuto:
 	             siteDir: str,
 	             apiPath: str,
 				 doxygen: Doxygen,
-	             useDirectoryUrls: bool,
-	             debug: bool = False):
+	             useDirectoryUrls: bool
+				 ):
 		self.generatorBase = generatorBase
 		self.tempDoxyDir = tempDoxyDir
 		self.siteDir = siteDir
@@ -51,8 +51,7 @@ class GeneratorAuto:
 		self.doxygen = doxygen
 		self.useDirectoryUrls = useDirectoryUrls
 		self.fullDocFiles = []
-		self.debug = debug
-		self.outputSumm = ""
+		self.debug = generatorBase.debug
 		os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
 
 	def save(self, path: str, output: str):
@@ -207,86 +206,87 @@ class GeneratorAuto:
 		output = self.generatorBase.index(nodes, kind_filters, kind_parents, title, config)
 		self.save(path, output)
 
-	def _generate_recursive(self, node: Node, level: int):
+	def _generate_recursive(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_parent():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level
 				+ generate_link(f'{node.kind.value} {node.name}', f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive(child, level + 2)
+				self._generate_recursive(output_summary, child, level + 2)
 
-	def _generate_recursive_files(self, node: Node, level: int, config: dict = None):
+	def _generate_recursive_files(self, output_summary: str, node: Node, level: int, config: dict = None):
 		if config is None:
 			config = []
 		if node.kind.is_file() or node.kind.is_dir():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * int(level +2 ) +generate_link(node.name, f'{node.refid}.md', end='')
 				# ' ' * level + " * " + generate_link(node.name, f'{node.refid}.md')
 			)
 
 			if node.kind.is_file():
 				if config["emojis_enabled"]:
-					self.outputSumm += f" [:octicons-file-code-16:]({node.refid}_source.md) \n"
+					output_summary += f" [:octicons-file-code-16:]({node.refid}_source.md) \n"
 				else:
-					self.outputSumm += f" [[source code]]({node.refid}_source.md) \n"
+					output_summary += f" [[source code]]({node.refid}_source.md) \n"
 			else:
-				self.outputSumm += "\n"
+				output_summary += "\n"
 
 			for child in node.children:
-				self._generate_recursive_files(child, level + 2, config)
+				self._generate_recursive_files(output_summary, child, level + 2, config)
 
-	def _generate_recursive_examples(self, node: Node, level: int):
+	def _generate_recursive_examples(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_example():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level + generate_link(node.name, f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive_examples(child, level + 2)
+				self._generate_recursive_examples(output_summary, child, level + 2)
 
-	def _generate_recursive_groups(self, node: Node, level: int):
+	def _generate_recursive_groups(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_group():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level + generate_link(node.title, f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive_groups(child, level + 2)
+				self._generate_recursive_groups(output_summary, child, level + 2)
 
-	def _generate_recursive_pages(self, node: Node, level: int):
+	def _generate_recursive_pages(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_page():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level + generate_link(node.title, f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive_pages(child, level + 2)
+				self._generate_recursive_pages(output_summary, child, level + 2)
 
 	def summary(self, defaultTemplateConfig: dict):
 		offset = 0
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Related Pages',  'pages.md'))
+		output_summary = ""
+		output_summary += str(' ' * (offset + 2) + generate_link('Related Pages',  'pages.md'))
 		for node in self.doxygen.pages.children:
-			self._generate_recursive_pages(node, offset + 4)
+			self._generate_recursive_pages(output_summary, node, offset + 4)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Modules', 'modules.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('Modules', 'modules.md'))
 		for node in self.doxygen.groups.children:
-			self._generate_recursive_groups(node, offset + 4)
+			self._generate_recursive_groups(output_summary, node, offset + 4)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Class List', 'annotated.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('Class List', 'annotated.md'))
 		for node in self.doxygen.root.children:
-			self._generate_recursive(node, offset + 4)
+			self._generate_recursive(output_summary, node, offset + 4)
 
 		for key, val in ADDITIONAL_FILES.items():
-			self.outputSumm += str(' ' * (offset + 2) + generate_link(key, val))
+			output_summary += str(' ' * (offset + 2) + generate_link(key, val))
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Files', 'files.md', end='\n'))
+		output_summary += str(' ' * (offset + 2) + generate_link('Files', 'files.md', end='\n'))
 		for node in self.doxygen.files.children:
-			self._generate_recursive_files(node, offset + 4, defaultTemplateConfig)
+			self._generate_recursive_files(output_summary, node, offset + 4, defaultTemplateConfig)
 
-		# self.outputSumm += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
+		# output_summary += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
 		# for node in self.doxygen.examples.children:
 		# 	self._generate_recursive_examples(node, offset + 4)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Variables', 'variables.md'))
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Functions', 'functions.md'))
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Macros', 'macros.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('File Variables', 'variables.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('File Functions', 'functions.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('File Macros', 'macros.md'))
 
-		self.save("links.md", self.outputSumm)
+		self.save("links.md", output_summary)

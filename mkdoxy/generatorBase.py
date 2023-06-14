@@ -94,7 +94,7 @@ class GeneratorBase:
 		except TemplateError as e:
 			raise Exception(str(e)) from e
 
-	def error(self, title: str = "", message: str = "", language: str = ""):
+	def error(self, config: dict, title: str, description: str, code_header:str = "", code: str = "", code_language: str = "", snippet_code: str = ""):
 		"""! Render an error page.
 		@details
 		@param title (str): Title of the error page (default: "")
@@ -102,12 +102,18 @@ class GeneratorBase:
 		@param language (str): Programming language of the error page (default: "")
 		@return (str): Rendered error page.
 		"""
+		if config is None:
+			config = {}
 		template, metaConfig = self.loadConfigAndTemplate("error")
 
 		data = {
 			'title': title,
-			'message': message,
-			'language': language,
+			'description': description,
+			'code': code,
+			'code_header': code_header,
+			'code_language': code_language,
+			'snippet_code': snippet_code,
+			'config': merge_two_dicts(config, metaConfig),
 
 		}
 		return self.render(template, data)

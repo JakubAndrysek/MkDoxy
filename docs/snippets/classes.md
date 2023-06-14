@@ -1,6 +1,6 @@
 # Snippets - Classes
 
-### `::: doxy.<project>.class`
+## `::: doxy.<project>.class`
 This tag generates full class documentation.
 
 | Parameter | Description            | Required |
@@ -10,17 +10,16 @@ This tag generates full class documentation.
 
 === "Tag usage"
     ```yaml
-    ::: doxy.mkdoxyApi.class.method
-    name: mkdoxy::cache::Cache
+        ::: doxy.animal.class
+        name: example::Bird
     ```
-
 === "Tag result"
-::: doxy.mkdoxyApi.class
-name: mkdoxy::cache::Cache
-indent_level: 4
+::: doxy.animal.class
+    name: example::Bird
+    indent_level: 4
 
 
-### `::: doxy.<project>.class.method`
+## `::: doxy.<project>.class.method`
 This tag generates documentation for a specific method of a class.
 
 | Parameter | Description             | Required |
@@ -30,47 +29,45 @@ This tag generates documentation for a specific method of a class.
 
 === "Tag usage"
     ```yaml
-    ::: doxy.mkdoxyApi.class.method
-    name: mkdoxy::cache::Cache
-    method: get
+    ::: doxy.animal.class.method
+    name: example::Bird
+    method: void make_sound()
     ```
-
 === "Tag result"
-::: doxy.mkdoxyApi.class.method
-name: mkdoxy::cache::Cache
-method: get
+::: doxy.animal.class.method
+name: example::Bird
+method: void make_sound()
 indent_level: 4
 
 
-
-### `::: doxy.<project>.class.list`
+## `::: doxy.<project>.class.list`
 This tag generates a list of all classes in the project.
 
 There are no parameters for this tag.
 
 === "Tag usage"
-```yaml
-::: doxy.mkdoxyApi.class.list
-```
+    ```yaml
+    ::: doxy.animal.class.list
+    ```
 
 === "Tag result"
-::: doxy.mkdoxyApi.class.list
+::: doxy.animal.class.list
 indent_level: 4
 
 
 
 
 
-### `::: doxy.<project>.class.hierarchy`
+## `::: doxy.<project>.class.hierarchy`
 This tag generates a class hierarchy diagram.
 
 There are no parameters for this tag.
 
 === "Tag usage"
-```yaml
-::: doxy.mkdoxyApi.class.hierarchy
-```
+    ```yaml
+    ::: doxy.animal.class.hierarchy
+    ```
 
 === "Tag result"
-::: doxy.mkdoxyApi.class.hierarchy
+::: doxy.animal.class.hierarchy
 indent_level: 4

@@ -2,6 +2,24 @@
 
 MkDoxy creates API documentation based on Doxygen comments and code snippets in your markdown files.
 
+```yaml
+site_name: "My documentation"
+
+theme:
+  name: material
+
+plugins:
+  - search
+  - mkdoxy:
+      projects:
+        myProjectCpp: # name of project must be alphanumeric + numbers (without spaces)
+          src-dirs: path/to/src/project1 # path to source code (support multiple paths separated by space) => INPUT
+          full-doc: True # if you want to generate full documentation
+          doxy-cfg: # standard doxygen configuration (key: value)
+            FILE_PATTERNS: "*.cpp *.h*" # specify file patterns to filter out
+            RECURSIVE: True # recursive search in source directories
+```
+
 ## How does it work
 1. MkDoxy runs Doxygen to generate XML files from your source code (this is executed only if the source code has changed).
 2. MkDoxy parses the XML files and creates a recursive structure of each project.
@@ -10,19 +28,87 @@ MkDoxy creates API documentation based on Doxygen comments and code snippets in 
 5. Plugin includes the generated markdown files in the final documentation.
 6. MkDocs generates the final documentation.
 
-## Advanced usage
-
-
 ## Multiple projects
 
-## Multiple source directories
+MkDoxy supports multiple projects in one repository.
+Each project must have its own configuration.
+The configuration is specified in the `projects` section of the MkDoxy configuration.
+The name of the project must be alphanumeric + numbers (without spaces).
+The name of the project is used to identify the project in the snippet tags.
+
+??? abstract "Configure multiple projects"
+    ```yaml
+    plugins:
+      - mkdoxy:
+          projects:
+            apiProject1: # name of project must be alphanumeric + numbers (without spaces)
+              src-dirs: path/to/src/project1
+              ...
+            apiProject2:
+              src-dirs: path/to/src/project2
+              ...
+            predefinedProject3:
+                src-dirs: path/to/src/project3
+                ...
+    ```
 
 ## Custom Jinja templates
 
+Custom templates can be used to change the appearance of the generated documentation.
+Each custom template file will replace the default template file. 
+So you do not have to create a custom template for the whole documentation, but only for the parts you want to change.
+
+??? abstract "Configure multiple projects"
+    ```yaml
+    plugins:
+      - mkdoxy:
+          projects:
+            projectWithCustomTemplate:
+                src-dirs: path/to/src/project1
+                template-dir: path/to/userDefined/templates # optional (default is mkdoxy/templates) - custom template will replace default template
+    ```
+
+
 ## Custom Doxygen configuration
 
+MkDoxy supports custom Doxygen configuration for each project.
+The configuration is specified in the `doxy-cfg` section of the project configuration.
+The configuration is passed to Doxygen as a string.
+The configuration is merged with the default configuration.
+??? info "Default Doxygen configuration"
+    ```py
+    "INPUT": self.doxygenSource, # path to source code
+    "OUTPUT_DIRECTORY": self.tempDoxyFolder, # path to temporary folder
+    "DOXYFILE_ENCODING": "UTF-8", # encoding of doxygen configuration file
+    "GENERATE_XML": "YES", # generate XML files (required by mkdoxy)
+    "RECURSIVE": "YES", # recursive search for source files
+    "SHOW_NAMESPACES": "YES", # show namespaces in documentation
+    "GENERATE_HTML": "NO", # do not generate HTML files (mkdoxy generates documentation from XML files)
+    "GENERATE_LATEX": "NO", # do not generate LaTeX files
+    ```
 
-### Advanced configuration
+Doxygen configuration options: [www.doxygen.nl/manual/config.html](https://www.doxygen.nl/manual/config.html)
+
+??? abstract "Custom Doxygen configuration - override default configuration"
+    ```yaml
+    plugins:
+      - mkdoxy:
+          projects:
+            pythonProject:
+              src-dirs: path/to/src/pythonProject
+              full-doc: True
+              doxy-cfg:
+                FILE_PATTERNS: "*.py"
+                EXAMPLE_PATH: ""
+                RECURSIVE: True
+                OPTIMIZE_OUTPUT_JAVA: True
+                JAVADOC_AUTOBRIEF: True
+                EXTRACT_ALL: True
+                ...
+    ```
+
+
+## Advanced configuration
 
 ??? abstract "mkdocs.yml configuration"
     ```yaml

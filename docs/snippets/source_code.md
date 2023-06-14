@@ -9,17 +9,31 @@ This tag generates a code snippet from a file.
 | `start`   | The line number where the snippet starts. | No       |
 | `end`     | The line number where the snippet ends.   | No       |
 
+
 === "Tag usage"
     ```yaml
-    ::: doxy.mkdoxyApi.code
-    file: cache.py
-    start: 8
-    end: 13
+    ::: doxy.animal.code
+    file: bird.h
+    start: 4
+    end: 20
     ```
 
 === "Tag result"
-::: doxy.mkdoxyApi.code
-file: cache.py
-start: 8
-end: 13
+::: doxy.animal.code
+file: bird.h
+start: 4
+end: 20
 indent_level: 4
+
+### `::: doxy.<project>.code` error message
+
+=== "Tag usage"
+    ```yaml
+    ::: doxy.animal.code
+        file: cat.h
+    ```
+
+=== "Tag result"
+::: doxy.animal.code
+    file: cat.h
+    indent_level: 4

@@ -86,9 +86,9 @@ class MkDoxy(BasePlugin):
 			cfg.load_dict(proData)
 			errors, warnings = cfg.validate()
 			for config_name, warning in warnings:
-				log.warning(f"  -> Config value: '{config_name}' in project '{projectName}'. Warning: {warning}")
+				log.warning(f"  -> Config value: '{config_name}' in project '{project_name}'. Warning: {warning}")
 			for config_name, error in errors:
-				log.error(f"  -> Config value: '{config_name}' in project '{projectName}'. Error: {error}")
+				log.error(f"  -> Config value: '{config_name}' in project '{project_name}'. Error: {error}")
 
 			if len(errors) > 0:
 				raise exceptions.Abort(f"Aborted with {len(errors)} Configuration Errors!")
@@ -102,65 +102,65 @@ class MkDoxy(BasePlugin):
 
 		self.doxygen = {}
 		self.generatorBase = {}
-		self.projects = self.config["projects"]
+		self.projects_config:dict[str, dict[str, any]] = self.config["projects"]
+		self.debug = self.config.get('debug', False)
+
+		# generate automatic documentation and append files in the list of files to be processed by mkdocs
+		self.defaultTemplateConfig: dict = {
+			"emojis_enabled": self.config.get("emojis-enabled", False),
+			"indent_level": 0,
+		}
 
 		log.info(f"Start plugin {pluginName}")
 
-		for projectName in self.projects:
-			self.proData = self.projects.get(projectName)
-			log.info(f"-> Start project '{projectName}'")
+
+		for project_name, project_data in self.projects_config.items():
+			log.info(f"-> Start project '{project_name}'")
 
 			# Check project config -> raise exceptions
-			checkConfig(self.config_project, self.proData, config['strict'])
+			checkConfig(self.config_project, project_data, config['strict'])
 
 			if self.config.get("save-api"):
-				tempDirApi = tempDir("", self.config.get("save-api"), projectName)
+				tempDirApi = tempDir("", self.config.get("save-api"), project_name)
 			else:
-				tempDirApi = tempDir(config['site_dir'], "assets/.doxy/", projectName)
+				tempDirApi = tempDir(config['site_dir'], "assets/.doxy/", project_name)
 
 			# Check scr changes -> run Doxygen
-			doxygenRun = DoxygenRun(self.proData.get('src-dirs'), tempDirApi, self.proData.get('doxy-cfg', {}))
+			doxygenRun = DoxygenRun(project_data.get('src-dirs'), tempDirApi, project_data.get('doxy-cfg', {}))
 			if doxygenRun.checkAndRun():
 				log.info("  -> generating Doxygen filese")
 			else:
 				log.info("  -> skip generating Doxygen files (nothing changes)")
 
-			self.debug = self.config.get('debug', False)
-
-			# Parse XML to bacic structure
+			# Parse XML to basic structure
 			cache = Cache()
 			parser = XmlParser(cache=cache, debug=self.debug)
 
-			# Parse bacic structure to recursive Nodes
-			self.doxygen[projectName] = Doxygen(doxygenRun.path, parser=parser, cache=cache, debug=self.debug)
+			# Parse basic structure to recursive Nodes
+			self.doxygen[project_name] = Doxygen(doxygenRun.getOutputFolder(), parser=parser, cache=cache)
 
 			# Print parsed files
 			if self.debug:
-				self.doxygen[projectName].printStructure()
+				self.doxygen[project_name].printStructure()
 
 			# Prepare generator for future use (GeneratorAuto, SnippetGenerator)
-			self.generatorBase[projectName] = GeneratorBase(self.proData.get('template-dir',""), ignore_errors=self.config["ignore-errors"], debug=self.debug)
+			self.generatorBase[project_name] = GeneratorBase(project_data.get('template-dir',""), ignore_errors=self.config["ignore-errors"], debug=self.debug)
 
-			if self.config["full-doc"] and self.proData.get("full-doc", True):
+			if self.config["full-doc"] and project_data.get("full-doc", True):
 				generatorAuto = GeneratorAuto(
-					generatorBase=self.generatorBase[projectName],
+					generatorBase=self.generatorBase[project_name],
 					tempDoxyDir=tempDirApi,
 					siteDir=config['site_dir'],
-					apiPath=projectName,
-					doxygen=self.doxygen[projectName],
+					apiPath=project_name,
+					doxygen=self.doxygen[project_name],
 					useDirectoryUrls=config['use_directory_urls'],
-					debug=self.debug
 				)
 
-				# generate automatic documentation and append files in the list of files to be processed by mkdocs
-				defaultTemplateConfig: dict = {
-					"emojis_enabled": self.config.get("emojis-enabled", False),
-					"indent_level": 0,
-				}
+				project_config = self.defaultTemplateConfig.copy()
+				project_config.update(project_data)
+				generatorAuto.fullDoc(project_config)
 
-				generatorAuto.fullDoc(defaultTemplateConfig)
-
-				generatorAuto.summary(defaultTemplateConfig)
+				generatorAuto.summary(project_config)
 
 				for file in generatorAuto.fullDocFiles:
 					files.append(file)
@@ -185,13 +185,19 @@ class MkDoxy(BasePlugin):
 		if not self.is_enabled():
 			return markdown
 
+		# update default template config with page meta
+		page_config = self.defaultTemplateConfig.copy()
+		page_config.update(page.meta)
+
 		generatorSnippets = GeneratorSnippets(
 			markdown=markdown,
 			generatorBase=self.generatorBase,
 			doxygen=self.doxygen,
+			projects=self.projects_config,
 			useDirectoryUrls=config['use_directory_urls'],
 			page = page,
-		debug=self.debug
+			config = page_config,
+			debug=self.debug
 		)
 
 		return generatorSnippets.generate()

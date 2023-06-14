@@ -289,3 +289,4 @@ tests/files/.mkdoxy
 .mkdoxy/
 templates-custom
 temp/
+local/

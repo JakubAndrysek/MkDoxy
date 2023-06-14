@@ -1,8 +1,33 @@
+{% filter indent(config.get('indent_level', 0), True) %}
 <div style="border: 4px dotted red">
-<h3 class="doxy-error">Error: {{title }}</h3>
-{%- if message %}
-```{{language}}
-{{message}}
-```
+    <h3 class="doxy-error"><b>MkDoxy Error: </b>{{title}}</h3>
+
+{%- if description %}
+<p>{{description}}</p>
 {%- endif %}
-</div>
+
+{%- if code %}
+<details>
+<summary>{%- if code_header %}{{code_header}}{%- else %}Error details{%- endif %}</summary>
+```{{code_language}}
+{{code}}
+```
+</details>
+{%- endif %}
+
+
+{%- if snippet_code %}
+<details>
+<summary>Snippet</summary>
+```yaml
+{{snippet_code}}
+```
+</details>
+{%- endif %}
+
+
+{% if not description and not message %}
+<p>No error details available.</p>
+{% endif %}
+
+{% endfilter %}

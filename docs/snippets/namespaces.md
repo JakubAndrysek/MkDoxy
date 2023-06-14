@@ -5,9 +5,9 @@ This tag generates a list of all namespaces in the project.
 
 === "Tag usage"
 ```yaml
-::: doxy.mkdoxyApi.namespace.list
+::: doxy.animal.namespace.list
 ```
 
 === "Tag result"
-::: doxy.mkdoxyApi.namespace.list
+::: doxy.animal.namespace.list
 indent_level: 4
