@@ -39,6 +39,7 @@ class MkDoxy(BasePlugin):
 		('ignore-errors', config_options.Type(bool, default=False)),
 		('save-api', config_options.Type(str, default="")),
 		("enabled", config_options.Type(bool, default=True)),
+		("doxygen-bin-path", config_options.Type(str, default="doxygen", required=False)),
 	)
 
 	config_project = (
@@ -95,7 +96,7 @@ class MkDoxy(BasePlugin):
 				tempDirApi = tempDir(config['site_dir'], "assets/.doxy/", projectName)
 
 			# Check scr changes -> run Doxygen
-			doxygenRun = DoxygenRun(self.proData.get('src-dirs'), tempDirApi, self.proData.get('doxy-cfg', {}))
+			doxygenRun = DoxygenRun(self.config['doxygen-bin-path'], self.proData.get('src-dirs'), tempDirApi, self.proData.get('doxy-cfg', {}))
 			if doxygenRun.checkAndRun():
 				log.info("  -> generating Doxygen filese")
 			else:

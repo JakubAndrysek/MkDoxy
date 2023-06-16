@@ -13,7 +13,8 @@ log = logging.getLogger("mkdocs")
 
 
 class DoxygenRun:
-	def __init__(self, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew):
+	def __init__(self, doxygenBinPath: str, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew):
+		self.doxygenBinPath = doxygenBinPath
 		self.doxygenSource = doxygenSource
 		self.tempDoxyFolder = tempDoxyFolder
 		self.doxyCfgNew = doxyCfgNew
@@ -90,7 +91,7 @@ class DoxygenRun:
 		return True
 
 	def run(self):
-		doxyBuilder = Popen(['doxygen', '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+		doxyBuilder = Popen([self.doxygenBinPath, '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 		stdout_data = doxyBuilder.communicate(self.doxyCfgStr.encode('utf-8'))[0].decode().strip()
 		# log.info(self.destinationDir)
 		# log.info(stdout_data)
