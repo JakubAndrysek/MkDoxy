@@ -11,7 +11,7 @@ class DoxygenRun:
 	"""! Class for running Doxygen.
 	@details This class is used to run Doxygen and parse the XML output.
 	"""
-	def __init__(self, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew: dict):
+	def __init__(self, doxygenBinPath: str, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew):
 		"""! Constructor.
 		Default Doxygen config options:
 
@@ -26,10 +26,12 @@ class DoxygenRun:
 		- GENERATE_LATEX: NO
 
 		@details
+		@param doxygenBinPath: (str) Path to the Doxygen binary.
 		@param doxygenSource: (str) Source files for Doxygen.
 		@param tempDoxyFolder: (str) Temporary folder for Doxygen.
 		@param doxyCfgNew: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
 		"""
+		self.doxygenBinPath: str = doxygenBinPath
 		self.doxygenSource: str = doxygenSource
 		self.tempDoxyFolder: str = tempDoxyFolder
 		self.doxyCfgNew: dict = doxyCfgNew
@@ -117,7 +119,7 @@ class DoxygenRun:
 		"""! Run Doxygen with the current configuration using the Popen class.
 		@details
 		"""
-		doxyBuilder = Popen(['doxygen', '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+		doxyBuilder = Popen([self.doxygenBinPath, '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 		stdout_data = doxyBuilder.communicate(self.doxyCfgStr.encode('utf-8'))[0].decode().strip()
 		# log.info(self.destinationDir)
 		# log.info(stdout_data)
