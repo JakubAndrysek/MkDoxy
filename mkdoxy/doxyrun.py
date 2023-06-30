@@ -52,8 +52,6 @@ class DoxygenRun:
 		self.doxyCfg.update(self.doxyCfgNew)
 		self.doxyCfgStr: str = self.dox_dict2str(self.doxyCfg)
 
-		new_file, filename = tempfile.mkstemp()
-
 	# Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
 	def dox_dict2str(self, dox_dict: dict) -> str:
 		"""! Convert a dictionary to a string that can be written to a doxygen config file.
