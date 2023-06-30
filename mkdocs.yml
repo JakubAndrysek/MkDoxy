@@ -20,7 +20,6 @@ theme:
     - navigation.tabs
     - navigation.indexes
     - navigation.top
-#    - content.tabs.link
 
   icon:
     repo: fontawesome/brands/github
@@ -142,7 +141,7 @@ nav:
       - "Links": "snippets/links.md"
       - "Functions": "snippets/functions.md"
       - "Namespaces": "snippets/namespaces.md"
-      - "Other": "snippets/other.md"
+      - "Files": "snippets/files.md"
   - MkDoxy API:
       - "mkdoxyApi/index.md"
       - "Links": "mkdoxyApi/links.md"

@@ -1,10 +1,9 @@
-name: MkDoxy build all supported Python versions
+name: MkDoxy test build demos with all supported python versions
 
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       # You can use PyPy versions in python-version.
@@ -25,7 +24,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install mkdocs-material
-          pip install . 
+          pip install .
           sudo apt-get install doxygen
       - name: Clone test repo
         run: git clone https://github.com/JakubAndrysek/MkDoxy-demo.git demo

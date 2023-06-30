@@ -1,9 +1,6 @@
 mkdocs~=1.4.3
 Jinja2~=3.1.2
-ruamel.yaml
-mkdocs-open-in-new-tab
+ruamel.yaml==0.17.32
+mkdocs-open-in-new-tab~=1.0.2
 pathlib~=1.0.1
-mkdoxy~=1.0.6
 path~=16.6.0
-setuptools~=67.6.1
-Markdown~=3.3.7

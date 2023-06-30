@@ -1,4 +1,4 @@
-# Snippets - Other
+# Snippets - Files
 
 ## `::: doxy.<project>.file.list`
 

@@ -37,7 +37,6 @@ class MkDoxy(BasePlugin):
 		('ignore-errors', config_options.Type(bool, default=False)),
 		('save-api', config_options.Type(str, default="")),
 		("enabled", config_options.Type(bool, default=True)),
-		("emojis-enabled", config_options.Type(bool, default=False)),
 	)
 
 	# Config options for each project
@@ -57,27 +56,13 @@ class MkDoxy(BasePlugin):
 		"""
 		return self.config.get("enabled")
 
-	def on_pre_build(self, config: base.Config):
-		"""! Checks if the required markdown extensions are enabled (example: pymdownx.emoji).
-		@details
-		@param config (Config): The MkDocs config.
-		"""
-		if not self.is_enabled():
-			return
-		check_enabled_markdown_extensions(config, self.config)
-
-
 	def on_files(self, files: files.Files, config: base.Config) -> files.Files:
-		"""
-		Run Doxygen if needed and parse XML to basic structure.
+		"""! Called after files have been gathered by MkDocs.
+		@details
 
-		The basic structure is parsed to recursive Nodes.
-		Then prepare generator for future use (GeneratorAuto, SnippetGenerator)
-		Generate full documentation if enabled.
-		Appends the generated files to the MkDocs files.
-		:param files: The MkDocs files.
-		:param config: The MkDocs config.
-		:return: The MkDocs files.
+		@param files: (Files) The files gathered by MkDocs.
+		@param config: (Config) The global configuration object.
+		@return: (Files) The files gathered by MkDocs.
 		"""
 		if not self.is_enabled():
 			return files
@@ -107,7 +92,6 @@ class MkDoxy(BasePlugin):
 
 		# generate automatic documentation and append files in the list of files to be processed by mkdocs
 		self.defaultTemplateConfig: dict = {
-			"emojis_enabled": self.config.get("emojis-enabled", False),
 			"indent_level": 0,
 		}
 
@@ -217,6 +201,8 @@ class MkDoxy(BasePlugin):
 # def on_config(self, config):
 #     return config
 #
+# def on_pre_build(self, config: base.Config):
+#     return
 # def on_post_build(self, config):
 #     return
 #

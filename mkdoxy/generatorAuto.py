@@ -221,14 +221,10 @@ class GeneratorAuto:
 		if node.kind.is_file() or node.kind.is_dir():
 			output_summary += str(
 				' ' * int(level +2 ) +generate_link(node.name, f'{node.refid}.md', end='')
-				# ' ' * level + " * " + generate_link(node.name, f'{node.refid}.md')
 			)
 
 			if node.kind.is_file():
-				if config["emojis_enabled"]:
-					output_summary += f" [:octicons-file-code-16:]({node.refid}_source.md) \n"
-				else:
-					output_summary += f" [[source code]]({node.refid}_source.md) \n"
+				output_summary += f" [[source code]]({node.refid}_source.md) \n"
 			else:
 				output_summary += "\n"
 
