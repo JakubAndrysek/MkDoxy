@@ -1,3 +1,11 @@
-# {{node.title}}
+{% filter indent(config.get('indent_level', 0), True) %}
 
+{% if node.title %}{{node.title}}{% else %}# Related Pages{% endif %}
+
+{% if node.details %}
 {{node.details}}
+{% else %}
+No related pages found.
+{% endif %}
+
+{% endfilter %}

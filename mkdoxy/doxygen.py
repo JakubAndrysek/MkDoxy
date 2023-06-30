@@ -1,22 +1,25 @@
+import logging
 import os
 from xml.etree import ElementTree
-from mkdoxy.node import Node
-from mkdoxy.constants import Kind, Visibility
-from mkdoxy.cache import Cache
-from mkdoxy.xml_parser import XmlParser
-import logging
 
-log = logging.getLogger("mkdocs")
+import path as path
+
+from mkdoxy.cache import Cache
+from mkdoxy.constants import Kind, Visibility
+from mkdoxy.node import Node
+from mkdoxy.xml_parser import XmlParser
+
+log: logging.Logger = logging.getLogger("mkdocs")
 
 
 
 class Doxygen:
-	def __init__(self, index_path: str, parser: XmlParser, cache: Cache, debug: bool = False):
-		self.debug = debug
-		path = os.path.join(index_path, 'index.xml')
+	def __init__(self, index_path: path, parser: XmlParser, cache: Cache):
+		self.debug = parser.debug
+		path_xml = os.path.join(index_path, 'index.xml')
 		if self.debug:
-			log.info(f'Loading XML from: {path}')
-		xml = ElementTree.parse(path).getroot()
+			log.info(f'Loading XML from: {path_xml}')
+		xml = ElementTree.parse(path_xml).getroot()
 
 		self.parser = parser
 		self.cache = cache

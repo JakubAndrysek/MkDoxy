@@ -1,23 +1,14 @@
-import os
-import re
-import string
-import traceback
-from mkdocs.structure import files
-from io import StringIO
-from typing import TextIO
-from jinja2 import Template
-from jinja2.exceptions import TemplateSyntaxError, TemplateError
-from jinja2 import StrictUndefined, Undefined
-from mkdoxy.node import Node, DummyNode
-from mkdoxy.doxygen import Doxygen
-from mkdoxy.constants import Kind
-from mkdoxy.generatorBase import GeneratorBase
-from mkdoxy.utils import recursive_find, recursive_find_with_parent
-from pprint import *
-from pathlib import Path, PurePath
 import logging
+import os
 
-log = logging.getLogger("mkdocs")
+from mkdocs.structure import files
+
+from mkdoxy.constants import Kind
+from mkdoxy.doxygen import Doxygen
+from mkdoxy.generatorBase import GeneratorBase
+from mkdoxy.node import Node
+
+log: logging.Logger = logging.getLogger("mkdocs")
 
 ADDITIONAL_FILES = {
 	'Namespace ListNamespace List': 'namespaces.md',
@@ -35,8 +26,11 @@ ADDITIONAL_FILES = {
 	'Class Member Enumerations': 'class_member_enums.md',
 }
 
-def generate_link(name, url) -> str:
-	return f'* [{name}]({url}' + ')\n'
+def generate_link(name, url, end="\n") -> str:
+	def normalize(name):
+		return "\\" + name if name.startswith("__") else name
+
+	return f'- [{normalize(name)}]({url}){end}'
 
 # def generate_link(name, url) -> str:
 # 	return f"\t\t- '{name}': '{url}'\n"
@@ -48,8 +42,8 @@ class GeneratorAuto:
 	             siteDir: str,
 	             apiPath: str,
 				 doxygen: Doxygen,
-	             useDirectoryUrls: bool,
-	             debug: bool = False):
+	             useDirectoryUrls: bool
+				 ):
 		self.generatorBase = generatorBase
 		self.tempDoxyDir = tempDoxyDir
 		self.siteDir = siteDir
@@ -57,8 +51,7 @@ class GeneratorAuto:
 		self.doxygen = doxygen
 		self.useDirectoryUrls = useDirectoryUrls
 		self.fullDocFiles = []
-		self.debug = debug
-		self.outputSumm = ""
+		self.debug = generatorBase.debug
 		os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
 
 	def save(self, path: str, output: str):
@@ -67,225 +60,230 @@ class GeneratorAuto:
 		with open(os.path.join(self.tempDoxyDir, pathRel), 'w', encoding='utf-8') as file:
 			file.write(output)
 
-	def fullDoc(self):
-		self.annotated(self.doxygen.root.children)
-		self.fileindex(self.doxygen.files.children)
-		self.members(self.doxygen.root.children)
-		self.members(self.doxygen.groups.children)
-		self.files(self.doxygen.files.children)
-		self.namespaces(self.doxygen.root.children)
-		self.classes(self.doxygen.root.children)
-		self.hierarchy(self.doxygen.root.children)
-		self.modules(self.doxygen.groups.children)
-		self.pages(self.doxygen.pages.children)
-		self.examples(self.doxygen.examples.children)
+	def fullDoc(self, defaultTemplateConfig: dict):
+		self.annotated(self.doxygen.root.children, defaultTemplateConfig)
+		self.fileindex(self.doxygen.files.children, defaultTemplateConfig)
+		self.members(self.doxygen.root.children, defaultTemplateConfig)
+		self.members(self.doxygen.groups.children, defaultTemplateConfig)
+		self.files(self.doxygen.files.children, defaultTemplateConfig)
+		self.namespaces(self.doxygen.root.children, defaultTemplateConfig)
+		self.classes(self.doxygen.root.children, defaultTemplateConfig)
+		self.hierarchy(self.doxygen.root.children, defaultTemplateConfig)
+		self.modules(self.doxygen.groups.children, defaultTemplateConfig)
+		self.pages(self.doxygen.pages.children, defaultTemplateConfig)
+		# self.examples(self.doxygen.examples.children) # TODO examples
 		self.relatedpages(self.doxygen.pages.children)
 		self.index(self.doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
-		           [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members')
+		           [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE], 'Class Members', defaultTemplateConfig)
 		self.index(self.doxygen.root.children, [Kind.FUNCTION], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Functions')
+		           'Class Member Functions', defaultTemplateConfig)
 		self.index(self.doxygen.root.children, [Kind.VARIABLE], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Variables')
+		           'Class Member Variables', defaultTemplateConfig)
 		self.index(self.doxygen.root.children, [Kind.TYPEDEF], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Typedefs')
+		           'Class Member Typedefs', defaultTemplateConfig)
 		self.index(self.doxygen.root.children, [Kind.ENUM], [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
-		           'Class Member Enums')
+		           'Class Member Enums', defaultTemplateConfig)
 		self.index(self.doxygen.root.children, [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
-		           [Kind.NAMESPACE], 'Namespace Members')
-		self.index(self.doxygen.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions')
-		self.index(self.doxygen.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables')
-		self.index(self.doxygen.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs')
-		self.index(self.doxygen.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums')
-		self.index(self.doxygen.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions')
-		self.index(self.doxygen.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros')
+		           [Kind.NAMESPACE], 'Namespace Members', defaultTemplateConfig)
+		self.index(self.doxygen.root.children, [Kind.FUNCTION], [Kind.NAMESPACE], 'Namespace Member Functions', defaultTemplateConfig)
+		self.index(self.doxygen.root.children, [Kind.VARIABLE], [Kind.NAMESPACE], 'Namespace Member Variables', defaultTemplateConfig)
+		self.index(self.doxygen.root.children, [Kind.TYPEDEF], [Kind.NAMESPACE], 'Namespace Member Typedefs', defaultTemplateConfig)
+		self.index(self.doxygen.root.children, [Kind.ENUM], [Kind.NAMESPACE], 'Namespace Member Enums', defaultTemplateConfig)
+		self.index(self.doxygen.files.children, [Kind.FUNCTION], [Kind.FILE], 'Functions', defaultTemplateConfig)
+		self.index(self.doxygen.files.children, [Kind.DEFINE], [Kind.FILE], 'Macros', defaultTemplateConfig)
 		self.index(self.doxygen.files.children, [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM], [Kind.FILE],
-		           'Variables')
+		           'Variables', defaultTemplateConfig)
 
-	def annotated(self, nodes: [Node]):
+	def annotated(self, nodes: [Node], config: dict = None):
 		path = 'annotated.md'
-		output = self.generatorBase.annotated(nodes)
+		output = self.generatorBase.annotated(nodes, config)
 		self.save(path, output)
 
-	def programlisting(self, node: [Node]):
+	def programlisting(self, node: [Node], config: dict = None):
 		path = f'{node.refid}_source.md'
 
-		output = self.generatorBase.programlisting(node)
+		output = self.generatorBase.programlisting(node, config)
 		self.save(path, output)
 
-	def fileindex(self, nodes: [Node]):
+	def fileindex(self, nodes: [Node], config: dict = None):
 		path = 'files.md'
 
-		output = self.generatorBase.fileindex(nodes)
+		output = self.generatorBase.fileindex(nodes, config)
 		self.save(path, output)
 
-	def namespaces(self, nodes: [Node]):
+	def namespaces(self, nodes: [Node], config: dict = None):
 		path = 'namespaces.md'
 
-		output = self.generatorBase.namespaces(nodes)
+		output = self.generatorBase.namespaces(nodes, config)
 		self.save(path, output)
 
-	def page(self, node: Node):
+	def page(self, node: Node, config: dict = None):
 		path = f'{node.name}.md'
 
-		output = self.generatorBase.page(node)
+		output = self.generatorBase.page(node, config)
 		self.save(path, output)
 
-	def pages(self, nodes: [Node]):
+	def pages(self, nodes: [Node], config: dict = None):
 		for node in nodes:
-			self.page(node)
+			self.page(node, config)
 
-	def relatedpages(self, nodes: [Node]):
+	def relatedpages(self, nodes: [Node], config: dict = None):
 		path = 'pages.md'
 
-		output = self.generatorBase.annotated(nodes)
+		output = self.generatorBase.relatedpages(nodes)
 		self.save(path, output)
 
-	def example(self, node: Node):
+	def example(self, node: Node, config: dict = None):
 		path = f'{node.refid}.md'
 
-		output = self.generatorBase.example(node)
+		output = self.generatorBase.example(node, config)
 		self.save(path, output)
 
-	def examples(self, nodes: [Node]):
+	def examples(self, nodes: [Node], config: dict = None):
 		for node in nodes:
 			if node.is_example:
 				if node.has_programlisting:
 					print(f'Generating example {node.name}...')
-				self.example(node)
+				self.example(node, config)
 
 		path = 'examples.md'
 
-		output = self.generatorBase.examples(nodes)
+		output = self.generatorBase.examples(nodes, config)
 		self.save(path, output)
 
-	def classes(self, nodes: [Node]):
+	def classes(self, nodes: [Node], config: dict = None):
 		path = 'classes.md'
 
-		output = self.generatorBase.classes(nodes)
+		output = self.generatorBase.classes(nodes, config)
 		self.save(path, output)
 
-	def modules(self, nodes: [Node]):
+	def modules(self, nodes: [Node], config: dict = None):
 		path = 'modules.md'
 
-		output = self.generatorBase.modules(nodes)
+		output = self.generatorBase.modules(nodes, config)
 		self.save(path, output)
 
-	def hierarchy(self, nodes: [Node]):
+	def hierarchy(self, nodes: [Node], config: dict = None):
 		path = 'hierarchy.md'
 
-		output = self.generatorBase.hierarchy(nodes)
+		output = self.generatorBase.hierarchy(nodes, config)
 		self.save(path, output)
 
-	def member(self, node: Node):
+	def member(self, node: Node, config: dict = None):
 		path = node.filename
 
-		output = self.generatorBase.member(node)
+		output = self.generatorBase.member(node, config)
 		self.save(path, output)
 
 		if node.is_language or node.is_group or node.is_file or node.is_dir:
-			self.members(node.children)
+			self.members(node.children, config)
 
-	def file(self, node: Node):
+	def file(self, node: Node, config: dict = None):
 		path = node.filename
 
-		output = self.generatorBase.file(node)
+		output = self.generatorBase.file(node, config)
 		self.save(path, output)
 
 		if node.is_file and node.has_programlisting:
-			self.programlisting(node)
+			self.programlisting(node, config)
 
 		if node.is_file or node.is_dir:
-			self.files(node.children)
+			self.files(node.children, config)
 
-	def members(self, nodes: [Node]):
+	def members(self, nodes: [Node], config: dict = None):
 		for node in nodes:
 			if node.is_parent or node.is_group or node.is_file or node.is_dir:
-				self.member(node)
+				self.member(node, config)
 
-	def files(self, nodes: [Node]):
+	def files(self, nodes: [Node], config: dict = None):
 		for node in nodes:
 			if node.is_file or node.is_dir:
-				self.file(node)
+				self.file(node, config)
 
-	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str):
+	def index(self, nodes: [Node], kind_filters: Kind, kind_parents: [Kind], title: str, config: dict = None):
 		path = title.lower().replace(' ', '_') + '.md'
 
-		output = self.generatorBase.index(nodes, kind_filters, kind_parents, title)
+		output = self.generatorBase.index(nodes, kind_filters, kind_parents, title, config)
 		self.save(path, output)
 
-	def _generate_recursive(self, node: Node, level: int):
+	def _generate_recursive(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_parent():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level
 				+ generate_link(f'{node.kind.value} {node.name}', f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive(child, level + 2)
+				self._generate_recursive(output_summary, child, level + 2)
 
-	def _generate_recursive_files(self, node: Node, level: int):
+	def _generate_recursive_files(self, output_summary: str, node: Node, level: int, config: dict = None):
+		if config is None:
+			config = []
 		if node.kind.is_file() or node.kind.is_dir():
-			self.outputSumm += str(
-				' ' * level + generate_link(node.name, f'{node.refid}.md')
+			output_summary += str(
+				' ' * int(level +2 ) +generate_link(node.name, f'{node.refid}.md', end='')
 			)
+
 			if node.kind.is_file():
-				self.outputSumm += str(
-					' ' * level
-					+ generate_link(f'{node.name} source', f'{node.refid}_source.md')
-				)
-			for child in node.children:
-				self._generate_recursive_files(child, level + 2)
+				output_summary += f" [[source code]]({node.refid}_source.md) \n"
+			else:
+				output_summary += "\n"
 
-	def _generate_recursive_examples(self, node: Node, level: int):
+			for child in node.children:
+				self._generate_recursive_files(output_summary, child, level + 2, config)
+
+	def _generate_recursive_examples(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_example():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level + generate_link(node.name, f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive_examples(child, level + 2)
+				self._generate_recursive_examples(output_summary, child, level + 2)
 
-	def _generate_recursive_groups(self, node: Node, level: int):
+	def _generate_recursive_groups(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_group():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level + generate_link(node.title, f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive_groups(child, level + 2)
+				self._generate_recursive_groups(output_summary, child, level + 2)
 
-	def _generate_recursive_pages(self, node: Node, level: int):
+	def _generate_recursive_pages(self, output_summary: str, node: Node, level: int):
 		if node.kind.is_page():
-			self.outputSumm += str(
+			output_summary += str(
 				' ' * level + generate_link(node.title, f'{node.refid}.md')
 			)
 			for child in node.children:
-				self._generate_recursive_pages(child, level + 2)
+				self._generate_recursive_pages(output_summary, child, level + 2)
 
-	def summary(self):
+	def summary(self, defaultTemplateConfig: dict):
 		offset = 0
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Related Pages',  'pages.md'))
+		output_summary = "" + str(
+			' ' * (offset + 2) + generate_link('Related Pages', 'pages.md')
+		)
 		for node in self.doxygen.pages.children:
-			self._generate_recursive_pages(node, offset + 4)
+			self._generate_recursive_pages(output_summary, node, offset + 4)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Modules', 'modules.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('Modules', 'modules.md'))
 		for node in self.doxygen.groups.children:
-			self._generate_recursive_groups(node, offset + 4)
+			self._generate_recursive_groups(output_summary, node, offset + 4)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Class List', 'annotated.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('Class List', 'annotated.md'))
 		for node in self.doxygen.root.children:
-			self._generate_recursive(node, offset + 4)
+			self._generate_recursive(output_summary, node, offset + 4)
 
 		for key, val in ADDITIONAL_FILES.items():
-			self.outputSumm += str(' ' * (offset + 2) + generate_link(key, val))
+			output_summary += str(' ' * (offset + 2) + generate_link(key, val))
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Files', 'files.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('Files', 'files.md', end='\n'))
 		for node in self.doxygen.files.children:
-			self._generate_recursive_files(node, offset + 4)
+			self._generate_recursive_files(output_summary, node, offset + 4, defaultTemplateConfig)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
-		for node in self.doxygen.examples.children:
-			self._generate_recursive_examples(node, offset + 4)
+		# output_summary += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
+		# for node in self.doxygen.examples.children:
+		# 	self._generate_recursive_examples(node, offset + 4)
 
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Variables', 'variables.md'))
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Functions', 'functions.md'))
-		self.outputSumm += str(' ' * (offset + 2) + generate_link('File Macros', 'macros.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('File Variables', 'variables.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('File Functions', 'functions.md'))
+		output_summary += str(' ' * (offset + 2) + generate_link('File Macros', 'macros.md'))
 
-		self.save("links.md", self.outputSumm)
+		self.save("links.md", output_summary)

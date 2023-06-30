@@ -5,7 +5,7 @@ source: False
 start: 1
 end: 0
 ---
-
+{% filter indent(config.get('indent_level', 0), True) %}
 
 {% if config.get('header') -%}
 # {{node.kind.value|title}} {{node.name_long}}
@@ -17,7 +17,10 @@ end: 0
 {%- endif %}
 
 {% if config.get('source') -%}
-# [Go to the documentation of this file.]({{node.url}})
+# [Go to the documentation of this file :material-file-document:]({{node.url}})
 # {%- endif %}
 
 {{code}}
+
+{#{{ node.print_node_recursive }}#}
+{% endfilter %}

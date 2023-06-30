@@ -11,7 +11,7 @@ def requirements():
 # https://pypi.org/project/mkdoxy/
 setup(
     name='mkdoxy',
-    version='1.0.6',
+    version='1.1.0',
     description='MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets',
     long_description=readme(),
     long_description_content_type='text/markdown',
@@ -20,11 +20,10 @@ setup(
     author='Jakub Andrýsek',
     author_email='email@kubaandrysek.cz',
     license='MIT',
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     install_requires=requirements(),
     classifiers=[
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',

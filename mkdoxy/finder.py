@@ -1,20 +1,10 @@
-import os
-import re
-import string
-import traceback
-from typing import TextIO
-from jinja2 import Template
-from jinja2.exceptions import TemplateSyntaxError, TemplateError
-from jinja2 import StrictUndefined, Undefined
-from mkdoxy.node import Node, DummyNode
-from mkdoxy.doxygen import Doxygen
 from mkdoxy.constants import Kind
+from mkdoxy.doxygen import Doxygen
 from mkdoxy.utils import recursive_find, recursive_find_with_parent
-from pprint import pprint
-
+from typing import Dict
 
 class Finder:
-	def __init__(self, doxygen: Doxygen, debug: bool = False):
+	def __init__(self, doxygen: Dict[str, Doxygen], debug: bool = False):
 		self.doxygen = doxygen
 		self.debug = debug
 

@@ -1,3 +1,4 @@
+{% filter indent(config.get('indent_level', 0), True) %}
 # Namespace List
 
 Here is a list of all namespaces with brief descriptions:
@@ -6,7 +7,9 @@ Here is a list of all namespaces with brief descriptions:
 {%- if node.is_namespace %}
 * **{{node.kind.value}}** [**{{node.name_short}}**]({{node.url}}) {{node.brief}}
   {%- if node.has_children %}
-    {{- loop(node.children)|indent(2, true) }}
+    {{- loop(node.children)|indent(4, true) }}
   {%- endif %}
 {%- endif -%}
 {%- endfor %}
+
+{% endfilter %}

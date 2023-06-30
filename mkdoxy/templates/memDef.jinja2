@@ -2,8 +2,11 @@
 brief: True
 details: True
 implements: True
+url_source: True
 ---
+
 {# This template is used inside of member.py #}
+{% filter indent(config.get('indent_level', 0), True) %}
 
 ### {{node.kind.value}} {{node.name_long if node.is_group else node.name_short}} {{node.overload_suffix}}
 
@@ -29,3 +32,5 @@ implements: True
 Implements [*{{node.reimplements.name_long}}*]({{node.reimplements.url}})
 {% endif %}
 {%- endif -%}
+
+{% endfilter %}

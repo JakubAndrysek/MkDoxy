@@ -2,6 +2,7 @@
 header: False
 breadcrumbs: False
 ---
+{% filter indent(config.get('indent_level', 0), True) %}
 
 # {{node.kind.value|title}} {{node.name_long}}
 
@@ -10,8 +11,10 @@ breadcrumbs: False
 {{'**>**'|indent(1, true)}} [**{{child.name_long if node.is_group else child.name_short}}**]({{child.url}})
 {%- endfor %}
 
-[Go to the documentation of this file.]({{node.url}}) 
+[Go to the documentation of this file]({{node.url}})
 
 ```{{ node.code_language }}
 {{node.programlisting}}
 ```
+
+{% endfilter %}

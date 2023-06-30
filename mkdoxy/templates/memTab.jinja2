@@ -1,3 +1,4 @@
+{% filter indent(config.get('indent_level', 0), True) %}
 {# This template is used inside of member.py #}
 
 {%- if node.has(visibility, kinds, static) -%}
@@ -30,3 +31,5 @@ See [{{node.name_long}}]({{node.url}})
 {% endfor -%}
 
 {%- endif -%}
+
+{% endfilter %}

@@ -1,4 +1,6 @@
-mkdocs
-Jinja2
-ruamel.yaml
-mkdocs-open-in-new-tab
+mkdocs~=1.4.3
+Jinja2~=3.1.2
+ruamel.yaml==0.17.32
+mkdocs-open-in-new-tab~=1.0.2
+pathlib~=1.0.1
+path~=16.6.0
