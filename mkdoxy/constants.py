@@ -64,6 +64,9 @@ class Kind(Enum):
 	EXAMPLE = 'example'
 	GROUP = 'group'
 	INTERFACE = 'interface'
+	SIGNAL = 'signal'
+	SLOT = 'slot'
+	PROPERTY = 'property'
 
 	def is_function(self) -> bool:
 		return self == Kind.FUNCTION
