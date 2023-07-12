@@ -110,10 +110,10 @@ class MkDoxy(BasePlugin):
 			else:
 				tempDirApi = tempDir(config['site_dir'], "assets/.doxy/", project_name)
 
-			# Check scr changes -> run Doxygen
+			# Check src changes -> run Doxygen
 			doxygenRun = DoxygenRun(self.config['doxygen-bin-path'], project_data.get('src-dirs'), tempDirApi, project_data.get('doxy-cfg', {}))
 			if doxygenRun.checkAndRun():
-				log.info("  -> generating Doxygen filese")
+				log.info("  -> generating Doxygen files")
 			else:
 				log.info("  -> skip generating Doxygen files (nothing changes)")
 
