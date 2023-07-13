@@ -73,6 +73,9 @@ class Node:
 		self._definition = Property.Definition(self._xml, parser, self._kind)
 		self._programlisting = Property.Programlisting(self._xml, parser, self._kind)
 
+	def __repr__(self):
+		return f"Node: {self.name} refid: {self._refid}"
+
 	def setLinkPrefix(self, linkPrefix: str):
 		self.linkPrefix = linkPrefix
 
