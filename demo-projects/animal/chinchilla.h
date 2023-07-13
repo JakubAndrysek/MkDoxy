@@ -4,6 +4,7 @@
 class CuteChinchilla : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int weight READ weight WRITE setWeight NOTIFY weightChanged);
 
 public:
     enum class Species {
