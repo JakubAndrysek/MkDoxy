@@ -34,12 +34,17 @@
 - **[Custom Doxygen configuration](./usage/index.md#custom-doxygen-configuration)**: Specify custom Doxygen configuration for each project.
 
 ## Installation
-With [pip](https://pypi.org/project/mkdoxy/):
+Install the plugin using pip from [PyPI](https://pypi.org/project/mkdoxy/):
+
 ```bash
 pip install mkdoxy
 ```
+Development version with all dependencies:
+```bash
+python -m pip install mkdoxy ".[dev]"
+```
 
-Install from source - development version:
+Install from source:
 ```bash
 pip install git+https://github.com/JakubAndrysek/MkDoxy.git
 ```
@@ -48,7 +53,7 @@ pip install git+https://github.com/JakubAndrysek/MkDoxy.git
 
 `mkdocs.yml`:
 ```yaml
-site_name: "My documentation"
+site_name: "My MkDoxy documentation"
 
 theme:
   name: material

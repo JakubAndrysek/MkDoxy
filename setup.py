@@ -21,7 +21,25 @@ setup(
     author_email='email@kubaandrysek.cz',
     license='MIT',
     python_requires='>=3.9',
-    install_requires=requirements(),
+
+    project_urls={
+        'Source': 'https://github.com/JakubAndrysek/MkDoxy',
+        'Documentation': 'https://mkdoxy.kubaandrysek.cz/',
+        'Tracker': 'https://github.com/JakubAndrysek/MkDoxy/issues',
+        'Funding': 'https://github.com/sponsors/jakubandrysek',
+    },
+
+    install_requires=['mkdocs'],
+    extras_require={
+        "dev": [
+            "mkdocs-material==9.1.18",
+            "Jinja2~=3.1.2",
+            "ruamel.yaml~=0.17.32",
+            "mkdocs-open-in-new-tab~=1.0.2",
+            "pathlib~=1.0.1",
+            "path~=16.7.1",
+            ],
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.9',
