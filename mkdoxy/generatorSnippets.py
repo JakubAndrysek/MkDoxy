@@ -72,12 +72,11 @@ class GeneratorSnippets:
 			if self.is_doxy_inactive(snippet_config):
 				continue
 
-			if not self.is_project_exist(project_name):
-				replacement = self.incorrect_project(project_name, snippet_config, snippet)
-			else:
-				replacement = self.incorrect_argument(project_name, "", snippet_config, snippet)
-
-
+			replacement = (
+				self.incorrect_argument(project_name, "", snippet_config, snippet)
+				if self.is_project_exist(project_name)
+				else self.incorrect_project(project_name, snippet_config, snippet)
+			)
 			self.replace_markdown(match.start(), match.end(), replacement)
 
 

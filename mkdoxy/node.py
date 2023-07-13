@@ -211,7 +211,7 @@ class Node:
 							child = self._cache.get(refid)
 							self.add_child(child)
 							continue
-						except:
+						except Exception:
 							pass
 					child = Node(None, memberdef, self._cache, self._parser, self)
 					self.add_child(child)

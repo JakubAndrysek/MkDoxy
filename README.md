@@ -65,6 +65,9 @@ plugins:
             RECURSIVE: True # recursive search in source directories
 ```
 
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
 ## Do You Enjoy MkDoxy or Does It Save You Time?
 Then definitely consider:
 
