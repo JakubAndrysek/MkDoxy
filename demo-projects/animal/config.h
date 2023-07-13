@@ -14,5 +14,13 @@
 #define PI 3.14159265358979323846
 #define PRINT_PRETTY(MSG, ...) printf(MSG, __VA_ARGS__)
 
+struct BirdOrRodent
+{
+    union {
+        int legs;
+        double wingspan;
+    };
+};
+
 /*! @} */
 #endif
