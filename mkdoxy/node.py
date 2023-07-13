@@ -247,7 +247,16 @@ class Node:
 		self._const = const == 'yes'
 
 		name = self._xml.find('name')
-		self._name = name.text if name is not None else ''
+		if name is not None and name.text:
+			self._name = name.text
+		else:
+			# Doxygen doesn't give anonymous unions any name
+			qualifiedname = self._xml.find('qualifiedname')
+			if qualifiedname is not None and qualifiedname.text:
+				self._name = qualifiedname.text
+			else:
+				self._name = self._refid
+
 		virt = self._xml.get('virt')
 		if virt:
 			self._virtual = virt in ['virtual', 'pure-virtual']
