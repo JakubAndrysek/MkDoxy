@@ -4,7 +4,7 @@
 {% for letter, children in dictionary.items() %}
 ## {{letter}}
 
-{% for node in children -%}
+{% for node in children|sort(attribute='name_short') -%}
 * [**{{node.name_short}}**]({{node.url}})
 {% if node.parent.is_language -%}
  ([**{{node.parent.name_long}}**]({{node.parent.url}}))
