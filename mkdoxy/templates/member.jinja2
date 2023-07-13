@@ -54,7 +54,7 @@ Inherited by the following classes:
 {{ templateMemTab.render({'config': {}, 'node': node, 'parent': None, 'title': 'Classes', 'visibility': 'public', 'kinds': ['class', 'struct', 'interface'], 'static': False}) }}
 
 {%- for visibility in ['public', 'protected'] -%}
-{%- for query in [['types', ['enum', 'union', 'typedef']], ['attributes', ['variable']], ['functions', ['function']]] -%}
+{%- for query in [['types', ['enum', 'union', 'typedef']], ['attributes', ['variable']], ['slots', ['slot']], ['signals', ['signal']], ['functions', ['function']]] -%}
 {%- for static in [['', False], ['static ', True]] %}
 {{ templateMemTab.render({'config': {}, 'node': node, 'parent': None, 'title': visibility|title + ' ' + static[0]|title + query[0]|title, 'visibility': visibility, 'kinds': query[1], 'static': static[1]}) }}
 {%- for child in node.base_classes recursive -%}{%- if child is not string %}
@@ -74,7 +74,7 @@ Inherited by the following classes:
 {%- endif %}
 
 {%- for visibility in ['public', 'protected'] -%}
-{%- for query in [['types', ['enum', 'union', 'typedef']], ['attributes', ['variable']], ['functions', ['function']]] -%}
+{%- for query in [['types', ['enum', 'union', 'typedef']], ['attributes', ['variable']], ['slots', ['slot']], ['signals', ['signal']], ['functions', ['function']]] -%}
 {%- for static in [['', False], ['static ', True]] %}
 {%- if node.has(visibility, query[1], static[1]) %}
 ## {{visibility|title}} {{static[0]|title}}{{query[0]|title}} Documentation
