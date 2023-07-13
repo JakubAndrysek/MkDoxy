@@ -135,7 +135,10 @@ class Kind(Enum):
 			Kind.ENUMVALUE,
 			Kind.UNION,
 			Kind.INTERFACE,
-			Kind.FRIEND
+			Kind.FRIEND,
+			Kind.SIGNAL,
+			Kind.SLOT,
+			Kind.PROPERTY,
 		]
 
 		return self in LANGUAGE
