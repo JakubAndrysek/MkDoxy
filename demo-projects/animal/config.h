@@ -22,5 +22,12 @@ struct BirdOrRodent
     };
 };
 
+/// @brief An anonymous namespace
+namespace {
+    /// This is a mouse hiding in an anonymous namespace.
+    struct Mouse
+    {};
+}
+
 /*! @} */
 #endif
