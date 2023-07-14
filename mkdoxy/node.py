@@ -38,7 +38,13 @@ class Node:
 			self._kind = Kind.from_str(self._xml.get('kind'))
 			self._refid = self._xml.get('id')
 			self._language = self._xml.get('language')
-			self._name = self._xml.find('compoundname').text if self._xml.find('compoundname').text is not None else self._refid
+			if self._xml.find('compoundname').text is not None:
+				self._name = self._xml.find('compoundname').text
+			elif self.is_namespace:
+				location = self._xml.find("location")
+				self._name = f"anonymous namespace{{{location.get('file')}}}" if location is not None else self._refid
+			else:
+				self._name = self._refid
 			self._cache.add(self._refid, self)
 			self._static = False
 
