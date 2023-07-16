@@ -3,6 +3,7 @@ import logging
 import tempfile
 from pathlib import Path, PurePath
 from subprocess import Popen, PIPE
+from typing import Optional
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
@@ -11,7 +12,7 @@ class DoxygenRun:
 	"""! Class for running Doxygen.
 	@details This class is used to run Doxygen and parse the XML output.
 	"""
-	def __init__(self, doxygenBinPath: str, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew):
+	def __init__(self, doxygenBinPath: str, doxygenSource: str, tempDoxyFolder: str, doxyCfgNew, runPath: Optional[str] = None):
 		"""! Constructor.
 		Default Doxygen config options:
 
@@ -37,6 +38,7 @@ class DoxygenRun:
 		self.doxyCfgNew: dict = doxyCfgNew
 		self.hashFileName: str = "hashChanges.yaml"
 		self.hashFilePath: PurePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
+		self.runPath: Optional[str] = runPath
 
 		self.doxyCfg: dict = {
 			"INPUT": self.doxygenSource,
@@ -117,7 +119,7 @@ class DoxygenRun:
 		"""! Run Doxygen with the current configuration using the Popen class.
 		@details
 		"""
-		doxyBuilder = Popen([self.doxygenBinPath, '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+		doxyBuilder = Popen([self.doxygenBinPath, '-'], stdout=PIPE, stdin=PIPE, stderr=PIPE, cwd=self.runPath)
 		stdout_data = doxyBuilder.communicate(self.doxyCfgStr.encode('utf-8'))[0].decode().strip()
 		# log.info(self.destinationDir)
 		# log.info(stdout_data)

@@ -5,6 +5,7 @@ MkDoxy is a MkDocs plugin for generating documentation from Doxygen XML files.
 """
 
 import logging
+import os
 from pathlib import Path, PurePath
 
 from mkdocs import exceptions
@@ -111,7 +112,8 @@ class MkDoxy(BasePlugin):
 				tempDirApi = tempDir(config['site_dir'], "assets/.doxy/", project_name)
 
 			# Check src changes -> run Doxygen
-			doxygenRun = DoxygenRun(self.config['doxygen-bin-path'], project_data.get('src-dirs'), tempDirApi, project_data.get('doxy-cfg', {}))
+			runPath = os.path.dirname(config.config_file_path) if config.config_file_path else None
+			doxygenRun = DoxygenRun(self.config['doxygen-bin-path'], project_data.get('src-dirs'), tempDirApi, project_data.get('doxy-cfg', {}), runPath)
 			if doxygenRun.checkAndRun():
 				log.info("  -> generating Doxygen files")
 			else:
