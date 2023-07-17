@@ -29,7 +29,7 @@ setup(
         'Funding': 'https://github.com/sponsors/jakubandrysek',
     },
 
-    install_requires=['mkdocs'],
+    install_requires=['mkdocs', 'ruamel.yaml'],
     extras_require={
         "dev": [
             "mkdocs-material==9.1.18",
