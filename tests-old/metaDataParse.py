@@ -57,6 +57,6 @@ regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])
 
 
 match = re.match(regex, text2, re.MULTILINE)
-meta = match.group("meta")
+meta = match["meta"]
 config = yaml.safe_load(meta)
 yaml.dump(config, sys.stdout)
