@@ -34,7 +34,6 @@ setup(
         "dev": [
             "mkdocs-material==9.1.18",
             "Jinja2~=3.1.2",
-            "ruamel.yaml~=0.17.32",
             "mkdocs-open-in-new-tab~=1.0.2",
             "pathlib~=1.0.1",
             "path~=16.7.1",
