@@ -1,8 +1,25 @@
 from xml.etree.ElementTree import Element as Element
 
 from mkdoxy.cache import Cache
-from mkdoxy.markdown import Md, MdRenderer, MdParagraph, MdTable, Code, MdTableRow, MdCodeBlock, MdTableCell, \
-    MdHeader, MdImage, MdList, MdBlockQuote, MdLink, MdBold, MdItalic, Text, Br
+from mkdoxy.markdown import (
+    Br,
+    Code,
+    Md,
+    MdBlockQuote,
+    MdBold,
+    MdCodeBlock,
+    MdHeader,
+    MdImage,
+    MdItalic,
+    MdLink,
+    MdList,
+    MdParagraph,
+    MdRenderer,
+    MdTable,
+    MdTableCell,
+    MdTableRow,
+    Text,
+)
 from mkdoxy.utils import lookahead
 
 SIMPLE_SECTIONS = {

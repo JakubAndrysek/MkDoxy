@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as Element
 
 from mkdoxy.cache import Cache
-from mkdoxy.constants import Kind, Visibility, OVERLOAD_OPERATORS
+from mkdoxy.constants import OVERLOAD_OPERATORS, Kind, Visibility
 from mkdoxy.markdown import escape
 from mkdoxy.property import Property
 from mkdoxy.utils import split_safe

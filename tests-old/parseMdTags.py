@@ -1,7 +1,7 @@
 import re
 import sys
 from pathlib import Path
-from ruamel.yaml import YAML
+import yaml
 
 
 def readFile(filename: str) -> str:
@@ -28,8 +28,7 @@ if __name__ == '__main__':
 		yamlRaw = match.group('yaml')
 		if yamlRaw:
 			try:
-				yaml = YAML()
-				config = yaml.load(yamlRaw)
+				config = yaml.safe_load(yamlRaw)
 				yaml.dump(config, sys.stdout)
 			except yaml.YAMLError as e:
 				print(e)
