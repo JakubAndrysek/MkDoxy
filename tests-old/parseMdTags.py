@@ -29,7 +29,7 @@ if __name__ == '__main__':
 		if yamlRaw:
 			try:
 				config = yaml.safe_load(yamlRaw)
-				yaml.dump(config, sys.stdout)
+				yaml.safe_dump(config, sys.stdout)
 			except yaml.YAMLError as e:
 				print(e)
 		print()
