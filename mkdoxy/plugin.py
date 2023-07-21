@@ -9,7 +9,7 @@ import os
 from pathlib import Path, PurePath
 
 from mkdocs import exceptions
-from mkdocs.config import base, config_options, Config
+from mkdocs.config import Config, base, config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure import files, pages
 
@@ -19,7 +19,6 @@ from mkdoxy.doxyrun import DoxygenRun
 from mkdoxy.generatorAuto import GeneratorAuto
 from mkdoxy.generatorBase import GeneratorBase
 from mkdoxy.generatorSnippets import GeneratorSnippets
-from mkdoxy.utils import check_enabled_markdown_extensions
 from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")

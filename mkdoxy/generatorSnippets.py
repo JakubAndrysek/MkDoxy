@@ -1,17 +1,13 @@
 import logging
 import pathlib
 import re
-import string
-from pprint import *
 
-from mkdocs.config import Config
+import yaml
 from mkdocs.structure import pages
+
 from mkdoxy.doxygen import Doxygen
-
-from mkdoxy.generatorBase import GeneratorBase
-from ruamel.yaml import YAML, YAMLError
-
 from mkdoxy.finder import Finder
+from mkdoxy.generatorBase import GeneratorBase
 from mkdoxy.node import Node
 
 log: logging.Logger = logging.getLogger("mkdocs")
@@ -112,9 +108,8 @@ class GeneratorSnippets:
 
 	def try_load_yaml(self, yaml_raw: str, project: str, snippet: str, config: dict) -> dict:
 		try:
-			yaml = YAML()
-			return yaml.load(yaml_raw)
-		except YAMLError as e:
+			return yaml.safe_load(yaml_raw)
+		except yaml.YAMLError as e:
 			log.error(f"YAML error in {project} project on page {self.page.url}")
 			self.doxyError(
 				project,

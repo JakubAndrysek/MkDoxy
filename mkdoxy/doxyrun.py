@@ -1,8 +1,8 @@
 import hashlib
 import logging
-import tempfile
+
 from pathlib import Path, PurePath
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 from typing import Optional
 
 log: logging.Logger = logging.getLogger("mkdocs")

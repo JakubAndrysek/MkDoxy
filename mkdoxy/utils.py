@@ -1,8 +1,8 @@
 import logging
 import re
 
+import yaml
 from mkdocs.config import Config
-from ruamel.yaml import YAML
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
@@ -73,10 +73,8 @@ def parseTemplateFile(templateFile: str):
 	if match:
 		template = match["template"]
 		meta = match["meta"]
-		yaml = YAML(typ='safe')
-		metaData = yaml.load(meta)
-		# yaml.dump(metaData, sys.stdout)
-		return template, metaData
+		metadata = yaml.safe_load(meta)
+		return template, metadata
 	return templateFile, {}
 
 

@@ -3,14 +3,19 @@ import os
 import string
 from typing import Dict
 
-from jinja2 import Template, FileSystemLoader, Environment, ChoiceLoader
+from jinja2 import Template
 from jinja2.exceptions import TemplateError
 from mkdocs import exceptions
 
 import mkdoxy
 from mkdoxy.constants import Kind
-from mkdoxy.node import Node, DummyNode
-from mkdoxy.utils import parseTemplateFile, merge_two_dicts, recursive_find_with_parent, recursive_find
+from mkdoxy.node import DummyNode, Node
+from mkdoxy.utils import (
+    merge_two_dicts,
+    parseTemplateFile,
+    recursive_find,
+    recursive_find_with_parent,
+)
 
 log: logging.Logger = logging.getLogger("mkdocs")
 

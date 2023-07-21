@@ -11,7 +11,7 @@ def requirements():
 # https://pypi.org/project/mkdoxy/
 setup(
     name='mkdoxy',
-    version='1.1.5',
+    version='1.1.6',
     description='MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets',
     long_description=readme(),
     long_description_content_type='text/markdown',
@@ -29,15 +29,15 @@ setup(
         'Funding': 'https://github.com/sponsors/jakubandrysek',
     },
 
-    install_requires=['mkdocs', 'ruamel.yaml'],
+    install_requires=['mkdocs'],
     extras_require={
         "dev": [
             "mkdocs-material==9.1.18",
             "Jinja2~=3.1.2",
-            "ruamel.yaml~=0.17.32",
             "mkdocs-open-in-new-tab~=1.0.2",
             "pathlib~=1.0.1",
             "path~=16.7.1",
+            "isort~=5.12.0"
             ],
     },
     classifiers=[

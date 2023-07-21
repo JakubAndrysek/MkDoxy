@@ -4,7 +4,8 @@ from markdown import preprocessors, util
 from markdown.extensions import meta
 import re
 from pprint import *
-from ruamel.yaml import YAML
+import yaml
+
 
 text = """\
 ---
@@ -56,7 +57,6 @@ regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])
 
 
 match = re.match(regex, text2, re.MULTILINE)
-meta = match.group("meta")
-yaml = YAML(typ='safe')
-config = yaml.load(meta)
-yaml.dump(config, sys.stdout)
+meta = match["meta"]
+config = yaml.safe_load(meta)
+yaml.safe_dump(config, sys.stdout)
