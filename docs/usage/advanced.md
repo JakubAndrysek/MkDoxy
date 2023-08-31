@@ -36,4 +36,16 @@ plugins:
 ```
 
 
-Hi, I have released new version, please try it and let me know if it has been fixed. Thanks
+## Add MkDoxy tag into the `<details>` tag
+If you want to add MkDoxy tag into the `<details>` tag, you can use the `details` option.
+In some cases, it might be tricky to configure indentation, so you can use the `indent_level` option to indent generated markdown block. 
+
+
+<details>
+<summary>my_class</summary>
+
+::: doxy.animal.function
+  name: int main(int argc, char const *argv[])
+  indent_level: 4
+
+</details>
