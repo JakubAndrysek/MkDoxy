@@ -1,7 +1,7 @@
-from pprint import *
+from pprint import pprint
 
 arr = {}
 
-arr['\\'] = 5
+arr["\\"] = 5
 
 pprint(arr)

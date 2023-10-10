@@ -13,4 +13,3 @@ There are no parameters for this tag.
 === "Tag result"
 ::: doxy.animal.file.list
 indent_level: 4
-

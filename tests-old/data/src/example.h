@@ -3,7 +3,3 @@
  * @example my_example.cpp
  * etc...
  */
-
-
-
-

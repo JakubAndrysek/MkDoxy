@@ -1,9 +1,5 @@
 import sys
-import markdown
-from markdown import preprocessors, util
-from markdown.extensions import meta
 import re
-from pprint import *
 import yaml
 
 
@@ -51,12 +47,10 @@ something: this is not interesting, only 'title' and 'tags' is
 some content
 """
 
-import re
-
 regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
 
 
 match = re.match(regex, text2, re.MULTILINE)
-meta = match["meta"]
-config = yaml.safe_load(meta)
+match_meta = match["meta"]
+config = yaml.safe_load(match_meta)
 yaml.safe_dump(config, sys.stdout)

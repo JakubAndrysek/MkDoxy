@@ -56,4 +56,3 @@ indent_level: 4
 ::: doxy.animal.class.method
 name: mkdoxy::cache::Cache
 indent_level: 4
-
