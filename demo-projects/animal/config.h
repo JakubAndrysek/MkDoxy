@@ -1,7 +1,7 @@
 #ifndef EXAMPLE_CONFIG_H
 #define EXAMPLE_CONFIG_H
 /*!
- * @file 
+ * @file
  * @brief This is a config file
  * @details This is a detailed description
  * @ingroup animals

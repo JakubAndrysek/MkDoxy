@@ -55,7 +55,7 @@ The name of the project is used to identify the project in the snippet tags.
 ## Custom Jinja templates
 
 Custom templates can be used to change the appearance of the generated documentation.
-Each custom template file will replace the default template file. 
+Each custom template file will replace the default template file.
 So you do not have to create a custom template for the whole documentation, but only for the parts you want to change.
 
 ??? abstract "Configure multiple projects"
@@ -168,7 +168,6 @@ Doxygen configuration options: [www.doxygen.nl/manual/config.html](https://www.d
               - 'Files': 'apiProject1/files.md'
           - Project 2:
     ...
-    
+
     use_directory_urls: true # (optional) for better links without .html extension
     ```
-

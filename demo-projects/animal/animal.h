@@ -44,9 +44,9 @@ namespace example {
      * @brief Base class for all animals from which Bird derives
      * @details Lorem Ipsum Donor. Some [Random link with **bold** and _italics_](http://github.com)
      * And the following is a \c typewritter font.
-     * 
+     *
      * Example code:
-     * 
+     *
      * @code
      * Animal animal = Animal("Hello World", nullptr, nullptr);
      * std::cout << animal.get_name() << std::endl;
@@ -152,10 +152,10 @@ namespace example {
          * @brief Lorem Ipsum
          * @see Animal
          * @param animal The pointer to the animal instance
-         * @details Lorem ipsum dolor sit amet, consectetur 
-         * adipiscing elit, sed do eiusmod tempor incididunt 
+         * @details Lorem ipsum dolor sit amet, consectetur
+         * adipiscing elit, sed do eiusmod tempor incididunt
          * ut labore et dolore magna aliqua.
-         * 
+         *
          * ### Implementation:
          */
         inline void some_inline_member_function(Animal* animal) {
@@ -165,12 +165,12 @@ namespace example {
             do_more_things();
 
             /*!
-             * Checks that the things it 
+             * Checks that the things it
              * does are the best
              */
             check_best();
         }
-        
+
         /*!
          * @brief Deleted copy operator
          */
