@@ -165,5 +165,6 @@ class Kind(Enum):
 
 class Visibility(Enum):
     PUBLIC = "public"
+    PACKAGE = "package"
     PROTECTED = "protected"
     PRIVATE = "private"
