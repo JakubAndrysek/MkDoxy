@@ -22,6 +22,7 @@ from mkdoxy.markdown import (
 )
 from mkdoxy.utils import lookahead
 
+# https://www.doxygen.nl/manual/commands.html
 SIMPLE_SECTIONS = {
     "see": "See also:",
     "note": "Note:",
@@ -45,6 +46,7 @@ SIMPLE_SECTIONS = {
     "exception": "Exception:",
     "date": "Date:",
     "version": "Version:",
+    "par": "\r\n",
 }
 
 
