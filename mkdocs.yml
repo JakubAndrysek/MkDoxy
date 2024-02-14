@@ -91,6 +91,8 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - def_list
+  - toc:
+      permalink: True
   - pymdownx.superfences
   - admonition
   - pymdownx.details
