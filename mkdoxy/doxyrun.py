@@ -1,5 +1,7 @@
 import hashlib
 import logging
+import os
+import shutil
 
 from pathlib import Path, PurePath
 from subprocess import PIPE, Popen
@@ -40,6 +42,14 @@ class DoxygenRun:
         @param tempDoxyFolder: (str) Temporary folder for Doxygen.
         @param doxyCfgNew: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
         """  # noqa: E501
+
+        if not self.is_doxygen_valid_path(doxygenBinPath):
+            raise DoxygenBinPathNotValid(
+                f"Invalid Doxygen binary path: {doxygenBinPath}\n"
+                f"Make sure Doxygen is installed and the path is correct.\n"
+                f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-binary."
+            )
+
         self.doxygenBinPath: str = doxygenBinPath
         self.doxygenSource: str = doxygenSource
         self.tempDoxyFolder: str = tempDoxyFolder
@@ -61,6 +71,20 @@ class DoxygenRun:
 
         self.doxyCfg.update(self.doxyCfgNew)
         self.doxyCfgStr: str = self.dox_dict2str(self.doxyCfg)
+
+    def is_doxygen_valid_path(self, doxygen_bin_path: str) -> bool:
+        """! Check if the Doxygen binary path is valid.
+        @details Accepts a full path or just 'doxygen' if it exists in the system's PATH.
+        @param doxygen_bin_path: (str) The path to the Doxygen binary or just 'doxygen'.
+        @return: (bool) True if the Doxygen binary path is valid, False otherwise.
+        """
+        # If the path is just 'doxygen', search for it in the system's PATH
+        if doxygen_bin_path.lower() == "doxygen":
+            return shutil.which("doxygen") is not None
+
+        # Use pathlib to check if the provided full path is a file and executable
+        path = Path(doxygen_bin_path)
+        return path.is_file() and os.access(path, os.X_OK)
 
     # Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
     def dox_dict2str(self, dox_dict: dict) -> str:
@@ -155,3 +179,8 @@ class DoxygenRun:
         @return: (PurePath) Path to the XML output folder.
         """
         return Path.joinpath(Path(self.tempDoxyFolder), Path("xml"))
+
+
+# not valid path exception
+class DoxygenBinPathNotValid(Exception):
+    pass
