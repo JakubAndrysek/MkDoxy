@@ -70,7 +70,7 @@ Inherited by the following classes:
 {%- if node.has_details %}
 # Detailed Description
 
-{{node.details}}
+{{node.details | use_code_language(node.code_language)}}
 {%- endif %}
 
 {%- for visibility in ['public', 'protected'] -%}

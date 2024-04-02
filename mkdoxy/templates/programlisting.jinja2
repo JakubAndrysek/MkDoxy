@@ -13,8 +13,6 @@ breadcrumbs: False
 
 [Go to the documentation of this file]({{node.url}})
 
-```{{ node.code_language }}
-{{node.programlisting}}
-```
+{{node.programlisting | use_code_language(node.code_language)}}
 
 {% endfilter %}

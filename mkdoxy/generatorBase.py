@@ -3,12 +3,13 @@ import os
 import string
 from typing import Dict
 
-from jinja2 import Template
+from jinja2 import BaseLoader, Environment, Template
 from jinja2.exceptions import TemplateError
 from mkdocs import exceptions
 
 import mkdoxy
 from mkdoxy.constants import Kind
+from mkdoxy.filters import use_code_language
 from mkdoxy.node import DummyNode, Node
 from mkdoxy.utils import (
     merge_two_dicts,
@@ -38,6 +39,8 @@ class GeneratorBase:
         self.templates: Dict[str, Template] = {}
         self.metaData: Dict[str, list[str]] = {}
 
+        environment = Environment(loader=BaseLoader())
+        environment.filters["use_code_language"] = use_code_language
         # code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
         path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates")
         for fileName in os.listdir(path):
@@ -46,7 +49,7 @@ class GeneratorBase:
                 with open(filePath, "r") as file:
                     name = os.path.splitext(fileName)[0]
                     fileTemplate, metaData = parseTemplateFile(file.read())
-                    self.templates[name] = Template(fileTemplate)
+                    self.templates[name] = environment.from_string(fileTemplate)
                     self.metaData[name] = metaData
             else:
                 log.error(f"Trying to load unsupported file '{filePath}'. Supported file ends with '.jinja2'.")
