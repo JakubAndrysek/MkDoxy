@@ -191,7 +191,7 @@ class Property:
                         declaration = self.parser.paras_as_str(type, plain=plain)
                         declname = param.find("declname")
                         if declname is not None:
-                            declaration += ' ' + self.parser.paras_as_str(declname, plain=plain)
+                            declaration += " " + self.parser.paras_as_str(declname, plain=plain)
                         ret.append(declaration)
             return ret
 
