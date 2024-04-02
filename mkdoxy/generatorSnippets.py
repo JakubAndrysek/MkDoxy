@@ -374,7 +374,6 @@ class GeneratorSnippets:
         self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].fileindex(nodes, config)
 
-
     def doxyNodeIsNone(self, project: str, config: dict, snippet: str) -> str:
         return self.doxyError(
             project,
@@ -384,6 +383,7 @@ class GeneratorSnippets:
             "yaml",
             snippet,
         )
+
 
 ### Create documentation generator callbacks END
 
