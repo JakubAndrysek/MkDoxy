@@ -100,9 +100,11 @@ class MdCodeBlock:
         self.lines.append(line)
 
     def render(self, f: MdRenderer, indent: str):
+        f.write('```\n')
         for line in self.lines:
             f.write(line)
             f.write("\n")
+        f.write('```\n')
 
 
 class MdBlockQuote(Md):
