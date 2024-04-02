@@ -25,6 +25,7 @@ mkdocs serve
 ## Configure custom Doxygen binary
 
 By default, the plugin will use the `doxygen` binary from the system path. You can configure a custom binary using the `doxygen-bin-path` option.
+If `doxygen-bin-path` is not found, the plugin will raise DoxygenBinPathNotValid exception.
 
 - addad by [thb-sb](https://github.com/thb-sb)
 
@@ -34,6 +35,3 @@ plugins:
       doxygen-bin-path: /path/to/doxygen
       ...
 ```
-
-
-Hi, I have released new version, please try it and let me know if it has been fixed. Thanks
