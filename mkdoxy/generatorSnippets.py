@@ -225,6 +225,9 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         node = self.finder.doxyCode(project, config.get("file"))
+        if node is None:
+            return self.doxyNodeIsNone(project, config, snippet)
+
         if isinstance(node, Node):
             progCode = self.codeStrip(
                 node.programlisting,
@@ -268,6 +271,9 @@ class GeneratorSnippets:
             return errorMsg
 
         node = self.finder.doxyFunction(project, config.get("name"))
+        if node is None:
+            return self.doxyNodeIsNone(project, config, snippet)
+
         if isinstance(node, Node):
             self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].function(node, config)
@@ -288,6 +294,9 @@ class GeneratorSnippets:
             return errorMsg
 
         node = self.finder.doxyClass(project, config.get("name"))
+        if node is None:
+            return self.doxyNodeIsNone(project, config, snippet)
+
         if isinstance(node, Node):
             self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].member(node, config)
@@ -308,6 +317,9 @@ class GeneratorSnippets:
             return errorMsg
 
         node = self.finder.doxyClassMethod(project, config.get("name"), config.get("method"))
+        if node is None:
+            return self.doxyNodeIsNone(project, config, snippet)
+
         if isinstance(node, Node):
             self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].function(node, config)
@@ -362,6 +374,16 @@ class GeneratorSnippets:
         self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].fileindex(nodes, config)
 
+
+    def doxyNodeIsNone(self, project: str, config: dict, snippet: str) -> str:
+        return self.doxyError(
+            project,
+            config,
+            "Node is None",
+            "Node is None",
+            "yaml",
+            snippet,
+        )
 
 ### Create documentation generator callbacks END
 
