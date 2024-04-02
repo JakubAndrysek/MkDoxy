@@ -24,4 +24,4 @@ jobs:
           python -m pip install -e ".[dev]"
           sudo apt-get install doxygen
       - name: Build docs
-        run: mkdocs build --clean --verbose
+        run: mkdocs gh-deploy --force
