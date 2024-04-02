@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Upgrade version">
-      <change afterPath="$PROJECT_DIR$/demo-projects/animal/Doxyfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/data/Doxyfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_doxyrun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/usage/advanced.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/usage/advanced.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mkdocs.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/doxyrun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/generatorBase.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +60,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "doxygen-config-file",
     "last_opened_file_path": "/Users/kuba/Documents/git/kuba/mkdoxy/mkdoxy-base/mkdoxy-main/tests/data",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -324,7 +315,7 @@
       <workItem from="1689697868617" duration="13000" />
       <workItem from="1689777262215" duration="704000" />
       <workItem from="1689947020589" duration="1060000" />
-      <workItem from="1712098386110" duration="1058000" />
+      <workItem from="1712098386110" duration="1331000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>

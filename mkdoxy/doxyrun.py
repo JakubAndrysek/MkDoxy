@@ -252,8 +252,10 @@ class DoxygenRun:
 class DoxygenBinPathNotValid(Exception):
     pass
 
+
 class DoxygenCustomConfigNotFound(Exception):
     pass
+
 
 class DoxygenCustomConfigNotValid(Exception):
     pass

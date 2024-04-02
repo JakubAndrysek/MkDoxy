@@ -1,4 +1,6 @@
 from mkdoxy.doxyrun import DoxygenRun
+
+
 def test_dox_dict2str():
     dox_dict = {
         "DOXYFILE_ENCODING": "UTF-8",
@@ -22,6 +24,7 @@ def test_dox_dict2str():
     expected_result = "DOXYFILE_ENCODING = UTF-8\nGENERATE_XML = YES\nRECURSIVE = YES\nEXAMPLE_PATH = examples\nSHOW_NAMESPACES = YES\nGENERATE_HTML = NO\nGENERATE_LATEX = NO"
 
     assert result == expected_result
+
 
 #  Sets the Doxygen configuration using a custom config file
 def test_set_doxy_cfg_custom_file():
