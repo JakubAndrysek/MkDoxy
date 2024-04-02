@@ -1,4 +1,4 @@
-name: MkDoxy build all supported Python versions
+name: MkDoxy Pytest MkDoxy with all supported Python versions
 
 on: [push, pull_request]
 
