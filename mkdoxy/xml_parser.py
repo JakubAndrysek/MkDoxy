@@ -235,7 +235,7 @@ class XmlParser:
                     name = parameteritem.find("parameternamelist").find("parametername")
                     description = parameteritem.find("parameterdescription").findall("para")
                     par = MdParagraph([])
-                    if len(name) > 0:
+                    if name is not None and len(name) > 0:
                         par.extend(self.paras(name))
                     else:
                         par.append(Code(name.text))
