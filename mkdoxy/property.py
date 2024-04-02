@@ -188,12 +188,11 @@ class Property:
                         ret.append(self.parser.paras_as_str(declname, plain=plain))
                     else:
                         type = param.find("type")
+                        declaration = self.parser.paras_as_str(type, plain=plain)
                         declname = param.find("declname")
-                        if declname is None:
-                            declname = param.find("type")
-                        ret.append(
-                            f"{self.parser.paras_as_str(type, plain=plain)} {self.parser.paras_as_str(declname, plain=plain)}"  # noqa: E501
-                        )
+                        if declname is not None:
+                            declaration += ' ' + self.parser.paras_as_str(declname, plain=plain)
+                        ret.append(declaration)
             return ret
 
         def has(self) -> bool:
