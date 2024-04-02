@@ -82,7 +82,8 @@ class DoxygenRun:
         @details - SHOW_NAMESPACES: YES
         @details - GENERATE_HTML: NO
         @details - GENERATE_LATEX: NO
-        @param doxyCfgNew: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
+        @param doxyCfgNew: (dict) New Doxygen config options that will be
+         added to the default config (new options will overwrite default options)
         @return: (dict) Doxygen configuration.
         """
         doxyCfg = {}

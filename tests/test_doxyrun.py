@@ -21,7 +21,12 @@ def test_dox_dict2str():
 
     result = doxygen_run.dox_dict2str(dox_dict)
 
-    expected_result = "DOXYFILE_ENCODING = UTF-8\nGENERATE_XML = YES\nRECURSIVE = YES\nEXAMPLE_PATH = examples\nSHOW_NAMESPACES = YES\nGENERATE_HTML = NO\nGENERATE_LATEX = NO"
+    expected_result = (
+        "DOXYFILE_ENCODING = UTF-8\nGENERATE_XML = YES"
+        "\nRECURSIVE = YES\nEXAMPLE_PATH = examples"
+        "\nSHOW_NAMESPACES = YES\nGENERATE_HTML = NO"
+        "\nGENERATE_LATEX = NO"
+    )
 
     assert result == expected_result
 
@@ -56,7 +61,11 @@ def test_set_doxy_cfg_custom_file():
 
 
 def test_str2dox_dict():
-    dox_str = "DOXYFILE_ENCODING = UTF-8\nGENERATE_XML = YES\nRECURSIVE = YES\nEXAMPLE_PATH = examples\nSHOW_NAMESPACES = YES\nGENERATE_HTML = NO\nGENERATE_LATEX = NO"
+    dox_str = (
+        "DOXYFILE_ENCODING = UTF-8\nGENERATE_XML = YES\n"
+        "RECURSIVE = YES\nEXAMPLE_PATH = examples\n"
+        "SHOW_NAMESPACES = YES\nGENERATE_HTML = NO\nGENERATE_LATEX = NO"
+    )
 
     doxygen_run = DoxygenRun(
         doxygenBinPath="doxygen",
