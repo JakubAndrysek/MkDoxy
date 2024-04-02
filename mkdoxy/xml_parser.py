@@ -56,7 +56,7 @@ class XmlParser:
         self.debug = debug
 
     def anchor(self, name: str) -> str:
-        return '<a name="' + name + '"></a>'
+        return f'<a name="{name}"></a>'
 
     def paras_as_str(self, p: Element, italic: bool = False, plain: bool = False) -> str:
         if plain:
