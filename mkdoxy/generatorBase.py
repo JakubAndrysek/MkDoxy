@@ -117,10 +117,13 @@ class GeneratorBase:
     ):
         """! Render an error page.
         @details
-        @param title (str): Title of the error page (default: "")
-        @param message (str): Message of the error page (default: "")
-        @param language (str): Programming language of the error page (default: "")
-        @return (str): Rendered error page.
+        @param config (dict): Config for the template.
+        @param title (str): Title of the error.
+        @param description (str): Description of the error.
+        @param code_header (str): Header of the code (default: "")
+        @param code (str): Code (default: "")
+        @param code_language (str): Language of the code (default: "")
+        @param snippet_code (str): Snippet code (default: "")
         """
         if config is None:
             config = {}
