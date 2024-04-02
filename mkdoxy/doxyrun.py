@@ -12,7 +12,7 @@ log: logging.Logger = logging.getLogger("mkdocs")
 
 class DoxygenRun:
     """! Class for running Doxygen.
-    @detailss This class is used to run Doxygen and parse the XML output.
+    @details This class is used to run Doxygen and parse the XML output.
     """
 
     def __init__(
@@ -37,7 +37,7 @@ class DoxygenRun:
         - GENERATE_HTML: NO
         - GENERATE_LATEX: NO
 
-        @detailss
+        @details
         @param doxygenBinPath: (str) Path to the Doxygen binary.
         @param doxygenSource: (str) Source files for Doxygen.
         @param tempDoxyFolder: (str) Temporary folder for Doxygen.
@@ -116,7 +116,7 @@ class DoxygenRun:
 
     def is_doxygen_valid_path(self, doxygen_bin_path: str) -> bool:
         """! Check if the Doxygen binary path is valid.
-        @detailss Accepts a full path or just 'doxygen' if it exists in the system's PATH.
+        @details Accepts a full path or just 'doxygen' if it exists in the system's PATH.
         @param doxygen_bin_path: (str) The path to the Doxygen binary or just 'doxygen'.
         @return: (bool) True if the Doxygen binary path is valid, False otherwise.
         """
@@ -131,7 +131,7 @@ class DoxygenRun:
     # Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
     def dox_dict2str(self, dox_dict: dict) -> str:
         """! Convert a dictionary to a string that can be written to a doxygen config file.
-        @detailss
+        @details
         @param dox_dict: (dict) Dictionary to convert.
         @return: (str) String that can be written to a doxygen config file.
         """
@@ -152,7 +152,7 @@ class DoxygenRun:
 
     def str2dox_dict(self, dox_str: str) -> dict:
         """! Convert a string from a doxygen config file to a dictionary.
-        @detailss
+        @details
         @param dox_str: (str) String from a doxygen config file.
         @return: (dict) Dictionary.
         """
@@ -176,9 +176,9 @@ class DoxygenRun:
             ) from e
         return dox_dict
 
-    def hasChanged(self):
+    def hasChanged(self) -> bool:
         """! Check if the source files have changed since the last run.
-        @detailss
+        @details
         @return: (bool) True if the source files have changed since the last run.
         """
 
@@ -217,7 +217,7 @@ class DoxygenRun:
 
     def run(self):
         """! Run Doxygen with the current configuration using the Popen class.
-        @detailss
+        @details
         """
         doxyBuilder = Popen(
             [self.doxygenBinPath, "-"],
@@ -232,7 +232,7 @@ class DoxygenRun:
 
     def checkAndRun(self):
         """! Check if the source files have changed since the last run and run Doxygen if they have.
-        @detailss
+        @details
         @return: (bool) True if Doxygen was run.
         """
         if self.hasChanged():
@@ -243,7 +243,7 @@ class DoxygenRun:
 
     def getOutputFolder(self) -> PurePath:
         """! Get the path to the XML output folder.
-        @detailss
+        @details
         @return: (PurePath) Path to the XML output folder.
         """
         return Path.joinpath(Path(self.tempDoxyFolder), Path("xml"))
