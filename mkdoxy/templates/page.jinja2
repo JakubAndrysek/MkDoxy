@@ -3,7 +3,7 @@
 {% if node.title %}{{node.title}}{% else %}# Related Pages{% endif %}
 
 {% if node.details %}
-{{node.details}}
+{{node.details | use_code_language(node.code_language)}}
 {% else %}
 No related pages found.
 {% endif %}

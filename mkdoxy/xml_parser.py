@@ -22,6 +22,7 @@ from mkdoxy.markdown import (
 )
 from mkdoxy.utils import lookahead
 
+# https://www.doxygen.nl/manual/commands.html
 SIMPLE_SECTIONS = {
     "see": "See also:",
     "note": "Note:",
@@ -45,6 +46,7 @@ SIMPLE_SECTIONS = {
     "exception": "Exception:",
     "date": "Date:",
     "version": "Version:",
+    "par": "\r\n",
 }
 
 
@@ -54,7 +56,7 @@ class XmlParser:
         self.debug = debug
 
     def anchor(self, name: str) -> str:
-        return '<a name="' + name + '"></a>'
+        return f'<a name="{name}"></a>'
 
     def paras_as_str(self, p: Element, italic: bool = False, plain: bool = False) -> str:
         if plain:
@@ -233,7 +235,7 @@ class XmlParser:
                     name = parameteritem.find("parameternamelist").find("parametername")
                     description = parameteritem.find("parameterdescription").findall("para")
                     par = MdParagraph([])
-                    if len(name) > 0:
+                    if name is not None and len(name) > 0:
                         par.extend(self.paras(name))
                     else:
                         par.append(Code(name.text))

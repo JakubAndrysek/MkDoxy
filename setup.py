@@ -14,7 +14,7 @@ def requirements():
 # https://pypi.org/project/mkdoxy/
 setup(
     name="mkdoxy",
-    version="1.1.7",
+    version="1.2.0",
     description="MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -33,12 +33,14 @@ setup(
     install_requires=["mkdocs"],
     extras_require={
         "dev": [
-            "mkdocs-material==9.1.18",
+            "mkdocs-material~=9.1.18",
             "Jinja2~=3.1.2",
             "mkdocs-open-in-new-tab~=1.0.2",
             "pathlib~=1.0.1",
             "path~=16.7.1",
             "isort~=5.12.0",
+            "pytest~=6.2.5",
+            "pre-commit~=3.7.0",
         ],
     },
     classifiers=[

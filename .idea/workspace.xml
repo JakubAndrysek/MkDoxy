@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Upgrade version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdocs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mkdocs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/doxyrun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_doxyrun.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,13 +78,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tests/data" />
       <recent name="$PROJECT_DIR$/docs" />
       <recent name="$PROJECT_DIR$/demo" />
       <recent name="$PROJECT_DIR$/docs/snippets" />
       <recent name="$PROJECT_DIR$/local" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/local" />
       <recent name="$PROJECT_DIR$/docs/snippets" />
       <recent name="$PROJECT_DIR$/docs" />
@@ -262,6 +264,25 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/local/test_DoxyTageParser.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest in /" type="tests" factoryName="py.test" nameIsGenerated="true">
+      <module name="main-mkdoxy" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="/opt/homebrew/bin/python3.11" />
+      <option name="SDK_NAME" value="Python 3.11" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>

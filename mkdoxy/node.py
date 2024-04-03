@@ -690,7 +690,7 @@ class Node:
 
         else:
             code.append(self._definition.plain())
-        return "\n".join(code)
+        return "\n".join(["```", *code, "```"])
 
     @property
     def has_base_classes(self) -> bool:

@@ -16,14 +16,12 @@ url_source: True
 {%- endif -%}
 {%- endif -%}
 
-```{{node.code_language}}
-{{node.codeblock}}
-```
+{{node.codeblock | use_code_language(node.code_language)}}
 
 
 {% if configMemDef.get('details') -%}
 {% if node.has_details -%}
-{{node.details}}
+{{node.details | use_code_language(node.code_language)}}
 {%- endif -%}
 {%- endif -%}
 

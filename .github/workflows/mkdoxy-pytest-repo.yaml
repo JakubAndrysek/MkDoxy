@@ -1,4 +1,4 @@
-name: MkDoxy test build demos with all supported python versions
+name: MkDoxy Pytest MkDoxy with all supported Python versions
 
 on: [push, pull_request]
 
@@ -23,10 +23,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
           sudo apt-get install doxygen
-      - name: Clone test repo
-        run: git clone https://github.com/JakubAndrysek/MkDoxy-demo.git demo
-      - name: Build docs
+      - name: Run Pytest
         run: |
-          cd demo
-          python -m pip install -r requirements.txt
-          mkdocs build --clean --verbose
+          pytest tests/

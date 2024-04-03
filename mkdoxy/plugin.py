@@ -49,6 +49,7 @@ class MkDoxy(BasePlugin):
         ("debug", config_options.Type(bool, default=False)),
         # ('ignore-errors', config_options.Type(bool, default=False)),
         ("doxy-cfg", config_options.Type(dict, default={}, required=False)),
+        ("doxy-cfg-file", config_options.Type(str, default="", required=False)),
         ("template-dir", config_options.Type(str, default="", required=False)),
     )
 
@@ -119,6 +120,7 @@ class MkDoxy(BasePlugin):
                 project_data.get("src-dirs"),
                 tempDirApi,
                 project_data.get("doxy-cfg", {}),
+                project_data.get("doxy-cfg-file", ""),
                 runPath,
             )
             if doxygenRun.checkAndRun():
