@@ -10,11 +10,11 @@
 <a href="https://github.com/JakubAndrysek/MkDoxy/forks" target="_blank"><img src="https://img.shields.io/github/forks/JakubAndrysek/MkDoxy?style=flat-square"></a>
 <a href="https://github.com/JakubAndrysek/MkDoxy/issues" target="_blank"><img src="https://img.shields.io/github/issues/JakubAndrysek/MkDoxy?style=flat-square"></a>
 <a href="https://github.com/JakubAndrysek/MkDoxy/discussions" target="_blank"><img src="https://img.shields.io/github/discussions/JakubAndrysek/MkDoxy?style=flat-square"></a>
-<a href="https://pypistats.org/packages/mkdoxy" target="_blank"><img src="https://static.pepy.tech/personalized-badge/mkdoxy?period=month&units=international_system&left_color=black&right_color=orange&left_text=Downloads"></a>
+<a href="https://www.pepy.tech/projects/mkdoxy" target="_blank"><img src="https://static.pepy.tech/badge/mkdoxy"></a>
 </p>
 
 > **Warning**
-> **Extension is in development** and few features are not working properly.
+> **Extension is in development**, and a few features are not working properly.
 > More information in [Discussions](https://github.com/JakubAndrysek/MkDoxy/discussions) and [Issues](https://github.com/JakubAndrysek/MkDoxy/issues) pages.
 
 ---
@@ -71,7 +71,7 @@ plugins:
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you want to change.
 
 ## Do You Enjoy MkDoxy or Does It Save You Time?
 Then definitely consider:
