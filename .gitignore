@@ -287,6 +287,5 @@ tests/files/.mkdoxy
 
 .DS_Store
 .mkdoxy/
-templates-custom
 temp/
 local/

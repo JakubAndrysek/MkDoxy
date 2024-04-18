@@ -65,7 +65,7 @@ class GeneratorBase:
                     with open(filePath, "r") as file:
                         name = os.path.splitext(fileName)[0]
                         fileTemplate, metaData = parseTemplateFile(file.read())
-                        self.templates[name] = Template(fileTemplate)
+                        self.templates[name] = environment.from_string(fileTemplate)
                         self.metaData[name] = metaData
                         log.info(f"Overwriting template '{name}' with custom template.")
                 else:
