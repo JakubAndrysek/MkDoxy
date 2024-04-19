@@ -16,3 +16,8 @@ All notable changes to this project will be documented in this file.
 - **v1.1.7** - 2023-11-09
     - Format code using black and add pre-commit config [#77](https://github.com/JakubAndrysek/MkDoxy/pull/77)
     - Fix: add missing package visibility [#80](https://github.com/JakubAndrysek/MkDoxy/pull/80)
+...
+
+- **1.2.2** - 2024-04-19
+    - Update allowed Jinja extensions
+    - Add support for custom Doxygen configuration

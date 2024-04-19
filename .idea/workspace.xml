@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Upgrade version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/doxyrun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_doxyrun.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_doxyrun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/usage/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/usage/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkdoxy/generatorBase.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/generatorBase.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +62,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;doxygen-config-file&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/kuba/Documents/git/kuba/mkdoxy/mkdoxy-base/mkdoxy-main/tests/data&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -248,7 +248,7 @@
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="/opt/homebrew/bin/python3.11" />
       <option name="SDK_NAME" value="Python 3.11" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -565,11 +565,6 @@
           <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mkdoxy/generatorBase.py</url>
-          <line>82</line>
-          <option name="timeStamp" value="80" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/DoxyTagParser.py</url>
           <line>41</line>
           <option name="timeStamp" value="83" />
@@ -604,6 +599,11 @@
           <line>14</line>
           <option name="timeStamp" value="103" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/mkdoxy/generatorBase.py</url>
+          <line>67</line>
+          <option name="timeStamp" value="115" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="jinja2-line">
           <url>file://$PROJECT_DIR$/mkdoxy/templates/relatedPages.jinja2</url>
           <line>5</line>
@@ -629,8 +629,9 @@
     <SUITE FILE_PATH="coverage/mkdoxy_new_templates$.coverage" NAME=" Coverage Results" MODIFIED="1685351058154" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/main_mkdoxy$mkdocs_serve_vPy3_9.coverage" NAME="mkdocs-serve-vPy3.9 Coverage Results" MODIFIED="1636834436573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
     <SUITE FILE_PATH="coverage/main_mkdoxy$mkdocs_serve_py3_9.coverage" NAME="mkdocs-serve-py3.9 Coverage Results" MODIFIED="1636834417383" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/files" />
-    <SUITE FILE_PATH="coverage/mkdoxy_main$mkdoxy_demo_vPy3_11.coverage" NAME="mkdoxy-demo-vPy3.11 Coverage Results" MODIFIED="1712095688009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../mkdoxy-demo" />
+    <SUITE FILE_PATH="coverage/mkdoxy_main$mkdocs_build_vPy3_11.coverage" NAME="mkdocs-build-vPy3.11 Coverage Results" MODIFIED="1703686395427" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
     <SUITE FILE_PATH="coverage/mkdoxy_main$pytest_in__.coverage" NAME="pytest in / Coverage Results" MODIFIED="1712098709702" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
-    <SUITE FILE_PATH="coverage/mkdoxy_main$mkdocs_serve_vPy3_11.coverage" NAME="mkdocs-serve-vPy3.11 Coverage Results" MODIFIED="1712099288194" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
+    <SUITE FILE_PATH="coverage/mkdoxy_main$mkdoxy_demo_vPy3_11.coverage" NAME="mkdoxy-demo-vPy3.11 Coverage Results" MODIFIED="1713477024048" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../mkdoxy-demo" />
+    <SUITE FILE_PATH="coverage/mkdoxy_main$mkdocs_serve_vPy3_11.coverage" NAME="mkdocs-serve-vPy3.11 Coverage Results" MODIFIED="1713518487002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/" />
   </component>
 </project>

@@ -56,6 +56,7 @@ The name of the project is used to identify the project in the snippet tags.
 
 Custom templates can be used to change the appearance of the generated documentation.
 Each custom template file will replace the default template file.
+Custom templates have to end with `.jinja2`, `.j2`, or `.jinja` extension.
 So you do not have to create a custom template for the whole documentation, but only for the parts you want to change.
 
 ??? abstract "Custom Jinja templates"
