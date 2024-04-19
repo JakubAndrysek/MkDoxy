@@ -86,7 +86,7 @@ plugins:
       full-doc: True
       debug: False
       ignore-errors: False
-      emojis-enabled: True
+      exclude-search: all
 
 markdown_extensions:
   - pymdownx.highlight

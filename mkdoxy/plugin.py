@@ -14,6 +14,7 @@ from mkdocs.plugins import BasePlugin
 from mkdocs.structure import files, pages
 
 from mkdoxy.cache import Cache
+from mkdoxy.constants import EXCLUDE_SEARCH, EXCLUDE_SEARCH_DISABLE, EXCLUDE_SEARCH_ALL, EXCLUDE_SEARCH_CODE
 from mkdoxy.doxygen import Doxygen
 from mkdoxy.doxyrun import DoxygenRun
 from mkdoxy.generatorAuto import GeneratorAuto
@@ -40,6 +41,7 @@ class MkDoxy(BasePlugin):
             "doxygen-bin-path",
             config_options.Type(str, default="doxygen", required=False),
         ),
+        ("exclude-search", config_options.Type(str, default=EXCLUDE_SEARCH_DISABLE, required=False)),
     )
 
     # Config options for each project
@@ -51,6 +53,7 @@ class MkDoxy(BasePlugin):
         ("doxy-cfg", config_options.Type(dict, default={}, required=False)),
         ("doxy-cfg-file", config_options.Type(str, default="", required=False)),
         ("template-dir", config_options.Type(str, default="", required=False)),
+        ("exclude-search", config_options.Type(str, default=EXCLUDE_SEARCH_DISABLE, required=False)),
     )
 
     def is_enabled(self) -> bool:
@@ -85,6 +88,21 @@ class MkDoxy(BasePlugin):
             elif strict and len(warnings) > 0:
                 raise exceptions.Abort(f"Aborted with {len(warnings)} Configuration Warnings in 'strict' mode!")
 
+            checkExcludeSearch(proData.get("exclude-search", EXCLUDE_SEARCH_DISABLE), "project")
+
+        def checkExcludeSearch(exclude_search: str, type: str) -> bool:
+            if exclude_search not in EXCLUDE_SEARCH:
+                raise exceptions.Abort(
+                    f"Aborted with Configuration Error: {type} \
+                        'exclude-search' value is not valid! ({', '.join(EXCLUDE_SEARCH)})"
+                )
+            return True
+
+        def applyExcludeSearch(exclude_search_config: str, exclude_search_project: str) -> str:
+            if exclude_search_config in [EXCLUDE_SEARCH_ALL, EXCLUDE_SEARCH_CODE]:
+                return exclude_search_config
+            return exclude_search_project
+
         def tempDir(siteDir: str, tempDir: str, projectName: str) -> str:
             tempDoxyDir = PurePath.joinpath(Path(siteDir), Path(tempDir), Path(projectName))
             tempDoxyDir.mkdir(parents=True, exist_ok=True)
@@ -94,6 +112,8 @@ class MkDoxy(BasePlugin):
         self.generatorBase = {}
         self.projects_config: dict[str, dict[str, any]] = self.config["projects"]
         self.debug = self.config.get("debug", False)
+
+        checkExcludeSearch(self.config.get("exclude-search", EXCLUDE_SEARCH_DISABLE), "global")
 
         # generate automatic documentation and append files in the list of files to be processed by mkdocs
         self.defaultTemplateConfig: dict = {
@@ -143,6 +163,10 @@ class MkDoxy(BasePlugin):
             self.generatorBase[project_name] = GeneratorBase(
                 project_data.get("template-dir", ""),
                 ignore_errors=self.config["ignore-errors"],
+                exclude_search=applyExcludeSearch(
+                    self.config.get("exclude-search", EXCLUDE_SEARCH_DISABLE),
+                    project_data.get("exclude-search", EXCLUDE_SEARCH_DISABLE),
+                ),
                 debug=self.debug,
             )
 

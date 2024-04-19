@@ -8,7 +8,7 @@ from jinja2.exceptions import TemplateError
 from mkdocs import exceptions
 
 import mkdoxy
-from mkdoxy.constants import Kind
+from mkdoxy.constants import Kind, EXCLUDE_SEARCH_ALL, EXCLUDE_SEARCH_CODE
 from mkdoxy.filters import use_code_language
 from mkdoxy.node import DummyNode, Node
 from mkdoxy.utils import (
@@ -27,7 +27,9 @@ LETTERS = string.ascii_lowercase + "~_@\\"
 class GeneratorBase:
     """! Base class for all generators."""
 
-    def __init__(self, templateDir: str = "", ignore_errors: bool = False, debug: bool = False):
+    def __init__(
+        self, templateDir: str = "", ignore_errors: bool = False, exclude_search: string = "no", debug: bool = False
+    ):
         """! Constructor.
         @details
         @param templateDir (str): Path to the directory with custom templates (default: "")
@@ -38,6 +40,8 @@ class GeneratorBase:
         self.debug: bool = debug  # if True, debug messages will be printed
         self.templates: Dict[str, Template] = {}
         self.metaData: Dict[str, list[str]] = {}
+        self.ignore_errors: bool = ignore_errors
+        self.exclude_search: string = exclude_search
 
         environment = Environment(loader=BaseLoader())
         environment.filters["use_code_language"] = use_code_language
@@ -97,6 +101,11 @@ class GeneratorBase:
         @param data (dict): Data to render the template.
         @return (str): Rendered template.
         """
+
+        # append excluded search to the rendered template
+        if self.exclude_search == EXCLUDE_SEARCH_ALL:
+            data["search.exclude"] = True
+
         try:
             # if self.debug:
             # print('Generating', path) # TODO: add path to data
@@ -186,6 +195,9 @@ class GeneratorBase:
             "node": node,
             "config": merge_two_dicts(config, metaConfig),
         }
+        if self.exclude_search in [EXCLUDE_SEARCH_CODE, EXCLUDE_SEARCH_ALL]:
+            data["search.exclude"] = True
+
         return self.render(template, data)
 
     def code(self, node: [Node], config: dict = None, code: str = ""):

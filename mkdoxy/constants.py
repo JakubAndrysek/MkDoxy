@@ -1,5 +1,11 @@
 from enum import Enum
 
+EXCLUDE_SEARCH_DISABLE = "disable"
+EXCLUDE_SEARCH_ALL = "all"
+EXCLUDE_SEARCH_CODE = "code"
+
+EXCLUDE_SEARCH = [EXCLUDE_SEARCH_DISABLE, EXCLUDE_SEARCH_ALL, EXCLUDE_SEARCH_CODE]
+
 OVERLOAD_OPERATORS = [
     "operator=",
     "operator+",
