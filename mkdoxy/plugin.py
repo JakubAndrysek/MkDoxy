@@ -5,7 +5,6 @@ MkDoxy is a MkDocs plugin for generating documentation from Doxygen XML files.
 """
 
 import logging
-import os
 from pathlib import Path, PurePath
 
 from mkdocs import exceptions
