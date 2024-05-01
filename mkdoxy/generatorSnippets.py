@@ -59,53 +59,59 @@ class GeneratorSnippets:
         if self.is_doxy_inactive(self.config):
             return self.markdown  # doxygen is inactive return unchanged markdown
 
-        matches = re.finditer(regexIncorrect, self.markdown, re.MULTILINE)
-        for match in reversed(list(matches)):
-            snippet = match.group()
-            project_name = match.group("project") or "<project_name>"
+        try:
+            matches = re.finditer(regexIncorrect, self.markdown, re.MULTILINE)
+            for match in reversed(list(matches)):
+                snippet = match.group()
+                project_name = match.group("project") or "<project_name>"
 
-            snippet_config = self.config.copy()
-            snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
+                snippet_config = self.config.copy()
+                snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
 
-            if self.is_doxy_inactive(snippet_config):
-                continue
+                if self.is_doxy_inactive(snippet_config):
+                    continue
 
-            replacement = (
-                self.incorrect_argument(project_name, "", snippet_config, snippet)
-                if self.is_project_exist(project_name)
-                else self.incorrect_project(project_name, snippet_config, snippet)
-            )
-            self.replace_markdown(match.start(), match.end(), replacement)
+                replacement = (
+                    self.incorrect_argument(project_name, "", snippet_config, snippet)
+                    if self.is_project_exist(project_name)
+                    else self.incorrect_project(project_name, snippet_config, snippet)
+                )
+                self.replace_markdown(match.start(), match.end(), replacement)
 
-        matches = re.finditer(regexShort, self.markdown, re.MULTILINE)
-        for match in reversed(list(matches)):
-            snippet = match.group()
-            argument = match.group("argument").lower()
-            project_name = match.group("project")
+            matches = re.finditer(regexShort, self.markdown, re.MULTILINE)
+            for match in reversed(list(matches)):
+                snippet = match.group()
+                argument = match.group("argument").lower()
+                project_name = match.group("project")
 
-            snippet_config = self.config.copy()
-            snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
+                snippet_config = self.config.copy()
+                snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
 
-            if self.is_doxy_inactive(snippet_config):
-                continue
+                if self.is_doxy_inactive(snippet_config):
+                    continue
 
-            replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
-            self.replace_markdown(match.start(), match.end(), replaceStr)
+                replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
+                self.replace_markdown(match.start(), match.end(), replaceStr)
 
-        matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
-        for match in reversed(list(matches)):
-            snippet = match.group()
-            argument = match.group("argument").lower()
-            project_name = match.group("project")
-            # log.debug(f"\nArgument: {argument}")
+            matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
+            for match in reversed(list(matches)):
+                snippet = match.group()
+                argument = match.group("argument").lower()
+                project_name = match.group("project")
+                # log.debug(f"\nArgument: {argument}")
 
-            # config has been updated by yaml
-            snippet_config = self.config.copy()
-            snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
+                # config has been updated by yaml
+                snippet_config = self.config.copy()
+                snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
 
-            replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
-            self.replace_markdown(match.start(), match.end(), replaceStr)
-        return self.markdown
+                replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
+                self.replace_markdown(match.start(), match.end(), replaceStr)
+            return self.markdown
+        except Exception as e:
+            basename = pathlib.Path(__file__).name
+            log.error(f"Error in {self.page.url} page. Incorrect doxy snippet or error in file {basename}")
+            log.error(f"Error: {e}")
+            return self.markdown
 
     def try_load_yaml(self, yaml_raw: str, project: str, snippet: str, config: dict) -> dict:
         try:
@@ -378,8 +384,8 @@ class GeneratorSnippets:
         return self.doxyError(
             project,
             config,
-            "Node is None",
-            "Node is None",
+            f"Could not find coresponding snippet for project {project}",
+            f"Config: {config}",
             "yaml",
             snippet,
         )
