@@ -22,7 +22,6 @@ class DoxygenRun:
         tempDoxyFolder: str,
         doxyCfgNew,
         doxyConfigFile: Optional[str] = None,
-        runPath: Optional[str] = None,
     ):
         """! Constructor.
         Default Doxygen config options:
@@ -58,7 +57,6 @@ class DoxygenRun:
         self.doxyConfigFile: Optional[str] = doxyConfigFile
         self.hashFileName: str = "hashChanges.yaml"
         self.hashFilePath: PurePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
-        self.runPath: Optional[str] = runPath
         self.doxyCfg: dict = self.setDoxyCfg(doxyCfgNew)
 
     def setDoxyCfg(self, doxyCfgNew: dict) -> dict:
@@ -224,7 +222,6 @@ class DoxygenRun:
             stdout=PIPE,
             stdin=PIPE,
             stderr=PIPE,
-            cwd=self.runPath,
         )
         (doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))[0].decode().strip())
         # log.info(self.destinationDir)
