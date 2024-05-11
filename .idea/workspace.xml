@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Upgrade version">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-    </list>
+    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Upgrade version" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -318,7 +314,7 @@
       <workItem from="1689777262215" duration="704000" />
       <workItem from="1689947020589" duration="1060000" />
       <workItem from="1712098386110" duration="1897000" />
-      <workItem from="1715438383298" duration="849000" />
+      <workItem from="1715438383298" duration="1041000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
@@ -495,7 +491,15 @@
       <option name="project" value="LOCAL" />
       <updated>1689777297262</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Upgrade version">
+      <option name="closed" value="true" />
+      <created>1715439268944</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1715439268944</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
