@@ -152,7 +152,7 @@ class GeneratorSnippets:
             project,
             config,
             f"Incorrect argument: {argument}" if argument else f"Add argument to snippet: {project}",
-            f"Argument have to be based on this diagram → **:::doxy.{project}.<argument\>**",
+            f"Argument have to be based on this diagram → **:::doxy.{project}.<argument\\>**",
             "A list of available arguments:",
             "\n".join(self.doxy_arguments.keys()),
             "yaml",
@@ -162,14 +162,12 @@ class GeneratorSnippets:
     def replace_markdown(self, start: int, end: int, replacement: str):
         self.markdown = self.markdown[:start] + replacement + "\n" + self.markdown[end:]
 
-    def _recurs_setLinkPrefixNode(self, node: Node, linkPrefix: str):
-        node.setLinkPrefix(linkPrefix)
-        if node.kind.is_parent():
-            self._recurs_setLinkPrefixNodes(node.children, linkPrefix)
+    def _setLinkPrefixNode(self, node: Node, linkPrefix: str):
+        node.project.linkPrefix = linkPrefix
 
-    def _recurs_setLinkPrefixNodes(self, nodes: [Node], linkPrefix: str):
-        for node in nodes:
-            self._recurs_setLinkPrefixNode(node, linkPrefix)
+    def _setLinkPrefixNodes(self, nodes: list[Node], linkPrefix: str):
+        if nodes:
+            nodes[0].project.linkPrefix = linkPrefix
 
     def is_project_exist(self, project: str):
         return project in self.projects
@@ -249,7 +247,7 @@ class GeneratorSnippets:
                     f"{snippet}",
                     "yaml",
                 )
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].code(node, config, progCode)
         return self.doxyError(
             project,
@@ -281,7 +279,7 @@ class GeneratorSnippets:
             return self.doxyNodeIsNone(project, config, snippet)
 
         if isinstance(node, Node):
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].function(node, config)
         return self.doxyError(
             project,
@@ -304,7 +302,7 @@ class GeneratorSnippets:
             return self.doxyNodeIsNone(project, config, snippet)
 
         if isinstance(node, Node):
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].member(node, config)
         return self.doxyError(
             project,
@@ -327,7 +325,7 @@ class GeneratorSnippets:
             return self.doxyNodeIsNone(project, config, snippet)
 
         if isinstance(node, Node):
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].function(node, config)
         return self.doxyError(
             project,
@@ -345,7 +343,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].annotated(nodes, config)
 
     def doxyClassIndex(self, snippet, project: str, config):
@@ -353,7 +351,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].classes(nodes, config)
 
     def doxyClassHierarchy(self, snippet, project: str, config):
@@ -361,7 +359,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].hierarchy(nodes, config)
 
     def doxyNamespaceList(self, snippet, project: str, config):
@@ -369,7 +367,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].namespaces(nodes, config)
 
     def doxyFileList(self, snippet, project: str, config):
@@ -377,7 +375,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].files.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].fileindex(nodes, config)
 
     def doxyNodeIsNone(self, project: str, config: dict, snippet: str) -> str:
