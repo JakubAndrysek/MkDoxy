@@ -21,3 +21,7 @@ All notable changes to this project will be documented in this file.
 - **1.2.2** - 2024-04-19
     - Update allowed Jinja extensions
     - Add support for custom Doxygen configuration
+- **1.2.3** - 2024-05-6
+    - Fix executable not found when the current working directory (cwd) is set to config file path by @wu-vincent in https://github.com/JakubAndrysek/MkDoxy/pull/103
+- **1.2.4** - 2024-05-6
+    - fix: use absolute links for inherited items by @Nerixyz in https://github.com/JakubAndrysek/MkDoxy/pull/105
