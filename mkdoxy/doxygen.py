@@ -6,6 +6,7 @@ from xml.etree import ElementTree
 from mkdoxy.cache import Cache
 from mkdoxy.constants import Kind, Visibility
 from mkdoxy.node import Node
+from mkdoxy.project import ProjectContext
 from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")
@@ -20,13 +21,13 @@ class Doxygen:
         xml = ElementTree.parse(path_xml).getroot()
 
         self.parser = parser
-        self.cache = cache
+        self.ctx = ProjectContext(cache)
 
-        self.root = Node("root", None, self.cache, self.parser, None)
-        self.groups = Node("root", None, self.cache, self.parser, None)
-        self.files = Node("root", None, self.cache, self.parser, None)
-        self.pages = Node("root", None, self.cache, self.parser, None)
-        self.examples = Node("root", None, self.cache, self.parser, None)
+        self.root = Node("root", None, self.ctx, self.parser, None)
+        self.groups = Node("root", None, self.ctx, self.parser, None)
+        self.files = Node("root", None, self.ctx, self.parser, None)
+        self.pages = Node("root", None, self.ctx, self.parser, None)
+        self.examples = Node("root", None, self.ctx, self.parser, None)
 
         for compound in xml.findall("compound"):
             kind = Kind.from_str(compound.get("kind"))
@@ -35,7 +36,7 @@ class Doxygen:
                 node = Node(
                     os.path.join(index_path, f"{refid}.xml"),
                     None,
-                    self.cache,
+                    self.ctx,
                     self.parser,
                     self.root,
                 )
@@ -45,7 +46,7 @@ class Doxygen:
                 node = Node(
                     os.path.join(index_path, f"{refid}.xml"),
                     None,
-                    self.cache,
+                    self.ctx,
                     self.parser,
                     self.root,
                 )
@@ -55,7 +56,7 @@ class Doxygen:
                 node = Node(
                     os.path.join(index_path, f"{refid}.xml"),
                     None,
-                    self.cache,
+                    self.ctx,
                     self.parser,
                     self.root,
                 )
@@ -65,7 +66,7 @@ class Doxygen:
                 node = Node(
                     os.path.join(index_path, f"{refid}.xml"),
                     None,
-                    self.cache,
+                    self.ctx,
                     self.parser,
                     self.root,
                 )
@@ -75,7 +76,7 @@ class Doxygen:
                 node = Node(
                     os.path.join(index_path, f"{refid}.xml"),
                     None,
-                    self.cache,
+                    self.ctx,
                     self.parser,
                     self.root,
                 )

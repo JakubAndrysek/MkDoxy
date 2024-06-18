@@ -3,9 +3,9 @@ import os
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as Element
 
-from mkdoxy.cache import Cache
 from mkdoxy.constants import OVERLOAD_OPERATORS, Kind, Visibility
 from mkdoxy.markdown import escape
+from mkdoxy.project import ProjectContext
 from mkdoxy.property import Property
 from mkdoxy.utils import split_safe
 from mkdoxy.xml_parser import XmlParser
@@ -18,18 +18,18 @@ class Node:
         self,
         xml_file: str,
         xml: Element,
-        cache: Cache,
+        project: ProjectContext,
         parser: XmlParser,
         parent: "Node",
         refid: str = None,
         debug: bool = False,
     ):
         self._children: ["Node"] = []
-        self._cache: Cache = cache
+        self._cache = project.cache
         self._parser: XmlParser = parser
         self._parent = parent
         self.debug = debug
-        self.linkPrefix = ""
+        self.project = project
 
         if xml_file == "root":
             self._refid = "root"
@@ -94,9 +94,6 @@ class Node:
     def __repr__(self):
         return f"Node: {self.name} refid: {self._refid}"
 
-    def setLinkPrefix(self, linkPrefix: str):
-        self.linkPrefix = linkPrefix
-
     def add_child(self, child: "Node"):
         self._children.append(child)
 
@@ -116,7 +113,7 @@ class Node:
             child = Node(
                 os.path.join(self._dirname, f"{refid}.xml"),
                 None,
-                self._cache,
+                self.project,
                 self._parser,
                 self,
             )
@@ -141,7 +138,7 @@ class Node:
                 child = Node(
                     os.path.join(self._dirname, f"{refid}.xml"),
                     None,
-                    self._cache,
+                    self.project,
                     self._parser,
                     self,
                 )
@@ -149,7 +146,7 @@ class Node:
                 child = Node(
                     os.path.join(self._dirname, f"{refid}.xml"),
                     Element("compounddef"),
-                    self._cache,
+                    self.project,
                     self._parser,
                     self,
                     refid=refid,
@@ -171,7 +168,7 @@ class Node:
             child = Node(
                 os.path.join(self._dirname, f"{refid}.xml"),
                 None,
-                self._cache,
+                self.project,
                 self._parser,
                 self,
             )
@@ -191,7 +188,7 @@ class Node:
             child = Node(
                 os.path.join(self._dirname, f"{refid}.xml"),
                 None,
-                self._cache,
+                self.project,
                 self._parser,
                 self,
             )
@@ -212,7 +209,7 @@ class Node:
             child = Node(
                 os.path.join(self._dirname, f"{refid}.xml"),
                 None,
-                self._cache,
+                self.project,
                 self._parser,
                 self,
             )
@@ -231,7 +228,7 @@ class Node:
                             continue
                         except Exception:
                             pass
-                    child = Node(None, memberdef, self._cache, self._parser, self)
+                    child = Node(None, memberdef, self.project, self._parser, self)
                     self.add_child(child)
 
         # for detaileddescription in self._xml.findall('detaileddescription'):
@@ -480,14 +477,14 @@ class Node:
     @property
     def url(self) -> str:
         if self.is_parent or self.is_group or self.is_file or self.is_dir or self.is_page:
-            return self.linkPrefix + self._refid + ".md"
+            return self.project.linkPrefix + self._refid + ".md"
         else:
             return f"{self._parent.url}#{self.anchor}"
 
     @property
     def base_url(self) -> str:
         def prefix(page: str):
-            return self.linkPrefix + page
+            return self.project.linkPrefix + page
 
         if self.is_group:
             return prefix("modules.md")
@@ -512,13 +509,13 @@ class Node:
     @property
     def url_source(self) -> str:
         if self.is_parent or self.is_group or self.is_file or self.is_dir:
-            return self.linkPrefix + self._refid + "_source.md"
+            return self.project.linkPrefix + self._refid + "_source.md"
         else:
-            return self.linkPrefix + self._refid + ".md"
+            return self.project.linkPrefix + self._refid + ".md"
 
     @property
     def filename(self) -> str:
-        return self.linkPrefix + self._refid + ".md"
+        return self.project.linkPrefix + self._refid + ".md"
 
     @property
     def root(self) -> "Node":

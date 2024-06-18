@@ -72,7 +72,7 @@ plugins:
         mkdoxyApi:
           src-dirs: mkdoxy
           full-doc: True
-          # template-dir: templates-custom
+          template-dir: templates-custom
           doxy-cfg-file: demo-projects/animal/Doxyfile
           doxy-cfg:
             FILE_PATTERNS: "*.py"
@@ -142,8 +142,8 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
   - Home:

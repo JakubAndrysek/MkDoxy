@@ -35,7 +35,7 @@ class Property:
 
         def md(self, plain: bool = False) -> str:
             briefdescription = self.xml.find("briefdescription")
-            if not briefdescription:
+            if briefdescription is None:
                 return ""
 
             paras = briefdescription.findall("para")

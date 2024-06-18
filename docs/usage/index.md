@@ -37,7 +37,7 @@ The name of the project must be alphanumeric + numbers (without spaces).
 The name of the project is used to identify the project in the snippet tags.
 
 ??? abstract "Configure multiple projects"
-    ```yaml
+    ```yaml hl_lines="4-5 7-8 10-11"
     plugins:
       - mkdoxy:
           projects:
@@ -56,10 +56,11 @@ The name of the project is used to identify the project in the snippet tags.
 
 Custom templates can be used to change the appearance of the generated documentation.
 Each custom template file will replace the default template file.
+Custom templates have to end with `.jinja2`, `.j2`, or `.jinja` extension.
 So you do not have to create a custom template for the whole documentation, but only for the parts you want to change.
 
-??? abstract "Configure multiple projects"
-    ```yaml
+??? abstract "Custom Jinja templates"
+    ```yaml hl_lines="6"
     plugins:
       - mkdoxy:
           projects:
@@ -87,10 +88,11 @@ The configuration is merged with the default configuration.
     "GENERATE_LATEX": "NO", # do not generate LaTeX files
     ```
 
+
 Doxygen configuration options: [www.doxygen.nl/manual/config.html](https://www.doxygen.nl/manual/config.html)
 
 ??? abstract "Custom Doxygen configuration - override default configuration"
-    ```yaml
+    ```yaml hl_lines="7-13"
     plugins:
       - mkdoxy:
           projects:
@@ -106,6 +108,31 @@ Doxygen configuration options: [www.doxygen.nl/manual/config.html](https://www.d
                 EXTRACT_ALL: True
                 ...
     ```
+
+## Configure custom Doxygen configuration file
+If you want to use a standard `Doxygen` configuration file, you can specify the path to the file using the `doxygen-config` option in the plugin configuration.
+
+??? abstract "Add custom Doxygen configuration file"
+    ```yaml hl_lines="6"
+    plugins:
+      - mkdoxy:
+          projects:
+            myProjectCpp:
+              src-dirs: ...
+              doxy-cfg-file: path/to/Doxyfile  # relative path to the Doxygen configuration file (relative to the mkdocs.yml file)
+              doxy-cfg:       # standard doxygen configuration (key: value)
+                FILE_PATTERNS: ... # other configuration options - merge (this will override the configuration from the Doxyfile)
+    ```
+
+    ??? example "How is it implemented?"
+
+::: doxy.mkdoxyApi.code
+file: doxyrun.py
+start: 64
+end: 115
+indent_level: 8
+
+
 
 
 ## Advanced configuration

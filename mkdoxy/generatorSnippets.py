@@ -59,53 +59,59 @@ class GeneratorSnippets:
         if self.is_doxy_inactive(self.config):
             return self.markdown  # doxygen is inactive return unchanged markdown
 
-        matches = re.finditer(regexIncorrect, self.markdown, re.MULTILINE)
-        for match in reversed(list(matches)):
-            snippet = match.group()
-            project_name = match.group("project") or "<project_name>"
+        try:
+            matches = re.finditer(regexIncorrect, self.markdown, re.MULTILINE)
+            for match in reversed(list(matches)):
+                snippet = match.group()
+                project_name = match.group("project") or "<project_name>"
 
-            snippet_config = self.config.copy()
-            snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
+                snippet_config = self.config.copy()
+                snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
 
-            if self.is_doxy_inactive(snippet_config):
-                continue
+                if self.is_doxy_inactive(snippet_config):
+                    continue
 
-            replacement = (
-                self.incorrect_argument(project_name, "", snippet_config, snippet)
-                if self.is_project_exist(project_name)
-                else self.incorrect_project(project_name, snippet_config, snippet)
-            )
-            self.replace_markdown(match.start(), match.end(), replacement)
+                replacement = (
+                    self.incorrect_argument(project_name, "", snippet_config, snippet)
+                    if self.is_project_exist(project_name)
+                    else self.incorrect_project(project_name, snippet_config, snippet)
+                )
+                self.replace_markdown(match.start(), match.end(), replacement)
 
-        matches = re.finditer(regexShort, self.markdown, re.MULTILINE)
-        for match in reversed(list(matches)):
-            snippet = match.group()
-            argument = match.group("argument").lower()
-            project_name = match.group("project")
+            matches = re.finditer(regexShort, self.markdown, re.MULTILINE)
+            for match in reversed(list(matches)):
+                snippet = match.group()
+                argument = match.group("argument").lower()
+                project_name = match.group("project")
 
-            snippet_config = self.config.copy()
-            snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
+                snippet_config = self.config.copy()
+                snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
 
-            if self.is_doxy_inactive(snippet_config):
-                continue
+                if self.is_doxy_inactive(snippet_config):
+                    continue
 
-            replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
-            self.replace_markdown(match.start(), match.end(), replaceStr)
+                replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
+                self.replace_markdown(match.start(), match.end(), replaceStr)
 
-        matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
-        for match in reversed(list(matches)):
-            snippet = match.group()
-            argument = match.group("argument").lower()
-            project_name = match.group("project")
-            # log.debug(f"\nArgument: {argument}")
+            matches = re.finditer(regexLong, self.markdown, re.MULTILINE)
+            for match in reversed(list(matches)):
+                snippet = match.group()
+                argument = match.group("argument").lower()
+                project_name = match.group("project")
+                # log.debug(f"\nArgument: {argument}")
 
-            # config has been updated by yaml
-            snippet_config = self.config.copy()
-            snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
+                # config has been updated by yaml
+                snippet_config = self.config.copy()
+                snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
 
-            replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
-            self.replace_markdown(match.start(), match.end(), replaceStr)
-        return self.markdown
+                replaceStr = self.call_doxy_by_name(snippet, project_name, argument, snippet_config)
+                self.replace_markdown(match.start(), match.end(), replaceStr)
+            return self.markdown
+        except Exception as e:
+            basename = pathlib.Path(__file__).name
+            log.error(f"Error in {self.page.url} page. Incorrect doxy snippet or error in file {basename}")
+            log.error(f"Error: {e}")
+            return self.markdown
 
     def try_load_yaml(self, yaml_raw: str, project: str, snippet: str, config: dict) -> dict:
         try:
@@ -146,7 +152,7 @@ class GeneratorSnippets:
             project,
             config,
             f"Incorrect argument: {argument}" if argument else f"Add argument to snippet: {project}",
-            f"Argument have to be based on this diagram → **:::doxy.{project}.<argument\>**",
+            f"Argument have to be based on this diagram → **:::doxy.{project}.<argument\\>**",
             "A list of available arguments:",
             "\n".join(self.doxy_arguments.keys()),
             "yaml",
@@ -156,14 +162,12 @@ class GeneratorSnippets:
     def replace_markdown(self, start: int, end: int, replacement: str):
         self.markdown = self.markdown[:start] + replacement + "\n" + self.markdown[end:]
 
-    def _recurs_setLinkPrefixNode(self, node: Node, linkPrefix: str):
-        node.setLinkPrefix(linkPrefix)
-        if node.kind.is_parent():
-            self._recurs_setLinkPrefixNodes(node.children, linkPrefix)
+    def _setLinkPrefixNode(self, node: Node, linkPrefix: str):
+        node.project.linkPrefix = linkPrefix
 
-    def _recurs_setLinkPrefixNodes(self, nodes: [Node], linkPrefix: str):
-        for node in nodes:
-            self._recurs_setLinkPrefixNode(node, linkPrefix)
+    def _setLinkPrefixNodes(self, nodes: list[Node], linkPrefix: str):
+        if nodes:
+            nodes[0].project.linkPrefix = linkPrefix
 
     def is_project_exist(self, project: str):
         return project in self.projects
@@ -243,7 +247,7 @@ class GeneratorSnippets:
                     f"{snippet}",
                     "yaml",
                 )
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].code(node, config, progCode)
         return self.doxyError(
             project,
@@ -275,7 +279,7 @@ class GeneratorSnippets:
             return self.doxyNodeIsNone(project, config, snippet)
 
         if isinstance(node, Node):
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].function(node, config)
         return self.doxyError(
             project,
@@ -298,7 +302,7 @@ class GeneratorSnippets:
             return self.doxyNodeIsNone(project, config, snippet)
 
         if isinstance(node, Node):
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].member(node, config)
         return self.doxyError(
             project,
@@ -321,7 +325,7 @@ class GeneratorSnippets:
             return self.doxyNodeIsNone(project, config, snippet)
 
         if isinstance(node, Node):
-            self._recurs_setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
             return self.generatorBase[project].function(node, config)
         return self.doxyError(
             project,
@@ -339,7 +343,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].annotated(nodes, config)
 
     def doxyClassIndex(self, snippet, project: str, config):
@@ -347,7 +351,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].classes(nodes, config)
 
     def doxyClassHierarchy(self, snippet, project: str, config):
@@ -355,7 +359,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].hierarchy(nodes, config)
 
     def doxyNamespaceList(self, snippet, project: str, config):
@@ -363,7 +367,7 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].root.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].namespaces(nodes, config)
 
     def doxyFileList(self, snippet, project: str, config):
@@ -371,15 +375,15 @@ class GeneratorSnippets:
         if errorMsg:
             return errorMsg
         nodes = self.doxygen[project].files.children
-        self._recurs_setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].fileindex(nodes, config)
 
     def doxyNodeIsNone(self, project: str, config: dict, snippet: str) -> str:
         return self.doxyError(
             project,
             config,
-            "Node is None",
-            "Node is None",
+            f"Could not find coresponding snippet for project {project}",
+            f"Config: {config}",
             "yaml",
             snippet,
         )

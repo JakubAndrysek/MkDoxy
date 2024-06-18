@@ -31,3 +31,6 @@ docs-serve:
 
 docs-build: # results in site directory
 	mkdocs build
+
+pre-commit:
+	pre-commit run --show-diff-on-failure --color=always --all-files
