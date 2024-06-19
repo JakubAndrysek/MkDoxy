@@ -297,7 +297,7 @@ class GeneratorSnippets:
         if error_msg:
             return error_msg
 
-        node = self.finder.doxyClass(project, config.get("name"))
+        node = self.finder.doxy_class(project, config.get("name"))
         if node is None:
             return self.doxy_node_is_none(project, config, snippet)
 
