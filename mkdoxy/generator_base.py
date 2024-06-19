@@ -1,25 +1,24 @@
 import logging
-import os
 import string
-from typing import Dict
+from pathlib import Path
+from typing import Dict, Optional
 
 from jinja2 import BaseLoader, Environment, Template
 from jinja2.exceptions import TemplateError
 from mkdocs import exceptions
 
 import mkdoxy
-from mkdoxy.constants import Kind
+from mkdoxy.constants import Kind, ENDING
 from mkdoxy.filters import use_code_language
 from mkdoxy.node import DummyNode, Node
 from mkdoxy.utils import (
     merge_two_dicts,
-    parseTemplateFile,
+    load_template_meta,
     recursive_find,
     recursive_find_with_parent,
 )
 
 log: logging.Logger = logging.getLogger("mkdocs")
-
 
 LETTERS = string.ascii_lowercase + "~_@\\"
 
@@ -27,7 +26,7 @@ LETTERS = string.ascii_lowercase + "~_@\\"
 class GeneratorBase:
     """! Base class for all generators."""
 
-    def __init__(self, templateDir: str = "", ignore_errors: bool = False, debug: bool = False):
+    def __init__(self, custom_template_dir: Optional[Path] = None, ignore_errors: bool = False, debug: bool = False):
         """! Constructor.
         @details
         @param templateDir (str): Path to the directory with custom templates (default: "")
@@ -37,48 +36,40 @@ class GeneratorBase:
 
         self.debug: bool = debug  # if True, debug messages will be printed
         self.templates: Dict[str, Template] = {}
-        self.metaData: Dict[str, list[str]] = {}
+        self.meta_data: Dict[str, list[str]] = {}
 
-        environment = Environment(loader=BaseLoader())
-        environment.filters["use_code_language"] = use_code_language
+        self.environment = Environment(loader=BaseLoader())
+        self.environment.filters["use_code_language"] = use_code_language
         # code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
-        path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates")
-        ENDING = (".jinja2", ".j2", ".jinja")
-        for fileName in os.listdir(path):
-            filePath = os.path.join(path, fileName)
+        path = Path(mkdoxy.__file__).parent / "templates"
 
-            # accept any case of the file ending
-            if fileName.lower().endswith(ENDING):
-                with open(filePath, "r") as file:
-                    name = os.path.splitext(fileName)[0]
-                    fileTemplate, metaData = parseTemplateFile(file.read())
-                    self.templates[name] = environment.from_string(fileTemplate)
-                    self.metaData[name] = metaData
+        # load default templates
+        self.load_template_from_folder(path)
+
+        # test if custom template directory exists
+        if custom_template_dir:
+            if custom_template_dir.exists():
+                self.load_template_from_folder(custom_template_dir)
+            else:
+                log.error(f"Custom template directory '{custom_template_dir}' does not exist.")
+
+    def load_template_from_folder(self, folder: Path) -> None:
+        """! Load templates from a given folder.
+        @param folder (Path): Path to the folder with templates.
+        @return (Dict[str, Template]): Loaded templates.
+        """
+        for file_t in folder.iterdir():
+            if file_t.is_file() and file_t.name.lower().endswith(ENDING):
+                with open(file_t, "r") as file:
+                    name_name = file_t.stem
+                    file_template = file.read()
+                    self.templates[name_name] = self.environment.from_string(file_template)
+                    self.meta_data[name_name] = load_template_meta(file_template)
             else:
                 log.error(
-                    f"Trying to load unsupported file '{filePath}'. Supported file ends with {ENDING}."
+                    f"Trying to load unsupported file '{file_t}'. Supported file ends with {ENDING}."
                     f"Look at documentation: https://mkdoxy.kubaandrysek.cz/usage/#custom-jinja-templates."
                 )
-
-        # test if templateDir is existing
-        if templateDir:
-            if not os.path.exists(templateDir):
-                raise exceptions.ConfigurationError(f"Custom template directory '{templateDir}' does not exist.")
-            # load custom templates and overwrite default templates - if they exist
-            for fileName in os.listdir(templateDir):
-                filePath = os.path.join(templateDir, fileName)
-                if fileName.lower().endswith(ENDING):
-                    with open(filePath, "r") as file:
-                        name = os.path.splitext(fileName)[0]
-                        fileTemplate, metaData = parseTemplateFile(file.read())
-                        self.templates[name] = environment.from_string(fileTemplate)
-                        self.metaData[name] = metaData
-                        log.info(f"Overwriting template '{name}' with custom template.")
-                else:
-                    log.error(
-                        f"Trying to load unsupported file '{filePath}'. Supported file ends with {ENDING}."
-                        f"Look at documentation: https://mkdoxy.kubaandrysek.cz/usage/#custom-jinja-templates."
-                    )
 
     @staticmethod
     def shift_each_line(value: str, shift_char: str = "\t") -> str:
@@ -90,29 +81,28 @@ class GeneratorBase:
         """
         return "\n".join(shift_char + line for line in value.split("\n"))
 
-    def loadConfigAndTemplate(self, name: str) -> [Template, dict]:
-        template = self.templates.get(name)
-        if not template:
-            raise exceptions.Abort(
-                f"Trying to load unexciting template '{name}'. Please create a new template file with name '{name}.jinja2'"  # noqa: E501
-            )
-        metaData = self.metaData.get(name, {})
-        return template, metaData
+    def load_config_and_template(self, name: str) -> [Template, dict]:
+        """! Load a template and its config.
+        @details
+        @param name (str): Name of the template.
+        @return ([Template, dict]): Template and its config.
+        """
+        if name not in self.templates:
+            raise TemplateError(f"Template '{name}' not found. Available templates: {', '.join(self.templates.keys())}")
+        return self.templates[name], self.meta_data.get(name, {})
 
-    def render(self, tmpl: Template, data: dict) -> str:
+    def render(self, template: Template, render_data: dict) -> str:
         """! Render a template with given data.
         @details
-        @param tmpl (Template): Template to render.
-        @param data (dict): Data to render the template.
+        @param template (Template): Template to render.
+        @param render_data (dict): Data to render.
         @return (str): Rendered template.
         """
         try:
-            # if self.debug:
-            # print('Generating', path) # TODO: add path to data
-            rendered: str = tmpl.render(data)
+            rendered: str = template.render(render_data)
             return rendered
         except TemplateError as e:
-            raise Exception(str(e)) from e
+            raise DoxygenGeneratorRenderException(f"Error while rendering template: {e}") from e
 
     def error(
         self,
@@ -136,7 +126,7 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("error")
+        template, meta_config = self.load_config_and_template("error")
 
         data = {
             "title": title,
@@ -145,7 +135,7 @@ class GeneratorBase:
             "code_header": code_header,
             "code_language": code_language,
             "snippet_code": snippet_code,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -158,10 +148,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("annotated")
+        template, meta_config = self.load_config_and_template("annotated")
         data = {
             "nodes": nodes,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -174,10 +164,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("examples")
+        template, meta_config = self.load_config_and_template("examples")
         data = {
             "nodes": nodes,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -190,10 +180,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("programlisting")
+        template, meta_config = self.load_config_and_template("programlisting")
         data = {
             "node": node,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -207,12 +197,12 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("code")
+        template, meta_config = self.load_config_and_template("code")
         # newConfig = merge_two_dicts(CODE_CONFIG, config)
 
         data = {
             "node": node,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
             "code": code,
         }
 
@@ -227,10 +217,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("files")
+        template, meta_config = self.load_config_and_template("files")
         data = {
             "nodes": nodes,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -243,10 +233,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("namespaces")
+        template, meta_config = self.load_config_and_template("namespaces")
         data = {
             "nodes": nodes,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -259,10 +249,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("page")
+        template, meta_config = self.load_config_and_template("page")
         data = {
             "node": node,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -275,10 +265,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("example")
+        template, meta_config = self.load_config_and_template("example")
         data = {
             "node": node,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -291,10 +281,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("relatedPages")
+        template, meta_config = self.load_config_and_template("relatedPages")
         data = {
             "nodes": nodes,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -307,7 +297,7 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("classes")
+        template, meta_config = self.load_config_and_template("classes")
 
         classes = recursive_find(nodes, Kind.CLASS)
         classes.extend(recursive_find(nodes, Kind.STRUCT))
@@ -324,7 +314,7 @@ class GeneratorBase:
 
         data = {
             "dictionary": dictionary,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -356,10 +346,10 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("modules")
+        template, meta_config = self.load_config_and_template("modules")
         data = {
             "nodes": nodes,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -372,7 +362,7 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("hierarchy")
+        template, meta_config = self.load_config_and_template("hierarchy")
 
         classes = recursive_find(nodes, Kind.CLASS)
         classes.extend(recursive_find(nodes, Kind.STRUCT))
@@ -398,7 +388,7 @@ class GeneratorBase:
 
         data = {
             "classes": deduplicated_arr,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -411,8 +401,8 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
-        templateCode, metaConfigCode = self.loadConfigAndTemplate("code")
+        templateMemDef, metaConfigMemDef = self.load_config_and_template("memDef")
+        templateCode, metaConfigCode = self.load_config_and_template("code")
 
         data = {
             "node": node,
@@ -432,20 +422,20 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("member")
-        templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
-        templateMemTab, metaConfigMemTab = self.loadConfigAndTemplate("memTab")
-        templateCode, metaConfigCode = self.loadConfigAndTemplate("code")
+        template, meta_config = self.load_config_and_template("member")
+        template_mem_def, metaConfigMemDef = self.load_config_and_template("memDef")
+        templateMemTab, metaConfigMemTab = self.load_config_and_template("memTab")
+        templateCode, metaConfigCode = self.load_config_and_template("code")
 
         data = {
             "node": node,
-            "templateMemDef": templateMemDef,
+            "templateMemDef": template_mem_def,
             "configMemDef": metaConfigMemDef,
             "templateMemTab": templateMemTab,
             "configMemTab": metaConfigMemTab,
             "templateCode": templateCode,
             "configCode": metaConfigCode,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -458,17 +448,17 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("member")
-        templateMemDef, metaConfigMemDef = self.loadConfigAndTemplate("memDef")
-        templateMemTab, metaConfigMemTab = self.loadConfigAndTemplate("memTab")
+        template, meta_config = self.load_config_and_template("member")
+        templateMemDef, meta_config_mem_def = self.load_config_and_template("memDef")
+        templateMemTab, metaConfigMemTab = self.load_config_and_template("memTab")
 
         data = {
             "node": node,
             "templateMemDef": templateMemDef,
-            "configMemDef": metaConfigMemDef,
+            "configMemDef": meta_config_mem_def,
             "templateMemTab": templateMemTab,
             "configMemTab": metaConfigMemTab,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
 
@@ -491,7 +481,7 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template, metaConfig = self.loadConfigAndTemplate("index")
+        template, meta_config = self.load_config_and_template("index")
 
         found_nodes = recursive_find_with_parent(nodes, kind_filters, kind_parents)
         dictionary = {letter: [] for letter in LETTERS}
@@ -524,6 +514,10 @@ class GeneratorBase:
         data = {
             "title": title,
             "dictionary": sorted_dictionary,
-            "config": merge_two_dicts(config, metaConfig),
+            "config": merge_two_dicts(config, meta_config),
         }
         return self.render(template, data)
+
+
+class DoxygenGeneratorRenderException(exceptions.PluginError):
+    """! Exception for DoxygenGeneratorRender."""

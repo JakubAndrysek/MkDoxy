@@ -1,4 +1,6 @@
-from mkdoxy.doxyrun import DoxygenRun
+from pathlib import Path
+
+from mkdoxy.doxygen_generator import DoxygenGenerator
 
 
 def test_dox_dict2str():
@@ -12,11 +14,11 @@ def test_dox_dict2str():
         "GENERATE_LATEX": False,
     }
 
-    doxygen_run = DoxygenRun(
-        doxygenBinPath="doxygen",
-        doxygenSource="/path/to/source/files",
-        tempDoxyFolder="/path/to/temp/folder",
-        doxyCfgNew=dox_dict,
+    doxygen_run = DoxygenGenerator(
+        doxygen_bin_path=Path("doxygen"),
+        doxygen_source_dirs="/path/to/source/files",
+        temp_doxy_folder=Path("/path/to/temp/folder"),
+        doxy_config_dict=dox_dict,
     )
 
     result = doxygen_run.dox_dict2str(dox_dict)
@@ -35,15 +37,15 @@ def test_dox_dict2str():
 def test_set_doxy_cfg_custom_file():
     dox_dict = {}
 
-    doxygen_run = DoxygenRun(
-        doxygenBinPath="doxygen",
-        doxygenSource="/path/to/source/files",
-        tempDoxyFolder="/path/to/temp/folder",
-        doxyConfigFile="./tests/data/Doxyfile",
-        doxyCfgNew=dox_dict,
+    doxygen_run = DoxygenGenerator(
+        doxygen_bin_path=Path("doxygen"),
+        doxygen_source_dirs="/path/to/source/files",
+        temp_doxy_folder=Path("/path/to/temp/folder"),
+        doxy_config_file="./tests/data/Doxyfile",
+        doxy_config_dict=dox_dict,
     )
 
-    result = doxygen_run.setDoxyCfg(dox_dict)
+    result = doxygen_run.set_doxy_config(dox_dict)
 
     expected_result = {
         "DOXYFILE_ENCODING": "UTF-8",
@@ -67,11 +69,11 @@ def test_str2dox_dict():
         "SHOW_NAMESPACES = YES\nGENERATE_HTML = NO\nGENERATE_LATEX = NO"
     )
 
-    doxygen_run = DoxygenRun(
-        doxygenBinPath="doxygen",
-        doxygenSource="/path/to/source/files",
-        tempDoxyFolder="/path/to/temp/folder",
-        doxyCfgNew={},
+    doxygen_run = DoxygenGenerator(
+        doxygen_bin_path=Path("doxygen"),
+        doxygen_source_dirs="/path/to/source/files",
+        temp_doxy_folder=Path("/path/to/temp/folder"),
+        doxy_config_dict={},
     )
 
     result = doxygen_run.str2dox_dict(dox_str)

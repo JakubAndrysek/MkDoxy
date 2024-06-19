@@ -13,7 +13,7 @@ class Finder:
     def _normalize(self, name: str) -> str:
         return name.replace(" ", "")
 
-    def listToNames(self, list):
+    def list_to_names(self, list):
         return [part.name_params for part in list]
 
     def doxyClass(self, project, className: str):
@@ -22,10 +22,10 @@ class Finder:
             for findClass in classes:
                 if findClass.name_long == className:
                     return findClass
-            return self.listToNames(classes)
+            return self.list_to_names(classes)
         return None
 
-    def doxyClassMethod(self, project, className: str, methodName: str):
+    def doxy_class_method(self, project, className: str, methodName: str):
         findClass = self.doxyClass(project, className)
         if findClass:
             if isinstance(findClass, list):
@@ -39,24 +39,24 @@ class Finder:
                     for member in members:
                         if self._normalize(methodName) in self._normalize(member.name_params):
                             return member
-                    return self.listToNames(members)
+                    return self.list_to_names(members)
                 return None
         return None
 
-    def doxyFunction(self, project, functionName: str):
+    def doxy_function(self, project, functionName: str):
         functions = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE])
         if functions:
             for function in functions:
                 if self._normalize(functionName) == self._normalize(function.name_params):
                     return function
-            return self.listToNames(functions)
+            return self.list_to_names(functions)
         return None
 
-    def doxyCode(self, project, fileName):
+    def doxy_code(self, project, fileName):
         files = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FILE], [Kind.DIR])
         if files:
             for file in files:
                 if self._normalize(fileName) == self._normalize(file.name_long):
                     return file
-            return self.listToNames(files)
+            return self.list_to_names(files)
         return None

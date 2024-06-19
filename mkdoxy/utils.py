@@ -2,12 +2,13 @@ import logging
 import re
 
 import yaml
-from mkdocs.config import Config
+
+# from mkdoxy.node import Node
+from mkdoxy.constants import Kind
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
-
-regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
+template_meta_regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
 
 
 # Credits: https://stackoverflow.com/a/1630350
@@ -69,25 +70,30 @@ def split_safe(s: str, delim: str) -> [str]:
     return tokens
 
 
-def parseTemplateFile(templateFile: str):
-    match = re.match(regex, templateFile, re.MULTILINE)
+def load_template_meta(template_file_content: str) -> list:
+    """! Load the template and metadata from the template file.
+    @details
+    @param template_file_content: (str) The template file content
+    @return: (dict) The metadata
+    """
+    match = re.match(template_meta_regex, template_file_content, re.MULTILINE)
     if match:
-        template = match["template"]
+        # template = match["template"]
         meta = match["meta"]
-        metadata = yaml.safe_load(meta)
-        return template, metadata
-    return templateFile, {}
+        return yaml.safe_load(meta)
+    else:
+        return []
 
 
-def merge_two_dicts(base, new):
-    "https://stackoverflow.com/a/26853961"
+def merge_two_dicts(base: dict, new: dict) -> dict:
+    """https://stackoverflow.com/a/26853961"""
     result = base.copy()  # start with keys and values of x
     result.update(new)  # modifies z with keys and values of y
     return result
 
 
 # def recursive_find(nodes: [Node], kind: Kind):
-def recursive_find(nodes, kind):
+def recursive_find(nodes: list["Node"], kind: Kind) -> list["Node"]:
     ret = []
     for node in nodes:
         if node.kind == kind:
@@ -97,24 +103,11 @@ def recursive_find(nodes, kind):
     return ret
 
 
-# def recursive_find_with_parent(nodes: [Node], kinds: [Kind], parent_kinds: [Kind]):
-def recursive_find_with_parent(nodes, kinds, parent_kinds):
-    ret = []
+def recursive_find_with_parent(nodes: list["Node"], kinds: list[Kind], parent_kinds: list[Kind]) -> list["Node"]:
+    ret: list["Node"] = []
     for node in nodes:
         if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
             ret.append(node)
         if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
             ret.extend(recursive_find_with_parent(node.children, kinds, parent_kinds))
     return ret
-
-
-def check_enabled_markdown_extensions(config: Config, mkdoxyConfig: Config) -> None:
-    # sourcery skip: merge-nested-ifs
-    """
-    Checks if the required markdown extensions are enabled.
-    :param config: The MkDocs config.
-    """
-    # enabled_extensions = config['markdown_extensions']
-    # if mkdoxyConfig.get("emojis-enabled", False):
-    # 	if 'pymdownx.emoji' not in enabled_extensions:
-    # 		log.warning("The 'pymdownx.emoji' extension is not enabled. Some emojis may not be rendered correctly. https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#configuration")

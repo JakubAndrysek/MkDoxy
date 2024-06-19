@@ -430,7 +430,7 @@ class Node:
         return self._refid
 
     @property
-    def kind(self) -> str:
+    def kind(self) -> Kind:
         return self._kind
 
     @property
@@ -474,14 +474,14 @@ class Node:
     @property
     def url(self) -> str:
         if self.is_parent or self.is_group or self.is_file or self.is_dir or self.is_page:
-            return self.project.linkPrefix + self._refid + ".md"
+            return self.project.link_prefix + self._refid + ".md"
         else:
             return f"{self._parent.url}#{self.anchor}"
 
     @property
     def base_url(self) -> str:
         def prefix(page: str):
-            return self.project.linkPrefix + page
+            return self.project.link_prefix + page
 
         if self.is_group:
             return prefix("modules.md")
@@ -506,13 +506,13 @@ class Node:
     @property
     def url_source(self) -> str:
         if self.is_parent or self.is_group or self.is_file or self.is_dir:
-            return self.project.linkPrefix + self._refid + "_source.md"
+            return self.project.link_prefix + self._refid + "_source.md"
         else:
-            return self.project.linkPrefix + self._refid + ".md"
+            return self.project.link_prefix + self._refid + ".md"
 
     @property
     def filename(self) -> str:
-        return self.project.linkPrefix + self._refid + ".md"
+        return self.project.link_prefix + self._refid + ".md"
 
     @property
     def root(self) -> "Node":

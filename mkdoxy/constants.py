@@ -168,3 +168,6 @@ class Visibility(Enum):
     PACKAGE = "package"
     PROTECTED = "protected"
     PRIVATE = "private"
+
+
+ENDING = (".jinja2", ".j2", ".jinja")

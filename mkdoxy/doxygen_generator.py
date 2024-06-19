@@ -2,26 +2,27 @@ import hashlib
 import logging
 import os
 import shutil
-
-from pathlib import Path, PurePath
+from pathlib import Path
 from subprocess import PIPE, Popen
 from typing import Optional
+
+from mkdocs import exceptions
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
 
-class DoxygenRun:
+class DoxygenGenerator:
     """! Class for running Doxygen.
     @details This class is used to run Doxygen and parse the XML output.
     """
 
     def __init__(
         self,
-        doxygenBinPath: str,
-        doxygenSource: str,
-        tempDoxyFolder: str,
-        doxyCfgNew,
-        doxyConfigFile: Optional[str] = None,
+        doxygen_bin_path: Path,
+        doxygen_source_dirs: str,
+        temp_doxy_folder: Path,
+        doxy_config_file: Optional[str] = None,
+        doxy_config_dict: dict = {},
     ):
         """! Constructor.
         Default Doxygen config options:
@@ -37,29 +38,28 @@ class DoxygenRun:
         - GENERATE_LATEX: NO
 
         @details
-        @param doxygenBinPath: (str) Path to the Doxygen binary.
-        @param doxygenSource: (str) Source files for Doxygen.
-        @param tempDoxyFolder: (str) Temporary folder for Doxygen.
-        @param doxyConfigFile: (str) Path to a Doxygen config file.
-        @param doxyCfgNew: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
+        @param doxygen_bin_path: (str) Path to the Doxygen binary.
+        @param doxygen_source_dirs: (str) Source files for Doxygen.
+        @param temp_doxy_folder: (str) Temporary folder for Doxygen.
+        @param doxy_config_file: (str) Custom Doxygen config file.
+        @param doxy_config_dict: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
         """  # noqa: E501
 
-        if not self.is_doxygen_valid_path(doxygenBinPath):
+        if not self.is_doxygen_valid_path(doxygen_bin_path):
             raise DoxygenBinPathNotValid(
-                f"Invalid Doxygen binary path: {doxygenBinPath}\n"
+                f"Invalid Doxygen binary path: {doxygen_bin_path}\n"
                 f"Make sure Doxygen is installed and the path is correct.\n"
                 f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-binary."
             )
 
-        self.doxygenBinPath: str = doxygenBinPath
-        self.doxygenSource: str = doxygenSource
-        self.tempDoxyFolder: str = tempDoxyFolder
-        self.doxyConfigFile: Optional[str] = doxyConfigFile
-        self.hashFileName: str = "hashChanges.yaml"
-        self.hashFilePath: PurePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
-        self.doxyCfg: dict = self.setDoxyCfg(doxyCfgNew)
+        self.doxygen_bin_path: Path = doxygen_bin_path
+        self.doxygen_source_dirs: str = doxygen_source_dirs
+        self.temp_doxy_folder: Path = temp_doxy_folder
+        self.doxy_config_file: Optional[str] = doxy_config_file
+        self.hash_file_name: Path = Path("mkdoxy_hash.txt")
+        self.doxy_cfg: dict = self.set_doxy_config(doxy_config_dict)
 
-    def setDoxyCfg(self, doxyCfgNew: dict) -> dict:
+    def set_doxy_config(self, doxyCfgNew: dict) -> dict:
         """! Set the Doxygen configuration.
         @details If a custom Doxygen config file is provided, it will be used. Otherwise, default options will be used.
         @details Order of application of parameters:
@@ -84,20 +84,20 @@ class DoxygenRun:
          added to the default config (new options will overwrite default options)
         @return: (dict) Doxygen configuration.
         """
-        doxyCfg = {}
+        doxy_config = {}
 
-        if self.doxyConfigFile is not None and self.doxyConfigFile != "":
+        if self.doxy_config_file is not None and self.doxy_config_file != "":
             try:
-                with open(self.doxyConfigFile, "r") as file:
-                    doxyCfg.update(self.str2dox_dict(file.read()))
+                with open(self.doxy_config_file, "r") as file:
+                    doxy_config.update(self.str2dox_dict(file.read()))
             except FileNotFoundError as e:
                 raise DoxygenCustomConfigNotFound(
-                    f"Custom Doxygen config file not found: {self.doxyConfigFile}\n"
+                    f"Custom Doxygen config file not found: {self.doxy_config_file}\n"
                     f"Make sure the path is correct."
                     f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-configuration-file."
                 ) from e
         else:
-            doxyCfg = {
+            doxy_config = {
                 "DOXYFILE_ENCODING": "UTF-8",
                 "GENERATE_XML": "YES",
                 "RECURSIVE": "YES",
@@ -107,46 +107,47 @@ class DoxygenRun:
                 "GENERATE_LATEX": "NO",
             }
 
-        doxyCfg.update(doxyCfgNew)
-        doxyCfg["INPUT"] = self.doxygenSource
-        doxyCfg["OUTPUT_DIRECTORY"] = self.tempDoxyFolder
-        return doxyCfg
+        doxy_config.update(doxyCfgNew)
+        doxy_config["INPUT"] = self.doxygen_source_dirs
+        doxy_config["OUTPUT_DIRECTORY"] = str(self.temp_doxy_folder)
+        return doxy_config
 
-    def is_doxygen_valid_path(self, doxygen_bin_path: str) -> bool:
+    @staticmethod
+    def is_doxygen_valid_path(doxygen_bin_path: Path) -> bool:
         """! Check if the Doxygen binary path is valid.
         @details Accepts a full path or just 'doxygen' if it exists in the system's PATH.
         @param doxygen_bin_path: (str) The path to the Doxygen binary or just 'doxygen'.
         @return: (bool) True if the Doxygen binary path is valid, False otherwise.
         """
         # If the path is just 'doxygen', search for it in the system's PATH
-        if doxygen_bin_path.lower() == "doxygen":
+        if str(doxygen_bin_path) == "doxygen":
             return shutil.which("doxygen") is not None
 
         # Use pathlib to check if the provided full path is a file and executable
-        path = Path(doxygen_bin_path)
-        return path.is_file() and os.access(path, os.X_OK)
+        return doxygen_bin_path.is_file() and os.access(doxygen_bin_path, os.X_OK)
 
     # Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
-    def dox_dict2str(self, dox_dict: dict) -> str:
+    @staticmethod
+    def dox_dict2str(dox_dict: dict) -> str:
         """! Convert a dictionary to a string that can be written to a doxygen config file.
         @details
         @param dox_dict: (dict) Dictionary to convert.
         @return: (str) String that can be written to a doxygen config file.
         """
-        s = ""
+        string = ""
         new_line = "{option} = {value}\n"
         for key, value in dox_dict.items():
             if value is True:
-                _value = "YES"
+                value_transformed = "YES"
             elif value is False:
-                _value = "NO"
+                value_transformed = "NO"
             else:
-                _value = value
+                value_transformed = value
 
-            s += new_line.format(option=key.upper(), value=_value)
+            string += new_line.format(option=key.upper(), value=value_transformed)
 
         # Don't need an empty line at the end
-        return s.strip()
+        return string.strip()
 
     def str2dox_dict(self, dox_str: str) -> dict:
         """! Convert a string from a doxygen config file to a dictionary.
@@ -154,106 +155,103 @@ class DoxygenRun:
         @param dox_str: (str) String from a doxygen config file.
         @return: (dict) Dictionary.
         """
-        dox_dict = {}
+        doxy_dict = {}
         try:
             for line in dox_str.split("\n"):
                 if line.strip() == "":
                     continue
                 key, value = line.split(" = ")
                 if value == "YES":
-                    dox_dict[key] = True
+                    doxy_dict[key] = True
                 elif value == "NO":
-                    dox_dict[key] = False
+                    doxy_dict[key] = False
                 else:
-                    dox_dict[key] = value
+                    doxy_dict[key] = value
         except ValueError as e:
             raise DoxygenCustomConfigNotValid(
-                f"Invalid custom Doxygen config file: {self.doxyConfigFile}\n"
+                f"Invalid custom Doxygen config file: {self.doxy_config_file}\n"
                 f"Make sure the file is in standard Doxygen format."
                 f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/."
             ) from e
-        return dox_dict
+        return doxy_dict
 
-    def hasChanged(self) -> bool:
+    def has_changes(self) -> bool:
         """! Check if the source files have changed since the last run.
         @details
         @return: (bool) True if the source files have changed since the last run.
         """
 
-        def hashWrite(filename: PurePath, hash: str):
-            with open(filename, "w") as file:
-                file.write(hash)
+        def hash_write(file_name: Path, hash_key: str):
+            with open(file_name, "w") as hash_file:
+                hash_file.write(hash_key)
 
-        def hashRead(filename: PurePath) -> str:
-            with open(filename, "r") as file:
-                return str(file.read())
+        def hash_read(file_name: Path) -> str:
+            with open(file_name, "r") as hash_file:
+                return str(hash_file.read())
 
         sha1 = hashlib.sha1()
-        srcs = self.doxygenSource.split(" ")
-        for src in srcs:
-            for path in Path(src).rglob("*.*"):
-                # # Code from https://stackoverflow.com/a/22058673/15411117
-                # # BUF_SIZE is totally arbitrary, change for your app!
+        sources = self.doxygen_source_dirs.split(" ")
+        for source in sources:
+            for path in Path(source).rglob("*.*"):
+                # Code from https://stackoverflow.com/a/22058673/15411117
                 BUF_SIZE = 65536  # let's read stuff in 64kb chunks!
                 if path.is_file():
-                    with open(path, "rb") as f:
+                    with open(path, "rb") as file:
                         while True:
-                            data = f.read(BUF_SIZE)
+                            data = file.read(BUF_SIZE)
                             if not data:
                                 break
                             sha1.update(data)
-                # print(f"{path}: {sha1.hexdigest()}")
 
-        hashNew = sha1.hexdigest()
-        if Path(self.hashFilePath).is_file():
-            hashOld = hashRead(self.hashFilePath)
-            if hashNew == hashOld:
-                return False
+        hash_new = sha1.hexdigest()
+        hash_file_path = Path.joinpath(self.temp_doxy_folder, self.hash_file_name)
+        if hash_file_path.is_file():
+            hash_old = hash_read(hash_file_path)
+            if hash_new == hash_old:
+                return False  # No changes in the source files
 
-        hashWrite(self.hashFilePath, hashNew)
+        hash_write(hash_file_path, hash_new)
         return True
 
-    def run(self):
+    def run(self) -> None:
         """! Run Doxygen with the current configuration using the Popen class.
         @details
         """
-        doxyBuilder = Popen(
-            [self.doxygenBinPath, "-"],
+        doxy_builder = Popen(
+            [self.doxygen_bin_path, "-"],
             stdout=PIPE,
             stdin=PIPE,
             stderr=PIPE,
         )
-        (doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))[0].decode().strip())
-        # log.info(self.destinationDir)
-        # log.info(stdout_data)
+        doxy_str = self.dox_dict2str(self.doxy_cfg).encode("utf-8")
+        stdout_data, stderr_data = doxy_builder.communicate(doxy_str)
+        if doxy_builder.returncode != 0:
+            log.error(f"Error running Doxygen: {stderr_data.decode('utf-8')}")
+            raise Exception("Error running Doxygen")
 
-    def checkAndRun(self):
-        """! Check if the source files have changed since the last run and run Doxygen if they have.
-        @details
-        @return: (bool) True if Doxygen was run.
-        """
-        if self.hasChanged():
-            self.run()
-            return True
-        else:
-            return False
-
-    def getOutputFolder(self) -> PurePath:
+    def get_output_xml_folder(self) -> Path:
         """! Get the path to the XML output folder.
         @details
-        @return: (PurePath) Path to the XML output folder.
+        @return: (Path) Path to the XML output folder.
         """
-        return Path.joinpath(Path(self.tempDoxyFolder), Path("xml"))
+        return Path.joinpath(self.temp_doxy_folder, Path("xml"))
+
+    def get_output_html_folder(self) -> Path:
+        """! Get the path to the HTML output folder.
+        @details
+        @return: (Path) Path to the HTML output folder.
+        """
+        return Path.joinpath(self.temp_doxy_folder, Path("html"))
 
 
 # not valid path exception
-class DoxygenBinPathNotValid(Exception):
+class DoxygenBinPathNotValid(exceptions.PluginError):
     pass
 
 
-class DoxygenCustomConfigNotFound(Exception):
+class DoxygenCustomConfigNotFound(exceptions.PluginError):
     pass
 
 
-class DoxygenCustomConfigNotValid(Exception):
+class DoxygenCustomConfigNotValid(exceptions.PluginError):
     pass
