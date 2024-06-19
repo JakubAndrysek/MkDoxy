@@ -1,5 +1,6 @@
 import logging
 import re
+
 import yaml
 
 log: logging.Logger = logging.getLogger("mkdocs")

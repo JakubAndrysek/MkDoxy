@@ -10,12 +10,12 @@ from mkdocs import exceptions
 import mkdoxy
 from mkdoxy.constants import Kind, ENDING
 from mkdoxy.filters import use_code_language
+from mkdoxy.finder import recursive_find, recursive_find_with_parent
 from mkdoxy.node import DummyNode, Node
 from mkdoxy.utils import (
     merge_two_dicts,
     load_template_meta,
 )
-from mkdoxy.finder import recursive_find, recursive_find_with_parent
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
