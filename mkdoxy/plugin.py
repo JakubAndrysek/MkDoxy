@@ -7,6 +7,7 @@ MkDoxy is a MkDocs plugin for generating documentation from Doxygen XML files.
 import logging
 from pathlib import Path
 
+
 from mkdocs.config import config_options as c
 from mkdocs.config.base import Config
 from mkdocs.plugins import BasePlugin
@@ -53,9 +54,17 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
     def __init__(self):
         self.generator_base: dict[str, GeneratorBase] = {}
         self.doxygen: dict[str, Doxygen] = {}
+        self.mkdocs_config_changed = False
         self.default_template_config = {
             "indent_level": 0,
         }
+
+    def on_startup(self, command: str, dirty: bool) -> None:
+        pass
+        # print("on_startup")
+        # mkdocs_config = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+        # print(f"mkdocs_config: {mkdocs_config}")
+        # raise Exception(f"on_startup {mkdocs_config}")
 
     def on_config(self, config: MkDoxyConfig) -> MkDoxyConfig:
         """! Called after the plugin has been initialized.
@@ -67,7 +76,34 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
         if self.config.debug:
             log.setLevel(logging.DEBUG)
             log.debug("- Debug mode enabled")
+
+        # check if config has changed compared to last run
+        config_file = self.config.get("config_file_path", None)
+        if config_file:
+            self.mkdocs_config_changed = self.yaml_config_changes(Path(config_file))
         return config
+
+    def yaml_config_changes(self, config_file, config) -> bool:
+        config_file = Path(config_file)
+        log.debug(f"- Config file path: {config_file}")
+
+        hash_file_name = ".mkdoxy_hash"
+
+        hash_file_path = (
+            Path(self.config.custom_api_folder) / Path(hash_file_name)
+            if self.config.custom_api_folder
+            else Path(config["site_dir"]) / Path("assets/.doxy") / Path(hash_file_name)
+        )
+        hash_file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        if hash_file_path.exists():
+            log.debug(f"- Hash file exists: {hash_file_path}")
+            previous_hash = hash_file_path.read_text()
+        else:
+            log.debug(f"- Hash file does not exist: {hash_file_path}")
+            previous_hash = None
+
+        log.debug(f"- Previous hash: {previous_hash}")
 
     def on_files(self, files: Files, config: Config) -> Files:
         """! Called after files have been gathered by MkDocs.

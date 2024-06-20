@@ -175,20 +175,19 @@ class DoxygenGenerator:
             ) from e
         return doxy_dict
 
+    def hash_write(self, file_name: Path, hash_key: str):
+        with open(file_name, "w") as hash_file:
+            hash_file.write(hash_key)
+
+    def hash_read(self, file_name: Path) -> str:
+        with open(file_name, "r") as hash_file:
+            return str(hash_file.read())
+
     def has_changes(self) -> bool:
         """! Check if the source files have changed since the last run.
         @details
         @return: (bool) True if the source files have changed since the last run.
         """
-
-        def hash_write(file_name: Path, hash_key: str):
-            with open(file_name, "w") as hash_file:
-                hash_file.write(hash_key)
-
-        def hash_read(file_name: Path) -> str:
-            with open(file_name, "r") as hash_file:
-                return str(hash_file.read())
-
         sha1 = hashlib.sha1()
         sources = self.doxygen_source_dirs.split(" ")
         for source in sources:
@@ -206,11 +205,11 @@ class DoxygenGenerator:
         hash_new = sha1.hexdigest()
         hash_file_path = Path.joinpath(self.temp_doxy_folder, self.hash_file_name)
         if hash_file_path.is_file():
-            hash_old = hash_read(hash_file_path)
+            hash_old = self.hash_read(hash_file_path)
             if hash_new == hash_old:
                 return False  # No changes in the source files
 
-        hash_write(hash_file_path, hash_new)
+        self.hash_write(hash_file_path, hash_new)
         return True
 
     def run(self) -> None:

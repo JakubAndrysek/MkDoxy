@@ -15,16 +15,16 @@ class Finder:
         return name.replace(" ", "")
 
     @staticmethod
-    def list_to_names(list):
-        return [part.name_params for part in list]
+    def list_doxy_names(list_names: list[Node]) -> list[str]:
+        return [part.name_params for part in list_names]
 
     def doxy_class(self, project, className: str):
-        classes = recursive_find(self.doxygen[project].root.children, Kind.CLASS)
+        classes: list[Node] = recursive_find(self.doxygen[project].root.children, Kind.CLASS)
         if classes:
             for findClass in classes:
                 if findClass.name_long == className:
                     return findClass
-            return self.list_to_names(classes)
+            return self.list_doxy_names(classes)
         return None
 
     def doxy_class_method(self, project, className: str, methodName: str):
@@ -41,7 +41,7 @@ class Finder:
                     for member in members:
                         if self._normalize(methodName) in self._normalize(member.name_params):
                             return member
-                    return self.list_to_names(members)
+                    return self.list_doxy_names(members)
                 return None
         return None
 
@@ -51,7 +51,7 @@ class Finder:
             for function in functions:
                 if self._normalize(functionName) == self._normalize(function.name_params):
                     return function
-            return self.list_to_names(functions)
+            return self.list_doxy_names(functions)
         return None
 
     def doxy_code(self, project, fileName):
@@ -60,11 +60,11 @@ class Finder:
             for file in files:
                 if self._normalize(fileName) == self._normalize(file.name_long):
                     return file
-            return self.list_to_names(files)
+            return self.list_doxy_names(files)
         return None
 
 
-def recursive_find(nodes: list["Node"], kind: Kind) -> list["Node"]:
+def recursive_find(nodes: list[Node], kind: Kind) -> list[Node]:
     ret = []
     for node in nodes:
         if node.kind == kind:
@@ -74,8 +74,8 @@ def recursive_find(nodes: list["Node"], kind: Kind) -> list["Node"]:
     return ret
 
 
-def recursive_find_with_parent(nodes: list["Node"], kinds: list[Kind], parent_kinds: list[Kind]) -> list["Node"]:
-    ret: list["Node"] = []
+def recursive_find_with_parent(nodes: list[Node], kinds: list[Kind], parent_kinds: list[Kind]) -> list[Node]:
+    ret: list[Node] = []
     for node in nodes:
         if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
             ret.append(node)
