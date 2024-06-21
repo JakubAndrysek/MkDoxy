@@ -8,14 +8,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest] # windows-latest, macos-latest requires doxygen to be installed manually
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.x'
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
       - name: Install dependencies
@@ -24,9 +23,11 @@ jobs:
           python -m pip install -e ".[dev]"
           sudo apt-get install doxygen
       - name: Clone test repo
-        run: git clone https://github.com/JakubAndrysek/MkDoxy-demo.git demo
+        run: |
+          git clone https://github.com/JakubAndrysek/MkDoxy-demo.git demo
       - name: Build docs
         run: |
           cd demo
+          git checkout core-update
           python -m pip install -r requirements.txt
           mkdocs build --clean --verbose

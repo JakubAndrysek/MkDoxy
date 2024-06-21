@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 from xml.etree import ElementTree
 
 from mkdoxy.cache import Cache
@@ -12,9 +13,9 @@ log: logging.Logger = logging.getLogger("mkdocs")
 
 
 class Doxygen:
-    def __init__(self, index_path: str, parser: XmlParser, cache: Cache):
+    def __init__(self, index_path: Path, parser: XmlParser, cache: Cache):
         self.debug = parser.debug
-        path_xml = os.path.join(index_path, "index.xml")
+        path_xml = index_path / "index.xml"
         if self.debug:
             log.info(f"Loading XML from: {path_xml}")
         xml = ElementTree.parse(path_xml).getroot()
@@ -136,7 +137,7 @@ class Doxygen:
                 self._remove_from_root(child.refid, root)
             self._fix_duplicates(child, root, filter)
 
-    def printStructure(self):
+    def print_structure(self):
         if not self.debug:
             return
         print("\n")

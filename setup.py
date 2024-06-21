@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
 
+__version__ = "1.2.5"
+
 
 def readme():
     with open("README.md") as f:
@@ -26,7 +28,7 @@ def import_dev_requirements():
 # https://pypi.org/project/mkdoxy/
 setup(
     name="mkdoxy",
-    version="1.2.5",
+    version=__version__,
     description="MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -58,5 +60,9 @@ setup(
     ],
     packages=find_packages(),
     package_data={"mkdoxy": ["templates/*.jinja2"]},
-    entry_points={"mkdocs.plugins": ["mkdoxy = mkdoxy.plugin:MkDoxy"]},
+    entry_points={
+        "mkdocs.plugins": ["mkdoxy = mkdoxy.plugin:MkDoxy"],
+        # folder mkdoxy/cli.py
+        "console_scripts": ["mkdoxy = mkdoxy.cli:cli"],
+    },
 )

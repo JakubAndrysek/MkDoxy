@@ -67,8 +67,8 @@ plugins:
           src_dirs: mkdoxy
           full_doc: True
           custom_template_dir: templates-custom
-          doxy_config_file: demo-projects/animal/Doxyfile
-          doxy_config_dict:
+          doxy_cfg_file: demo-projects/animal/Doxyfile
+          doxy_cfg:
             FILE_PATTERNS: "*.py"
             EXAMPLE_PATH: ""
             RECURSIVE: True
@@ -85,7 +85,9 @@ plugins:
       custom_api_folder: .mkdoxy
       full_doc: True
       debug: False
-#      ignore_errors: False
+      ignore_errors: False
+  - other_extension_random_name:
+      random_key: random_value
 
 markdown_extensions:
   - pymdownx.highlight
