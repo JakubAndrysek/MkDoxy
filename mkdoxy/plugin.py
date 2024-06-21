@@ -43,6 +43,7 @@ class MkDoxy(BasePlugin):
         self.default_template_config = {
             "indent_level": 0,
         }
+        self.counter = 0
 
     def on_config(self, config: Config) -> Config:
         """! Called after the plugin has been initialized.

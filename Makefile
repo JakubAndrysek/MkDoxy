@@ -20,7 +20,7 @@ clean:
 
 # Testing
 reviewCode:
-	sourcery review mkdoxy --in-place
+	sourcery review mkdoxy --fix
 
 install-dev:
 	python3 -m pip install --force --editable .

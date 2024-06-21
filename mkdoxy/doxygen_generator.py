@@ -22,7 +22,7 @@ class DoxygenGenerator:
         doxygen_source_dirs: str,
         temp_doxy_folder: Path,
         doxy_config_file: Optional[Path] = None,
-        doxy_config_dict: dict = {},
+        doxy_config_dict: dict = None,
     ):
         """! Constructor.
         Default Doxygen config options:
@@ -45,6 +45,8 @@ class DoxygenGenerator:
         @param doxy_config_dict: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
         """  # noqa: E501
 
+        if doxy_config_dict is None:
+            doxy_config_dict = {}
         if not self.is_doxygen_valid_path(doxygen_bin_path):
             raise DoxygenBinPathNotValid(
                 f"Invalid Doxygen binary path: {doxygen_bin_path}\n"
@@ -197,10 +199,10 @@ class DoxygenGenerator:
         """
         sha1 = hashlib.sha1()
         sources = self.doxygen_source_dirs.split(" ")
+        # Code from https://stackoverflow.com/a/22058673/15411117
+        BUF_SIZE = 65536  # let's read stuff in 64kb chunks!
         for source in sources:
             for path in Path(source).rglob("*.*"):
-                # Code from https://stackoverflow.com/a/22058673/15411117
-                BUF_SIZE = 65536  # let's read stuff in 64kb chunks!
                 if path.is_file():
                     with open(path, "rb") as file:
                         while True:

@@ -145,7 +145,7 @@ def validate_project_config(doxy_cfg: Config, legacy_options: list[str]) -> None
     @return: None
     @throws ConfigurationError: If the configuration is invalid.
     """
-    if len(legacy_options) > 0:
+    if legacy_options:
         log.warning("Found some legacy configuration options, please update your configuration!")
         log.warning("Run command 'mkdoxy migrate mkdocs.yaml' to update your configuration to the new format!")
         log.warning("More information in the documentation: https://mkdoxy.kubaandrysek.cz/")
