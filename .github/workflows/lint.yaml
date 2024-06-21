@@ -20,6 +20,8 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install pre-commit sourcery-cli pre-commit-hooks black ruff pytest
+          pip install -e ".[dev]"
+          sudo apt-get install doxygen
 
       - name: Run pre-commit hooks
         uses: pre-commit/action@v3.0.0
