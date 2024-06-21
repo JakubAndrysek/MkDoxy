@@ -41,17 +41,25 @@ def convert_config_hyphen_version(lines: list[str]) -> list[str]:
     return updated_lines
 
 
-def update_new_config(path_to_mkdocs: Path) -> None:
+def update_new_config(
+    path_to_mkdocs: Path, backup_old_config: bool = True, backup_file_name: str = "mkdocs.old.yaml"
+) -> None:
     """
     Copy current config to mkdocs.old.yaml and update mkdocs.yaml with new config
     @details
     @param path_to_mkdocs: Path to mkdocs folder
+    @param backup_old_config: Backup old config to mkdocs.old.yaml - default True
+    @param backup_file_name: Name of backup file - default "mkdocs.old.yaml"
     """
-    mkdocs_new = path_to_mkdocs / "mkdocs.yaml"
-    mkdocs_old = path_to_mkdocs / "mkdocs.old.yaml"
+    print(path_to_mkdocs)
+    if not path_to_mkdocs.is_file():
+        raise FileNotFoundError(f"File {path_to_mkdocs} not found")
 
-    # copy mkdocs_new config to mkdocs.old.yaml
-    mkdocs_old.write_text(mkdocs_new.read_text())
+    if backup_old_config:
+        mkdocs_old = path_to_mkdocs.with_name(backup_file_name)
+
+        # copy mkdocs_new config to mkdocs.old.yaml
+        mkdocs_old.write_text(path_to_mkdocs.read_text())
 
     # update mkdocs_new config
-    replace_tags_in_mkdoxy_config(mkdocs_new)
+    replace_tags_in_mkdoxy_config(path_to_mkdocs)

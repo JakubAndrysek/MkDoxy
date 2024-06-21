@@ -126,11 +126,15 @@ If you want to use a standard `Doxygen` configuration file, you can specify the 
 
     ??? example "How is it implemented?"
 
-::: doxy.mkdoxyApi.code
-file: doxyrun.py
-start: 64
-end: 115
-indent_level: 8
+[//]: # (::: doxy.mkdoxyApi.code)
+
+[//]: # (file: doxygen_generator.py)
+
+[//]: # (start: 64)
+
+[//]: # (end: 115)
+
+[//]: # (indent_level: 8)
 
 
 

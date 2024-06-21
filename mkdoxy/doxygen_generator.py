@@ -21,7 +21,7 @@ class DoxygenGenerator:
         doxygen_bin_path: Path,
         doxygen_source_dirs: str,
         temp_doxy_folder: Path,
-        doxy_config_file: Optional[str] = None,
+        doxy_config_file: Optional[Path] = None,
         doxy_config_dict: dict = {},
     ):
         """! Constructor.
@@ -41,7 +41,7 @@ class DoxygenGenerator:
         @param doxygen_bin_path: (str) Path to the Doxygen binary.
         @param doxygen_source_dirs: (str) Source files for Doxygen.
         @param temp_doxy_folder: (str) Temporary folder for Doxygen.
-        @param doxy_config_file: (str) Custom Doxygen config file.
+        @param doxy_config_file: (Path) Custom Doxygen config file.
         @param doxy_config_dict: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
         """  # noqa: E501
 
@@ -55,7 +55,7 @@ class DoxygenGenerator:
         self.doxygen_bin_path: Path = doxygen_bin_path
         self.doxygen_source_dirs: str = doxygen_source_dirs
         self.temp_doxy_folder: Path = temp_doxy_folder
-        self.doxy_config_file: Optional[str] = doxy_config_file
+        self.doxy_config_file: Optional[Path] = doxy_config_file
         self.hash_file_name: Path = Path("mkdoxy_hash.txt")
         self.doxy_cfg: dict = self.set_doxy_config(doxy_config_dict)
 
@@ -86,7 +86,14 @@ class DoxygenGenerator:
         """
         doxy_config = {}
 
-        if self.doxy_config_file is not None and self.doxy_config_file != "":
+        if self.doxy_config_file is not None:
+            if not self.doxy_config_file.is_file():
+                raise DoxygenCustomConfigNotFound(
+                    f"Custom Doxygen config file not found: {self.doxy_config_file}\n"
+                    f"Make sure the path is correct."
+                    f"Loaded path: '{self.doxy_config_file}'"
+                )
+
             try:
                 with open(self.doxy_config_file, "r") as file:
                     doxy_config.update(self.str2dox_dict(file.read()))

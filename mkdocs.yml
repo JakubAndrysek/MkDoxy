@@ -66,9 +66,9 @@ plugins:
         mkdoxyApi:
           src_dirs: mkdoxy
           full_doc: True
-          template_dir: templates-custom
-          doxy_cfg_file: demo-projects/animal/Doxyfile
-          doxy_cfg:
+          custom_template_dir: templates-custom
+          doxy_config_file: demo-projects/animal/Doxyfile
+          doxy_config_dict:
             FILE_PATTERNS: "*.py"
             EXAMPLE_PATH: ""
             RECURSIVE: True

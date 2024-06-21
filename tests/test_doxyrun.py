@@ -41,7 +41,7 @@ def test_set_doxy_cfg_custom_file():
         doxygen_bin_path=Path("doxygen"),
         doxygen_source_dirs="/path/to/source/files",
         temp_doxy_folder=Path("/path/to/temp/folder"),
-        doxy_config_file="./tests/data/Doxyfile",
+        doxy_config_file=Path("./tests/data/Doxyfile"),
         doxy_config_dict=dox_dict,
     )
 

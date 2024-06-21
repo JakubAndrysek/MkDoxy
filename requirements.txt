@@ -1,2 +1,2 @@
 mkdocs>=1.4
-Jinja2
+click>=7.0
