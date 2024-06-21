@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Fix imports">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.pre-commit-config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.pre-commit-config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/doxy_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/doxy_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/doxygen_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/doxygen_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mkdoxy/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/mkdoxy/plugin.py" afterDir="false" />
-    </list>
+    <list default="true" id="5a348fe7-ee21-4e06-b8fc-ced5d548a610" name="Changes" comment="Fix imports" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -265,7 +258,7 @@
       <workItem from="1718789485470" duration="27629000" />
       <workItem from="1718895200775" duration="194000" />
       <workItem from="1718895412197" duration="2776000" />
-      <workItem from="1718961709840" duration="10110000" />
+      <workItem from="1718961709840" duration="10740000" />
     </task>
     <task id="LOCAL-00001" summary="Optimise code by sourcery.ai">
       <created>1674630349699</created>
@@ -532,7 +525,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/doxygen_generator.py</url>
-          <line>95</line>
+          <line>102</line>
           <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -542,7 +535,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mkdoxy/doxygen_generator.py</url>
-          <line>83</line>
+          <line>90</line>
           <option name="timeStamp" value="147" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

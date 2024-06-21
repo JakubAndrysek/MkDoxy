@@ -5,7 +5,23 @@ on: [push, pull_request]
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
-    - uses: pre-commit/action@v3.0.0
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install pre-commit sourcery-cli pre-commit-hooks black ruff pytest
+
+      - name: Run pre-commit hooks
+        uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: '--all-files'
