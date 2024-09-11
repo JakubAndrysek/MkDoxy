@@ -68,7 +68,7 @@ Inherited by the following classes:
 {{ templateMemTab.render({'config': {"":""}, 'node': node, 'parent': None, 'title': 'Macros', 'visibility': 'public', 'kinds': ['define'], 'static': False}) }}
 
 {%- if node.has_details %}
-# Detailed Description
+## Detailed Description
 
 {{node.details | use_code_language(node.code_language)}}
 {%- endif %}
