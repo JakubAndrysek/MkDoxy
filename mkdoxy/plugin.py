@@ -150,7 +150,7 @@ class MkDoxy(BasePlugin):
                     generatorBase=self.generatorBase[project_name],
                     tempDoxyDir=tempDirApi,
                     siteDir=config["site_dir"],
-                    apiPath = project_data.get("api-path", project_name),
+                    apiPath=project_data.get("api-path", project_name),
                     doxygen=self.doxygen[project_name],
                     useDirectoryUrls=config["use_directory_urls"],
                 )
