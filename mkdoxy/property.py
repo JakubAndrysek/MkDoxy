@@ -49,7 +49,7 @@ class Property:
             return self.md(plain=True)
 
         def has(self) -> bool:
-            detaileddescription = self.xml.find("detaileddescription")
+            detaileddescription = self.xml.find("briefdescription")
             return len(list(detaileddescription)) > 0
 
     class Includes:
