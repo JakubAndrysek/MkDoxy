@@ -42,6 +42,7 @@ class GeneratorSnippets:
         self.doxy_arguments = {
             "code": self.doxyCode,
             "function": self.doxyFunction,
+            "namespace.function": self.doxyNamespaceFunction,
             "class": self.doxyClass,
             "class.method": self.doxyClassMethod,
             "class.list": self.doxyClassList,
@@ -369,6 +370,29 @@ class GeneratorSnippets:
         nodes = self.doxygen[project].root.children
         self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].namespaces(nodes, config)
+
+    def doxyNamespaceFunction(self, snippet, project: str, config):
+        errorMsg = self.checkConfig(snippet, project, config, ["namespace", "name"])
+        if errorMsg:
+            return errorMsg
+
+        node = self.finder.doxyNamespaceFunction(project, config.get("namespace"), config.get("name"))
+        if node is None:
+            return self.doxyNodeIsNone(project, config, snippet)
+
+        if isinstance(node, Node):
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            return self.generatorBase[project].function(node, config)
+        return self.doxyError(
+            project,
+            config,
+            "Incorrect namespace function configuration",
+            f"Did not find Namespace with name: `{config.get('namespace')}` and function: `{config.get('name')}`",
+            "Available classes and methods:",
+            "\n".join(node),
+            "yaml",
+            snippet,
+        )
 
     def doxyFileList(self, snippet, project: str, config):
         errorMsg = self.checkConfig(snippet, project, config, [])
