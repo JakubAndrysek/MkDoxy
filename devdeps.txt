@@ -5,3 +5,5 @@ isort~=5.13.2
 pytest~=8.2.2
 pre-commit~=3.7.0
 setuptools~=70.0.0
+build~=1.2.2
+twine~=5.1.1

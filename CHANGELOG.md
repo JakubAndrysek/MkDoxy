@@ -25,3 +25,7 @@ All notable changes to this project will be documented in this file.
     - Fix executable not found when the current working directory (cwd) is set to config file path by @wu-vincent in https://github.com/JakubAndrysek/MkDoxy/pull/103
 - **1.2.4** - 2024-05-6
     - fix: use absolute links for inherited items by @Nerixyz in https://github.com/JakubAndrysek/MkDoxy/pull/105
+- **1.2.5** - 2024-11-22
+    - Fixes: brief description in detailed if there is no detailed description; change the Detailed Description header levelby @DmitriyMarin in https://github.com/JakubAndrysek/MkDoxy/pull/114
+    - feat: add function in namespace snippet by @barnou-psee in https://github.com/JakubAndrysek/MkDoxy/pull/116
+    - add api-path to project configuration by @dustinlagoy in https://github.com/JakubAndrysek/MkDoxy/pull/112
