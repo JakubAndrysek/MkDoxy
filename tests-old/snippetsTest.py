@@ -58,6 +58,6 @@ if __name__ == "__main__":
     # func = generatorSnippets.doxyFunction("", {"name":"getRandomNumber()"})
 
     # func = generatorSnippets.doxyCode("", {"file":"shape.cppa"})
-    func = generatorSnippets.doxyClassMethod("", {"name": "asd", "method": "as"})
+    func = generatorSnippets.doxy_class_method("", {"name": "asd", "method": "as"})
 
     pprint(func)

@@ -7,7 +7,6 @@ from mkdoxy.constants import OVERLOAD_OPERATORS, Kind, Visibility
 from mkdoxy.markdown import escape
 from mkdoxy.project import ProjectContext
 from mkdoxy.property import Property
-from mkdoxy.utils import split_safe
 from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")
@@ -430,7 +429,7 @@ class Node:
         return self._refid
 
     @property
-    def kind(self) -> str:
+    def kind(self) -> Kind:
         return self._kind
 
     @property
@@ -474,14 +473,14 @@ class Node:
     @property
     def url(self) -> str:
         if self.is_parent or self.is_group or self.is_file or self.is_dir or self.is_page:
-            return self.project.linkPrefix + self._refid + ".md"
+            return self.project.link_prefix + self._refid + ".md"
         else:
             return f"{self._parent.url}#{self.anchor}"
 
     @property
     def base_url(self) -> str:
         def prefix(page: str):
-            return self.project.linkPrefix + page
+            return self.project.link_prefix + page
 
         if self.is_group:
             return prefix("modules.md")
@@ -506,13 +505,13 @@ class Node:
     @property
     def url_source(self) -> str:
         if self.is_parent or self.is_group or self.is_file or self.is_dir:
-            return self.project.linkPrefix + self._refid + "_source.md"
+            return self.project.link_prefix + self._refid + "_source.md"
         else:
-            return self.project.linkPrefix + self._refid + ".md"
+            return self.project.link_prefix + self._refid + ".md"
 
     @property
     def filename(self) -> str:
-        return self.project.linkPrefix + self._refid + ".md"
+        return self.project.link_prefix + self._refid + ".md"
 
     @property
     def root(self) -> "Node":
@@ -522,7 +521,7 @@ class Node:
     def name_tokens(self) -> [str]:
         if self.is_dir or self.is_file:
             return self._name.split("/")
-        return split_safe(self._name, "::")
+        return self._split_safe(self._name, "::")
 
     @property
     def name_short(self) -> str:
@@ -848,6 +847,46 @@ class Node:
             ret += self._print_node_recursive_md(child, depth + 1)
 
         return ret
+
+    @staticmethod
+    def _contains(a, pos, b):
+        ai = pos
+        bi = 0
+        if len(b) > len(a) - ai:
+            return False
+        while bi < len(b):
+            if a[ai] != b[bi]:
+                return False
+            ai += 1
+            bi += 1
+        return True
+
+    def _split_safe(self, s: str, delim: str) -> [str]:
+        tokens = []
+        i = 0
+        last = 0
+        inside = 0
+        while i < len(s):
+            c = s[i]
+            if i == len(s) - 1:
+                tokens.append(s[last : i + 1])
+            if c in ["<", "[", "{", "("]:
+                inside += 1
+                i += 1
+                continue
+            if c in [">", "]", "}", ")"]:
+                inside -= 1
+                i += 1
+                continue
+            if inside > 0:
+                i += 1
+                continue
+            if self._contains(s, i, delim):
+                tokens.append(s[last:i])
+                i += 2
+                last = i
+            i += 1
+        return tokens
 
 
 class DummyNode:

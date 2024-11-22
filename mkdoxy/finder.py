@@ -2,7 +2,7 @@ from typing import Dict
 
 from mkdoxy.constants import Kind
 from mkdoxy.doxygen import Doxygen
-from mkdoxy.utils import recursive_find, recursive_find_with_parent
+from mkdoxy.node import Node
 
 
 class Finder:
@@ -10,23 +10,25 @@ class Finder:
         self.doxygen = doxygen
         self.debug = debug
 
-    def _normalize(self, name: str) -> str:
+    @staticmethod
+    def _normalize(name: str) -> str:
         return name.replace(" ", "")
 
-    def listToNames(self, list):
-        return [part.name_params for part in list]
+    @staticmethod
+    def list_doxy_names(list_names: list[Node]) -> list[str]:
+        return [part.name_params for part in list_names]
 
-    def doxyClass(self, project, className: str):
-        classes = recursive_find(self.doxygen[project].root.children, Kind.CLASS)
+    def doxy_class(self, project, className: str):
+        classes: list[Node] = recursive_find(self.doxygen[project].root.children, Kind.CLASS)
         if classes:
             for findClass in classes:
                 if findClass.name_long == className:
                     return findClass
-            return self.listToNames(classes)
+            return self.list_doxy_names(classes)
         return None
 
-    def doxyClassMethod(self, project, className: str, methodName: str):
-        findClass = self.doxyClass(project, className)
+    def doxy_class_method(self, project, className: str, methodName: str):
+        findClass = self.doxy_class(project, className)
         if findClass:
             if isinstance(findClass, list):
                 for member in findClass:
@@ -39,24 +41,44 @@ class Finder:
                     for member in members:
                         if self._normalize(methodName) in self._normalize(member.name_params):
                             return member
-                    return self.listToNames(members)
+                    return self.list_doxy_names(members)
                 return None
         return None
 
-    def doxyFunction(self, project, functionName: str):
+    def doxy_function(self, project, functionName: str):
         functions = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE])
         if functions:
             for function in functions:
                 if self._normalize(functionName) == self._normalize(function.name_params):
                     return function
-            return self.listToNames(functions)
+            return self.list_doxy_names(functions)
         return None
 
-    def doxyCode(self, project, fileName):
+    def doxy_code(self, project, fileName):
         files = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FILE], [Kind.DIR])
         if files:
             for file in files:
                 if self._normalize(fileName) == self._normalize(file.name_long):
                     return file
-            return self.listToNames(files)
+            return self.list_doxy_names(files)
         return None
+
+
+def recursive_find(nodes: list[Node], kind: Kind) -> list[Node]:
+    ret = []
+    for node in nodes:
+        if node.kind == kind:
+            ret.append(node)
+        if node.kind.is_parent():
+            ret.extend(recursive_find(node.children, kind))
+    return ret
+
+
+def recursive_find_with_parent(nodes: list[Node], kinds: list[Kind], parent_kinds: list[Kind]) -> list[Node]:
+    ret: list[Node] = []
+    for node in nodes:
+        if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
+            ret.append(node)
+        if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
+            ret.extend(recursive_find_with_parent(node.children, kinds, parent_kinds))
+    return ret

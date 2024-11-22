@@ -64,11 +64,11 @@ plugins:
       enabled: !ENV [ENABLE_MKDOXY, True]
       projects:
         mkdoxyApi:
-          src_dirs: mkdoxy
-          full_doc: True
-          custom_template_dir: templates-custom
-          doxy_config_file: demo-projects/animal/Doxyfile
-          doxy_config_dict:
+          src-dirs: mkdoxy
+          full-doc: True
+          template-dir: templates-custom
+          doxy-cfg-file: demo-projects/animal/Doxyfile
+          doxy-cfg:
             FILE_PATTERNS: "*.py"
             EXAMPLE_PATH: ""
             RECURSIVE: True
@@ -76,16 +76,16 @@ plugins:
             JAVADOC_AUTOBRIEF: True
             EXTRACT_ALL: True
         animal:
-          src_dirs: demo-projects/animal
-          full_doc: True
-          doxy_cfg:
+          src-dirs: demo-projects/animal
+          full-doc: True
+          doxy-cfg:
             FILE_PATTERNS: "*.cpp *.h*"
             EXAMPLE_PATH: examples
             RECURSIVE: True
-      custom_api_folder: .mkdoxy
-      full_doc: True
+      save-api: .mkdoxy
+      full-doc: True
       debug: False
-#      ignore_errors: False
+      ignore-errors: False
 
 markdown_extensions:
   - pymdownx.highlight
