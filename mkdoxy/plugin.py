@@ -29,7 +29,6 @@ plugin_name: str = "MkDoxy"
 class MkDoxy(BasePlugin):
     """! MkDocs plugin for generating documentation from Doxygen XML files.
     @details
-    @param config: (MkDoxyConfig) The global configuration object.
     """
 
     # Valid configuration options for the plugin
@@ -67,8 +66,8 @@ class MkDoxy(BasePlugin):
         @param config: (Config) The global configuration object.
         @return: (Files) The files gathered by MkDocs.
         """
-        for project_name, project_data in self.doxy_config.projects.items():
-            project_data: MkDoxyConfigProject
+        for project_name, project_config in self.doxy_config.projects.items():
+            project_config: MkDoxyConfigProject
             log.info(f"-> Processing project '{project_name}'")
 
             # Generate Doxygen and MD files to user defined folder or default temp folder
@@ -82,14 +81,12 @@ class MkDoxy(BasePlugin):
 
             # Check src changes -> run Doxygen
             doxygen = DoxygenGenerator(
-                Path(self.doxy_config.doxygen_bin_path),
-                project_data.src_dirs,
+                self.doxy_config,
+                project_config,
                 temp_doxy_folder,
-                project_data.doxy_config_file,
-                project_data.doxy_config_dict,
             )
             if doxygen.has_changes():
-                log.info("  -> generating Doxygen files")
+                log.info("  -> Generating Doxygen files started")
                 doxygen.run()
                 log.info("  -> Doxygen files generated")
             else:
@@ -108,12 +105,12 @@ class MkDoxy(BasePlugin):
 
             # Prepare generator for future use (GeneratorAuto, SnippetGenerator)
             self.generator_base[project_name] = GeneratorBase(
-                project_data.custom_template_dir,
+                project_config.custom_template_dir,
                 False,  # ignore_errors=self.config.ignore_errors,
                 debug=self.doxy_config.debug,
             )
 
-            if self.doxy_config.full_doc and project_data.full_doc:
+            if self.doxy_config.full_doc and project_config.full_doc:
                 generatorAuto = GeneratorAuto(
                     generator_base=self.generator_base[project_name],
                     temp_doxy_folder=temp_doxy_folder,
@@ -123,18 +120,20 @@ class MkDoxy(BasePlugin):
                     use_directory_urls=config["use_directory_urls"],
                 )
 
-                project_config = self.default_template_config.copy()
-                project_config.update(project_data)
+                template_config = self.default_template_config.copy()
 
                 # Generate full documentation
-                generatorAuto.fullDoc(project_config)
+                generatorAuto.fullDoc(template_config)
 
                 # Generate summary pages
-                generatorAuto.summary(project_config)
+                generatorAuto.summary(template_config)
 
                 # Append files to be processed by MkDocs
                 for file in generatorAuto.full_doc_files:
+                    # if file.src_path not in files.src_paths:
                     files.append(file)
+                    # else:
+                    #     log.debug(f"  -> {file.src_path} already in files")
         return files
 
     def on_page_markdown(self, markdown: str, page: Page, config: Config, files: Files) -> str:

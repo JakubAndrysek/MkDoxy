@@ -2,7 +2,7 @@ import logging
 import os
 from pathlib import Path
 
-from mkdocs.structure import files
+from mkdocs.structure.files import File
 
 from mkdoxy.constants import Kind
 from mkdoxy.doxygen import Doxygen
@@ -37,13 +37,13 @@ def generate_link(name, url, end="\n") -> str:
 
 class GeneratorAuto:
     def __init__(
-        self,
-        generator_base: GeneratorBase,
-        temp_doxy_folder: Path,
-        site_dir: str,
-        api_path: str,
-        doxygen: Doxygen,
-        use_directory_urls: bool,
+            self,
+            generator_base: GeneratorBase,
+            temp_doxy_folder: Path,
+            site_dir: str,
+            api_path: str,
+            doxygen: Doxygen,
+            use_directory_urls: bool,
     ):
         self.generator_base = generator_base
         self.temp_doxy_dir = temp_doxy_folder
@@ -51,8 +51,8 @@ class GeneratorAuto:
         self.api_path = api_path
         self.doxygen = doxygen
         self.use_directory_urls = use_directory_urls
-        self.full_doc_files = []
         self.debug = generator_base.debug
+        self.full_doc_files: list[File] = []
 
         # Create API directory if not exists
         self.temp_doxy_dir.joinpath(self.api_path).mkdir(parents=True, exist_ok=True)
@@ -62,13 +62,27 @@ class GeneratorAuto:
 
         # Append generated file to list of MkDocs files
         self.full_doc_files.append(
-            files.File(path_rel, str(self.temp_doxy_dir), self.site_dir, self.use_directory_urls)
+            File(path_rel, str(self.temp_doxy_dir), self.site_dir, self.use_directory_urls)
         )
         output_file = Path.joinpath(self.temp_doxy_dir, path_rel)
 
         # Save generated file
         with open(output_file, "w", encoding="utf-8") as file:
             file.write(output)
+
+    def save_image(self, path: str, image_source_link: str):
+        """Copy image from Doxygen output to MkDocs output directory.
+        @param path: Path to save image to
+        @param image_source_link: Path to image in Doxygen output directory
+        """
+        source = os.path.join(self.temp_doxy_dir, "html", image_source_link)
+        if not os.path.exists(source):
+            return
+        destination = os.path.join(self.site_dir, self.api_path, path, image_source_link)
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
+        with open(source, "rb") as source_file:
+            with open(destination, "wb") as destination_file:
+                destination_file.write(source_file.read())
 
     def fullDoc(self, defaultTemplateConfig: dict):
         self.annotated(self.doxygen.root.children, defaultTemplateConfig)
@@ -252,6 +266,14 @@ class GeneratorAuto:
 
     def member(self, node: Node, config: dict = None):
         path = node.filename
+        refid = node.refid
+
+        if node.has_inheritance_graph:
+            self.save_image(refid, node.inheritance_graph)
+        if node.has_collaboration_graph:
+            self.save_image(refid, node.collaboration_graph)
+        # if node.has_directory_dependency:
+        #     self.save_image(refid, node.directory_dependency)
 
         output = self.generator_base.member(node, config)
         self.save(path, output)
@@ -282,12 +304,12 @@ class GeneratorAuto:
                 self.file(node, config)
 
     def index(
-        self,
-        nodes: [Node],
-        kind_filters: Kind,
-        kind_parents: [Kind],
-        title: str,
-        config: dict = None,
+            self,
+            nodes: [Node],
+            kind_filters: Kind,
+            kind_parents: [Kind],
+            title: str,
+            config: dict = None,
     ):
         path = title.lower().replace(" ", "_") + ".md"
 

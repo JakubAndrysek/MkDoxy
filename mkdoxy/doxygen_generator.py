@@ -4,9 +4,10 @@ import os
 import shutil
 from pathlib import Path
 from subprocess import PIPE, Popen
-from typing import Optional
 
 from mkdocs import exceptions
+
+from mkdoxy.doxy_config import MkDoxyConfig, MkDoxyConfigProject
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
@@ -17,12 +18,10 @@ class DoxygenGenerator:
     """
 
     def __init__(
-        self,
-        doxygen_bin_path: Path,
-        doxygen_source_dirs: str,
-        temp_doxy_folder: Path,
-        doxy_config_file: Optional[Path] = None,
-        doxy_config_dict: dict = None,
+            self,
+            doxy_config: MkDoxyConfig,
+            project_config: MkDoxyConfigProject,
+            temp_doxy_folder: Path,
     ):
         """! Constructor.
         Default Doxygen config options:
@@ -38,30 +37,24 @@ class DoxygenGenerator:
         - GENERATE_LATEX: NO
 
         @details
-        @param doxygen_bin_path: (str) Path to the Doxygen binary.
-        @param doxygen_source_dirs: (str) Source files for Doxygen.
-        @param temp_doxy_folder: (str) Temporary folder for Doxygen.
-        @param doxy_config_file: (Path) Custom Doxygen config file.
-        @param doxy_config_dict: (dict) New Doxygen config options that will be added to the default config (new options will overwrite default options)
-        """  # noqa: E501
+        @param doxy_config: (MkDoxyConfig) Doxygen configuration.
+        @param project_config: (MkDoxyConfigProject) Project configuration.
+        @param temp_doxy_folder: (Path) Temporary Doxygen folder.
+        """
+        self.doxy_config = doxy_config
+        self.project_config = project_config
+        self.temp_doxy_folder = temp_doxy_folder
 
-        if doxy_config_dict is None:
+        if project_config.doxy_config_dict is None:
             doxy_config_dict = {}
-        if not self.is_doxygen_valid_path(doxygen_bin_path):
+        if not self.is_doxygen_valid_path(doxy_config.doxygen_bin_path):
             raise DoxygenBinPathNotValid(
-                f"Invalid Doxygen binary path: {doxygen_bin_path}\n"
+                f"Invalid Doxygen binary path: {doxy_config.doxygen_bin_path}\n"
                 f"Make sure Doxygen is installed and the path is correct.\n"
                 f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-binary."
             )
 
-        self.doxygen_bin_path: Path = doxygen_bin_path
-        self.doxygen_source_dirs: str = doxygen_source_dirs
-        self.temp_doxy_folder: Path = temp_doxy_folder
-        self.doxy_config_file: Optional[Path] = doxy_config_file
-        self.hash_file_name: Path = Path("mkdoxy_hash.txt")
-        self.doxy_cfg: dict = self.set_doxy_config(doxy_config_dict)
-
-    def set_doxy_config(self, doxyCfgNew: dict) -> dict:
+    def set_doxy_config(self, doxy_cfg_new: dict) -> dict:
         """! Set the Doxygen configuration.
         @details If a custom Doxygen config file is provided, it will be used. Otherwise, default options will be used.
         @details Order of application of parameters:
@@ -82,26 +75,26 @@ class DoxygenGenerator:
         @details - SHOW_NAMESPACES: YES
         @details - GENERATE_HTML: NO
         @details - GENERATE_LATEX: NO
-        @param doxyCfgNew: (dict) New Doxygen config options that will be
+        @param doxy_cfg_new: (dict) New Doxygen config options that will be
          added to the default config (new options will overwrite default options)
         @return: (dict) Doxygen configuration.
         """
         doxy_config = {}
 
-        if self.doxy_config_file is not None:
-            if not self.doxy_config_file.is_file():
+        if self.project_config.doxy_config_file is not None:
+            if not self.project_config.doxy_config_file.is_file():
                 raise DoxygenCustomConfigNotFound(
-                    f"Custom Doxygen config file not found: {self.doxy_config_file}\n"
+                    f"Custom Doxygen config file not found: {self.project_config.doxy_config_file}\n"
                     f"Make sure the path is correct."
-                    f"Loaded path: '{self.doxy_config_file}'"
+                    f"Loaded path: '{self.project_config.doxy_config_file}'"
                 )
 
             try:
-                with open(self.doxy_config_file, "r") as file:
+                with open(self.project_config.doxy_config_file, "r") as file:
                     doxy_config.update(self.str2dox_dict(file.read()))
             except FileNotFoundError as e:
                 raise DoxygenCustomConfigNotFound(
-                    f"Custom Doxygen config file not found: {self.doxy_config_file}\n"
+                    f"Custom Doxygen config file not found: {self.project_config.doxy_config_file}\n"
                     f"Make sure the path is correct."
                     f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-configuration-file."
                 ) from e
@@ -116,10 +109,33 @@ class DoxygenGenerator:
                 "GENERATE_LATEX": "NO",
             }
 
-        doxy_config.update(doxyCfgNew)
-        doxy_config["INPUT"] = self.doxygen_source_dirs
+        doxy_config.update(doxy_cfg_new)
+
+        if self.doxy_config.generate_diagrams:
+            self.diagram_update_config(doxy_config)
+
+        # rewrite INPUT and OUTPUT_DIRECTORY with the provided values from mkdocs.yml
+        doxy_config["INPUT"] = self.project_config.src_dirs
         doxy_config["OUTPUT_DIRECTORY"] = str(self.temp_doxy_folder)
         return doxy_config
+
+    def diagram_update_config(self, doxy_config):
+        log.debug(" -> Setting up Doxygen for diagrams")
+        doxy_config["HAVE_DOT"] = "YES"
+        doxy_config["DOT_IMAGE_FORMATS"] = self.doxy_config.generate_diagrams_format
+        doxy_config["UML_LOOK"] = "YES" if self.doxy_config.generate_diagrams_type == "uml" else "NO"
+        doxy_config["DOT_CLEANUP"] = "NO"
+        doxy_config["GENERATE_LEGEND"] = "NO"
+        doxy_config["GENERATE_HTML"] = "YES"
+        doxy_config["SEARCHENGINE"] = "NO"
+
+        # have to be tested
+        # doxy_config["CLASS_DIAGRAMS"] = "YES"
+        # doxy_config["COLLABORATION_GRAPH"] = "YES"
+        # doxy_config["INCLUDE_GRAPH"] = "YES"
+        # doxy_config["GRAPHICAL_HIERARCHY"] = "YES"
+        # doxy_config["CALL_GRAPH"] = "YES"
+        # doxy_config["CALLER_GRAPH"] = "YES"
 
     @staticmethod
     def is_doxygen_valid_path(doxygen_bin_path: Path) -> bool:
@@ -178,17 +194,27 @@ class DoxygenGenerator:
                     doxy_dict[key] = value
         except ValueError as e:
             raise DoxygenCustomConfigNotValid(
-                f"Invalid custom Doxygen config file: {self.doxy_config_file}\n"
+                f"Invalid custom Doxygen config file: {self.project_config.doxy_config_file}\n"
                 f"Make sure the file is in standard Doxygen format."
                 f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/."
             ) from e
         return doxy_dict
 
     def hash_write(self, file_name: Path, hash_key: str):
+        """! Write the hash to the file.
+        @details
+        @param file_name: (Path) Path to the file where the hash will be saved.
+        @param hash_key: (str) Hash.
+        """
         with open(file_name, "w") as hash_file:
             hash_file.write(hash_key)
 
     def hash_read(self, file_name: Path) -> str:
+        """! Read the hash from the file.
+        @details
+        @param file_name: (Path) Path to the file with the hash.
+        @return: (str) Hash.
+        """
         with open(file_name, "r") as hash_file:
             return str(hash_file.read())
 
@@ -198,7 +224,7 @@ class DoxygenGenerator:
         @return: (bool) True if the source files have changed since the last run.
         """
         sha1 = hashlib.sha1()
-        sources = self.doxygen_source_dirs.split(" ")
+        sources = self.project_config.src_dirs.split(" ")
         # Code from https://stackoverflow.com/a/22058673/15411117
         BUF_SIZE = 65536  # let's read stuff in 64kb chunks!
         for source in sources:
@@ -212,7 +238,8 @@ class DoxygenGenerator:
                             sha1.update(data)
 
         hash_new = sha1.hexdigest()
-        hash_file_path = Path.joinpath(self.temp_doxy_folder, self.hash_file_name)
+        hash_file_name: Path = Path("mkdoxy_hash.txt")
+        hash_file_path = Path.joinpath(self.temp_doxy_folder, hash_file_name)
         if hash_file_path.is_file():
             hash_old = self.hash_read(hash_file_path)
             if hash_new == hash_old:
@@ -226,16 +253,16 @@ class DoxygenGenerator:
         @details
         """
         doxy_builder = Popen(
-            [self.doxygen_bin_path, "-"],
+            [self.doxy_config.doxygen_bin_path, "-"],
             stdout=PIPE,
             stdin=PIPE,
             stderr=PIPE,
         )
-        doxy_str = self.dox_dict2str(self.doxy_cfg).encode("utf-8")
-        stdout_data, stderr_data = doxy_builder.communicate(doxy_str)
+        doxy_str = self.dox_dict2str(self.set_doxy_config(self.project_config.doxy_config_dict))
+        stdout_data, stderr_data = doxy_builder.communicate(input=doxy_str.encode("utf-8"))
         if doxy_builder.returncode != 0:
             log.error(f"Error running Doxygen: {stderr_data.decode('utf-8')}")
-            raise Exception("Error running Doxygen")
+            raise exceptions.PluginError(f"Error running Doxygen: {stderr_data.decode('utf-8')}")
 
     def get_output_xml_folder(self) -> Path:
         """! Get the path to the XML output folder.

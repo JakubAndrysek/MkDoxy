@@ -16,10 +16,20 @@ config_scheme = (
     ("debug", c.Type(bool, default=False)),
     ("ignore-errors", c.Type(bool, default=None, required=False)),  # legacy option
     ("ignore_errors", c.Type(bool, default=False)),
+
+    # Custom API folder for Doxygen and MD output
     ("save-api", c.Type(str, default=None, required=False)),  # legacy option
     ("custom_api_folder", c.Type(str, default="")),
-    ("doxygen-bin-path", c.Type(str, default=None, required=False)),  # legacy option
-    ("doxygen_bin_path", c.Type(str, default="doxygen", required=False)),
+
+    # Doxygen
+    ("doxygen-bin-path", c.Type(Path, default=None, required=False)),  # legacy option
+    ("doxygen_bin_path", c.Type(Path, default=Path("doxygen"), required=False)),
+
+    # Diagrams
+    ("generate_diagrams", c.Type(bool, default=True, required=False)),
+    # one of the following: svg, png, jpg, gif
+    ("generate_diagrams_format", c.Choice(("svg", "png", "jpg", "gif"), default="svg")),
+    ("generate_diagrams_type", c.Choice(("dot", "uml"), default="dot")),
 )
 config_scheme_legacy = {
     "full-doc": "full_doc",
@@ -93,7 +103,11 @@ class MkDoxyConfig(Config):
     debug = c.Type(bool, default=False)  # debug mode
     ignore_errors = c.Type(bool, default=False)  # ignore errors
     custom_api_folder = c.Optional(c.Type(str))  # custom API folder for Doxygen and MD output (default in temp folder)
-    doxygen_bin_path = c.Type(str, default="doxygen")  # path to Doxygen binary - default "doxygen"
+    doxygen_bin_path = c.Type(Path, default=Path("doxygen"))  # path to Doxygen binary (default "doxygen"
+
+    generate_diagrams = c.Type(bool, default=False)  # generate diagrams
+    generate_diagrams_format = c.Choice(("svg", "png", "jpg", "gif"), default="svg")  # diagram format
+    generate_diagrams_type = c.Choice(("dot", "uml"), default="dot")  # diagram type
 
 
 def load_config_by_key(key: str, legacy_key: str, config: Config, legacy: list) -> any:
@@ -126,6 +140,10 @@ def process_configuration(config: Config) -> MkDoxyConfig:
     doxy_config.ignore_errors = load_config_by_key("ignore_errors", "ignore-errors", config, legacy_options)
     doxy_config.custom_api_folder = load_config_by_key("custom_api_folder", "save-api", config, legacy_options)
     doxy_config.doxygen_bin_path = load_config_by_key("doxygen_bin_path", "doxygen-bin-path", config, legacy_options)
+
+    doxy_config.generate_diagrams = config.get("generate_diagrams")
+    doxy_config.generate_diagrams_format = config.get("generate_diagrams_format")
+    doxy_config.generate_diagrams_type = config.get("generate_diagrams_type")
 
     # Validate the global configuration
     validate_project_config(doxy_config, legacy_options)

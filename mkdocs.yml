@@ -25,9 +25,23 @@ theme:
     repo: fontawesome/brands/github
 
   palette:
-    - scheme: slate
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       primary: orange
       accent: orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: orange
+      accent: orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
 
 extra:
   social:
@@ -61,7 +75,7 @@ plugins:
   - search
   - open-in-new-tab
   - mkdoxy:
-      enabled: !ENV [ENABLE_MKDOXY, True]
+      enabled: !ENV [ ENABLE_MKDOXY, True ]
       projects:
         mkdoxyApi:
           src_dirs: mkdoxy
@@ -75,6 +89,8 @@ plugins:
             OPTIMIZE_OUTPUT_JAVA: True
             JAVADOC_AUTOBRIEF: True
             EXTRACT_ALL: True
+            DOT_IMAGE_FORMAT: svg
+            HAVE_DOT: YES
         animal:
           src_dirs: demo-projects/animal
           full_doc: True
@@ -82,7 +98,10 @@ plugins:
             FILE_PATTERNS: "*.cpp *.h*"
             EXAMPLE_PATH: examples
             RECURSIVE: True
+            DOT_IMAGE_FORMAT: svg
+            HAVE_DOT: YES
       custom_api_folder: .mkdoxy
+
       full_doc: True
       debug: False
 #      ignore_errors: False

@@ -2,6 +2,7 @@
 brief: True
 details: True
 implements: True
+version: 1.2.5
 ---
 {% filter indent(config.get('indent_level', 0), True) %}
 
@@ -30,6 +31,24 @@ implements: True
 * `#include {{include}}`
 {% endfor -%}
 {%- endif %}
+
+
+{% if node.has_inheritance_graph %}
+### Inheritance diagram:
+
+<p align="center" markdown>
+    ![alt]({{ node.inheritance_graph }})
+</p>
+{% endif %}
+
+{% if node.has_collaboration_graph %}
+### Collaboration diagram:
+
+<p align="center" markdown>
+    ![alt]({{ node.collaboration_graph }})
+</p>
+{% endif %}
+
 
 {% if node.has_base_classes %}
 Inherits the following classes:
