@@ -47,6 +47,7 @@ class MkDoxy(BasePlugin):
         ("full-doc", config_options.Type(bool, default=True)),
         ("debug", config_options.Type(bool, default=False)),
         # ('ignore-errors', config_options.Type(bool, default=False)),
+        ("api-path", config_options.Type(str, default=".")),
         ("doxy-cfg", config_options.Type(dict, default={}, required=False)),
         ("doxy-cfg-file", config_options.Type(str, default="", required=False)),
         ("template-dir", config_options.Type(str, default="", required=False)),
@@ -148,7 +149,7 @@ class MkDoxy(BasePlugin):
                     generatorBase=self.generatorBase[project_name],
                     tempDoxyDir=tempDirApi,
                     siteDir=config["site_dir"],
-                    apiPath=project_name,
+                    apiPath=project_data.get("api-path", project_name),
                     doxygen=self.doxygen[project_name],
                     useDirectoryUrls=config["use_directory_urls"],
                 )
