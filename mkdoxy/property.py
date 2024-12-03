@@ -299,7 +299,10 @@ class Property:
         def md(self, plain: bool = False) -> str:
             initializer = self.xml.find("initializer")
             if initializer is not None:
-                return self.parser.paras_as_str(initializer, plain=plain)
+                initializer_str = self.parser.paras_as_str(initializer, plain=plain).lstrip(" =")
+                if "\n" in initializer_str:
+                    return "`/* multi line expression */`"
+                return f"`{initializer_str}`"
             else:
                 return ""
 
