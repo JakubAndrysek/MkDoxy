@@ -87,3 +87,31 @@ def test_str2dox_dict():
     }
 
     assert result == expected_result
+
+
+def test_str2dox_dict_expanded_config():
+    dox_str = (
+        "# This is a comment \n"
+        "PROJECT_LOGO           =\n"
+        'ABBREVIATE_BRIEF       = "The $name class" \\ \n'
+        '                         is \n'
+        'FILE_PATTERNS          = *.c \n'
+        'FILE_PATTERNS          += *.cc\n'
+    )
+
+    doxygen_run = DoxygenRun(
+        doxygenBinPath="doxygen",
+        doxygenSource="/path/to/source/files",
+        tempDoxyFolder="/path/to/temp/folder",
+        doxyCfgNew={},
+    )
+
+    result = doxygen_run.str2dox_dict(dox_str)
+
+    expected_result = {
+        "PROJECT_LOGO": "",
+        "ABBREVIATE_BRIEF": '"The $name class" is',
+        "FILE_PATTERNS": "*.c *.cc"
+    }
+
+    assert result == expected_result

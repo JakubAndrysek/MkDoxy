@@ -2,6 +2,7 @@ import hashlib
 import logging
 import os
 import shutil
+import re
 
 from pathlib import Path, PurePath
 from subprocess import PIPE, Popen
@@ -155,17 +156,27 @@ class DoxygenRun:
         @return: (dict) Dictionary.
         """
         dox_dict = {}
+        dox_str = re.sub(r'\\\s*\n\s*', '', dox_str)
+        pattern = r'^\s*([^=\s]+)\s*(=|\+=)\s*(.*)$'
+
         try:
             for line in dox_str.split("\n"):
-                if line.strip() == "":
+                if line.strip() == "" or line.startswith("#"):
                     continue
-                key, value = line.split(" = ")
-                if value == "YES":
-                    dox_dict[key] = True
-                elif value == "NO":
-                    dox_dict[key] = False
-                else:
-                    dox_dict[key] = value
+                match = re.match(pattern, line)
+                if not match:
+                    continue
+                key, operator, value = match.groups()
+                value = value.strip()
+                if operator == '=':
+                    if value == "YES":
+                        dox_dict[key] = True
+                    elif value == "NO":
+                        dox_dict[key] = False
+                    else:
+                        dox_dict[key] = value
+                if operator == '+=':
+                    dox_dict[key] = f"{dox_dict[key]} {value}"
         except ValueError as e:
             raise DoxygenCustomConfigNotValid(
                 f"Invalid custom Doxygen config file: {self.doxyConfigFile}\n"
