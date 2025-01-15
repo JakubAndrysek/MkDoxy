@@ -1,4 +1,5 @@
-from mkdoxy.doxyrun import DoxygenRun
+import pytest
+from mkdoxy.doxyrun import DoxygenCustomConfigNotValid, DoxygenRun
 
 
 def test_dox_dict2str():
@@ -97,6 +98,7 @@ def test_str2dox_dict_expanded_config():
         '                         is \n'
         'FILE_PATTERNS          = *.c \n'
         'FILE_PATTERNS          += *.cc\n'
+        'PREDEFINED             = BUILD_DATE DOXYGEN=1\n'
     )
 
     doxygen_run = DoxygenRun(
@@ -111,7 +113,73 @@ def test_str2dox_dict_expanded_config():
     expected_result = {
         "PROJECT_LOGO": "",
         "ABBREVIATE_BRIEF": '"The $name class" is',
-        "FILE_PATTERNS": "*.c *.cc"
+        "FILE_PATTERNS": "*.c *.cc",
+        "PREDEFINED": "BUILD_DATE DOXYGEN=1"
     }
 
     assert result == expected_result
+
+def test_str2dox_dict_expanded_config_errors():
+    doxygen_run = DoxygenRun(
+        doxygenBinPath="doxygen",
+        doxygenSource="/path/to/source/files",
+        tempDoxyFolder="/path/to/temp/folder",
+        doxyCfgNew={},
+    )
+
+    dox_str = (
+        "ONLY_KEY\n"
+    )
+    error_message = str(f"Invalid line: 'ONLY_KEY'"
+                        f"In custom Doxygen config file: None\n"
+                        f"Make sure the file is in standard Doxygen format."
+                        f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/.")
+
+    with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
+        doxygen_run.str2dox_dict(dox_str)
+
+    dox_str = (
+        "= ONLY_VALUE\n"
+    )
+    error_message = str(f"Invalid line: '= ONLY_VALUE'"
+                        f"In custom Doxygen config file: None\n"
+                        f"Make sure the file is in standard Doxygen format."
+                        f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/.")
+
+    with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
+        doxygen_run.str2dox_dict(dox_str)
+
+    dox_str = (
+        "KEY WITH SPACES = VALUE\n"
+    )
+    error_message = str(f"Invalid line: 'KEY WITH SPACES = VALUE'"
+                        f"In custom Doxygen config file: None\n"
+                        f"Make sure the file is in standard Doxygen format."
+                        f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/.")
+
+    with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
+        doxygen_run.str2dox_dict(dox_str)
+
+    dox_str = (
+        "BAD_OPERATOR := VALUE\n"
+    )
+    error_message = str(f"Invalid line: 'BAD_OPERATOR := VALUE'"
+                        f"In custom Doxygen config file: None\n"
+                        f"Make sure the file is in standard Doxygen format."
+                        f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/.")
+
+    with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
+        doxygen_run.str2dox_dict(dox_str)
+
+    dox_str = (
+        "BAD_MULTILINE = BAD\n"
+        "                VALUE\n"
+    )
+    error_message = str(f"Invalid line: '                VALUE'"
+                        f"In custom Doxygen config file: None\n"
+                        f"Make sure the file is in standard Doxygen format."
+                        f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/.")
+
+    with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
+        doxygen_run.str2dox_dict(dox_str)
+

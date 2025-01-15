@@ -165,7 +165,12 @@ class DoxygenRun:
                     continue
                 match = re.match(pattern, line)
                 if not match:
-                    continue
+                    raise DoxygenCustomConfigNotValid(
+                        f"Invalid line: '{line}'"
+                        f"In custom Doxygen config file: {self.doxyConfigFile}\n"
+                        f"Make sure the file is in standard Doxygen format."
+                        f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/."
+                    )
                 key, operator, value = match.groups()
                 value = value.strip()
                 if operator == '=':
