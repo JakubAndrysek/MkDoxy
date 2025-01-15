@@ -156,8 +156,8 @@ class DoxygenRun:
         @return: (dict) Dictionary.
         """
         dox_dict = {}
-        dox_str = re.sub(r'\\\s*\n\s*', '', dox_str)
-        pattern = r'^\s*([^=\s]+)\s*(=|\+=)\s*(.*)$'
+        dox_str = re.sub(r"\\\s*\n\s*", "", dox_str)
+        pattern = r"^\s*([^=\s]+)\s*(=|\+=)\s*(.*)$"
 
         try:
             for line in dox_str.split("\n"):
@@ -173,14 +173,14 @@ class DoxygenRun:
                     )
                 key, operator, value = match.groups()
                 value = value.strip()
-                if operator == '=':
+                if operator == "=":
                     if value == "YES":
                         dox_dict[key] = True
                     elif value == "NO":
                         dox_dict[key] = False
                     else:
                         dox_dict[key] = value
-                if operator == '+=':
+                if operator == "+=":
                     dox_dict[key] = f"{dox_dict[key]} {value}"
         except ValueError as e:
             raise DoxygenCustomConfigNotValid(
