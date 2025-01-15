@@ -29,6 +29,6 @@ All notable changes to this project will be documented in this file.
     - Fixes: brief description in detailed if there is no detailed description; change the Detailed Description header levelby @DmitriyMarin in https://github.com/JakubAndrysek/MkDoxy/pull/114
     - feat: add function in namespace snippet by @barnou-psee in https://github.com/JakubAndrysek/MkDoxy/pull/116
     - add api-path to project configuration by @dustinlagoy in https://github.com/JakubAndrysek/MkDoxy/pull/112
-- **1.2.6** - 2025-01-15
+- **1.2.7** - 2025-01-15
     - fix: Improve handling of struct / class initializers by @g-braeunlich in https://github.com/JakubAndrysek/MkDoxy/pull/120
     - fix: Add support for whole spec of doxygen config format by @athackst in https://github.com/JakubAndrysek/MkDoxy/pull/121
