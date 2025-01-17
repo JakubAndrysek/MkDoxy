@@ -48,7 +48,7 @@ class Node:
                 print(parent)
                 print("  " + xml_file)
                 with open(xml_file, "rb") as file:
-                    contents = file.read().decode('utf-8', 'replace')
+                    contents = file.read().decode("utf-8", "replace")
                     # ElementTree.fromstring() gets the root element.
                     self._xml = ElementTree.fromstring(contents).find("compounddef")
 
@@ -236,7 +236,6 @@ class Node:
             child._name = fallback_name
 
         return child
-
 
     def _check_attrs(self):
         prot = self._xml.get("prot")

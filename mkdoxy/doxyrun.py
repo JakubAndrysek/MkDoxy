@@ -128,7 +128,7 @@ class DoxygenRun:
         @param doxyCfg: (dict) the current doxygen configuration to merge with.
         @return: (str) A string containing the relative paths to be set as "INPUT", separated by " ".
         """
-        doxycfg_input = doxyCfg["INPUT"]
+        doxycfg_input = doxyCfg.get("INPUT", "")
 
         if not self.doxygenSource or self.doxygenSource == "":
             return doxycfg_input
@@ -144,9 +144,12 @@ class DoxygenRun:
         # First paths from `src-dirs`. They are relative to the current working directory.
         abs_path_dict = dict.fromkeys(Path(src_dir).resolve() for src_dir in self.doxygenSource.split(" "))
         # Now paths from the config file. They are relative to `abs_run_dir`
-        abs_path_dict |= dict.fromkeys(Path.joinpath(abs_run_dir, input_item).resolve() for input_item in doxycfg_input.split(" "))
+        abs_path_dict |= dict.fromkeys(
+            Path.joinpath(abs_run_dir, input_item).resolve() for input_item in doxycfg_input.split(" ")
+        )
 
         return " ".join(os.path.relpath(abs_path, abs_run_dir) for abs_path in abs_path_dict.keys())
+
 
 
     def is_doxygen_valid_path(self, doxygen_bin_path: str) -> bool:
