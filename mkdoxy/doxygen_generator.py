@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import os
+import re
 import shutil
 from pathlib import Path
 from subprocess import PIPE, Popen
@@ -24,18 +25,6 @@ class DoxygenGenerator:
         temp_doxy_folder: Path,
     ):
         """! Constructor.
-        Default Doxygen config options:
-
-        - INPUT: <doxygenSource>
-        - OUTPUT_DIRECTORY: <tempDoxyFolder>
-        - DOXYFILE_ENCODING: UTF-8
-        - GENERATE_XML: YES
-        - RECURSIVE: YES
-        - EXAMPLE_PATH: examples
-        - SHOW_NAMESPACES: YES
-        - GENERATE_HTML: NO
-        - GENERATE_LATEX: NO
-
         @details
         @param doxy_config: (MkDoxyConfig) Doxygen configuration.
         @param project_config: (MkDoxyConfigProject) Project configuration.
@@ -52,80 +41,59 @@ class DoxygenGenerator:
                 f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-binary."
             )
 
-    def set_doxy_config(self, doxy_cfg_new: dict) -> dict:
-        """! Set the Doxygen configuration.
-        @details If a custom Doxygen config file is provided, it will be used. Otherwise, default options will be used.
-        @details Order of application of parameters:
-        @details 1. Custom Doxygen config file
-        @details 2. If not provided, default options - in documentation
-        @details 3. New Doxygen config options from mkdocs.yml
-        @details 3. Overwrite INPUT and OUTPUT_DIRECTORY with the provided values for correct plugin operation.
-
-        @details Overwrite options description:
-        @details - INPUT: <doxygenSource>
-        @details - OUTPUT_DIRECTORY: <tempDoxyFolder>
-
-        @details Default Doxygen config options:
-        @details - DOXYFILE_ENCODING: UTF-8
+    @staticmethod
+    def get_doxy_format_config() -> dict:
+        """
+        @brief Get the default Doxygen format configuration.
+        @details Default Doxygen configuration options:
         @details - GENERATE_XML: YES
+        @details - GENERATE_HTML: NO
+        @details - GENERATE_LATEX: NO
+        """
+        return {
+            "GENERATE_XML": True,
+            "GENERATE_HTML": False,
+            "GENERATE_LATEX": False,
+        }
+
+    @staticmethod
+    def get_doxy_default_config() -> dict:
+        """
+        @brief Get the default Doxygen configuration.
+        @details Default Doxygen configuration options:
+        @details - DOXYFILE_ENCODING: UTF-8
         @details - RECURSIVE: YES
         @details - EXAMPLE_PATH: examples
         @details - SHOW_NAMESPACES: YES
-        @details - GENERATE_HTML: NO
-        @details - GENERATE_LATEX: NO
-        @param doxy_cfg_new: (dict) New Doxygen config options that will be
-         added to the default config (new options will overwrite default options)
-        @return: (dict) Doxygen configuration.
         """
-        doxy_config = {}
+        return {
+            "DOXYFILE_ENCODING": "UTF-8",
+            "RECURSIVE": True,
+            "EXAMPLE_PATH": "examples",
+            "SHOW_NAMESPACES": True,
+        }
 
-        if self.project_config.doxy_config_file is not None:
-            if not self.project_config.doxy_config_file.is_file():
-                raise DoxygenCustomConfigNotFound(
-                    f"Custom Doxygen config file not found: {self.project_config.doxy_config_file}\n"
-                    f"Make sure the path is correct."
-                    f"Loaded path: '{self.project_config.doxy_config_file}'"
-                )
-
-            try:
-                with open(self.project_config.doxy_config_file, "r") as file:
-                    doxy_config.update(self.str2dox_dict(file.read()))
-            except FileNotFoundError as e:
-                raise DoxygenCustomConfigNotFound(
-                    f"Custom Doxygen config file not found: {self.project_config.doxy_config_file}\n"
-                    f"Make sure the path is correct."
-                    f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-configuration-file."
-                ) from e
-        else:
-            doxy_config = {
-                "DOXYFILE_ENCODING": "UTF-8",
-                "GENERATE_XML": "YES",
-                "RECURSIVE": "YES",
-                "EXAMPLE_PATH": "examples",
-                "SHOW_NAMESPACES": "YES",
-                "GENERATE_HTML": "NO",
-                "GENERATE_LATEX": "NO",
-            }
-
-        doxy_config.update(doxy_cfg_new)
-
-        if self.doxy_config.generate_diagrams:
-            self.diagram_update_config(doxy_config)
-
-        # rewrite INPUT and OUTPUT_DIRECTORY with the provided values from mkdocs.yml
-        doxy_config["INPUT"] = self.project_config.src_dirs
-        doxy_config["OUTPUT_DIRECTORY"] = str(self.temp_doxy_folder)
-        return doxy_config
-
-    def diagram_update_config(self, doxy_config):
-        log.debug(" -> Setting up Doxygen for diagrams")
-        doxy_config["HAVE_DOT"] = "YES"
-        doxy_config["DOT_IMAGE_FORMATS"] = self.doxy_config.generate_diagrams_format
-        doxy_config["UML_LOOK"] = "YES" if self.doxy_config.generate_diagrams_type == "uml" else "NO"
-        doxy_config["DOT_CLEANUP"] = "NO"
-        doxy_config["GENERATE_LEGEND"] = "NO"
-        doxy_config["GENERATE_HTML"] = "YES"
-        doxy_config["SEARCHENGINE"] = "NO"
+    def get_doxy_diagrams_config(self) -> dict:
+        """
+        @brief Get the Doxygen diagrams configuration.
+        @details Doxygen diagrams configuration options:
+        @details - HAVE_DOT: YES
+        @details - DOT_IMAGE_FORMATS: <generate_diagrams_format>
+        @details - UML_LOOK: YES if <generate_diagrams_type> is "uml", NO otherwise
+        @details - DOT_CLEANUP: NO
+        @details - GENERATE_LEGEND: NO
+        @details - SEARCHENGINE: NO
+        @details - GENERATE_HTML: YES (required for diagrams)
+        """
+        return {
+            "HAVE_DOT": True,
+            "DOT_IMAGE_FORMATS": self.doxy_config.generate_diagrams_format,
+            "UML_LOOK": self.doxy_config.generate_diagrams_type == "uml",
+            "DOT_CLEANUP": False,
+            "GENERATE_LEGEND": False,
+            "SEARCHENGINE": False,
+            "GENERATE_HTML": True,
+        }
 
         # have to be tested
         # doxy_config["CLASS_DIAGRAMS"] = "YES"
@@ -134,6 +102,112 @@ class DoxygenGenerator:
         # doxy_config["GRAPHICAL_HIERARCHY"] = "YES"
         # doxy_config["CALL_GRAPH"] = "YES"
         # doxy_config["CALLER_GRAPH"] = "YES"
+
+    def get_doxy_config_file(self):
+        """! Get the Doxygen configuration from the provided file.
+        @details
+        @return: (dict) Doxygen configuration from the provided file.
+        """
+        return self.str2dox_dict(self.get_doxy_config_file_raw(), self.project_config.doxy_config_file)
+
+    def get_doxy_config_file_raw(self):
+        """! Get the Doxygen configuration from the provided file.
+        @details
+        @return: (str) Doxygen configuration from the provided file.
+        """
+        try:
+            with open(self.project_config.doxy_config_file, "r") as file:
+                return file.read()
+        except FileNotFoundError as e:
+            raise DoxygenCustomConfigNotFound(
+                f"Custom Doxygen config file not found\n"
+                f"Make sure the path is correct."
+                f"Loaded path: '{self.project_config.doxy_config_file}'\n"
+                f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-configuration-file.\n"
+            ) from e
+
+    def get_merged_doxy_dict(self) -> dict:
+        """! Get the merged Doxygen configuration.
+        @details The merged Doxygen configuration is created by merging multiple configurations.
+        @details The hierarchy is as follows:
+        @details - If a Doxygen config file is provided, it is used.
+        @details - If not, the default Doxygen configuration is used.
+        @details - Merge the INPUT directories from the mkdocs.yml file with the Doxygen configuration.
+        @details - Add the OUTPUT_DIRECTORY to the temporary Doxygen folder.
+        @details - Update configuration with the project format configuration.
+        @details - Update configuration with the default configuration.
+        @details - Update configuration with the project configuration.
+        @details - Update configuration with the diagrams configuration if enabled.
+        @return: (dict) Merged Doxygen configuration.
+        """
+        doxy_dict = {}
+
+        # Update with Doxygen config file if provided
+        if self.project_config.doxy_config_file:
+            doxy_dict.update(self.get_doxy_config_file())
+        else:
+            doxy_dict.update(self.get_doxy_default_config())
+
+        # Merge INPUT directories from the mkdocs.yml file with the Doxygen configuration
+        doxy_dict["INPUT"] = self.merge_doxygen_input(
+            self.project_config.src_dirs, doxy_dict.get("INPUT", ""), self.get_doxygen_run_folder()
+        )
+
+        # OUTPUT_DIRECTORY is always the temporary Doxygen folder
+        doxy_dict["OUTPUT_DIRECTORY"] = str(self.temp_doxy_folder)
+
+        # Update with the project format configuration
+        doxy_dict.update(self.get_doxy_format_config())
+
+        # Update with the default configuration
+        doxy_dict.update(self.doxy_config.doxy_config_dict)
+
+        # Update with the project configuration
+        doxy_dict.update(self.project_config.doxy_config_dict)
+
+        if self.doxy_config.generate_diagrams:
+            doxy_dict.update(self.get_doxy_diagrams_config())
+
+        if doxy_dict["INPUT"] == "":
+            raise exceptions.PluginError(
+                "No INPUT directories provided for Doxygen.\n"
+                "Make sure to provide at least one source directory."
+                "Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-configuration-file."
+            )
+
+        log.debug(f"- Doxygen INPUT: {doxy_dict['INPUT']}")
+
+        return doxy_dict
+
+    @staticmethod
+    def merge_doxygen_input(src_dirs: str, doxy_input: str, doxygen_run_folder: Path) -> str:
+        """! Merge the INPUT directories from the mkdocs.yml file with the Doxygen configuration.
+
+        @details Both `src_dirs` and `doxy_input` should be space-separated strings.
+        Each path is resolved relative to `doxygen_run_folder`.
+        The function returns a space-separated string of unique relative paths.
+
+        @param src_dirs: (str) Source directories from the mkdocs.yml file.
+        @param doxy_input: (str) Doxygen INPUT directories.
+        @param doxygen_run_folder: (Path) The folder to execute
+        @return: (str) Merged INPUT directories.
+        """
+        # If either input is empty, return the other.
+        if not src_dirs:
+            return doxy_input
+        if not doxy_input:
+            return src_dirs
+
+        base_dir = doxygen_run_folder.resolve()
+
+        abs_paths = {(base_dir / path_str).resolve() for path_str in src_dirs.split()}
+        for path_str in doxy_input.split():
+            abs_paths.add((base_dir / path_str).resolve())
+
+        # Convert absolute paths back to relative ones and sort for consistency
+        relative_paths = sorted(os.path.relpath(p, base_dir) for p in abs_paths)
+
+        return " ".join(relative_paths)
 
     @staticmethod
     def is_doxygen_valid_path(doxygen_bin_path: Path) -> bool:
@@ -150,6 +224,49 @@ class DoxygenGenerator:
         return doxygen_bin_path.is_file() and os.access(doxygen_bin_path, os.X_OK)
 
     # Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
+
+    @staticmethod
+    def str2dox_dict(dox_str: str, config_file: str = "???") -> dict:
+        """! Convert a string from a doxygen config file to a dictionary.
+        @details
+        @param dox_str: (str) String from a doxygen config file.
+        @return: (dict) Dictionary.
+        """
+        dox_dict = {}
+        dox_str = re.sub(r"\\\s*\n\s*", "", dox_str)
+        pattern = r"^\s*([^=\s]+)\s*(=|\+=)\s*(.*)$"
+
+        try:
+            for line in dox_str.split("\n"):
+                if line.strip() == "" or line.startswith("#"):
+                    continue
+                match = re.match(pattern, line)
+                if not match:
+                    raise DoxygenCustomConfigNotValid(
+                        f"Invalid line: '{line}'"
+                        f"In custom Doxygen config file: {config_file}\n"
+                        f"Make sure the file is in standard Doxygen format."
+                        f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/."
+                    )
+                key, operator, value = match.groups()
+                value = value.strip()
+                if operator == "=":
+                    if value == "YES":
+                        dox_dict[key] = True
+                    elif value == "NO":
+                        dox_dict[key] = False
+                    else:
+                        dox_dict[key] = value
+                if operator == "+=":
+                    dox_dict[key] = f"{dox_dict[key]} {value}"
+        except ValueError as e:
+            raise DoxygenCustomConfigNotValid(
+                f"Invalid custom Doxygen config file: {config_file}\n"
+                f"Make sure the file is in standard Doxygen format."
+                f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/."
+            ) from e
+        return dox_dict
+
     @staticmethod
     def dox_dict2str(dox_dict: dict) -> str:
         """! Convert a dictionary to a string that can be written to a doxygen config file.
@@ -159,7 +276,8 @@ class DoxygenGenerator:
         """
         string = ""
         new_line = "{option} = {value}\n"
-        for key, value in dox_dict.items():
+        items = sorted(dox_dict.items())
+        for key, value in items:
             if value is True:
                 value_transformed = "YES"
             elif value is False:
@@ -172,33 +290,8 @@ class DoxygenGenerator:
         # Don't need an empty line at the end
         return string.strip()
 
-    def str2dox_dict(self, dox_str: str) -> dict:
-        """! Convert a string from a doxygen config file to a dictionary.
-        @details
-        @param dox_str: (str) String from a doxygen config file.
-        @return: (dict) Dictionary.
-        """
-        doxy_dict = {}
-        try:
-            for line in dox_str.split("\n"):
-                if line.strip() == "":
-                    continue
-                key, value = line.split(" = ")
-                if value == "YES":
-                    doxy_dict[key] = True
-                elif value == "NO":
-                    doxy_dict[key] = False
-                else:
-                    doxy_dict[key] = value
-        except ValueError as e:
-            raise DoxygenCustomConfigNotValid(
-                f"Invalid custom Doxygen config file: {self.project_config.doxy_config_file}\n"
-                f"Make sure the file is in standard Doxygen format."
-                f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/."
-            ) from e
-        return doxy_dict
-
-    def hash_write(self, file_name: Path, hash_key: str):
+    @staticmethod
+    def hash_write(file_name: Path, hash_key: str):
         """! Write the hash to the file.
         @details
         @param file_name: (Path) Path to the file where the hash will be saved.
@@ -207,7 +300,8 @@ class DoxygenGenerator:
         with open(file_name, "w") as hash_file:
             hash_file.write(hash_key)
 
-    def hash_read(self, file_name: Path) -> str:
+    @staticmethod
+    def hash_read(file_name: Path) -> str:
         """! Read the hash from the file.
         @details
         @param file_name: (Path) Path to the file with the hash.
@@ -256,11 +350,17 @@ class DoxygenGenerator:
             stdin=PIPE,
             stderr=PIPE,
         )
-        doxy_str = self.dox_dict2str(self.set_doxy_config(self.project_config.doxy_config_dict))
+
+        if self.project_config.doxy_config_file_force:
+            doxy_str = self.get_doxy_config_file_raw()
+        else:
+            doxy_str = self.dox_dict2str(self.get_merged_doxy_dict())
         stdout_data, stderr_data = doxy_builder.communicate(input=doxy_str.encode("utf-8"))
         if doxy_builder.returncode != 0:
-            log.error(f"Error running Doxygen: {stderr_data.decode('utf-8')}")
-            raise exceptions.PluginError(f"Error running Doxygen: {stderr_data.decode('utf-8')}")
+            error_message = (
+                f"Error running Doxygen (exit code {doxy_builder.returncode}): {stderr_data.decode('utf-8')}"
+            )
+            raise exceptions.PluginError(error_message)
 
     def get_output_xml_folder(self) -> Path:
         """! Get the path to the XML output folder.
@@ -275,6 +375,17 @@ class DoxygenGenerator:
         @return: (Path) Path to the HTML output folder.
         """
         return Path.joinpath(self.temp_doxy_folder, Path("html"))
+
+    def get_doxygen_run_folder(self):
+        """! Get the working directory to execute Doxygen in. Important to resolve relative paths.
+        @details When a doxygen config file is provided, this is its containing directory. Otherwise, it's the current
+          working directory.
+        @return: (Path) Path to the folder to execute Doxygen in.
+        """
+        if not self.project_config.doxy_config_file:
+            return Path.cwd()
+
+        return Path(self.project_config.doxy_config_file).parent
 
 
 # not valid path exception

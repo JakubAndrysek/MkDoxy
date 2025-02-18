@@ -29,20 +29,25 @@ class MkDoxyConfigProject(Config):
     It will replace the old configuration type.
 
     @param src_dirs: (str) Source directories for Doxygen - INPUT
-    @param full_doc: (bool) Generate full documentation - overwrite global
-    @param debug: (bool) Debug mode - overwrite global
-    @param doxy_config_dict: (dict) Doxygen additional configuration - overwrite everything
-    @param doxy_config_file: (str) Doxygen additional configuration
-    @param custom_template_dir: (str) Custom Jinja2 template directory
+    @param full_doc: (bool) Generate full documentation
+    @param debug: (bool) Debug mode
+    @param ignore_errors: (bool) Ignore errors
+    @param doxy_config_dict: (dict) Doxygen additional configuration
+    @param doxy_config_default: (bool) Use default MkDoxy Doxygen configuration
+    @param doxy_config_file: (str) Doxygen configuration file
+    @param doxy_config_file_force: (bool) Do not use default MkDoxy Doxygen configuration, use only Doxygen configuration file
+    @param custom_template_dir: (str) Custom template directory
     """
 
-    src_dirs = c.Type(str)  # source directories for Doxygen - INPUT
-    full_doc = c.Type(bool, default=True)  # generate full documentation - overwrite global
-    debug = c.Type(bool, default=False)  # debug mode - overwrite global
-    ignore_errors = c.Type(bool, default=False)  # ignore errors - overwrite global
-    doxy_config_dict = c.Type(dict, default={})  # Doxygen additional configuration - overwrite everything
-    doxy_config_file = c.Optional(c.Type(Path))  # Doxygen additional configuration Doxyfile
-    custom_template_dir = c.Optional(c.Type(Path))  # custom Jinja2 template directory
+    src_dirs = c.Type(str)
+    full_doc = c.Type(bool, default=True)
+    debug = c.Type(bool, default=False)
+    ignore_errors = c.Type(bool, default=False)
+    doxy_config_dict = c.Type(dict, default={})
+    doxy_config_default = c.Type(bool, default=True)
+    doxy_config_file = c.Optional(c.Type(Path))
+    doxy_config_file_force = c.Type(bool, default=False)
+    custom_template_dir = c.Optional(c.Type(Path))
 
 
 class MkDoxyConfig(Config):
@@ -61,6 +66,9 @@ class MkDoxyConfig(Config):
     debug = c.Type(bool, default=False)  # debug mode
     ignore_errors = c.Type(bool, default=False)  # ignore errors
     custom_api_folder = c.Optional(c.Type(str))  # custom API folder for Doxygen and MD output (default in temp folder)
+    doxy_config_dict = c.Type(
+        dict, default={}
+    )  # Doxygen additional configuration - it is overwritten by project config
     doxygen_bin_path = c.Type(Path, default=Path("doxygen"))  # path to Doxygen binary (default "doxygen"
 
     generate_diagrams = c.Type(bool, default=False)  # generate diagrams

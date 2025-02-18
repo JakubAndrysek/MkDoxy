@@ -115,10 +115,7 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
 
                 # Append files to be processed by MkDocs
                 for file in generatorAuto.fullDocFiles:
-                    # if file.src_path not in files.src_paths:
                     files.append(file)
-                    # else:
-                    #     log.debug(f"  -> {file.src_path} already in files")
         return files
 
     def on_page_markdown(self, markdown: str, page: Page, config: Config, files: Files) -> str:
