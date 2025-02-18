@@ -172,7 +172,7 @@ def test_str2dox_dict_expanded_config_errors():
     with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
         doxygen_run.str2dox_dict(dox_str)
 
-    dox_str = "BAD_MULTILINE = BAD\n" "                VALUE\n"
+    dox_str = "BAD_MULTILINE = BAD\n                VALUE\n"
     error_message = str(
         "Invalid line: '                VALUE'"
         "In custom Doxygen config file: None\n"
