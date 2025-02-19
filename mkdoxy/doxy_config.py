@@ -47,7 +47,7 @@ class MkDoxyConfigProject(Config):
     doxy_config_default = c.Type(bool, default=True)
     doxy_config_file = c.Optional(c.Type(Path))
     doxy_config_file_force = c.Type(bool, default=False)
-    custom_template_dir = c.Optional(c.Type(Path))
+    custom_template_dir = c.Optional(c.Type(str))
 
 
 class MkDoxyConfig(Config):
