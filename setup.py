@@ -59,5 +59,10 @@ setup(
     ],
     packages=find_packages(),
     package_data={"mkdoxy": ["templates/*.jinja2"]},
-    entry_points={"mkdocs.plugins": ["mkdoxy = mkdoxy.plugin:MkDoxy"]},
+    entry_points={
+        "mkdocs.plugins": ["mkdoxy = mkdoxy.plugin:MkDoxy"],
+        # folder mkdoxy/cli.py
+        # "console_scripts": ["mkdoxy = mkdoxy.cli:cli"],
+        "console_scripts": ["mkdoxy = mkdoxy.__main__:main"],
+    },
 )
