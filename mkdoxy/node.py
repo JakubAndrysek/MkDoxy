@@ -454,7 +454,10 @@ class Node:
     @property
     def name_url_safe(self) -> str:
         name = self.name_tokens[-1]
-        return name.replace(" ", "-").replace("=", "").replace("~", "").lower()
+        return name.replace("=", "").replace("~", "").replace(",", "") \
+                   .replace("<", "").replace(">", "").replace(".", "") \
+                   .strip(' ').replace(" ", "-") \
+                   .lower()
 
     @property
     def anchor(self) -> str:
