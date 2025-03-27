@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as Element
 
@@ -454,10 +455,9 @@ class Node:
     @property
     def name_url_safe(self) -> str:
         name = self.name_tokens[-1]
-        return name.replace("=", "").replace("~", "").replace(",", "") \
-                   .replace("<", "").replace(">", "").replace(".", "") \
-                   .strip(' ').replace(" ", "-") \
-                   .lower()
+        # Strip special characters that do not appear in anchors
+        name = re.sub("[=~.,<>]", "", name)
+        return name.strip(' ').replace(" ", "-").lower()
 
     @property
     def anchor(self) -> str:
