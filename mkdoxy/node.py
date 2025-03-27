@@ -448,12 +448,14 @@ class Node:
         total = 0
         for child in self.parent.children:
             child_refid = child.name.replace(" ", "")
-            # Check if the child is an operator overload by ensuring:
+            # Check if the child is a displayed operator by ensuring:
             # 1. Its identifier is in the predefined OVERLOAD_OPERATORS list.
             # 2. It starts with the expected 'stem' derived from the parent's naming.
-            # 3. It does not start with an extra hyphen (stem+'-') to avoid matching
+            # 3. It does not start with an extra hyphen (stem+'-') to avoid excessive matching.
+            # 4. It is not private.
             if child.is_function and child_refid in OVERLOAD_OPERATORS and \
-                    child_refid.startswith(stem) and not child_refid.startswith(stem+'-'):
+                    child_refid.startswith(stem) and not child_refid.startswith(stem+'-') \
+                    and child._visibility != Visibility.PRIVATE:
                 total += 1
             if child.refid == self._refid:
                 break
