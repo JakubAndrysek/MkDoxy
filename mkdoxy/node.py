@@ -444,9 +444,12 @@ class Node:
 
     @property
     def operator_num(self) -> int:
+        stem = "operator" + ("-" * self._name.count("-"))
         total = 0
         for child in self.parent.children:
-            if child.is_function and child.name.replace(" ", "") in OVERLOAD_OPERATORS:
+            child_refid = child.name.replace(" ", "")
+            if child.is_function and child_refid in OVERLOAD_OPERATORS and \
+                    child_refid.startswith(stem) and not child_refid.startswith(stem+'-'):
                 total += 1
             if child.refid == self._refid:
                 break
@@ -464,7 +467,10 @@ class Node:
         name = ""
         if self._name.replace(" ", "") in OVERLOAD_OPERATORS:
             num = self.operator_num
-            name = f"operator_{str(self.operator_num - 1)}" if num > 1 else "operator"
+            if self._name.startswith("operator-"):
+                name = f"operator-_{str(num - 1)}" if num > 1 else "operator-"
+            else:
+                name = f"operator_{str(num - 1)}" if num > 1 else "operator"
         elif self.is_overloaded:
             name = f"{self.name_url_safe}-{str(self.overload_num)}{str(self.overload_total)}"
         else:
