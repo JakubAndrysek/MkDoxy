@@ -224,3 +224,22 @@ class MdTable(Md):
                 f.write("|")
             is_first = False
         f.write("\n\n")
+
+
+class MdInlineEquation(Md):
+    def __init__(self, equation: str):
+        self.equation = equation
+
+    def render(self, f: MdRenderer, indent: str):
+        if self.equation:
+            f.write(rf"\({self.equation}\)")
+
+
+class MdBlockEquation(Md):
+    def __init__(self, equation: str):
+        self.equation = equation
+
+    def render(self, f: MdRenderer, indent: str):
+        f.write("\n")
+        f.write(rf"\[{self.equation}\]")
+        f.write("\n")
