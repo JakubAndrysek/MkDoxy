@@ -241,5 +241,5 @@ class MdBlockEquation(Md):
 
     def render(self, f: MdRenderer, indent: str):
         f.write("\n")
-        f.write(rf"\[{self.equation}\]")
+        f.write(rf"{indent}\[{self.equation}\]")
         f.write("\n")
