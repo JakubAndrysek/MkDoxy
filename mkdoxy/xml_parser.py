@@ -279,9 +279,9 @@ class XmlParser:
 
             elif item.tag == "emphasis":
                 ret.append(MdItalic(self.paras(item)))
-            elif item.tag == "formula":
-                equation = item.text.strip("$ ")
-                if len(p) == 1 and item.tail is None:
+            elif item.tag == "formula" and item.text:
+                equation = item.text.strip("$").strip()
+                if len(p) == 1 and not item.tail:
                     ret.append(MdBlockEquation(equation))
                 else:
                     ret.append(MdInlineEquation(equation))
