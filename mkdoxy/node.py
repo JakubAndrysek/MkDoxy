@@ -453,9 +453,13 @@ class Node:
             # 2. It starts with the expected 'stem' derived from the parent's naming.
             # 3. It does not start with an extra hyphen (stem+'-') to avoid excessive matching.
             # 4. It is not private.
-            if child.is_function and child_refid in OVERLOAD_OPERATORS and \
-                    child_refid.startswith(stem) and not child_refid.startswith(stem+'-') \
-                    and child._visibility != Visibility.PRIVATE:
+            if (
+                child.is_function
+                and child_refid in OVERLOAD_OPERATORS
+                and child_refid.startswith(stem)
+                and not child_refid.startswith(stem + "-")
+                and child._visibility != Visibility.PRIVATE
+            ):
                 total += 1
             if child.refid == self._refid:
                 break
@@ -466,7 +470,7 @@ class Node:
         name = self.name_tokens[-1]
         # Strip special characters that do not appear in anchors
         name = re.sub("[=~.,<>]", "", name)
-        return name.strip(' ').replace(" ", "-").lower()
+        return name.strip(" ").replace(" ", "-").lower()
 
     @property
     def anchor(self) -> str:
