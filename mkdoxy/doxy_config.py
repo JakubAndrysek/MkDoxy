@@ -49,6 +49,13 @@ class MkDoxyConfigProject(Config):
     doxy_config_file_force = c.Type(bool, default=False)
     custom_template_dir = c.Optional(c.Type(str))
 
+    def validate(self):
+        failed, warnings = super().validate()
+        unused_keys = set(self.keys()) - self._schema_keys
+        for k in unused_keys.intersection(config_project_legacy.keys()):
+            warnings.append((k, f"Deprecated configuration name: {k} -> {config_project_legacy[k]}"))
+
+        return failed, warnings
 
 class MkDoxyConfig(Config):
     """! Global configuration for the MkDoxy plugin.
@@ -74,6 +81,17 @@ class MkDoxyConfig(Config):
     generate_diagrams = c.Type(bool, default=False)  # generate diagrams
     generate_diagrams_format = c.Choice(("svg", "png", "jpg", "gif"), default="svg")  # diagram format
     generate_diagrams_type = c.Choice(("dot", "uml"), default="dot")  # diagram type
+
+    def validate(self):
+        failed, warnings = super().validate()
+        unused_keys = set(self.keys()) - self._schema_keys
+        for k in unused_keys.intersection(config_scheme_legacy.keys()):
+            warnings.append((k, f"Deprecated configuration name: {k} -> {config_scheme_legacy[k]}"))
+
+        project_warnings = next(s.option_type.warnings for k, s in self._schema if k == 'projects')
+        warnings.extend(project_warnings)
+
+        return failed, warnings
 
 
 # def load_config_by_key(key: str, legacy_key: str, config: Config, legacy: list) -> any:
