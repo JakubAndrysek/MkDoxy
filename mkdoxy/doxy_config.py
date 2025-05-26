@@ -51,6 +51,8 @@ class MkDoxyConfigProject(Config):
 
     def validate(self):
         failed, warnings = super().validate()
+
+        # Add a warning for deprecated configuration keys
         unused_keys = set(self.keys()) - self._schema_keys
         for k in unused_keys.intersection(config_project_legacy.keys()):
             warnings.append((k, f"Deprecated configuration name: {k} -> {config_project_legacy[k]}"))
@@ -84,12 +86,14 @@ class MkDoxyConfig(Config):
 
     def validate(self):
         failed, warnings = super().validate()
+
+        # Add a warning for deprecated configuration keys
         unused_keys = set(self.keys()) - self._schema_keys
         for k in unused_keys.intersection(config_scheme_legacy.keys()):
             warnings.append((k, f"Deprecated configuration name: {k} -> {config_scheme_legacy[k]}"))
 
-        project_warnings = next(s.option_type.warnings for k, s in self._schema if k == 'projects')
-        warnings.extend(project_warnings)
+        # Include warnings from sub-config options in mkdoxy.projects
+        warnings.extend(next(s.option_type.warnings for k, s in self._schema if k == 'projects'))
 
         return failed, warnings
 
