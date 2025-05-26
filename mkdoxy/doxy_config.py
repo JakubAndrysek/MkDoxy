@@ -59,6 +59,7 @@ class MkDoxyConfigProject(Config):
 
         return failed, warnings
 
+
 class MkDoxyConfig(Config):
     """! Global configuration for the MkDoxy plugin.
     @details New type of global configuration for the MkDoxy plugin. It will replace the old configuration type.
@@ -93,7 +94,7 @@ class MkDoxyConfig(Config):
             warnings.append((k, f"Deprecated configuration name: {k} -> {config_scheme_legacy[k]}"))
 
         # Include warnings from sub-config options in mkdoxy.projects
-        warnings.extend(next(s.option_type.warnings for k, s in self._schema if k == 'projects'))
+        warnings.extend(next(s.option_type.warnings for k, s in self._schema if k == "projects"))
 
         return failed, warnings
 
