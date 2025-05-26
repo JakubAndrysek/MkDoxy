@@ -34,7 +34,6 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
         self.default_template_config = {
             "indent_level": 0,
         }
-        # check deprecated config here
 
     def is_enabled(self) -> bool:
         """! Checks if the plugin is enabled
