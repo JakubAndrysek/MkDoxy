@@ -1,10 +1,11 @@
 import re
 import sys
+
 import yaml
 
 
 def readFile(filename: str) -> str:
-    file = open(filename, "r")
+    file = open(filename)
     return file.read()
 
 

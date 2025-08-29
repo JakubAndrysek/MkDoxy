@@ -1,5 +1,4 @@
-from mkdocs.config import config_options, Config
-
+from mkdocs.config import Config, config_options
 
 if __name__ == "__main__":
     config_scheme = (

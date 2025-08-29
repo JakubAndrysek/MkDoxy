@@ -1,4 +1,4 @@
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 
 p = Popen(["doxygen", "-"], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 

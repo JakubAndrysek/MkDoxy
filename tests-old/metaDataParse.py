@@ -1,7 +1,7 @@
-import sys
 import re
-import yaml
+import sys
 
+import yaml
 
 text = """\
 ---

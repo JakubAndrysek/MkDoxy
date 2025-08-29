@@ -1,8 +1,9 @@
+from pathlib import Path
+
 import pytest
 
-from pathlib import Path
 from mkdoxy.doxy_config import MkDoxyConfig, MkDoxyConfigProject
-from mkdoxy.doxygen_generator import DoxygenGenerator, DoxygenCustomConfigNotValid
+from mkdoxy.doxygen_generator import DoxygenCustomConfigNotValid, DoxygenGenerator
 
 
 def test_dox_dict2str():

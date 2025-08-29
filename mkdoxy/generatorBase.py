@@ -8,7 +8,7 @@ from jinja2.exceptions import TemplateError
 from mkdocs import exceptions
 
 import mkdoxy
-from mkdoxy.constants import Kind, JINJA_EXTENSIONS
+from mkdoxy.constants import JINJA_EXTENSIONS, Kind
 from mkdoxy.filters import use_code_language
 from mkdoxy.node import DummyNode, Node
 from mkdoxy.utils import (
@@ -48,7 +48,7 @@ class GeneratorBase:
 
             # accept any case of the file ending
             if fileName.lower().endswith(JINJA_EXTENSIONS):
-                with open(filePath, "r") as file:
+                with open(filePath) as file:
                     name = os.path.splitext(fileName)[0]
                     fileTemplate, metaData = parseTemplateFile(file.read())
                     self.templates[name] = environment.from_string(fileTemplate)
@@ -67,7 +67,7 @@ class GeneratorBase:
             for fileName in os.listdir(templateDir):
                 filePath = os.path.join(templateDir, fileName)
                 if fileName.lower().endswith(JINJA_EXTENSIONS):
-                    with open(filePath, "r") as file:
+                    with open(filePath) as file:
                         name = os.path.splitext(fileName)[0]
                         fileTemplate, metaData = parseTemplateFile(file.read())
                         self.templates[name] = environment.from_string(fileTemplate)

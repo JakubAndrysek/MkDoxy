@@ -116,7 +116,7 @@ class DoxygenGenerator:
         @return: (str) Doxygen configuration from the provided file.
         """
         try:
-            with open(self.project_config.doxy_config_file, "r") as file:
+            with open(self.project_config.doxy_config_file) as file:
                 return file.read()
         except FileNotFoundError as e:
             raise DoxygenCustomConfigNotFound(
@@ -307,7 +307,7 @@ class DoxygenGenerator:
         @param file_name: (Path) Path to the file with the hash.
         @return: (str) Hash.
         """
-        with open(file_name, "r") as hash_file:
+        with open(file_name) as hash_file:
             return str(hash_file.read())
 
     def has_changes(self) -> bool:

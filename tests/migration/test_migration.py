@@ -1,6 +1,8 @@
 import shutil
 from pathlib import Path
+
 import pytest
+
 from mkdoxy.migration import update_new_config
 
 # Directory containing test data files.

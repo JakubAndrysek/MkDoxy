@@ -25,7 +25,7 @@ class Node:
         refid: str = None,
         debug: bool = False,
     ):
-        self._children: ["Node"] = []
+        self._children: [Node] = []
         self._cache = project.cache
         self._parser: XmlParser = parser
         self._parent = parent
@@ -478,11 +478,11 @@ class Node:
         if self._name.replace(" ", "") in OVERLOAD_OPERATORS:
             num = self.operator_num
             if self._name.startswith("operator-"):
-                name = f"operator-_{str(num - 1)}" if num > 1 else "operator-"
+                name = f"operator-_{num - 1!s}" if num > 1 else "operator-"
             else:
-                name = f"operator_{str(num - 1)}" if num > 1 else "operator"
+                name = f"operator_{num - 1!s}" if num > 1 else "operator"
         elif self.is_overloaded:
-            name = f"{self.name_url_safe}-{str(self.overload_num)}{str(self.overload_total)}"
+            name = f"{self.name_url_safe}-{self.overload_num!s}{self.overload_total!s}"
         else:
             name = self.name_url_safe
 
@@ -593,7 +593,7 @@ class Node:
             return ""
 
         total = self.overload_total
-        return f"[{str(self.overload_num)}/{str(total)}]" if total > 1 else ""
+        return f"[{self.overload_num!s}/{total!s}]" if total > 1 else ""
 
     @property
     def parents(self) -> ["Node"]:

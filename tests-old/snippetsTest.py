@@ -1,11 +1,12 @@
+from pprint import pprint
+
+from doxygen_snippets.cache import Cache
 from doxygen_snippets.doxygen import Doxygen
-from doxygen_snippets.generatorBase import GeneratorBase
+from doxygen_snippets.doxyrun import DoxygenRun
 from doxygen_snippets.generatorAuto import GeneratorAuto
+from doxygen_snippets.generatorBase import GeneratorBase
 from doxygen_snippets.generatorSnippets import GeneratorSnippets
 from doxygen_snippets.xml_parser import XmlParser
-from doxygen_snippets.cache import Cache
-from doxygen_snippets.doxyrun import DoxygenRun
-from pprint import pprint
 
 if __name__ == "__main__":
     doxygenSource = "files/src-stm32"

@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 from pathlib import Path
+
 import click
+
 from mkdoxy.migration import update_new_config
 
 
 @click.group()
 def main():
     """mkdoxy - Command line tool for managing Doxygen configuration migration."""
-    pass
 
 
 @click.command()
