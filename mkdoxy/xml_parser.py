@@ -6,10 +6,12 @@ from mkdoxy.markdown import (
     Code,
     Md,
     MdBlockQuote,
+    MdBlockEquation,
     MdBold,
     MdCodeBlock,
     MdHeader,
     MdImage,
+    MdInlineEquation,
     MdItalic,
     MdLink,
     MdList,
@@ -277,6 +279,12 @@ class XmlParser:
 
             elif item.tag == "emphasis":
                 ret.append(MdItalic(self.paras(item)))
+            elif item.tag == "formula" and item.text:
+                equation = item.text.strip("$").strip()
+                if len(p) == 1 and not item.tail:
+                    ret.append(MdBlockEquation(equation))
+                else:
+                    ret.append(MdInlineEquation(equation))
 
             if item.tail:
                 if italic:
