@@ -1,5 +1,3 @@
-
-
 def escape(s: str) -> str:
     ret = s.replace("*", "\\*")
     ret = ret.replace("_", "\\_")

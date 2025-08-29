@@ -295,7 +295,9 @@ class GeneratorAuto:
             for child in node.children:
                 self._generate_recursive(output_summary, child, level + 2)
 
-    def _generate_recursive_files(self, output_summary: str, node: Node, level: int, config: Optional[dict] = None) -> None:
+    def _generate_recursive_files(
+        self, output_summary: str, node: Node, level: int, config: Optional[dict] = None
+    ) -> None:
         if config is None:
             config = []
         if node.kind.is_file() or node.kind.is_dir():
