@@ -1,3 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkdoxy"
+version = "2.0.0"
+description = "MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets"
+readme = "README.md"
+keywords = ["mkdoxy", "python", "open-source", "documentation", "mkdocs", "doxygen", "multilanguage", "code-snippets", "code", "snippets", "documentation-generator"]
+license = "MIT"
+authors = [
+    {name = "Jakub Andrýsek", email = "email@kubaandrysek.cz"}
+]
+maintainers = [
+    {name = "Jakub Andrýsek", email = "email@kubaandrysek.cz"}
+]
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "mkdocs>=1.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mkdocs-material~=9.6.18",
+    "mkdocs-open-in-new-tab~=1.0.8",
+    "pathlib~=1.0.1",
+    "isort~=6.0.1",
+    "pytest~=8.4.1",
+    "pre-commit~=4.3.0",
+    "setuptools~=80.9.0",
+    "build~=1.3.0",
+    "twine~=6.1.0",
+    "sourcery~=1.37.0",
+    "click~=8.2.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/JakubAndrysek/MkDoxy"
+Documentation = "https://mkdoxy.kubaandrysek.cz/"
+Source = "https://github.com/JakubAndrysek/MkDoxy"
+Tracker = "https://github.com/JakubAndrysek/MkDoxy/issues"
+Funding = "https://github.com/sponsors/jakubandrysek"
+
+[project.scripts]
+mkdoxy = "mkdoxy.__main__:main"
+
+[project.entry-points]
+"mkdocs.plugins" = {mkdoxy = "mkdoxy.plugin:MkDoxy"}
+
+[tool.setuptools.packages.find]
+include = ["mkdoxy*"]
+
+[tool.setuptools.package-data]
+mkdoxy = ["templates/*.jinja2"]
+
 [tool.ruff]
 line-length = 120
 
