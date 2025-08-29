@@ -32,3 +32,6 @@ All notable changes to this project will be documented in this file.
 - **1.2.7** - 2025-01-15
     - fix: Improve handling of struct / class initializers by @g-braeunlich in https://github.com/JakubAndrysek/MkDoxy/pull/120
     - fix: Add support for whole spec of doxygen config format by @athackst in https://github.com/JakubAndrysek/MkDoxy/pull/121
+- **1.2.8** - 2025-08-29
+    - fix: equation rendering by @EmilyBourne in https://github.com/JakubAndrysek/MkDoxy/pull/137
+    - fix: bad anchors by @EmilyBourne in https://github.com/JakubAndrysek/MkDoxy/pull/132

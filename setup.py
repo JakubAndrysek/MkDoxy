@@ -26,7 +26,7 @@ def import_dev_requirements():
 # https://pypi.org/project/mkdoxy/
 setup(
     name="mkdoxy",
-    version="1.2.7",
+    version="1.2.8",
     description="MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -49,7 +49,6 @@ setup(
         "dev": import_dev_requirements(),
     },
     classifiers=[
-        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
