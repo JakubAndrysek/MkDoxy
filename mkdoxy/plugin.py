@@ -28,7 +28,7 @@ plugin_name: str = "MkDoxy"
 class MkDoxy(BasePlugin[MkDoxyConfig]):
     """! MkDocs plugin for generating documentation from Doxygen XML files."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.generator_base: dict[str, GeneratorBase] = {}
         self.doxygen: dict[str, Doxygen] = {}
         self.default_template_config = {

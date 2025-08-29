@@ -28,7 +28,7 @@ def migration_files(request, tmp_path: Path) -> tuple:
     return dst, expected_text, prefix
 
 
-def test_migration_without_backup(migration_files):
+def test_migration_without_backup(migration_files) -> None:
     """
     Test that migration updates the legacy configuration correctly without creating a backup.
     """
@@ -40,7 +40,7 @@ def test_migration_without_backup(migration_files):
     assert updated_text == expected_text, f"Test case {prefix} failed: output text does not match expected."
 
 
-def test_migration_with_backup(migration_files):
+def test_migration_with_backup(migration_files) -> None:
     """
     Test that migration creates a backup file and updates the configuration correctly.
     """

@@ -7,14 +7,14 @@ from mkdoxy.migration import update_new_config
 
 
 @click.group()
-def main():
+def main() -> None:
     """mkdoxy - Command line tool for managing Doxygen configuration migration."""
 
 
 @click.command()
 @click.argument("yaml_file", type=click.Path(exists=True))
 @click.option("--no-backup", is_flag=True, help="Do not backup old config to mkdocs.1_old.yaml")
-def migrate(yaml_file, no_backup):
+def migrate(yaml_file, no_backup) -> None:
     """
     Migrate mkdoxy configuration to a new version.
 
@@ -29,7 +29,7 @@ def migrate(yaml_file, no_backup):
 
 
 @click.command()
-def version():
+def version() -> None:
     """
     Display the version of the mkdoxy package.
     """

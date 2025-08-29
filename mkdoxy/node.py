@@ -1,7 +1,8 @@
 import logging
 import os
 import re
-from xml.etree import ElementTree
+from typing import Optional
+from xml.etree import ElementTree as ET
 from xml.etree.ElementTree import Element as Element
 
 from mkdoxy.constants import OVERLOAD_OPERATORS, Kind, Visibility
@@ -22,9 +23,9 @@ class Node:
         project: ProjectContext,
         parser: XmlParser,
         parent: "Node",
-        refid: str = None,
+        refid: Optional[str] = None,
         debug: bool = False,
-    ):
+    ) -> None:
         self._children: [Node] = []
         self._cache = project.cache
         self._parser: XmlParser = parser
@@ -42,7 +43,7 @@ class Node:
             if self.debug:
                 log.info(f"Loading XML from: {xml_file}")
             self._dirname = os.path.dirname(xml_file)
-            self._xml = ElementTree.parse(xml_file).getroot().find("compounddef")
+            self._xml = ET.parse(xml_file).getroot().find("compounddef")
             if self._xml is None:
                 raise Exception(f"File {xml_file} has no <compounddef>")
             self._kind = Kind.from_str(self._xml.get("kind"))
@@ -89,16 +90,16 @@ class Node:
         self._definition = Property.Definition(self._xml, parser, self._kind)
         self._programlisting = Property.Programlisting(self._xml, parser, self._kind)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Node: {self.name} refid: {self._refid}"
 
-    def add_child(self, child: "Node"):
+    def add_child(self, child: "Node") -> None:
         self._children.append(child)
 
-    def sort_children(self):
+    def sort_children(self) -> None:
         self._children.sort(key=lambda x: x._name, reverse=False)
 
-    def _check_for_children(self):
+    def _check_for_children(self) -> None:
         for innergroup in self._xml.findall("innergroup"):
             refid = innergroup.get("refid")
             if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
@@ -241,7 +242,7 @@ class Node:
         # if para.find('programlisting') is not None:
         # 	self._programlisting = Property.Programlisting(para, self._parser, self._kind)
 
-    def _check_attrs(self):
+    def _check_attrs(self) -> None:
         prot = self._xml.get("prot")
         self._visibility = Visibility(prot) if prot is not None else Visibility.PUBLIC
 
@@ -284,7 +285,7 @@ class Node:
 
     def query(self, visibility: str, kinds: [str], static: bool) -> ["Node"]:
         visibility = Visibility(visibility)
-        kinds = list(map(lambda kind: Kind.from_str(kind), kinds))
+        kinds = [Kind.from_str(kind) for kind in kinds]
         return [
             child
             for child in self._children
@@ -870,7 +871,7 @@ class Node:
 
 
 class DummyNode:
-    def __init__(self, name_long: str, derived_classes: [Node], kind: Kind):
+    def __init__(self, name_long: str, derived_classes: [Node], kind: Kind) -> None:
         self.name_long = name_long
         self.derived_classes = derived_classes
         self.kind = kind

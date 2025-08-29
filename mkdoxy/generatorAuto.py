@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import Optional
 
 from mkdocs.structure import files
 
@@ -47,7 +48,7 @@ class GeneratorAuto:
         apiPath: str,
         doxygen: Doxygen,
         useDirectoryUrls: bool,
-    ):
+    ) -> None:
         self.generatorBase = generatorBase
         self.tempDoxyDir = tempDoxyDir
         self.siteDir = siteDir
@@ -58,13 +59,13 @@ class GeneratorAuto:
         self.debug = generatorBase.debug
         os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
 
-    def save(self, path: str, output: str):
+    def save(self, path: str, output: str) -> None:
         pathRel = os.path.join(self.apiPath, path)
         self.fullDocFiles.append(files.File(pathRel, self.tempDoxyDir, self.siteDir, self.useDirectoryUrls))
         with open(os.path.join(self.tempDoxyDir, pathRel), "w", encoding="utf-8") as file:
             file.write(output)
 
-    def fullDoc(self, defaultTemplateConfig: dict):
+    def fullDoc(self, defaultTemplateConfig: dict) -> None:
         self.annotated(self.doxygen.root.children, defaultTemplateConfig)
         self.fileindex(self.doxygen.files.children, defaultTemplateConfig)
         self.members(self.doxygen.root.children, defaultTemplateConfig)
@@ -169,52 +170,52 @@ class GeneratorAuto:
             defaultTemplateConfig,
         )
 
-    def annotated(self, nodes: [Node], config: dict = None):
+    def annotated(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "annotated.md"
         output = self.generatorBase.annotated(nodes, config)
         self.save(path, output)
 
-    def programlisting(self, node: [Node], config: dict = None):
+    def programlisting(self, node: [Node], config: Optional[dict] = None) -> None:
         path = f"{node.refid}_source.md"
 
         output = self.generatorBase.programlisting(node, config)
         self.save(path, output)
 
-    def fileindex(self, nodes: [Node], config: dict = None):
+    def fileindex(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "files.md"
 
         output = self.generatorBase.fileindex(nodes, config)
         self.save(path, output)
 
-    def namespaces(self, nodes: [Node], config: dict = None):
+    def namespaces(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "namespaces.md"
 
         output = self.generatorBase.namespaces(nodes, config)
         self.save(path, output)
 
-    def page(self, node: Node, config: dict = None):
+    def page(self, node: Node, config: Optional[dict] = None) -> None:
         path = f"{node.name}.md"
 
         output = self.generatorBase.page(node, config)
         self.save(path, output)
 
-    def pages(self, nodes: [Node], config: dict = None):
+    def pages(self, nodes: [Node], config: Optional[dict] = None) -> None:
         for node in nodes:
             self.page(node, config)
 
-    def relatedpages(self, nodes: [Node], config: dict = None):
+    def relatedpages(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "pages.md"
 
         output = self.generatorBase.relatedpages(nodes)
         self.save(path, output)
 
-    def example(self, node: Node, config: dict = None):
+    def example(self, node: Node, config: Optional[dict] = None) -> None:
         path = f"{node.refid}.md"
 
         output = self.generatorBase.example(node, config)
         self.save(path, output)
 
-    def examples(self, nodes: [Node], config: dict = None):
+    def examples(self, nodes: [Node], config: Optional[dict] = None) -> None:
         for node in nodes:
             if node.is_example:
                 if node.has_programlisting:
@@ -226,25 +227,25 @@ class GeneratorAuto:
         output = self.generatorBase.examples(nodes, config)
         self.save(path, output)
 
-    def classes(self, nodes: [Node], config: dict = None):
+    def classes(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "classes.md"
 
         output = self.generatorBase.classes(nodes, config)
         self.save(path, output)
 
-    def modules(self, nodes: [Node], config: dict = None):
+    def modules(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "modules.md"
 
         output = self.generatorBase.modules(nodes, config)
         self.save(path, output)
 
-    def hierarchy(self, nodes: [Node], config: dict = None):
+    def hierarchy(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "hierarchy.md"
 
         output = self.generatorBase.hierarchy(nodes, config)
         self.save(path, output)
 
-    def member(self, node: Node, config: dict = None):
+    def member(self, node: Node, config: Optional[dict] = None) -> None:
         path = node.filename
 
         output = self.generatorBase.member(node, config)
@@ -253,7 +254,7 @@ class GeneratorAuto:
         if node.is_language or node.is_group or node.is_file or node.is_dir:
             self.members(node.children, config)
 
-    def file(self, node: Node, config: dict = None):
+    def file(self, node: Node, config: Optional[dict] = None) -> None:
         path = node.filename
 
         output = self.generatorBase.file(node, config)
@@ -265,12 +266,12 @@ class GeneratorAuto:
         if node.is_file or node.is_dir:
             self.files(node.children, config)
 
-    def members(self, nodes: [Node], config: dict = None):
+    def members(self, nodes: [Node], config: Optional[dict] = None) -> None:
         for node in nodes:
             if node.is_parent or node.is_group or node.is_file or node.is_dir:
                 self.member(node, config)
 
-    def files(self, nodes: [Node], config: dict = None):
+    def files(self, nodes: [Node], config: Optional[dict] = None) -> None:
         for node in nodes:
             if node.is_file or node.is_dir:
                 self.file(node, config)
@@ -281,20 +282,20 @@ class GeneratorAuto:
         kind_filters: Kind,
         kind_parents: [Kind],
         title: str,
-        config: dict = None,
-    ):
+        config: Optional[dict] = None,
+    ) -> None:
         path = title.lower().replace(" ", "_") + ".md"
 
         output = self.generatorBase.index(nodes, kind_filters, kind_parents, title, config)
         self.save(path, output)
 
-    def _generate_recursive(self, output_summary: str, node: Node, level: int):
+    def _generate_recursive(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_parent():
             output_summary += str(" " * level + generate_link(f"{node.kind.value} {node.name}", f"{node.refid}.md"))
             for child in node.children:
                 self._generate_recursive(output_summary, child, level + 2)
 
-    def _generate_recursive_files(self, output_summary: str, node: Node, level: int, config: dict = None):
+    def _generate_recursive_files(self, output_summary: str, node: Node, level: int, config: Optional[dict] = None) -> None:
         if config is None:
             config = []
         if node.kind.is_file() or node.kind.is_dir():
@@ -308,25 +309,25 @@ class GeneratorAuto:
             for child in node.children:
                 self._generate_recursive_files(output_summary, child, level + 2, config)
 
-    def _generate_recursive_examples(self, output_summary: str, node: Node, level: int):
+    def _generate_recursive_examples(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_example():
             output_summary += str(" " * level + generate_link(node.name, f"{node.refid}.md"))
             for child in node.children:
                 self._generate_recursive_examples(output_summary, child, level + 2)
 
-    def _generate_recursive_groups(self, output_summary: str, node: Node, level: int):
+    def _generate_recursive_groups(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_group():
             output_summary += str(" " * level + generate_link(node.title, f"{node.refid}.md"))
             for child in node.children:
                 self._generate_recursive_groups(output_summary, child, level + 2)
 
-    def _generate_recursive_pages(self, output_summary: str, node: Node, level: int):
+    def _generate_recursive_pages(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_page():
             output_summary += str(" " * level + generate_link(node.title, f"{node.refid}.md"))
             for child in node.children:
                 self._generate_recursive_pages(output_summary, child, level + 2)
 
-    def summary(self, defaultTemplateConfig: dict):
+    def summary(self, defaultTemplateConfig: dict) -> None:
         offset = 0
         output_summary = "" + str(" " * (offset + 2) + generate_link("Related Pages", "pages.md"))
         for node in self.doxygen.pages.children:

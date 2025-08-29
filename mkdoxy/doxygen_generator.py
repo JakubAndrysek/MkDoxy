@@ -23,7 +23,7 @@ class DoxygenGenerator:
         doxy_config: MkDoxyConfig,
         project_config: MkDoxyConfigProject,
         temp_doxy_folder: Path,
-    ):
+    ) -> None:
         """! Constructor.
         @details
         @param doxy_config: (MkDoxyConfig) Doxygen configuration.
@@ -291,7 +291,7 @@ class DoxygenGenerator:
         return string.strip()
 
     @staticmethod
-    def hash_write(file_name: Path, hash_key: str):
+    def hash_write(file_name: Path, hash_key: str) -> None:
         """! Write the hash to the file.
         @details
         @param file_name: (Path) Path to the file where the hash will be saved.

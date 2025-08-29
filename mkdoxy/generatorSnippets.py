@@ -1,6 +1,7 @@
 import logging
 import pathlib
 import re
+from typing import Optional, Union
 
 import yaml
 from mkdocs.structure import pages
@@ -28,7 +29,7 @@ class GeneratorSnippets:
         page: pages.Page,
         config: dict,
         debug: bool = False,
-    ):
+    ) -> None:
         self.markdown = markdown
         self.generatorBase = generatorBase
         self.doxygen = doxygen
@@ -160,13 +161,13 @@ class GeneratorSnippets:
             snippet,
         )
 
-    def replace_markdown(self, start: int, end: int, replacement: str):
+    def replace_markdown(self, start: int, end: int, replacement: str) -> None:
         self.markdown = self.markdown[:start] + replacement + "\n" + self.markdown[end:]
 
-    def _setLinkPrefixNode(self, node: Node, linkPrefix: str):
+    def _setLinkPrefixNode(self, node: Node, linkPrefix: str) -> None:
         node.project.linkPrefix = linkPrefix
 
-    def _setLinkPrefixNodes(self, nodes: list[Node], linkPrefix: str):
+    def _setLinkPrefixNodes(self, nodes: list[Node], linkPrefix: str) -> None:
         if nodes:
             nodes[0].project.linkPrefix = linkPrefix
 
@@ -220,7 +221,7 @@ class GeneratorSnippets:
     ) -> str:
         log.error(f"  -> {title} -> page: {self.page.canonical_url}")
         if project not in self.projects:
-            project = list(self.projects)[0]
+            project = next(iter(self.projects))
         return self.generatorBase[project].error(
             config, title, description, code_header, code, code_language, snippet_code
         )
@@ -261,7 +262,7 @@ class GeneratorSnippets:
             snippet,
         )
 
-    def codeStrip(self, codeRaw, codeLanguage: str, start: int = 1, end: int = None):
+    def codeStrip(self, codeRaw, codeLanguage: str, start: int = 1, end: Optional[int] = None) -> Union[str, bool]:
         lines = codeRaw.split("\n")
 
         if end and start > end:
@@ -417,8 +418,8 @@ class GeneratorSnippets:
 
 
 class SnippetClass:
-    def __init__(self, config):
+    def __init__(self, config) -> None:
         self.config = config
 
-    def default(self):
+    def default(self) -> str:
         return ""

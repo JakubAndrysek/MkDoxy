@@ -6,7 +6,7 @@ from mkdoxy.doxy_config import MkDoxyConfig, MkDoxyConfigProject
 from mkdoxy.doxygen_generator import DoxygenCustomConfigNotValid, DoxygenGenerator
 
 
-def test_dox_dict2str():
+def test_dox_dict2str() -> None:
     dox_dict = {
         "DOXYFILE_ENCODING": "UTF-8",
         "EXAMPLE_PATH": "examples",
@@ -31,7 +31,7 @@ def test_dox_dict2str():
 
 
 #  Sets the Doxygen configuration using a custom config file
-def test_set_doxy_cfg_custom_file():
+def test_set_doxy_cfg_custom_file() -> None:
     project = MkDoxyConfigProject()
     project.src_dirs = "/path/to/source/files"
 
@@ -58,7 +58,7 @@ def test_set_doxy_cfg_custom_file():
     assert expected_result == dox_dict
 
 
-def test_str2dox_dict():
+def test_str2dox_dict() -> None:
     dox_str = (
         "DOXYFILE_ENCODING = UTF-8\nGENERATE_XML = YES\n"
         "RECURSIVE = YES\nEXAMPLE_PATH = examples\n"
@@ -80,7 +80,7 @@ def test_str2dox_dict():
     assert result == expected_result
 
 
-def test_str2dox_dict_expanded_config():
+def test_str2dox_dict_expanded_config() -> None:
     dox_str = (
         "# This is a comment \n"
         "PROJECT_LOGO           =\n"
@@ -101,7 +101,7 @@ def test_str2dox_dict_expanded_config():
     assert expected_result == DoxygenGenerator.str2dox_dict(dox_str)
 
 
-def test_str2dox_dict_expanded_config_errors():
+def test_str2dox_dict_expanded_config_errors() -> None:
     dox_str = "ONLY_KEY\n"
     error_message = (
         "Invalid line: 'ONLY_KEY'"

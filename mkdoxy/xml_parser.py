@@ -53,7 +53,7 @@ SIMPLE_SECTIONS = {
 
 
 class XmlParser:
-    def __init__(self, cache: Cache, debug: bool = False):
+    def __init__(self, cache: Cache, debug: bool = False) -> None:
         self.cache = cache
         self.debug = debug
 

@@ -8,7 +8,7 @@ from mkdoxy.xml_parser import XmlParser
 
 class Property:
     class Details:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -28,7 +28,7 @@ class Property:
             return len(list(detaileddescription)) > 0
 
     class Brief:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -53,7 +53,7 @@ class Property:
             return len(list(detaileddescription)) > 0
 
     class Includes:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -80,7 +80,7 @@ class Property:
             return len(self.xml.findall("includes")) > 0
 
     class Type:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -96,7 +96,7 @@ class Property:
             return self.xml.find("type") is not None
 
     class Location:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -128,7 +128,7 @@ class Property:
             return self.xml.find("location") is not None
 
     class Params:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -165,7 +165,7 @@ class Property:
             return len(self.xml.findall("param")) > 0
 
     class TemplateParams:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -199,7 +199,7 @@ class Property:
             return self.xml.find("templateparamlist") is not None
 
     class CodeBlock:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -214,7 +214,7 @@ class Property:
             return True
 
     class Specifiers:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -265,7 +265,7 @@ class Property:
             return self.xml.find("argsstring") is not None
 
     class Values:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -291,7 +291,7 @@ class Property:
             return self.xml.find("enumvalue") is not None if self.kind.is_enum() else False
 
     class Initializer:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -313,7 +313,7 @@ class Property:
             return self.xml.find("initializer") is not None
 
     class Definition:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -332,7 +332,7 @@ class Property:
             return self.xml.find("definition") is not None
 
     class Programlisting:
-        def __init__(self, xml: Element, parser: XmlParser, kind: Kind):
+        def __init__(self, xml: Element, parser: XmlParser, kind: Kind) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind

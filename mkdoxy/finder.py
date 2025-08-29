@@ -1,4 +1,3 @@
-from typing import Dict
 
 from mkdoxy.constants import Kind
 from mkdoxy.doxygen import Doxygen
@@ -6,7 +5,7 @@ from mkdoxy.utils import recursive_find, recursive_find_with_parent
 
 
 class Finder:
-    def __init__(self, doxygen: Dict[str, Doxygen], debug: bool = False):
+    def __init__(self, doxygen: dict[str, Doxygen], debug: bool = False) -> None:
         self.doxygen = doxygen
         self.debug = debug
 

@@ -28,7 +28,7 @@ def lookahead(iterable):
     yield last, False
 
 
-def contains(a, pos, b):
+def contains(a, pos, b) -> bool:
     ai = pos
     bi = 0
     if len(b) > len(a) - ai:

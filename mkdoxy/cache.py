@@ -1,8 +1,8 @@
 class Cache:
-    def __init__(self):
+    def __init__(self) -> None:
         self.cache = {}
 
-    def add(self, key: str, value):
+    def add(self, key: str, value) -> None:
         self.cache[key] = value
 
     def get(self, key: str):

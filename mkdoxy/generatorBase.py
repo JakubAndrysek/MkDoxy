@@ -1,7 +1,7 @@
 import logging
 import os
 import string
-from typing import Dict
+from typing import Optional
 
 from jinja2 import BaseLoader, Environment, Template
 from jinja2.exceptions import TemplateError
@@ -27,7 +27,7 @@ LETTERS = string.ascii_lowercase + "~_@\\"
 class GeneratorBase:
     """! Base class for all generators."""
 
-    def __init__(self, templateDir: str = "", ignore_errors: bool = False, debug: bool = False):
+    def __init__(self, templateDir: str = "", ignore_errors: bool = False, debug: bool = False) -> None:
         """! Constructor.
         @details
         @param templateDir (str): Path to the directory with custom templates (default: "")
@@ -36,8 +36,8 @@ class GeneratorBase:
         """
 
         self.debug: bool = debug  # if True, debug messages will be printed
-        self.templates: Dict[str, Template] = {}
-        self.metaData: Dict[str, list[str]] = {}
+        self.templates: dict[str, Template] = {}
+        self.metaData: dict[str, list[str]] = {}
 
         environment = Environment(loader=BaseLoader())
         environment.filters["use_code_language"] = use_code_language
@@ -148,7 +148,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def annotated(self, nodes: [Node], config: dict = None):
+    def annotated(self, nodes: [Node], config: Optional[dict] = None):
         """! Render an annotated page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -180,7 +180,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def programlisting(self, node: [Node], config: dict = None):
+    def programlisting(self, node: [Node], config: Optional[dict] = None):
         """! Render a programlisting page.
         @details
         @param node ([Node]): Node to render.
@@ -196,7 +196,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def code(self, node: [Node], config: dict = None, code: str = ""):
+    def code(self, node: [Node], config: Optional[dict] = None, code: str = ""):
         """! Render a code page.
         @details
         @param node ([Node]): Node to render.
@@ -217,7 +217,7 @@ class GeneratorBase:
 
         return self.render(template, data)
 
-    def fileindex(self, nodes: [Node], config: dict = None):
+    def fileindex(self, nodes: [Node], config: Optional[dict] = None):
         """! Render a fileindex page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -233,7 +233,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def namespaces(self, nodes: [Node], config: dict = None):
+    def namespaces(self, nodes: [Node], config: Optional[dict] = None):
         """! Render a namespaces page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -249,7 +249,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def page(self, node: Node, config: dict = None):
+    def page(self, node: Node, config: Optional[dict] = None):
         """! Render a page.
         @details
         @param node (Node): Node to render.
@@ -265,7 +265,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def example(self, node: Node, config: dict = None):
+    def example(self, node: Node, config: Optional[dict] = None):
         """! Render an example page.
         @details
         @param node (Node): Node to render.
@@ -281,7 +281,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def relatedpages(self, nodes: [Node], config: dict = None):
+    def relatedpages(self, nodes: [Node], config: Optional[dict] = None):
         """! Render a related pages page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -297,7 +297,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def classes(self, nodes: [Node], config: dict = None):
+    def classes(self, nodes: [Node], config: Optional[dict] = None):
         """! Render a classes page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -346,7 +346,7 @@ class GeneratorBase:
                     ret.extend(self._find_base_classes(bases, node))
         return ret
 
-    def modules(self, nodes: [Node], config: dict = None):
+    def modules(self, nodes: [Node], config: Optional[dict] = None):
         """! Render a modules page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -362,7 +362,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def hierarchy(self, nodes: [Node], config: dict = None):
+    def hierarchy(self, nodes: [Node], config: Optional[dict] = None):
         """! Render a hierarchy page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -389,7 +389,7 @@ class GeneratorBase:
         deduplicated_arr = []
         for key, children in deduplicated.items():
             if isinstance(children, list):
-                deduplicated_arr.append(DummyNode(key, list(map(lambda x: x["derived"], children)), Kind.CLASS))
+                deduplicated_arr.append(DummyNode(key, [x["derived"] for x in children], Kind.CLASS))
             else:
                 found: Node = next((klass for klass in classes if klass.refid == key), None)
                 if found:
@@ -401,7 +401,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def function(self, node: Node, config: dict = None):
+    def function(self, node: Node, config: Optional[dict] = None):
         """! Render a function page.
         @details
         @param node (Node): Node to render.
@@ -422,7 +422,7 @@ class GeneratorBase:
         }
         return self.render(templateMemDef, data)
 
-    def member(self, node: Node, config: dict = None):
+    def member(self, node: Node, config: Optional[dict] = None):
         """! Render a member page.
         @details
         @param node (Node): Node to render.
@@ -448,7 +448,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def file(self, node: Node, config: dict = None):
+    def file(self, node: Node, config: Optional[dict] = None):
         """! Render a file page.
         @details
         @param node (Node): Node to render.
@@ -477,7 +477,7 @@ class GeneratorBase:
         kind_filters: Kind,
         kind_parents: [Kind],
         title: str,
-        config: dict = None,
+        config: Optional[dict] = None,
     ):
         """! Render an index page.
         @details

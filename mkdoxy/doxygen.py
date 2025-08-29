@@ -1,6 +1,6 @@
 import logging
 import os
-from xml.etree import ElementTree
+from xml.etree import ElementTree as ET
 
 from mkdoxy.cache import Cache
 from mkdoxy.constants import Kind, Visibility
@@ -12,12 +12,12 @@ log: logging.Logger = logging.getLogger("mkdocs")
 
 
 class Doxygen:
-    def __init__(self, index_path: str, parser: XmlParser, cache: Cache):
+    def __init__(self, index_path: str, parser: XmlParser, cache: Cache) -> None:
         self.debug = parser.debug
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:
             log.info(f"Loading XML from: {path_xml}")
-        xml = ElementTree.parse(path_xml).getroot()
+        xml = ET.parse(path_xml).getroot()
 
         self.parser = parser
         self.ctx = ProjectContext(cache)
@@ -106,7 +106,7 @@ class Doxygen:
         self._recursive_sort(self.pages)
         self._recursive_sort(self.examples)
 
-    def _fix_parents(self, node: Node):
+    def _fix_parents(self, node: Node) -> None:
         if node.is_dir or node.is_root:
             for child in node.children:
                 if child.is_file:
@@ -114,7 +114,7 @@ class Doxygen:
                 if child.is_dir:
                     self._fix_parents(child)
 
-    def _recursive_sort(self, node: Node):
+    def _recursive_sort(self, node: Node) -> None:
         node.sort_children()
         for child in node.children:
             self._recursive_sort(child)
@@ -122,13 +122,13 @@ class Doxygen:
     def _is_in_root(self, node: Node, root: Node):
         return any(node.refid == child.refid for child in root.children)
 
-    def _remove_from_root(self, refid: str, root: Node):
+    def _remove_from_root(self, refid: str, root: Node) -> None:
         for i, child in enumerate(root.children):
             if child.refid == refid:
                 root.children.pop(i)
                 return
 
-    def _fix_duplicates(self, node: Node, root: Node, filter: [Kind]):
+    def _fix_duplicates(self, node: Node, root: Node, filter: [Kind]) -> None:
         for child in node.children:
             if len(filter) > 0 and child.kind not in filter:
                 continue
@@ -136,7 +136,7 @@ class Doxygen:
                 self._remove_from_root(child.refid, root)
             self._fix_duplicates(child, root, filter)
 
-    def printStructure(self):
+    def printStructure(self) -> None:
         if not self.debug:
             return
         print("\n")
@@ -154,7 +154,7 @@ class Doxygen:
         for node in self.files.children:
             self.print_node(node, "")
 
-    def print_node(self, node: Node, indent: str):
+    def print_node(self, node: Node, indent: str) -> None:
         if self.debug:
             log.info(f"{indent} {node.kind} {node.name}")
         for child in node.children:
