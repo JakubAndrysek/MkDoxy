@@ -37,6 +37,7 @@ OVERLOAD_OPERATORS = [
     "operator<<=",
     "operator>>=",
     "operator[]",
+    "operator()",
     "operator*",
     "operator&",
     "operator->",

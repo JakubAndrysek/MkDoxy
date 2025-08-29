@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element as Element
 
@@ -443,9 +444,22 @@ class Node:
 
     @property
     def operator_num(self) -> int:
+        stem = "operator" + ("-" * self._name.count("-"))
         total = 0
         for child in self.parent.children:
-            if child.is_function and child.name.replace(" ", "") in OVERLOAD_OPERATORS:
+            child_refid = child.name.replace(" ", "")
+            # Check if the child is a displayed operator by ensuring:
+            # 1. Its identifier is in the predefined OVERLOAD_OPERATORS list.
+            # 2. It starts with the expected 'stem' derived from the parent's naming.
+            # 3. It does not start with an extra hyphen (stem+'-') to avoid excessive matching.
+            # 4. It is not private.
+            if (
+                child.is_function
+                and child_refid in OVERLOAD_OPERATORS
+                and child_refid.startswith(stem)
+                and not child_refid.startswith(stem + "-")
+                and child._visibility != Visibility.PRIVATE
+            ):
                 total += 1
             if child.refid == self._refid:
                 break
@@ -454,14 +468,19 @@ class Node:
     @property
     def name_url_safe(self) -> str:
         name = self.name_tokens[-1]
-        return name.replace(" ", "-").replace("=", "").replace("~", "").lower()
+        # Strip special characters that do not appear in anchors
+        name = re.sub("[=~.,<>]", "", name)
+        return name.strip(" ").replace(" ", "-").lower()
 
     @property
     def anchor(self) -> str:
         name = ""
         if self._name.replace(" ", "") in OVERLOAD_OPERATORS:
             num = self.operator_num
-            name = f"operator_{str(self.operator_num - 1)}" if num > 1 else "operator"
+            if self._name.startswith("operator-"):
+                name = f"operator-_{str(num - 1)}" if num > 1 else "operator-"
+            else:
+                name = f"operator_{str(num - 1)}" if num > 1 else "operator"
         elif self.is_overloaded:
             name = f"{self.name_url_safe}-{str(self.overload_num)}{str(self.overload_total)}"
         else:
