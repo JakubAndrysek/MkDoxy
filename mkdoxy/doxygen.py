@@ -16,7 +16,7 @@ class Doxygen:
         self.debug = parser.debug
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:
-            log.info(f"Loading XML from: {path_xml}")
+            log.info("Loading XML from: %s", path_xml)
         xml = ET.parse(path_xml).getroot()
 
         self.parser = parser
@@ -156,6 +156,6 @@ class Doxygen:
 
     def print_node(self, node: Node, indent: str) -> None:
         if self.debug:
-            log.info(f"{indent} {node.kind} {node.name}")
+            log.info("%s %s %s", indent, node.kind, node.name)
         for child in node.children:
             self.print_node(child, f"{indent}  ")

@@ -143,8 +143,8 @@ class Property:
             ret = []
             for param in self.xml.findall("param"):
                 p = ""
-                type = param.find("type")
-                p = self.parser.paras_as_str(type, plain=plain)
+                type_elem = param.find("type")
+                p = self.parser.paras_as_str(type_elem, plain=plain)
 
                 declname = param.find("declname")
                 if declname is not None:
@@ -187,8 +187,8 @@ class Property:
                             declname = param.find("type")
                         ret.append(self.parser.paras_as_str(declname, plain=plain))
                     else:
-                        type = param.find("type")
-                        declaration = self.parser.paras_as_str(type, plain=plain)
+                        type_elem = param.find("type")
+                        declaration = self.parser.paras_as_str(type_elem, plain=plain)
                         declname = param.find("declname")
                         if declname is not None:
                             declaration += f" {self.parser.paras_as_str(declname, plain=plain)}"

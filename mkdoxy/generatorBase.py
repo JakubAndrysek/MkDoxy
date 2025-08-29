@@ -21,7 +21,7 @@ from mkdoxy.utils import (
 log: logging.Logger = logging.getLogger("mkdocs")
 
 
-LETTERS = string.ascii_lowercase + "~_@\\"
+LETTERS = string.ascii_lowercase + "~_@\\\\"
 
 
 class GeneratorBase:
@@ -55,8 +55,9 @@ class GeneratorBase:
                     self.meta_data[name] = meta_data
             else:
                 log.error(
-                    f\"Trying to load unsupported file '{file_path}'. Supported file ends with {JINJA_EXTENSIONS}.\"
-                    f\"Look at documentation: https://mkdoxy.kubaandrysek.cz/usage/#custom-jinja-templates.\"
+                    \"Trying to load unsupported file '%s'. Supported file ends with %s.\"
+                    \"Look at documentation: https://mkdoxy.kubaandrysek.cz/usage/#custom-jinja-templates.\",
+                    file_path, JINJA_EXTENSIONS
                 )
 
         # test if template_dir is existing
@@ -72,22 +73,23 @@ class GeneratorBase:
                         file_template, meta_data = parse_template_file(file.read())
                         self.templates[name] = environment.from_string(file_template)
                         self.meta_data[name] = meta_data
-                        log.info(f\"Overwriting template '{name}' with custom template.\")
+                        log.info(\"Overwriting template '%s' with custom template.\", name)
                 else:
                     log.error(
-                        f\"Trying to load unsupported file '{file_path}'. Supported file ends with {JINJA_EXTENSIONS}.\"
-                        f\"Look at documentation: https://mkdoxy.kubaandrysek.cz/usage/#custom-jinja-templates.\"
+                        \"Trying to load unsupported file '%s'. Supported file ends with %s.\"
+                        \"Look at documentation: https://mkdoxy.kubaandrysek.cz/usage/#custom-jinja-templates.\",
+                        file_path, JINJA_EXTENSIONS
                     )
 
     @staticmethod
-    def shift_each_line(value: str, shift_char: str = \"\\t\") -> str:
+    def shift_each_line(value: str, shift_char: str = \"\t\") -> str:
         \"\"\"! Shift each line of a given string for a given character.
         @details It is used to shift the content for Markdown code blocks or other content that should be shifted.
         @param value (str): String to shift.
-        @param shift_char (str): Character to shift the string (default: '\\t').
+        @param shift_char (str): Character to shift the string (default: '\t').
         @return (str): Shifted string.
         \"\"\"
-        return \"\\n\".join(shift_char + line for line in value.split(\"\\n\"))
+        return \"\n\".join(shift_char + line for line in value.split(\"\\n\"))
 
     def load_config_and_template(self, name: str) -> [Template, dict]:
         template = self.templates.get(name)
