@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
 
 [project]
 name = "mkdoxy"
@@ -41,6 +41,8 @@ dev = [
     "twine~=6.1.0",
     "sourcery~=1.37.0",
     "click~=8.2.1",
+    "ruff~=0.9.6",
+    "hatch~=1.14.0",
 ]
 
 [project.urls]
@@ -65,5 +67,47 @@ mkdoxy = ["templates/*.jinja2"]
 [tool.ruff]
 line-length = 120
 
-[tool.black]
-line-length = 120
+[tool.ruff.lint]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+select = ["E", "F"]
+extend-select = [
+    "I",     # isort
+    "C9",    # mccabe
+    "N",     # pep8-naming
+    "UP",    # pyupgrade
+    "ANN",   # flake8-annotations
+    "S",     # bandit
+    "BLE",   # flake8-blind-except
+    "B",     # flake8-bugbear
+    "A",     # flake8-builtins
+    "C4",    # flake8-comprehensions
+    "DTZ",   # flake8-datetimez
+    "EXE",   # flake8-executable
+    "ISC",   # flake8-implicit-str-concat
+    "ICN",   # flake8-import-conventions
+    "G",     # flake8-logging-format
+    "PIE",   # flake8-pie
+    "PYI",   # flake8-pyi
+    "RUF",   # Ruff-specific rules
+]
+extend-ignore = [
+    "ANN101",  # Missing type annotation for self
+    "ANN102",  # Missing type annotation for cls
+]
+
+[tool.ruff.format]
+# Configure formatting options
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mkdoxy"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/mkdoxy",
+    "/README.md",
+    "/LICENSE",
+]

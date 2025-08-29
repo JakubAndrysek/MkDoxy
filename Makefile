@@ -3,20 +3,20 @@
 # Packaging
 package:
 	rm -f dist/*
-	python3 -m build --wheel
-	python3 -m build --sdist
+	hatch build
 
 install: package
-	python3 -m pip install --no-deps --force dist/*.whl
+	hatch install
 
 release: package
-	twine upload --repository pypi dist/*
+	hatch publish
 
 release-test: package
-	twine upload --repository testpypi dist/*
+	hatch publish --index test
 
 clean:
 	rm -rf dist build
+	hatch clean
 
 
 # Testing
@@ -24,7 +24,7 @@ reviewCode:
 	sourcery review mkdoxy --in-place
 
 install-dev:
-	python3 -m pip install --force --editable .
+	hatch env create
 
 # Documentation
 docs-serve:
@@ -35,3 +35,13 @@ docs-build: # results in site directory
 
 pre-commit:
 	pre-commit run --show-diff-on-failure --color=always --all-files
+
+# Linting
+lint:
+	ruff check mkdoxy
+
+format:
+	ruff format mkdoxy
+
+lint-fix:
+	ruff check --fix mkdoxy
