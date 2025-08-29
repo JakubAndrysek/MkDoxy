@@ -42,40 +42,40 @@ def generate_link(name, url, end="\n") -> str:
 class GeneratorAuto:
     def __init__(
         self,
-        generatorBase: GeneratorBase,
-        tempDoxyDir: str,
-        siteDir: str,
-        apiPath: str,
+        generator_base: GeneratorBase,
+        temp_doxy_dir: str,
+        site_dir: str,
+        api_path: str,
         doxygen: Doxygen,
-        useDirectoryUrls: bool,
+        use_directory_urls: bool,
     ) -> None:
-        self.generatorBase = generatorBase
-        self.tempDoxyDir = tempDoxyDir
-        self.siteDir = siteDir
-        self.apiPath = apiPath
+        self.generator_base = generator_base
+        self.temp_doxy_dir = temp_doxy_dir
+        self.site_dir = site_dir
+        self.api_path = api_path
         self.doxygen = doxygen
-        self.useDirectoryUrls = useDirectoryUrls
-        self.fullDocFiles = []
-        self.debug = generatorBase.debug
-        os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
+        self.use_directory_urls = use_directory_urls
+        self.full_doc_files = []
+        self.debug = generator_base.debug
+        os.makedirs(os.path.join(self.temp_doxy_dir, self.api_path), exist_ok=True)
 
     def save(self, path: str, output: str) -> None:
-        pathRel = os.path.join(self.apiPath, path)
-        self.fullDocFiles.append(files.File(pathRel, self.tempDoxyDir, self.siteDir, self.useDirectoryUrls))
-        with open(os.path.join(self.tempDoxyDir, pathRel), "w", encoding="utf-8") as file:
+        path_rel = os.path.join(self.api_path, path)
+        self.full_doc_files.append(files.File(path_rel, self.temp_doxy_dir, self.site_dir, self.use_directory_urls))
+        with open(os.path.join(self.temp_doxy_dir, path_rel), "w", encoding="utf-8") as file:
             file.write(output)
 
-    def fullDoc(self, defaultTemplateConfig: dict) -> None:
-        self.annotated(self.doxygen.root.children, defaultTemplateConfig)
-        self.fileindex(self.doxygen.files.children, defaultTemplateConfig)
-        self.members(self.doxygen.root.children, defaultTemplateConfig)
-        self.members(self.doxygen.groups.children, defaultTemplateConfig)
-        self.files(self.doxygen.files.children, defaultTemplateConfig)
-        self.namespaces(self.doxygen.root.children, defaultTemplateConfig)
-        self.classes(self.doxygen.root.children, defaultTemplateConfig)
-        self.hierarchy(self.doxygen.root.children, defaultTemplateConfig)
-        self.modules(self.doxygen.groups.children, defaultTemplateConfig)
-        self.pages(self.doxygen.pages.children, defaultTemplateConfig)
+    def full_doc(self, default_template_config: dict) -> None:
+        self.annotated(self.doxygen.root.children, default_template_config)
+        self.fileindex(self.doxygen.files.children, default_template_config)
+        self.members(self.doxygen.root.children, default_template_config)
+        self.members(self.doxygen.groups.children, default_template_config)
+        self.files(self.doxygen.files.children, default_template_config)
+        self.namespaces(self.doxygen.root.children, default_template_config)
+        self.classes(self.doxygen.root.children, default_template_config)
+        self.hierarchy(self.doxygen.root.children, default_template_config)
+        self.modules(self.doxygen.groups.children, default_template_config)
+        self.pages(self.doxygen.pages.children, default_template_config)
         # self.examples(self.doxygen.examples.children) # TODO examples
         self.relatedpages(self.doxygen.pages.children)
         self.index(
@@ -83,120 +83,120 @@ class GeneratorAuto:
             [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Members",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.FUNCTION],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Functions",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.VARIABLE],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Variables",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.TYPEDEF],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Typedefs",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.ENUM],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Enums",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
             [Kind.NAMESPACE],
             "Namespace Members",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.FUNCTION],
             [Kind.NAMESPACE],
             "Namespace Member Functions",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.VARIABLE],
             [Kind.NAMESPACE],
             "Namespace Member Variables",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.TYPEDEF],
             [Kind.NAMESPACE],
             "Namespace Member Typedefs",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.ENUM],
             [Kind.NAMESPACE],
             "Namespace Member Enums",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.files.children,
             [Kind.FUNCTION],
             [Kind.FILE],
             "Functions",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.files.children,
             [Kind.DEFINE],
             [Kind.FILE],
             "Macros",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.files.children,
             [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM],
             [Kind.FILE],
             "Variables",
-            defaultTemplateConfig,
+            default_template_config,
         )
 
     def annotated(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "annotated.md"
-        output = self.generatorBase.annotated(nodes, config)
+        output = self.generator_base.annotated(nodes, config)
         self.save(path, output)
 
     def programlisting(self, node: [Node], config: Optional[dict] = None) -> None:
         path = f"{node.refid}_source.md"
 
-        output = self.generatorBase.programlisting(node, config)
+        output = self.generator_base.programlisting(node, config)
         self.save(path, output)
 
     def fileindex(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "files.md"
 
-        output = self.generatorBase.fileindex(nodes, config)
+        output = self.generator_base.fileindex(nodes, config)
         self.save(path, output)
 
     def namespaces(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "namespaces.md"
 
-        output = self.generatorBase.namespaces(nodes, config)
+        output = self.generator_base.namespaces(nodes, config)
         self.save(path, output)
 
     def page(self, node: Node, config: Optional[dict] = None) -> None:
         path = f"{node.name}.md"
 
-        output = self.generatorBase.page(node, config)
+        output = self.generator_base.page(node, config)
         self.save(path, output)
 
     def pages(self, nodes: [Node], config: Optional[dict] = None) -> None:
@@ -206,13 +206,13 @@ class GeneratorAuto:
     def relatedpages(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "pages.md"
 
-        output = self.generatorBase.relatedpages(nodes)
+        output = self.generator_base.relatedpages(nodes)
         self.save(path, output)
 
     def example(self, node: Node, config: Optional[dict] = None) -> None:
         path = f"{node.refid}.md"
 
-        output = self.generatorBase.example(node, config)
+        output = self.generator_base.example(node, config)
         self.save(path, output)
 
     def examples(self, nodes: [Node], config: Optional[dict] = None) -> None:
@@ -224,31 +224,31 @@ class GeneratorAuto:
 
         path = "examples.md"
 
-        output = self.generatorBase.examples(nodes, config)
+        output = self.generator_base.examples(nodes, config)
         self.save(path, output)
 
     def classes(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "classes.md"
 
-        output = self.generatorBase.classes(nodes, config)
+        output = self.generator_base.classes(nodes, config)
         self.save(path, output)
 
     def modules(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "modules.md"
 
-        output = self.generatorBase.modules(nodes, config)
+        output = self.generator_base.modules(nodes, config)
         self.save(path, output)
 
     def hierarchy(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "hierarchy.md"
 
-        output = self.generatorBase.hierarchy(nodes, config)
+        output = self.generator_base.hierarchy(nodes, config)
         self.save(path, output)
 
     def member(self, node: Node, config: Optional[dict] = None) -> None:
         path = node.filename
 
-        output = self.generatorBase.member(node, config)
+        output = self.generator_base.member(node, config)
         self.save(path, output)
 
         if node.is_language or node.is_group or node.is_file or node.is_dir:
@@ -257,7 +257,7 @@ class GeneratorAuto:
     def file(self, node: Node, config: Optional[dict] = None) -> None:
         path = node.filename
 
-        output = self.generatorBase.file(node, config)
+        output = self.generator_base.file(node, config)
         self.save(path, output)
 
         if node.is_file and node.has_programlisting:
@@ -286,7 +286,7 @@ class GeneratorAuto:
     ) -> None:
         path = title.lower().replace(" ", "_") + ".md"
 
-        output = self.generatorBase.index(nodes, kind_filters, kind_parents, title, config)
+        output = self.generator_base.index(nodes, kind_filters, kind_parents, title, config)
         self.save(path, output)
 
     def _generate_recursive(self, output_summary: str, node: Node, level: int) -> None:
@@ -327,7 +327,7 @@ class GeneratorAuto:
             for child in node.children:
                 self._generate_recursive_pages(output_summary, child, level + 2)
 
-    def summary(self, defaultTemplateConfig: dict) -> None:
+    def summary(self, default_template_config: dict) -> None:
         offset = 0
         output_summary = "" + str(" " * (offset + 2) + generate_link("Related Pages", "pages.md"))
         for node in self.doxygen.pages.children:
@@ -346,7 +346,7 @@ class GeneratorAuto:
 
         output_summary += str(" " * (offset + 2) + generate_link("Files", "files.md", end="\n"))
         for node in self.doxygen.files.children:
-            self._generate_recursive_files(output_summary, node, offset + 4, defaultTemplateConfig)
+            self._generate_recursive_files(output_summary, node, offset + 4, default_template_config)
 
         # output_summary += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
         # for node in self.doxygen.examples.children:

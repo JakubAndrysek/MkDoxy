@@ -258,8 +258,8 @@ class Node:
         inline = self._xml.get("inline")
         self._inline = inline == "yes"
 
-        const = self._xml.get("inline")
-        self._const = const == "yes"
+        const_val = self._xml.get("inline")
+        self._const = const_val == "yes"
 
         name = self._xml.find("name")
         if name is not None and name.text:
@@ -283,7 +283,7 @@ class Node:
     def has(self, visibility: str, kinds: [str], static: bool) -> bool:
         return len(self.query(visibility, kinds, static)) > 0
 
-    def query(self, visibility: str, kinds: [str], static: bool) -> ["Node"]:
+    def query(self, visibility: str, kinds: [str], static: bool) -> [Node]:
         visibility = Visibility(visibility)
         kinds = [Kind.from_str(kind) for kind in kinds]
         return [
@@ -325,11 +325,11 @@ class Node:
         return len(self._children) > 0
 
     @property
-    def children(self) -> ["Node"]:
+    def children(self) -> [Node]:
         return self._children
 
     @property
-    def parent(self) -> "Node":
+    def parent(self) -> Node:
         return self._parent
 
     @property
@@ -419,9 +419,9 @@ class Node:
     @property
     def name_params(self) -> str:
         name = self._name
-        type = self._type.plain()
+        type_val = self._type.plain()
         params = self._specifiers.plain()
-        return f"{type} {name}{params}" if params else self.name_long
+        return f"{type_val} {name}{params}" if params else self.name_long
 
     @property
     def title(self) -> str:
@@ -535,7 +535,7 @@ class Node:
         return self.project.linkPrefix + self._refid + ".md"
 
     @property
-    def root(self) -> "Node":
+    def root(self) -> Node:
         return self if self._kind == Kind.ROOT else self._parent.root
 
     @property
@@ -597,7 +597,7 @@ class Node:
         return f"[{self.overload_num!s}/{total!s}]" if total > 1 else ""
 
     @property
-    def parents(self) -> ["Node"]:
+    def parents(self) -> [Node]:
         ret = []
         if self._parent is not None and (self._parent.is_language or self._parent.is_dir):
             ret.extend(self.parent.parents)
@@ -715,7 +715,7 @@ class Node:
         return len(self._xml.findall("derivedcompoundref")) > 0
 
     @property
-    def base_classes(self) -> ["Node"]:
+    def base_classes(self) -> [Node]:
         ret = []
         for basecompoundref in self._xml.findall("basecompoundref"):
             refid = basecompoundref.get("refid")
@@ -726,7 +726,7 @@ class Node:
         return ret
 
     @property
-    def derived_classes(self) -> ["Node"]:
+    def derived_classes(self) -> [Node]:
         ret = []
         for derivedcompoundref in self._xml.findall("derivedcompoundref"):
             refid = derivedcompoundref.get("refid")
@@ -850,7 +850,7 @@ class Node:
         return True
 
     @property
-    def reimplements(self) -> "Node":
+    def reimplements(self) -> Node:
         reimp = self._xml.find("reimplements")
         return self._cache.get(reimp.get("refid")) if reimp is not None else None
 
@@ -862,7 +862,7 @@ class Node:
 
     def _print_node_recursive_md(self, node: Element, depth: int) -> str:
         # print as Markdown code block
-        indent = "	" * depth
+        indent = "\t" * depth
         ret = f"{indent} * {node.tag} {node.attrib} -> Text: {node.text}\n"
         for child in node.findall("*"):
             ret += self._print_node_recursive_md(child, depth + 1)
