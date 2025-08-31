@@ -1,7 +1,9 @@
+from pathlib import Path
+
 from mkdoxy.doxygen_generator import DoxygenGenerator
 
 
-def test_merge_doxygen_input_empty_src_dirs(tmp_path) -> None:
+def test_merge_doxygen_input_empty_src_dirs(tmp_path: Path) -> None:
     # When src_dirs is empty, the function should return doxy_input unchanged.
     src_dirs = ""
     doxy_input = "dir1 dir2"
@@ -12,7 +14,7 @@ def test_merge_doxygen_input_empty_src_dirs(tmp_path) -> None:
     assert result == doxy_input
 
 
-def test_merge_doxygen_input_empty_doxy_input(tmp_path) -> None:
+def test_merge_doxygen_input_empty_doxy_input(tmp_path: Path) -> None:
     # When doxy_input is empty, the function should return src_dirs unchanged.
     src_dirs = "dir1 dir2"
     doxy_input = ""
@@ -23,7 +25,7 @@ def test_merge_doxygen_input_empty_doxy_input(tmp_path) -> None:
     assert result == src_dirs
 
 
-def test_merge_doxygen_input_both_non_empty(tmp_path) -> None:
+def test_merge_doxygen_input_both_non_empty(tmp_path: Path) -> None:
     # When both src_dirs and doxy_input are provided, the result should contain all unique paths.
     src_dirs = "a b"
     doxy_input = "b c"
@@ -38,7 +40,7 @@ def test_merge_doxygen_input_both_non_empty(tmp_path) -> None:
     assert result_set == expected_set
 
 
-def test_merge_doxygen_input_duplicates(tmp_path) -> None:
+def test_merge_doxygen_input_duplicates(tmp_path: Path) -> None:
     # Duplicate paths in the inputs should be deduplicated.
     src_dirs = "a a"
     doxy_input = "a"

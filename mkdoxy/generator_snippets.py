@@ -13,9 +13,19 @@ from mkdoxy.node import Node
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
-regex_incorrect = r"(?s)(?<!```yaml\n)(^::: doxy)(\.(?P<project>[a-zA-Z0-9_]+))?[\.]?[\s]*\n(?P<yaml>.*?)\s*\n(?:(?=\n)|(?=:::)|\Z)"  # https://regex101.com/r/IYl25b/2  # noqa: E501
-regex_long = r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z0-9_]+)\.(?P<argument>[a-zA-Z0-9_.]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))|(?=:::)|`|\Z)"  # https://regex101.com/r/lIgOij/4  # noqa: E501
-regex_short = r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z0-9_]+)\.(?P<argument>[a-zA-Z0-9_.]+))\s*\n(?:(?=\n)|(?=:::)|\Z)"  # https://regex101.com/r/QnqxRc/2  # noqa: E501
+regex_incorrect = (
+    r"(?s)(?<!```yaml\n)(^::: doxy)(\.(?P<project>[a-zA-Z0-9_]+))?[\.]?[\s]*\n"
+    r"(?P<yaml>.*?)\s*\n(?:(?=\n)|(?=:::)|\Z)"
+)  # https://regex101.com/r/IYl25b/2
+regex_long = (
+    r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z0-9_]+)\."
+    r"(?P<argument>[a-zA-Z0-9_.]+))\s*\n(?P<yaml>.*?)(?:(?:(?:\r*\n)(?=\n))"
+    r"|(?=:::)|`|\Z)"
+)  # https://regex101.com/r/lIgOij/4
+regex_short = (
+    r"(?s)(?<!```yaml\n)(^::: doxy\.(?P<project>[a-zA-Z0-9_]+)\."
+    r"(?P<argument>[a-zA-Z0-9_.]+))\s*\n(?:(?=\n)|(?=:::)|\Z)"
+)  # https://regex101.com/r/QnqxRc/2
 
 
 class GeneratorSnippets:
@@ -59,7 +69,8 @@ class GeneratorSnippets:
 
     def generate(self) -> str:
         if self.is_doxy_inactive(self.config):
-            return self.markdown  # doxygen is inactive return unchanged markdown
+            # doxygen is inactive return unchanged markdown
+            return self.markdown
 
         try:
             matches = re.finditer(regex_incorrect, self.markdown, re.MULTILINE)
@@ -119,14 +130,18 @@ class GeneratorSnippets:
                 )
                 self.replace_markdown(match.start(), match.end(), replace_str)
             return self.markdown
-        except Exception as e:  # noqa: BLE001
+        except (ValueError, AttributeError, KeyError, TypeError) as e:
             basename = pathlib.Path(__file__).name
-            log.error("Error in %s page. Incorrect doxy snippet or error in file %s",
-                      self.page.url, basename)
+            log.error(
+                "Error in %s page. Incorrect doxy snippet or error in file %s",
+                self.page.url, basename
+            )
             log.error("Error: %s", e)
             return self.markdown
 
-    def try_load_yaml(self, yaml_raw: str, project: str, snippet: str, config: dict) -> dict:
+    def try_load_yaml(
+        self, yaml_raw: str, project: str, snippet: str, config: dict
+    ) -> dict:
         try:
             return yaml.safe_load(yaml_raw)
         except yaml.YAMLError:

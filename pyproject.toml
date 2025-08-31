@@ -93,6 +93,7 @@ extend-select = [
 extend-ignore = [
     "ANN101",  # Missing type annotation for self
     "ANN102",  # Missing type annotation for cls
+    "S101",    # Assert statements are appropriate in test files
 ]
 
 [tool.ruff.format]

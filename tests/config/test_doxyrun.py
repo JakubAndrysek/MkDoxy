@@ -98,7 +98,9 @@ def test_str2dox_dict_expanded_config() -> None:
         "PREDEFINED": "BUILD_DATE DOXYGEN=1",
     }
 
-    assert expected_result == DoxygenGenerator.str2dox_dict(dox_str)
+    assert expected_result == DoxygenGenerator.str2dox_dict(
+        dox_str
+    )
 
 
 def test_str2dox_dict_expanded_config_errors() -> None:

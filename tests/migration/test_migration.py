@@ -10,7 +10,7 @@ DATA_DIR = Path(__file__).parent / "data"
 
 
 @pytest.fixture(params=["1", "2"])
-def migration_files(request, tmp_path: Path) -> tuple:
+def migration_files(request: pytest.FixtureRequest, tmp_path: Path) -> tuple:
     """
     Parameterized fixture that copies the legacy YAML file (<prefix>_old.yaml)
     to a temporary file and loads the expected file text from <prefix>_expect.yaml.
@@ -28,7 +28,7 @@ def migration_files(request, tmp_path: Path) -> tuple:
     return dst, expected_text, prefix
 
 
-def test_migration_without_backup(migration_files) -> None:
+def test_migration_without_backup(migration_files: tuple) -> None:
     """
     Test that migration updates the legacy configuration correctly without creating a backup.
     """
@@ -40,7 +40,7 @@ def test_migration_without_backup(migration_files) -> None:
     assert updated_text == expected_text, f"Test case {prefix} failed: output text does not match expected."
 
 
-def test_migration_with_backup(migration_files) -> None:
+def test_migration_with_backup(migration_files: tuple) -> None:
     """
     Test that migration creates a backup file and updates the configuration correctly.
     """

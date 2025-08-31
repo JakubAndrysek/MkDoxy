@@ -20,7 +20,7 @@ regex = (
 
 
 # Credits: https://stackoverflow.com/a/1630350
-def lookahead(iterable: Any) -> Iterator[tuple[Any, bool]]:  # noqa: ANN401
+def lookahead(iterable: Any) -> Iterator[tuple[Any, bool]]:
     """Pass through all values from the given iterable, augmented by the
     information if there are more values to come after the current one
     (True), or if it is the last value (False).
@@ -37,7 +37,7 @@ def lookahead(iterable: Any) -> Iterator[tuple[Any, bool]]:  # noqa: ANN401
     yield last, False
 
 
-def contains(a: Any, pos: int, b: Any) -> bool:  # noqa: ANN401
+def contains(a: Any, pos: int, b: Any) -> bool:
     ai = pos
     bi = 0
     if len(b) > len(a) - ai:

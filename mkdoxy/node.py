@@ -145,7 +145,7 @@ class Node:
                     child = self._cache.get(refid)
                     self.add_child(child)
                     continue
-                except Exception:
+                except (KeyError, IndexError):
                     pass
             child = Node(
                 os.path.join(self._dirname, f"{refid}.xml"),
@@ -168,7 +168,7 @@ class Node:
                     child = self._cache.get(refid)
                     self.add_child(child)
                     continue
-                except Exception:
+                except (KeyError, IndexError):
                     pass
 
             try:
@@ -199,7 +199,7 @@ class Node:
                     child = self._cache.get(refid)
                     self.add_child(child)
                     continue
-                except Exception:
+                except (KeyError, IndexError):
                     pass
 
             child = Node(
@@ -219,7 +219,7 @@ class Node:
                     child = self._cache.get(refid)
                     self.add_child(child)
                     continue
-                except Exception:
+                except (KeyError, IndexError):
                     pass
 
             child = Node(
@@ -240,7 +240,7 @@ class Node:
                     child = self._cache.get(refid)
                     self.add_child(child)
                     continue
-                except Exception:
+                except (KeyError, IndexError):
                     pass
 
             child = Node(
@@ -263,7 +263,7 @@ class Node:
                             child = self._cache.get(refid)
                             self.add_child(child)
                             continue
-                        except Exception:
+                        except (KeyError, IndexError):
                             pass
                     child = Node(None, memberdef, self.project, self._parser, self)
                     self.add_child(child)

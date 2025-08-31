@@ -5,22 +5,22 @@ from mkdoxy.doxygen import Doxygen
 from mkdoxy.xml_parser import XmlParser
 
 if __name__ == "__main__":
-    doxygenSource = "src"
-    # doxygenSource = "files/src"
-    tempDoxyDir = "temp/doxy"
-    siteDir = "temp/doxy"
-    apiPath = "api"
+    doxygen_source = "src"
+    # doxygen_source = "files/src"
+    temp_doxy_dir = "temp/doxy"
+    site_dir = "temp/doxy"
+    api_path = "api"
     target = "mkdocs"
-    useDirectoryUrls = True
+    use_directory_urls = True
     hints = True
-    ignoreErrors = False
+    ignore_errors = False
     summary = None
     link_prefix = ""
 
     # Debug options
     debug = True
-    debugFull = False
-    fullDoc = True
+    debug_full = False
+    full_doc = True
 
     # doxygenRun = DoxygenRun(doxygenSource, siteDir, )
     # doxygenRun.run()
@@ -34,31 +34,39 @@ if __name__ == "__main__":
     parser = XmlParser(cache=cache, debug=debug)
     doxygen = Doxygen("data/temp/xml", parser, cache, debug=debug)
 
-    # if debugFull:
+    # if debug_full:
     # 	doxygen.print()
     #
-    # generatorBase = GeneratorBase(ignore_errors=ignoreErrors, options=options)
+    # generatorBase = GeneratorBase(
+    #     ignore_errors=ignore_errors, options=options
+    # )
     #
 
     pprint(doxygen)
 
     # generatorAuto = GeneratorAuto(generatorBase=generatorBase,
-    #                               tempDoxyDir=tempDoxyDir,
-    #                               siteDir=siteDir,
-    #                               apiPath=apiPath,
-    #                               useDirectoryUrls=useDirectoryUrls,
+    #                               tempDoxyDir=temp_doxy_dir,
+    #                               siteDir=site_dir,
+    #                               apiPath=api_path,
+    #                               useDirectoryUrls=use_directory_urls,
     #                               fullDocFiles=[],
     #                               debug=debug)
     # if fullDoc:
     # 	generatorAuto.fullDoc(doxygen)
     #
     # # find = Finder(doxygen, debug)
-    # # fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
+    # # fc = find.doxyClass("example::Bird",
+    # #                      "Bird (const Bird & other)= delete")
     #
-    # generatorSnippets = GeneratorSnippets(markdown="", generatorBase=generatorBase, doxygen=doxygen, debug=debug)
+    # generatorSnippets = GeneratorSnippets(
+    #     markdown="", generatorBase=generatorBase,
+    #     doxygen=doxygen, debug=debug
+    # )
     # # func = generatorSnippets.doxyFunction("", {"name":"getRandomNumber()"})
     #
     # # func = generatorSnippets.doxyCode("", {"file":"shape.cppa"})
-    # func = generatorSnippets.doxyClassMethod("", {"name":"asd", "method":"as"})
+    # func = generatorSnippets.doxyClassMethod(
+    #     "", {"name":"asd", "method":"as"}
+    # )
     #
     # pp(func)

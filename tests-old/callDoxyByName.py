@@ -1,23 +1,23 @@
 class DoxyCall:
     def __init__(self) -> None:
         self.DOXY_CALL = {
-            "class": self.doxyClass,
-            "class.list": self.doxyClassList,
+            "class": self.doxy_class,
+            "class.list": self.doxy_class_list,
         }
 
-    def callDoxyByName(self, name, config) -> None:
+    def call_doxy_by_name(self, name: str, config: list) -> None:
         if name in self.DOXY_CALL:
-            funcName = self.DOXY_CALL[name]
-            funcName(config)
+            func_name = self.DOXY_CALL[name]
+            func_name(config)
 
-    def doxyClass(self, config) -> None:
+    def doxy_class(self, config: list) -> None:
         print("doxyClassasd", config)
 
-    def doxyClassList(self, config) -> None:
+    def doxy_class_list(self, config: list) -> None:
         print("doxyClassList", config)
 
 
 if __name__ == "__main__":
-    doxyCall = DoxyCall()
-    doxyCall.callDoxyByName("class", ["asd"])
-    doxyCall.callDoxyByName("class.list", ["list"])
+    doxy_call = DoxyCall()
+    doxy_call.call_doxy_by_name("class", ["asd"])
+    doxy_call.call_doxy_by_name("class.list", ["list"])

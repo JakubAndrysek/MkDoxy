@@ -68,7 +68,7 @@ class DoxyTagParser:
             )
 
     def parse_project_tag_multi(self, replacement: str) -> None:
-        project_tag = rf"{self.indent}{self.doxy_key}{self.dot}{self.project}{self.dot}(?P<key>[a-zA-Z-_]+)\s*\n(?:(?=\n)|(?=:::)|\Z)"  # noqa: E501
+        project_tag = rf"{self.indent}{self.doxy_key}{self.dot}{self.project}{self.dot}(?P<key>[a-zA-Z-_]+)\s*\n(?:(?=\n)|(?=:::)|\Z)"
         matches = re.finditer(project_tag, self.markdown_page, re.MULTILINE)
         for match in reversed(list(matches)):
             # split keys by . to allow for nested keys

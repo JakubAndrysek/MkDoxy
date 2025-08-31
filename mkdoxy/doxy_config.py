@@ -56,8 +56,7 @@ class MkDoxyConfigProject(Config):
         # Add a warning for deprecated configuration keys
         unused_keys = set(self.keys()) - self._schema_keys
         for k in unused_keys.intersection(config_project_legacy.keys()):
-            warnings.append((k, "Deprecated configuration name: {} -> {}".format(
-                k, config_project_legacy[k])))
+            warnings.append((k, f"Deprecated configuration name: {k} -> {config_project_legacy[k]}"))
 
         return failed, warnings
 
@@ -171,7 +170,8 @@ class MkDoxyConfig(Config):
 #         raise exceptions.ConfigurationError(f"Config value: '{config_name}'. Error: {error}")
 #
 #
-# def load_project_config_by_key(key: str, legacy_key: str, project_cfg: dict, project_name: str, problems: list) -> any:
+# def load_project_config_by_key(key: str, legacy_key: str, project_cfg: dict,
+#                                project_name: str, problems: list) -> any:
 #     """! Load the project configuration value from the project configuration
 #     @details Legacy project config option is by default None, but if it is not None,
 #     it will print a warning and return the value.

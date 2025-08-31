@@ -193,7 +193,7 @@ class XmlParser:
                         ret.append(MdLink([MdBold([Text(item.text)])], ref.url))
                     else:
                         ret.append(MdLink([MdBold([Text(ref.get_full_name())])], ref.url))
-                except Exception:
+                except KeyError:
                     if item.text:
                         ret.append(Text(item.text))
 

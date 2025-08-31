@@ -9,56 +9,66 @@ from doxygen_snippets.generatorSnippets import GeneratorSnippets
 from doxygen_snippets.xml_parser import XmlParser
 
 if __name__ == "__main__":
-    doxygenSource = "files/src-stm32"
-    # doxygenSource = "files/src"
-    tempDoxyDir = "files/doxy"
-    siteDir = "files/doxy"
-    apiPath = "api"
+    doxygen_source = "files/src-stm32"
+    # doxygen_source = "files/src"
+    temp_doxy_dir = "files/doxy"
+    site_dir = "files/doxy"
+    api_path = "api"
     target = "mkdocs"
-    useDirectoryUrls = True
+    use_directory_urls = True
     hints = True
-    ignoreErrors = False
+    ignore_errors = False
     summary = None
     link_prefix = ""
 
     # Debug options
     debug = True
-    debugFull = False
-    fullDoc = True
+    debug_full = False
+    full_doc = True
 
-    doxygenRun = DoxygenRun(doxygenSource, siteDir)
-    doxygenRun.run()
+    doxygen_run = DoxygenRun(doxygen_source, site_dir)
+    doxygen_run.run()
 
     options = {"target": target, "link_prefix": link_prefix}
 
     cache = Cache()
     parser = XmlParser(cache=cache, target=target, hints=hints, debug=debug)
-    doxygen = Doxygen(doxygenRun.getDestination(), parser, cache, options=options, debug=debug)
+    doxygen = Doxygen(
+        doxygen_run.getDestination(), parser, cache,
+        options=options, debug=debug
+    )
 
-    if debugFull:
+    if debug_full:
         doxygen.print()
 
-    generatorBase = GeneratorBase(ignore_errors=ignoreErrors, options=options)
+    generator_base = GeneratorBase(
+        ignore_errors=ignore_errors, options=options
+    )
 
-    generatorAuto = GeneratorAuto(
-        generatorBase=generatorBase,
-        tempDoxyDir=tempDoxyDir,
-        siteDir=siteDir,
-        apiPath=apiPath,
-        useDirectoryUrls=useDirectoryUrls,
+    generator_auto = GeneratorAuto(
+        generatorBase=generator_base,
+        tempDoxyDir=temp_doxy_dir,
+        siteDir=site_dir,
+        apiPath=api_path,
+        useDirectoryUrls=use_directory_urls,
         fullDocFiles=[],
         debug=debug,
     )
-    if fullDoc:
-        generatorAuto.fullDoc(doxygen)
+    if full_doc:
+        generator_auto.fullDoc(doxygen)
 
     # find = Finder(doxygen, debug)
     # fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
 
-    generatorSnippets = GeneratorSnippets(markdown="", generatorBase=generatorBase, doxygen=doxygen, debug=debug)
+    generator_snippets = GeneratorSnippets(
+        markdown="", generatorBase=generator_base,
+        doxygen=doxygen, debug=debug
+    )
     # func = generatorSnippets.doxyFunction("", {"name":"getRandomNumber()"})
 
     # func = generatorSnippets.doxyCode("", {"file":"shape.cppa"})
-    func = generatorSnippets.doxyClassMethod("", {"name": "asd", "method": "as"})
+    func = generator_snippets.doxyClassMethod(
+        "", {"name": "asd", "method": "as"}
+    )
 
     pprint(func)
