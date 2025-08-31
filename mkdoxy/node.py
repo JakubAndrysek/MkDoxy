@@ -606,6 +606,9 @@ class Node:
         else:
             return self.name_tokens[-1]
 
+    def get_full_name(self) -> str:
+        return self.name_long
+
     @property
     def overload_total(self) -> int:
         if self._parent is not None and self._parent.is_class_or_struct:

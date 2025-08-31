@@ -6,7 +6,6 @@ from mkdoxy.cache import Cache
 from mkdoxy.markdown import (
     Br,
     Code,
-    Md,
     MdBlockEquation,
     MdBlockQuote,
     MdBold,
@@ -22,6 +21,7 @@ from mkdoxy.markdown import (
     MdTable,
     MdTableCell,
     MdTableRow,
+    Renderable,
     Text,
 )
 from mkdoxy.utils import lookahead
@@ -62,7 +62,9 @@ class XmlParser:
     def anchor(self, name: str) -> str:
         return f'<a name="{name}"></a>'
 
-    def paras_as_str(self, p: Element, italic: bool = False, plain: bool = False) -> str:
+    def paras_as_str(self, p: Element | None, italic: bool = False, plain: bool = False) -> str:
+        if p is None:
+            return ""
         if plain:
             return self.plain_as_str(p)
         renderer = MdRenderer()
@@ -70,38 +72,42 @@ class XmlParser:
             m.render(renderer, "")
         return renderer.output
 
-    def reference_as_str(self, p: Element) -> str:
+    def reference_as_str(self, p: Element | None) -> str:
+        if p is None:
+            return ""
         renderer = MdRenderer()
         refid = p.get("refid")
         if refid is None:
-            return p.text
-        m = MdLink([MdBold([Text(p.text)])], refid)
+            return p.text or ""
+        m = MdLink([MdBold([Text(p.text or "")])], refid)
         m.render(renderer, "")
         return renderer.output
 
-    def programlisting_as_str(self, p: Element) -> str:
+    def programlisting_as_str(self, p: Element | None) -> str:
+        if p is None:
+            return ""
         renderer = MdRenderer()
         for m in self.programlisting(p):
             m.render(renderer, "")
         return renderer.output
 
-    def plain_as_str(self, p: Element) -> str:
+    def plain_as_str(self, p: Element | None) -> str:
         return " ".join(self.plain(p)).strip()
 
-    def plain(self, p: Element) -> list[str]:
+    def plain(self, p: Element | None) -> list[str]:
         ret = []
         if p is None:
-            return ret
-        if p.text:
+            return []
+        if p.text is not None:
             ret.append(p.text.strip())
         for item in list(p):
             ret.extend(self.plain(item))
-        if p.tail:
+        if p.tail is not None:
             ret.append(p.tail.strip())
         return ret
 
-    def programlisting(self, p: Element) -> list[Md]:
-        ret = []
+    def programlisting(self, p: Element | None) -> list[Renderable]:
+        ret: list[Renderable] = []
         # programlisting
         if p.tag == "programlisting":
             code = MdCodeBlock([])
@@ -121,11 +127,11 @@ class XmlParser:
             ret.extend((Text("\n"), code))
         return ret
 
-    def paras(self, p: Element, italic: bool = False) -> list[Md]:
-        ret = []
+    def paras(self, p: Element | None, italic: bool = False) -> list[Renderable]:
+        ret: list[Renderable] = []
         if p is None:
-            return ret
-        if p.text:
+            return []
+        if p.text is not None:
             if italic:
                 ret.extend((MdItalic([Text(p.text.strip())]), Text(" ")))
             else:
@@ -136,15 +142,16 @@ class XmlParser:
                 ret.extend((MdParagraph(self.paras(item)), Text("\n")))
             elif item.tag == "image":
                 url = item.get("name")
-                ret.append(MdImage(url))
+                if url:
+                    ret.append(MdImage(url))
 
             elif item.tag == "computeroutput":
-                text = []
+                text_parts = []
                 if item.text:
-                    text.append(item.text)
+                    text_parts.append(item.text)
                 for i in list(item):
-                    text.extend(self.plain(i))
-                ret.append(Code(" ".join(text)))
+                    text_parts.extend(self.plain(i))
+                ret.append(Code(" ".join(text_parts)))
 
             elif item.tag == "programlisting":
                 ret.extend(self.programlisting(item))
@@ -166,95 +173,117 @@ class XmlParser:
                 ret.append(b)
 
             elif item.tag == "heading":
-                ret.append(MdHeader(int(item.get("level")), self.paras(item)))
+                level = item.get("level")
+                if level:
+                    ret.append(MdHeader(int(level), self.paras(item)))
 
             elif item.tag in ["orderedlist", "itemizedlist"]:
                 lst = MdList([])
                 for listitem in item.findall("listitem"):
-                    i = MdParagraph([])
+                    para_item = MdParagraph([])
                     for para in listitem.findall("para"):
-                        i.extend(self.paras(para))
-                    lst.append(i)
+                        para_item.extend(self.paras(para))
+                    lst.append(para_item)
                 ret.append(lst)
 
             elif item.tag == "ref":
                 refid = item.get("refid")
-                try:
-                    ref = self.cache.get(refid)
-                    if italic:
-                        if item.text:
-                            ret.append(MdLink([MdItalic([MdBold([Text(item.text)])])], ref.url))
-                        else:
-                            ret.append(
-                                MdLink(
-                                    [MdItalic([MdBold([Text(ref.get_full_name())])])],
-                                    ref.url,
+                if refid:
+                    try:
+                        ref = self.cache.get(refid)
+                        if italic:
+                            if item.text:
+                                ret.append(MdLink([MdItalic([MdBold([Text(item.text)])])], ref.url))
+                            else:
+                                ret.append(
+                                    MdLink(
+                                        [MdItalic([MdBold([Text(ref.get_full_name())])])],
+                                        ref.url,
+                                    )
                                 )
-                            )
-                    elif item.text:
-                        ret.append(MdLink([MdBold([Text(item.text)])], ref.url))
-                    else:
-                        ret.append(MdLink([MdBold([Text(ref.get_full_name())])], ref.url))
-                except KeyError:
-                    if item.text:
-                        ret.append(Text(item.text))
+                        elif item.text:
+                            ret.append(MdLink([MdBold([Text(item.text)])], ref.url))
+                        else:
+                            ret.append(MdLink([MdBold([Text(ref.get_full_name())])], ref.url))
+                    except KeyError:
+                        if item.text:
+                            ret.append(Text(item.text))
 
             elif item.tag == "sect1":
-                title = item.find("title").text
-                ret.append(MdHeader(2, [Text(title)]))
+                title_elem = item.find("title")
+                if title_elem is not None and title_elem.text:
+                    ret.append(MdHeader(2, [Text(title_elem.text)]))
                 ret.extend(self.paras(item))
 
             elif item.tag == "sect2":
-                title = item.find("title").text
-                ret.append(MdHeader(3, [Text(title)]))
+                title_elem = item.find("title")
+                if title_elem is not None and title_elem.text:
+                    ret.append(MdHeader(3, [Text(title_elem.text)]))
                 ret.extend(self.paras(item))
 
             elif item.tag == "sect3":
-                title = item.find("title").text
-                ret.append(MdHeader(4, [Text(title)]))
+                title_elem = item.find("title")
+                if title_elem is not None and title_elem.text:
+                    ret.append(MdHeader(4, [Text(title_elem.text)]))
                 ret.extend(self.paras(item))
 
             elif item.tag == "sect4":
-                title = item.find("title").text
-                ret.append(MdHeader(5, [Text(title)]))
+                title_elem = item.find("title")
+                if title_elem is not None and title_elem.text:
+                    ret.append(MdHeader(5, [Text(title_elem.text)]))
                 ret.extend(self.paras(item))
 
             elif item.tag == "sect5":
-                title = item.find("title").text
-                ret.append(MdHeader(6, [Text(title)]))
+                title_elem = item.find("title")
+                if title_elem is not None and title_elem.text:
+                    ret.append(MdHeader(6, [Text(title_elem.text)]))
                 ret.extend(self.paras(item))
 
             elif item.tag == "variablelist":
                 varlistentry = item.find("varlistentry")
+                if varlistentry is not None:
+                    term = varlistentry.find("term")
+                    if term is not None:
+                        ret.append(MdHeader(4, self.paras(term)))
 
-                ret.append(MdHeader(4, self.paras(varlistentry.find("term"))))
-
-                varlistentry.find("term")
-                for listitem in item.findall("listitem"):
-                    ret.extend(MdParagraph(self.paras(para)) for para in listitem.findall("para"))
+                    for listitem in item.findall("listitem"):
+                        ret.extend(MdParagraph(self.paras(para)) for para in listitem.findall("para"))
             elif item.tag == "parameterlist":
                 parameteritems = item.findall("parameteritem")
                 lst = MdList([])
                 for parameteritem in parameteritems:
-                    name = parameteritem.find("parameternamelist").find("parametername")
-                    description = parameteritem.find("parameterdescription").findall("para")
-                    par = MdParagraph([])
-                    if name is not None and len(name) > 0:
-                        par.extend(self.paras(name))
+                    param_name_list = parameteritem.find("parameternamelist")
+                    if param_name_list is not None:
+                        name = param_name_list.find("parametername")
                     else:
-                        par.append(Code(name.text))
+                        name = None
+                    
+                    param_desc = parameteritem.find("parameterdescription")
+                    if param_desc is not None:
+                        description = param_desc.findall("para")
+                    else:
+                        description = []
+                    
+                    par = MdParagraph([])
+                    if name is not None and name.text:
+                        par.extend(self.paras(name))
+                    elif name is not None:
+                        par.append(Code(name.text or ""))
                     par.append(Text(" "))
                     for ip in description:
                         par.extend(self.paras(ip))
                     lst.append(par)
-                ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[item.get("kind")])]), Br(), lst))
+                kind = item.get("kind")
+                if kind:
+                    ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])]), Br(), lst))
             elif item.tag == "simplesect":
                 kind = item.get("kind")
-                ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
-                if kind != "see":
-                    ret.append(Br())
-                else:
-                    ret.append(Text(" "))
+                if kind:
+                    ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
+                    if kind != "see":
+                        ret.append(Br())
+                    else:
+                        ret.append(Text(" "))
 
                 for sp, has_more in lookahead(item.findall("para")):
                     ret.extend(self.paras(sp))
@@ -267,14 +296,18 @@ class XmlParser:
             elif item.tag == "xrefsect":
                 xreftitle = item.find("xreftitle")
                 xrefdescription = item.find("xrefdescription")
-                kind = xreftitle.text.lower()
-                ret.extend((Br(), MdBold(self.paras(xreftitle)), Br()))
-                for sp in xrefdescription.findall("para"):
-                    ret.extend(self.paras(sp))
-                    ret.append(Br())
+                if xreftitle is not None and xreftitle.text:
+                    kind = xreftitle.text.lower()
+                    ret.extend((Br(), MdBold(self.paras(xreftitle)), Br()))
+                if xrefdescription is not None:
+                    for sp in xrefdescription.findall("para"):
+                        ret.extend(self.paras(sp))
+                        ret.append(Br())
 
             elif item.tag == "ulink":
-                ret.append(MdLink(self.paras(item), item.get("url")))
+                url = item.get("url")
+                if url:
+                    ret.append(MdLink(self.paras(item), url))
 
             elif item.tag == "bold":
                 ret.append(MdBold(self.paras(item)))
@@ -282,13 +315,14 @@ class XmlParser:
             elif item.tag == "emphasis":
                 ret.append(MdItalic(self.paras(item)))
             elif item.tag == "formula":
-                equation = item.text.strip("$ ")
-                if len(p) == 1 and item.tail is None:
-                    ret.append(MdBlockEquation(equation))
-                else:
-                    ret.append(MdInlineEquation(equation))
+                if item.text is not None:
+                    equation = item.text.strip("$ ")
+                    if len(p) == 1 and item.tail is None:
+                        ret.append(MdBlockEquation(equation))
+                    else:
+                        ret.append(MdInlineEquation(equation))
 
-            if item.tail:
+            if item.tail is not None:
                 if italic:
                     ret.extend((Text(" "), MdItalic([Text(item.tail.strip())])))
                 else:

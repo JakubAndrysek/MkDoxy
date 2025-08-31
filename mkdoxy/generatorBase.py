@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import logging
 import os
 import string
-from typing import Optional
 
 from jinja2 import BaseLoader, Environment, Template
 from jinja2.exceptions import TemplateError
@@ -170,7 +171,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def annotated(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render an annotated page.
         @details
@@ -188,7 +189,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def examples(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render an examples page.
         @details
@@ -206,7 +207,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def programlisting(
-        self, node: list[Node], config: Optional[dict] = None
+        self, node: list[Node], config: dict | None = None
     ) -> str:
         """! Render a programlisting page.
         @details
@@ -224,7 +225,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def code(
-        self, node: list[Node], config: Optional[dict] = None, code: str = ""
+        self, node: list[Node], config: dict | None = None, code: str = ""
     ) -> str:
         """! Render a code page.
         @details
@@ -247,7 +248,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def fileindex(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render a fileindex page.
         @details
@@ -265,7 +266,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def namespaces(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render a namespaces page.
         @details
@@ -282,7 +283,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def page(self, node: Node, config: Optional[dict] = None) -> str:
+    def page(self, node: Node, config: dict | None = None) -> str:
         """! Render a page.
         @details
         @param node (Node): Node to render.
@@ -298,7 +299,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def example(self, node: Node, config: Optional[dict] = None) -> str:
+    def example(self, node: Node, config: dict | None = None) -> str:
         """! Render an example page.
         @details
         @param node (Node): Node to render.
@@ -315,7 +316,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def relatedpages(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render a related pages page.
         @details
@@ -333,7 +334,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def classes(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render a classes page.
         @details
@@ -386,7 +387,7 @@ class GeneratorBase:
         return ret
 
     def modules(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render a modules page.
         @details
@@ -404,7 +405,7 @@ class GeneratorBase:
         return self.render(template, data)
 
     def hierarchy(
-        self, nodes: list[Node], config: Optional[dict] = None
+        self, nodes: list[Node], config: dict | None = None
     ) -> str:
         """! Render a hierarchy page.
         @details
@@ -451,7 +452,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def function(self, node: Node, config: Optional[dict] = None) -> str:
+    def function(self, node: Node, config: dict | None = None) -> str:
         """! Render a function page.
         @details
         @param node (Node): Node to render.
@@ -474,7 +475,7 @@ class GeneratorBase:
         }
         return self.render(template_mem_def, data)
 
-    def member(self, node: Node, config: Optional[dict] = None) -> str:
+    def member(self, node: Node, config: dict | None = None) -> str:
         """! Render a member page.
         @details
         @param node (Node): Node to render.
@@ -504,7 +505,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def file(self, node: Node, config: Optional[dict] = None) -> str:
+    def file(self, node: Node, config: dict | None = None) -> str:
         """! Render a file page.
         @details
         @param node (Node): Node to render.
@@ -537,7 +538,7 @@ class GeneratorBase:
         kind_filters: Kind,
         kind_parents: list[Kind],
         title: str,
-        config: Optional[dict] = None,
+        config: dict | None = None,
     ) -> str:
         """! Render an index page.
         @details

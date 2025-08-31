@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 from mkdoxy.constants import Kind
 from mkdoxy.doxygen import Doxygen
 from mkdoxy.utils import recursive_find, recursive_find_with_parent

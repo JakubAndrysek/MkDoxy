@@ -4,6 +4,8 @@ MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets
 MkDoxy is a MkDocs plugin for generating documentation from Doxygen XML files.
 """
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 

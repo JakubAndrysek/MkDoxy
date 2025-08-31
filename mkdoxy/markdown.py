@@ -1,5 +1,8 @@
 
 
+from typing import Protocol
+
+
 def escape(s: str) -> str:
     ret = s.replace("*", "\\*")
     ret = ret.replace("_", "\\_")
@@ -23,20 +26,31 @@ class MdRenderer:
             self.eol_flag = True
 
 
+class Renderable(Protocol):
+    def render(self, f: MdRenderer, indent: str) -> None: ...
+    @property
+    def children(self) -> list["Renderable"]: ...
+
+
 class Md:
-    def __init__(self, children: list["Md"]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         self.children = children
 
-    def append(self, child: "Md") -> None:
+    def append(self, child: Renderable) -> None:
         self.children.append(child)
 
-    def extend(self, child: list["Md"]) -> None:
+    def extend(self, child: list[Renderable]) -> None:
         self.children.extend(child)
+
+    def render(self, f: MdRenderer, indent: str) -> None:
+        for child in self.children:
+            child.render(f, indent)
 
 
 class Text:
     def __init__(self, text: str) -> None:
         self.text = text
+        self.children: list[Renderable] = []
 
     def render(self, f: MdRenderer, indent: str) -> None:
         if self.text:
@@ -45,14 +59,16 @@ class Text:
 
 class Br:
     def __init__(self) -> None:
-        pass
+        self.children: list[Renderable] = []
 
     def render(self, f: MdRenderer, indent: str) -> None:
         f.write("\n\n")
 
 
 class MdHint(Md):
-    def __init__(self, children: list[Md], typ: str, title: str) -> None:
+    def __init__(
+        self, children: list[Renderable], typ: str, title: str
+    ) -> None:
         Md.__init__(self, children)
         self.title = title
         self.typ = typ
@@ -65,7 +81,7 @@ class MdHint(Md):
 
 
 class MdBold(Md):
-    def __init__(self, children: list[Md]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -78,6 +94,7 @@ class MdBold(Md):
 class MdImage:
     def __init__(self, url: str) -> None:
         self.url = url
+        self.children: list[Renderable] = []
 
     def render(self, f: MdRenderer, indent: str) -> None:
         f.write(f"![Image]({self.url})")
@@ -86,6 +103,7 @@ class MdImage:
 class Code:
     def __init__(self, text: str) -> None:
         self.text = text
+        self.children: list[Renderable] = []
 
     def render(self, f: MdRenderer, indent: str) -> None:
         f.write(f"`{self.text}`")
@@ -94,6 +112,7 @@ class Code:
 class MdCodeBlock:
     def __init__(self, lines: list[str]) -> None:
         self.lines = lines
+        self.children: list[Renderable] = []
 
     def append(self, line: str) -> None:
         self.lines.append(line)
@@ -107,7 +126,7 @@ class MdCodeBlock:
 
 
 class MdBlockQuote(Md):
-    def __init__(self, children: list[Md]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -119,7 +138,7 @@ class MdBlockQuote(Md):
 
 
 class MdItalic(Md):
-    def __init__(self, children: list[Md]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -130,7 +149,7 @@ class MdItalic(Md):
 
 
 class MdParagraph(Md):
-    def __init__(self, children: list[Md]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -140,7 +159,7 @@ class MdParagraph(Md):
 
 
 class MdLink(Md):
-    def __init__(self, children: list[Md], url: str) -> None:
+    def __init__(self, children: list[Renderable], url: str) -> None:
         Md.__init__(self, children)
         self.url = url
 
@@ -152,7 +171,7 @@ class MdLink(Md):
 
 
 class MdList(Md):
-    def __init__(self, children: list[Md]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -165,7 +184,7 @@ class MdList(Md):
 
 class MdLine:
     def __init__(self) -> None:
-        pass
+        self.children: list[Renderable] = []
 
     def render(self, f: MdRenderer, indent: str) -> None:
         f.eol()
@@ -174,7 +193,7 @@ class MdLine:
 
 
 class MdHeader(Md):
-    def __init__(self, level: int, children: list[Md]) -> None:
+    def __init__(self, level: int, children: list[Renderable]) -> None:
         Md.__init__(self, children)
         self.level = level
 
@@ -187,7 +206,7 @@ class MdHeader(Md):
 
 
 class MdTableCell(Md):
-    def __init__(self, children: list[Md]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -196,7 +215,7 @@ class MdTableCell(Md):
 
 
 class MdTableRow(Md):
-    def __init__(self, children: list[Md]) -> None:
+    def __init__(self, children: list[Renderable]) -> None:
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -227,6 +246,7 @@ class MdTable(Md):
 
 class MdInlineEquation(Md):
     def __init__(self, equation: str) -> None:
+        super().__init__([])
         self.equation = equation
 
     def render(self, f: MdRenderer, indent: str) -> None:
@@ -236,6 +256,7 @@ class MdInlineEquation(Md):
 
 class MdBlockEquation(Md):
     def __init__(self, equation: str) -> None:
+        super().__init__([])
         self.equation = equation
 
     def render(self, f: MdRenderer, indent: str) -> None:
