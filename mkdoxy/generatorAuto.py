@@ -57,7 +57,7 @@ class GeneratorAuto:
         self.api_path = api_path
         self.doxygen = doxygen
         self.use_directory_urls = use_directory_urls
-        self.full_doc_files = []
+        self.full_doc_files: list[files.File] = []
         self.debug = generator_base.debug
         os.makedirs(os.path.join(self.temp_doxy_dir, self.api_path),
                     exist_ok=True)
@@ -283,7 +283,7 @@ class GeneratorAuto:
     def index(
         self,
         nodes: list[Node],
-        kind_filters: Kind,
+        kind_filters: list[Kind],
         kind_parents: list[Kind],
         title: str,
         config: dict | None = None,

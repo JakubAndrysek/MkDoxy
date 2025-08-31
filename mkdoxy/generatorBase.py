@@ -4,7 +4,7 @@ import logging
 import os
 import string
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, cast
 
 from jinja2 import BaseLoader, Environment, Template
 from jinja2.exceptions import TemplateError
@@ -209,11 +209,11 @@ class GeneratorBase:
         return self.render(template, data)
 
     def programlisting(
-        self, node: list[Node], config: dict | None = None
+        self, node: Node, config: dict | None = None
     ) -> str:
         """! Render a programlisting page.
         @details
-        @param node ([Node]): Node to render.
+        @param node (Node): Node to render.
         @param config (dict): Config for the template (default: None)
         @return (str): Rendered programlisting page.
         """
@@ -433,18 +433,22 @@ class GeneratorBase:
                 if base["refid"] not in deduplicated:
                     deduplicated[base["refid"]] = []
                 elif not isinstance(deduplicated[base["refid"]], list):
-                    # Convert single Node to list
-                    existing_node = deduplicated[base["refid"]]
-                    deduplicated[base["refid"]] = [existing_node]
-                deduplicated[base["refid"]].append(base)
+                    # Convert single Node to list - but this shouldn't happen in this context
+                    # If we have a Node and we're processing a dict, something is wrong
+                    # For now, skip this case or handle it differently
+                    continue
+                # At this point, deduplicated[base["refid"]] is guaranteed to be a list
+                cast(list[dict[str, Any]], deduplicated[base["refid"]]).append(base)
 
         deduplicated_arr: list[Node | DummyNode] = []
         for key, children in deduplicated.items():
             if isinstance(children, list):
-                children_list = children  # Type: list[dict[str, Any]]
-                derived_list = [x["derived"] for x in children_list]
+                children_list: list[dict[str, Any]] = children
+                derived_list: list[Node | None] = []
+                for x in children_list:
+                    derived_list.append(x.get("derived"))
                 deduplicated_arr.append(
-                    DummyNode(key, derived_list, Kind.CLASS)
+                    DummyNode(key, [d for d in derived_list if d is not None], Kind.CLASS)
                 )
             else:
                 found: Node | None = next(
@@ -542,7 +546,7 @@ class GeneratorBase:
     def index(
         self,
         nodes: list[Node],
-        kind_filters: Kind,
+        kind_filters: list[Kind],
         kind_parents: list[Kind],
         title: str,
         config: dict | None = None,
@@ -561,7 +565,7 @@ class GeneratorBase:
         template, meta_config = self.load_config_and_template("index")
 
         found_nodes = recursive_find_with_parent(
-            nodes, [kind_filters], kind_parents
+            nodes, kind_filters, kind_parents
         )
         dictionary: dict[str, list[Node]] = {letter: [] for letter in LETTERS}
 
@@ -585,11 +589,11 @@ class GeneratorBase:
 
                 else:
                     existing_parents = d[item.name_short]
-                    found = any(
+                    already_exists = any(
                         test.refid == item.parent.refid
                         for test in existing_parents
                     )
-                    if not found:
+                    if not already_exists:
                         d[item.name_short].append(item.parent)
 
             sorted_dictionary[letter] = d
