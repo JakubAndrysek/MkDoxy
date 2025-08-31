@@ -133,10 +133,10 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
 
         generator_snippets = GeneratorSnippets(
             markdown=markdown,
-            generatorBase=self.generator_base,
+            generator_base=self.generator_base,
             doxygen=self.doxygen,
             projects=self.config.projects,
-            useDirectoryUrls=config["use_directory_urls"],
+            use_directory_urls=config["use_directory_urls"],
             page=page,
             config=page_config,
             debug=self.config.debug,
