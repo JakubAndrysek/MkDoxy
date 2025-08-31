@@ -9,29 +9,42 @@ class DoxyTagParser:
         self.indent = "(?P<indent>[\t ]*)"
         self.project = "(?P<project>[a-zA-Z]+)"
         self.key = "(?P<key>[a-zA-Z.-_]+)"
-        self.dot = "\."
+        self.dot = r"\."
         self.optional_dot = "[.]?"
-        self.look_ahead = "(?=\n)"  # it's a look ahead because we don't want to capture the newline
+        self.look_ahead = r"(?=\n)"  # look ahead to avoid capturing newline
 
-    def replaceMarkdown(self, start: int, end: int, replace_format: str, **kwargs) -> None:
-        self.markdown_page = self.markdown_page.replace(self.markdown_page[start:end], replace_format.format(**kwargs))
+    def replace_markdown(
+        self, start: int, end: int, replace_format: str, **kwargs: str
+    ) -> None:
+        self.markdown_page = self.markdown_page.replace(
+            self.markdown_page[start:end], replace_format.format(**kwargs)
+        )
 
-    def returnMarkdown(self):
+    def return_markdown(self) -> str:
         return self.markdown_page
 
-    def parseEmptyTag(self, replacement: str) -> None:
+    def parse_empty_tag(self, replacement: str) -> None:
         empty_tag = (
-            rf"{self.indent}{self.doxy_key}{self.optional_dot}{self.look_ahead}"  # https://regex101.com/r/Zh38uo/1
-        )
+            rf"{self.indent}{self.doxy_key}{self.optional_dot}"
+            rf"{self.look_ahead}"
+        )  # https://regex101.com/r/Zh38uo/1
         matches = re.finditer(empty_tag, self.markdown_page, re.MULTILINE)
         for match in reversed(list(matches)):
-            self.replaceMarkdown(match.start(), match.end(), replacement, indent=match.group("indent"))
+            self.replace_markdown(
+                match.start(),
+                match.end(),
+                replacement,
+                indent=match.group("indent")
+            )
 
-    def parseProject(self, replacement: str) -> None:
-        project_tag = rf"{self.indent}{self.doxy_key}{self.dot}{self.project}{self.optional_dot}{self.look_ahead}"  # https://regex101.com/r/TfAsmE/1
+    def parse_project(self, replacement: str) -> None:
+        project_tag = (
+            rf"{self.indent}{self.doxy_key}{self.dot}{self.project}"
+            rf"{self.optional_dot}{self.look_ahead}"
+        )  # https://regex101.com/r/TfAsmE/1
         matches = re.finditer(project_tag, self.markdown_page, re.MULTILINE)
         for match in reversed(list(matches)):
-            self.replaceMarkdown(
+            self.replace_markdown(
                 match.start(),
                 match.end(),
                 replacement,
@@ -39,13 +52,14 @@ class DoxyTagParser:
                 project=match.group("project"),
             )
 
-    def parseProjectTagSingle(self, replacement: str) -> None:
+    def parse_project_tag_single(self, replacement: str) -> None:
         project_tag = (
-            rf"{self.indent}{self.doxy_key}{self.dot}{self.project}{self.dot}(?P<key>[a-zA-Z-_]+){self.look_ahead}"
+            rf"{self.indent}{self.doxy_key}{self.dot}{self.project}"
+            rf"{self.dot}(?P<key>[a-zA-Z-_]+){self.look_ahead}"
         )
         matches = re.finditer(project_tag, self.markdown_page, re.MULTILINE)
         for match in reversed(list(matches)):
-            self.replaceMarkdown(
+            self.replace_markdown(
                 match.start(),
                 match.end(),
                 replacement,
@@ -53,12 +67,13 @@ class DoxyTagParser:
                 key=match.group("key"),
             )
 
-    def parseProjectTagMulti(self, replacement: str) -> None:
+    def parse_project_tag_multi(self, replacement: str) -> None:
         project_tag = rf"{self.indent}{self.doxy_key}{self.dot}{self.project}{self.dot}(?P<key>[a-zA-Z-_]+)\s*\n(?:(?=\n)|(?=:::)|\Z)"  # noqa: E501
         matches = re.finditer(project_tag, self.markdown_page, re.MULTILINE)
         for match in reversed(list(matches)):
-            list_keys = match.group("key").split(".")  # split keys by . to allow for nested keys
-            self.replaceMarkdown(
+            # split keys by . to allow for nested keys
+            list_keys = match.group("key").split(".")
+            self.replace_markdown(
                 match.start(),
                 match.end(),
                 replacement,

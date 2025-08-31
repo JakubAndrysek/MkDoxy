@@ -124,7 +124,7 @@ class Kind(Enum):
         return self == Kind.EXAMPLE
 
     def is_language(self) -> bool:
-        LANGUAGE = [
+        language = [
             Kind.FUNCTION,
             Kind.VARIABLE,
             Kind.NAMESPACE,
@@ -142,7 +142,7 @@ class Kind(Enum):
             Kind.PROPERTY,
         ]
 
-        return self in LANGUAGE
+        return self in language
 
     def is_parent(self) -> bool:
         return self in [
@@ -160,7 +160,7 @@ class Kind(Enum):
     def from_str(s: str) -> "Kind":
         try:
             return Kind(s)
-        except Exception:
+        except ValueError:
             return Kind.NONE
 
 

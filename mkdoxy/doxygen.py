@@ -16,7 +16,7 @@ class Doxygen:
         self.debug = parser.debug
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:
-            log.info(f"Loading XML from: {path_xml}")
+            log.info("Loading XML from: %s", path_xml)
         xml = ET.parse(path_xml).getroot()
 
         self.parser = parser
@@ -136,7 +136,7 @@ class Doxygen:
                 self._remove_from_root(child.refid, root)
             self._fix_duplicates(child, root, filter)
 
-    def printStructure(self) -> None:
+    def print_structure(self) -> None:
         if not self.debug:
             return
         print("\n")

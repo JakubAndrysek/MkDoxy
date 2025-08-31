@@ -14,7 +14,7 @@ def main() -> None:
 @click.command()
 @click.argument("yaml_file", type=click.Path(exists=True))
 @click.option("--no-backup", is_flag=True, help="Do not backup old config to mkdocs.1_old.yaml")
-def migrate(yaml_file, no_backup) -> None:
+def migrate(yaml_file: str, no_backup: bool) -> None:
     """
     Migrate mkdoxy configuration to a new version.
 
@@ -37,7 +37,7 @@ def version() -> None:
         import importlib.metadata
 
         package_version = importlib.metadata.version("mkdoxy")
-    except Exception:
+    except (ImportError, importlib.metadata.PackageNotFoundError):
         package_version = "Unknown"
     click.echo("MkDoxy: https://github.com/JakubAndrysek/MkDoxy")
     click.echo(f"Version: {package_version}")
