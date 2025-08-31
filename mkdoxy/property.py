@@ -57,8 +57,10 @@ class Property:
             return self.md(plain=True)
 
         def has(self) -> bool:
+            if self.xml is None:
+                return False
             detaileddescription = self.xml.find("briefdescription")
-            return len(list(detaileddescription)) > 0
+            return detaileddescription is not None and len(list(detaileddescription)) > 0
 
     class Includes:
         def __init__(self, xml: Element | None, parser: XmlParser, kind: Kind) -> None:
@@ -73,7 +75,9 @@ class Property:
             return self.array(plain=True)
 
         def array(self, plain: bool = False) -> list[str]:
-            ret = []
+            ret: list[str] = []
+            if self.xml is None:
+                return ret
             for includes in self.xml.findall("includes"):
                 incl = includes.text if plain else self.parser.reference_as_str(includes)
                 if includes.get("local") == "yes":
@@ -85,6 +89,8 @@ class Property:
             return ret
 
         def has(self) -> bool:
+            if self.xml is None:
+                return False
             return len(self.xml.findall("includes")) > 0
 
     class Type:
@@ -94,6 +100,8 @@ class Property:
             self.kind = kind
 
         def md(self, plain: bool = False) -> str:
+            if self.xml is None:
+                return ""
             para = self.xml.find("type")
             return self.parser.paras_as_str(para, plain=plain) if para is not None else ""
 
@@ -101,6 +109,8 @@ class Property:
             return self.md(plain=True)
 
         def has(self) -> bool:
+            if self.xml is None:
+                return False
             return self.xml.find("type") is not None
 
     class Location:
@@ -113,27 +123,42 @@ class Property:
             return self.plain()
 
         def plain(self) -> str:
+            if self.xml is None:
+                return ""
             loc = self.xml.find("location")
-            return loc.get("file") if loc is not None else ""
+            file_path = loc.get("file") if loc is not None else None
+            return file_path or ""
 
         def line(self) -> int:
+            if self.xml is None:
+                return 0
             loc = self.xml.find("location")
-            return int(loc.get("line")) if loc is not None else 0
+            line_val = loc.get("line") if loc is not None else None
+            return int(line_val) if line_val is not None else 0
 
         def column(self) -> int:
+            if self.xml is None:
+                return 0
             loc = self.xml.find("location")
-            return int(loc.get("column")) if loc is not None else 0
+            col_val = loc.get("column") if loc is not None else None
+            return int(col_val) if col_val is not None else 0
 
         def bodystart(self) -> int:
+            if self.xml is None:
+                return 0
             loc = self.xml.find("location")
-            return int(loc.get("bodystart")) if loc is not None else 0
+            line_val = loc.get("bodystart") if loc is not None else None
+            return int(line_val) if line_val is not None else 0
 
         def bodyend(self) -> int:
+            if self.xml is None:
+                return 0
             loc = self.xml.find("location")
-            return int(loc.get("bodyend")) if loc is not None else 0
+            line_val = loc.get("bodyend") if loc is not None else None
+            return int(line_val) if line_val is not None else 0
 
         def has(self) -> bool:
-            return self.xml.find("location") is not None
+            return self.xml.find("location") is not None if self.xml is not None else False
 
     class Params:
         def __init__(self, xml: Element | None, parser: XmlParser, kind: Kind) -> None:
@@ -148,7 +173,9 @@ class Property:
             return ", ".join(self.array(plain=True))
 
         def array(self, plain: bool = False) -> list[str]:
-            ret = []
+            ret: list[str] = []
+            if self.xml is None:
+                return ret
             for param in self.xml.findall("param"):
                 p = ""
                 type_elem = param.find("type")
@@ -170,7 +197,7 @@ class Property:
             return ret
 
         def has(self) -> bool:
-            return len(self.xml.findall("param")) > 0
+            return len(self.xml.findall("param")) > 0 if self.xml is not None else False
 
     class TemplateParams:
         def __init__(self, xml: Element | None, parser: XmlParser, kind: Kind) -> None:
@@ -185,7 +212,9 @@ class Property:
             return ", ".join(self.array(plain=True))
 
         def array(self, plain: bool = False, notype: bool = False) -> list[str]:
-            ret = []
+            ret: list[str] = []
+            if self.xml is None:
+                return ret
             templateparamlist = self.xml.find("templateparamlist")
             if templateparamlist is not None:
                 for param in templateparamlist.findall("param"):
@@ -205,6 +234,8 @@ class Property:
             return ret
 
         def has(self) -> bool:
+            if self.xml is None:
+                return False
             return self.xml.find("templateparamlist") is not None
 
     class CodeBlock:
@@ -232,10 +263,14 @@ class Property:
             return self.parsed()
 
         def plain(self) -> str:
+            if self.xml is None:
+                return ""
             argss = self.xml.find("argsstring")
             return "" if argss is None or argss.text is None else argss.text
 
         def parsed(self) -> str:
+            if self.xml is None:
+                return ""
             argss = self.xml.find("argsstring")
             if argss is None or argss.text is None:
                 return ""
@@ -271,7 +306,7 @@ class Property:
             return " ".join(ret)
 
         def has(self) -> bool:
-            return self.xml.find("argsstring") is not None
+            return self.xml.find("argsstring") is not None if self.xml is not None else False
 
     class Values:
         def __init__(self, xml: Element | None, parser: XmlParser, kind: Kind) -> None:
@@ -286,10 +321,13 @@ class Property:
             return ", ".join(self.array(plain=False))
 
         def array(self, plain: bool = False) -> list[str]:
-            ret = []
+            ret: list[str] = []
+            if self.xml is None:
+                return ret
             if self.kind.is_enum():
                 for enumvalue in self.xml.findall("enumvalue"):
-                    p = "**" + escape(enumvalue.find("name").text) + "**"
+                    name_elem = enumvalue.find("name")
+                    p = "**" + escape(name_elem.text if name_elem is not None and name_elem.text is not None else "") + "**"
                     initializer = enumvalue.find("initializer")
                     if initializer is not None:
                         p += f" {self.parser.paras_as_str(initializer, plain=plain)}"
@@ -297,6 +335,8 @@ class Property:
             return ret
 
         def has(self) -> bool:
+            if self.xml is None:
+                return False
             return self.xml.find("enumvalue") is not None if self.kind.is_enum() else False
 
     class Initializer:
@@ -306,6 +346,8 @@ class Property:
             self.kind = kind
 
         def md(self, plain: bool = False) -> str:
+            if self.xml is None:
+                return ""
             initializer = self.xml.find("initializer")
             if initializer is not None:
                 initializer_str = self.parser.paras_as_str(initializer, plain=plain).lstrip(" =")
@@ -319,6 +361,8 @@ class Property:
             return self.md(plain=True)
 
         def has(self) -> bool:
+            if self.xml is None:
+                return False
             return self.xml.find("initializer") is not None
 
     class Definition:
@@ -331,6 +375,8 @@ class Property:
             return self.plain()
 
         def plain(self) -> str:
+            if self.xml is None:
+                return ""
             definition = self.xml.find("definition")
             if definition is not None and definition.text:
                 return f"{definition.text};"
@@ -338,6 +384,8 @@ class Property:
                 return ""
 
         def has(self) -> bool:
+            if self.xml is None:
+                return False
             return self.xml.find("definition") is not None
 
     class Programlisting:
@@ -347,6 +395,8 @@ class Property:
             self.kind = kind
 
         def md(self, plain: bool = False) -> str:
+            if self.xml is None:
+                return ""
             programlisting = self.xml.find("programlisting")
             if programlisting is None:
                 return ""
@@ -354,4 +404,4 @@ class Property:
             return self.parser.programlisting_as_str(programlisting)
 
         def has(self) -> bool:
-            return self.xml.find("programlisting") is not None
+            return self.xml.find("programlisting") is not None if self.xml is not None else False

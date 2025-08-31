@@ -123,14 +123,9 @@ class Node:
                 self._title = self._name
         else:
             self._xml = xml
-            if self._xml is not None:
-                self._kind = Kind.from_str(self._xml.get("kind") or "unknown")
-                self._refid = refid if refid is not None else (self._xml.get("id") or "")
-                self._cache.add(self._refid, self)
-            else:
-                self._kind = Kind.from_str("unknown")
-                self._refid = refid or ""
-                self._cache.add(self._refid, self)
+            self._kind = Kind.from_str(self._xml.get("kind") or "unknown")
+            self._refid = refid if refid is not None else (self._xml.get("id") or "")
+            self._cache.add(self._refid, self)
             self._language = parent.code_language
 
             if self.debug:
@@ -312,6 +307,13 @@ class Node:
         # 	self._programlisting = Property.Programlisting(para, self._parser, self._kind)
 
     def _check_attrs(self) -> None:
+        if self._xml is None:
+            self._visibility = Visibility.PUBLIC
+            self._static = False
+            self._explicit = False
+            self._mutable = False
+            return
+
         prot = self._xml.get("prot")
         self._visibility = Visibility(prot) if prot is not None else Visibility.PUBLIC
 
@@ -353,12 +355,12 @@ class Node:
         return len(self.query(visibility, kinds, static)) > 0
 
     def query(self, visibility: str, kinds: list[str], static: bool) -> list["Node"]:
-        visibility = Visibility(visibility)
-        kinds = [Kind.from_str(kind) for kind in kinds]
+        vis_enum = Visibility(visibility)
+        kind_enums = [Kind.from_str(kind) for kind in kinds]
         return [
             child
             for child in self._children
-            if child._visibility == visibility and child._kind in kinds and child._static == static
+            if child._visibility == vis_enum and child._kind in kind_enums and child._static == static
         ]
 
     @property
@@ -501,7 +503,7 @@ class Node:
         return self._refid
 
     @property
-    def kind(self) -> str:
+    def kind(self) -> Kind:
         return self._kind
 
     @property
@@ -700,14 +702,14 @@ class Node:
             if self.is_virtual:
                 ret.append("virtual")
             return " ".join(ret)
-        elif self.kind is Kind.VARIABLE:
+        elif self.kind == Kind.VARIABLE:
             return ""
         else:
-            return self.kind.value
+            return str(self.kind.value)
 
     @property
     def code_language(self) -> str:
-        return self._language
+        return self._language or ""
 
     @property
     def codeblock(self) -> str:
@@ -748,7 +750,8 @@ class Node:
 
                 values = []
                 for enumvalue in self._xml.findall("enumvalue"):
-                    p = enumvalue.find("name").text
+                    name_elem = enumvalue.find("name")
+                    p = name_elem.text if name_elem is not None and name_elem.text is not None else ""
                     initializer = enumvalue.find("initializer")
                     if initializer is not None:
                         p += f" {self._parser.paras_as_str(initializer, plain=True)}"
@@ -789,35 +792,39 @@ class Node:
         return self._xml is not None and len(self._xml.findall("derivedcompoundref")) > 0
 
     @property
-    def base_classes(self) -> list[Node]:
-        ret = []
+    def base_classes(self) -> list[Node | str]:
+        ret: list[Node | str] = []
         if self._xml is None:
             return ret
         for basecompoundref in self._xml.findall("basecompoundref"):
             refid = basecompoundref.get("refid")
             if refid is None:
-                ret.append(basecompoundref.text)
+                if basecompoundref.text is not None:
+                    ret.append(basecompoundref.text)
             else:
                 try:
                     ret.append(self._cache.get(refid))
                 except KeyError:
-                    ret.append(basecompoundref.text)
+                    if basecompoundref.text is not None:
+                        ret.append(basecompoundref.text)
         return ret
 
     @property
-    def derived_classes(self) -> list[Node]:
-        ret = []
+    def derived_classes(self) -> list[Node | str]:
+        ret: list[Node | str] = []
         if self._xml is None:
             return ret
         for derivedcompoundref in self._xml.findall("derivedcompoundref"):
             refid = derivedcompoundref.get("refid")
             if refid is None:
-                ret.append(derivedcompoundref.text)
+                if derivedcompoundref.text is not None:
+                    ret.append(derivedcompoundref.text)
             else:
                 try:
                     ret.append(self._cache.get(refid))
                 except KeyError:
-                    ret.append(derivedcompoundref.text)
+                    if derivedcompoundref.text is not None:
+                        ret.append(derivedcompoundref.text)
         return ret
 
     @property
@@ -842,7 +849,8 @@ class Node:
 
     @property
     def includes(self) -> str:
-        return self._includes.plain()
+        plain_result = self._includes.plain()
+        return str(plain_result) if plain_result is not None else ""
 
     @property
     def has_type(self) -> bool:
@@ -850,7 +858,8 @@ class Node:
 
     @property
     def type(self) -> str:
-        return self._type.md()
+        md_result = self._type.md()
+        return str(md_result) if md_result is not None else ""
 
     @property
     def has_location(self) -> bool:
@@ -934,13 +943,16 @@ class Node:
         return True
 
     @property
-    def reimplements(self) -> "Node":
+    def reimplements(self) -> Node | None:
+        if self._xml is None:
+            return None
         reimp = self._xml.find("reimplements")
         if reimp is not None:
             refid = reimp.get("refid")
             if refid is not None:
                 try:
-                    return self._cache.get(refid)
+                    node = self._cache.get(refid)
+                    return node  # type: ignore
                 except KeyError:
                     pass
         return None
@@ -949,6 +961,8 @@ class Node:
     def print_node_recursive(self) -> str:
         # code_block = f'```md\n{self._print_node_recursive_md(self._xml, 0)}```'
         # return code_block
+        if self._xml is None:
+            return ""
         return self._print_node_recursive_md(self._xml, 0)
 
     def _print_node_recursive_md(self, node: Element, depth: int) -> str:

@@ -259,13 +259,13 @@ class XmlParser:
                         name = param_name_list.find("parametername")
                     else:
                         name = None
-                    
+
                     param_desc = parameteritem.find("parameterdescription")
                     if param_desc is not None:
                         description = param_desc.findall("para")
                     else:
                         description = []
-                    
+
                     par = MdParagraph([])
                     if name is not None and name.text:
                         par.extend(self.paras(name))
