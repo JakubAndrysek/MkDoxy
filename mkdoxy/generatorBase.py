@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging
 import os
 import string
+from collections.abc import Sequence
+from typing import Any
 
 from jinja2 import BaseLoader, Environment, Template
 from jinja2.exceptions import TemplateError
@@ -38,7 +40,7 @@ class GeneratorBase:
 
         self.debug: bool = debug  # if True, debug messages will be printed
         self.templates: dict[str, Template] = {}
-        self.metaData: dict[str, list[str]] = {}
+        self.metaData: dict[str, dict] = {}
 
         environment = Environment(loader=BaseLoader())
         environment.filters["use_code_language"] = use_code_language
@@ -137,7 +139,7 @@ class GeneratorBase:
 
     def error(
         self,
-        config: dict,
+        config: dict | None,
         title: str,
         description: str,
         code_header: str = "",
@@ -349,7 +351,7 @@ class GeneratorBase:
         classes = recursive_find(nodes, Kind.CLASS)
         classes.extend(recursive_find(nodes, Kind.STRUCT))
         classes.extend(recursive_find(nodes, Kind.INTERFACE))
-        dictionary = {letter: [] for letter in LETTERS}
+        dictionary: dict[str, list[Node]] = {letter: [] for letter in LETTERS}
 
         for klass in classes:
             asd = klass.name_short[0].lower()
@@ -366,15 +368,15 @@ class GeneratorBase:
         return self.render(template, data)
 
     def _find_base_classes(
-        self, nodes: list[Node], derived: Node
-    ) -> list[Node]:
+        self, nodes: Sequence[Node | str], derived: Node | None
+    ) -> list[Node | dict[str, Any]]:
         """! Find base classes of a node.
         @details
         @param nodes ([Node]): List of nodes to search.
         @param derived (Node): Derived node.
         @return ([Node]): List of base classes.
         """
-        ret = []
+        ret: list[Node | dict[str, Any]] = []
         for node in nodes:
             if isinstance(node, str):
                 ret.append({"refid": node, "derived": derived})
@@ -422,7 +424,7 @@ class GeneratorBase:
         classes.extend(recursive_find(nodes, Kind.INTERFACE))
 
         bases = self._find_base_classes(classes, None)
-        deduplicated = {
+        deduplicated: dict[str, Node | list[dict[str, Any]]] = {
             base.refid: base for base in bases if not isinstance(base, dict)
         }
 
@@ -430,17 +432,22 @@ class GeneratorBase:
             if isinstance(base, dict):
                 if base["refid"] not in deduplicated:
                     deduplicated[base["refid"]] = []
+                elif not isinstance(deduplicated[base["refid"]], list):
+                    # Convert single Node to list
+                    existing_node = deduplicated[base["refid"]]
+                    deduplicated[base["refid"]] = [existing_node]
                 deduplicated[base["refid"]].append(base)
 
-        deduplicated_arr = []
+        deduplicated_arr: list[Node | DummyNode] = []
         for key, children in deduplicated.items():
             if isinstance(children, list):
-                derived_list = [x["derived"] for x in children]
+                children_list = children  # Type: list[dict[str, Any]]
+                derived_list = [x["derived"] for x in children_list]
                 deduplicated_arr.append(
                     DummyNode(key, derived_list, Kind.CLASS)
                 )
             else:
-                found: Node = next(
+                found: Node | None = next(
                     (klass for klass in classes if klass.refid == key), None
                 )
                 if found:
@@ -554,9 +561,9 @@ class GeneratorBase:
         template, meta_config = self.load_config_and_template("index")
 
         found_nodes = recursive_find_with_parent(
-            nodes, kind_filters, kind_parents
+            nodes, [kind_filters], kind_parents
         )
-        dictionary = {letter: [] for letter in LETTERS}
+        dictionary: dict[str, list[Node]] = {letter: [] for letter in LETTERS}
 
         # Sort items into the dictionary
         for found in found_nodes:
