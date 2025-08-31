@@ -256,6 +256,11 @@ class GeneratorSnippets:
         code_language: str = "",
         snippet_code: str = "",
     ) -> str:
+        # Check if errors should be ignored
+        if config.get("ignore_errors", False):
+            # Return empty string instead of logging error
+            return ""
+
         log.error("  -> %s -> page: %s", title, self.page.canonical_url)
         if project not in self.projects:
             project = next(iter(self.projects))

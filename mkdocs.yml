@@ -76,6 +76,7 @@ plugins:
   - open-in-new-tab
   - mkdoxy:
       enabled: !ENV [ENABLE_MKDOXY, True]
+      ignore_errors: true
       projects:
         mkdoxyApi:
           src_dirs: mkdoxy
@@ -99,7 +100,6 @@ plugins:
 #      save_api: .mkdoxy
       full_doc: True
       debug: False
-      ignore_errors: False
 
 #  - mkdoxy:
 #      enabled: !ENV [ENABLE_MKDOXY, True]

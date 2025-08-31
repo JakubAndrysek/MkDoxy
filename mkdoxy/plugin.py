@@ -52,6 +52,9 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
         @param config: (Config) The global configuration object.
         @return: (Files) The files gathered by MkDocs.
         """
+        # Update default template config with ignore_errors setting
+        self.default_template_config["ignore_errors"] = self.config.ignore_errors
+
         for project_name, project_config in self.config.projects.items():
             log.info("-> Processing project '%s'", project_name)
 
@@ -92,7 +95,7 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
             # Prepare generator for future use (GeneratorAuto, SnippetGenerator)
             self.generator_base[project_name] = GeneratorBase(
                 project_config.custom_template_dir or "",
-                False,  # ignore_errors=self.config.ignore_errors,
+                self.config.ignore_errors,
                 debug=self.config.debug,
             )
 
