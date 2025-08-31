@@ -42,9 +42,7 @@ class GeneratorBase:
         self.templates: dict[str, Template] = {}
         self.metaData: dict[str, dict] = {}
 
-        environment = Environment(
-            loader=BaseLoader(), autoescape=True
-        )
+        environment = Environment(loader=BaseLoader(), autoescape=True)
         environment.filters["use_code_language"] = use_code_language
         # code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
         path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates")
@@ -65,16 +63,14 @@ class GeneratorBase:
                     "Look at documentation: "
                     "https://mkdoxy.kubaandrysek.cz/"
                     "usage/#custom-jinja-templates.",
-                    filepath, JINJA_EXTENSIONS
+                    filepath,
+                    JINJA_EXTENSIONS,
                 )
 
         # test if template_dir is existing
         if template_dir:
             if not os.path.exists(template_dir):
-                raise exceptions.ConfigurationError(
-                    f"Custom template directory '{template_dir}' "
-                    "does not exist."
-                )
+                raise exceptions.ConfigurationError(f"Custom template directory '{template_dir}' does not exist.")
             # load custom templates and overwrite default templates
             # if they exist
             for filename in os.listdir(template_dir):
@@ -82,17 +78,10 @@ class GeneratorBase:
                 if filename.lower().endswith(JINJA_EXTENSIONS):
                     with open(filepath) as file:
                         name = os.path.splitext(filename)[0]
-                        file_template, metadata = parse_template_file(
-                            file.read()
-                        )
-                        self.templates[name] = environment.from_string(
-                            file_template
-                        )
+                        file_template, metadata = parse_template_file(file.read())
+                        self.templates[name] = environment.from_string(file_template)
                         self.metaData[name] = metadata
-                        log.info(
-                            "Overwriting template '%s' with custom template.",
-                            name
-                        )
+                        log.info("Overwriting template '%s' with custom template.", name)
                 else:
                     log.error(
                         "Trying to load unsupported file '%s'. "
@@ -100,7 +89,8 @@ class GeneratorBase:
                         "Look at documentation: "
                         "https://mkdoxy.kubaandrysek.cz/"
                         "usage/#custom-jinja-templates.",
-                        filepath, JINJA_EXTENSIONS
+                        filepath,
+                        JINJA_EXTENSIONS,
                     )
 
     @staticmethod
@@ -174,9 +164,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def annotated(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def annotated(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render an annotated page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -192,9 +180,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def examples(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def examples(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render an examples page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -210,9 +196,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def programlisting(
-        self, node: Node, config: dict | None = None
-    ) -> str:
+    def programlisting(self, node: Node, config: dict | None = None) -> str:
         """! Render a programlisting page.
         @details
         @param node (Node): Node to render.
@@ -228,9 +212,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def code(
-        self, node: list[Node], config: dict | None = None, code: str = ""
-    ) -> str:
+    def code(self, node: list[Node], config: dict | None = None, code: str = "") -> str:
         """! Render a code page.
         @details
         @param node ([Node]): Node to render.
@@ -251,9 +233,7 @@ class GeneratorBase:
 
         return self.render(template, data)
 
-    def fileindex(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def fileindex(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render a fileindex page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -269,9 +249,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def namespaces(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def namespaces(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render a namespaces page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -319,9 +297,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def relatedpages(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def relatedpages(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render a related pages page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -337,9 +313,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def classes(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def classes(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render a classes page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -369,9 +343,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def _find_base_classes(
-        self, nodes: Sequence[Node | str], derived: Node | None
-    ) -> list[Node | dict[str, Any]]:
+    def _find_base_classes(self, nodes: Sequence[Node | str], derived: Node | None) -> list[Node | dict[str, Any]]:
         """! Find base classes of a node.
         @details
         @param nodes ([Node]): List of nodes to search.
@@ -390,9 +362,7 @@ class GeneratorBase:
                     ret.extend(self._find_base_classes(bases, node))
         return ret
 
-    def modules(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def modules(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render a modules page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -408,9 +378,7 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
-    def hierarchy(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> str:
+    def hierarchy(self, nodes: list[Node], config: dict | None = None) -> str:
         """! Render a hierarchy page.
         @details
         @param nodes ([Node]): List of nodes to render.
@@ -449,13 +417,9 @@ class GeneratorBase:
                 derived_list: list[Node | None] = []
                 for x in children_list:
                     derived_list.append(x.get("derived"))
-                deduplicated_arr.append(
-                    DummyNode(key, [d for d in derived_list if d is not None], Kind.CLASS)
-                )
+                deduplicated_arr.append(DummyNode(key, [d for d in derived_list if d is not None], Kind.CLASS))
             else:
-                found: Node | None = next(
-                    (klass for klass in classes if klass.refid == key), None
-                )
+                found: Node | None = next((klass for klass in classes if klass.refid == key), None)
                 if found:
                     deduplicated_arr.append(found)
 
@@ -474,9 +438,7 @@ class GeneratorBase:
         """
         if config is None:
             config = {}
-        template_mem_def, meta_config_mem_def = (
-            self.load_config_and_template("memDef")
-        )
+        template_mem_def, meta_config_mem_def = self.load_config_and_template("memDef")
         template_code, meta_config_code = self.load_config_and_template("code")
 
         data = {
@@ -498,12 +460,8 @@ class GeneratorBase:
         if config is None:
             config = {}
         template, meta_config = self.load_config_and_template("member")
-        template_mem_def, meta_config_mem_def = (
-            self.load_config_and_template("memDef")
-        )
-        template_mem_tab, meta_config_mem_tab = (
-            self.load_config_and_template("memTab")
-        )
+        template_mem_def, meta_config_mem_def = self.load_config_and_template("memDef")
+        template_mem_tab, meta_config_mem_tab = self.load_config_and_template("memTab")
         template_code, meta_config_code = self.load_config_and_template("code")
 
         data = {
@@ -528,12 +486,8 @@ class GeneratorBase:
         if config is None:
             config = {}
         template, meta_config = self.load_config_and_template("member")
-        template_mem_def, meta_config_mem_def = (
-            self.load_config_and_template("memDef")
-        )
-        template_mem_tab, meta_config_mem_tab = (
-            self.load_config_and_template("memTab")
-        )
+        template_mem_def, meta_config_mem_def = self.load_config_and_template("memDef")
+        template_mem_tab, meta_config_mem_tab = self.load_config_and_template("memTab")
 
         data = {
             "node": node,
@@ -566,9 +520,7 @@ class GeneratorBase:
             config = {}
         template, meta_config = self.load_config_and_template("index")
 
-        found_nodes = recursive_find_with_parent(
-            nodes, kind_filters, kind_parents
-        )
+        found_nodes = recursive_find_with_parent(nodes, kind_filters, kind_parents)
         dictionary: dict[str, list[Node]] = {letter: [] for letter in LETTERS}
 
         # Sort items into the dictionary

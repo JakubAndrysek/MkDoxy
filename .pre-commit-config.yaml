@@ -1,13 +1,13 @@
 ---
 repos:
-  - repo: https://github.com/sourcery-ai/sourcery
-    rev: v1.19.0
-    hooks:
-      - id: sourcery
-        # The best way to use Sourcery in a pre-commit hook:
-        # * review only changed lines:
-        # * omit the summary
-        args: [--diff=git diff HEAD, --no-summary]
+  # - repo: https://github.com/sourcery-ai/sourcery
+  #   rev: v1.19.0
+  #   hooks:
+  #     - id: sourcery
+  #       # The best way to use Sourcery in a pre-commit hook:
+  #       # * review only changed lines:
+  #       # * omit the summary
+  #       args: [--diff=git diff HEAD, --no-summary]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:

@@ -33,17 +33,12 @@ if __name__ == "__main__":
 
     cache = Cache()
     parser = XmlParser(cache=cache, target=target, hints=hints, debug=debug)
-    doxygen = Doxygen(
-        doxygen_run.getDestination(), parser, cache,
-        options=options, debug=debug
-    )
+    doxygen = Doxygen(doxygen_run.getDestination(), parser, cache, options=options, debug=debug)
 
     if debug_full:
         doxygen.print()
 
-    generator_base = GeneratorBase(
-        ignore_errors=ignore_errors, options=options
-    )
+    generator_base = GeneratorBase(ignore_errors=ignore_errors, options=options)
 
     generator_auto = GeneratorAuto(
         generatorBase=generator_base,
@@ -60,15 +55,10 @@ if __name__ == "__main__":
     # find = Finder(doxygen, debug)
     # fc = find.doxyClass("example::Bird", "Bird (const Bird & other)= delete")
 
-    generator_snippets = GeneratorSnippets(
-        markdown="", generatorBase=generator_base,
-        doxygen=doxygen, debug=debug
-    )
+    generator_snippets = GeneratorSnippets(markdown="", generatorBase=generator_base, doxygen=doxygen, debug=debug)
     # func = generatorSnippets.doxyFunction("", {"name":"getRandomNumber()"})
 
     # func = generatorSnippets.doxyCode("", {"file":"shape.cppa"})
-    func = generator_snippets.doxyClassMethod(
-        "", {"name": "asd", "method": "as"}
-    )
+    func = generator_snippets.doxyClassMethod("", {"name": "asd", "method": "as"})
 
     pprint(func)

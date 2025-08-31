@@ -1,5 +1,3 @@
-
-
 from typing import Protocol
 
 
@@ -28,6 +26,7 @@ class MdRenderer:
 
 class Renderable(Protocol):
     def render(self, f: MdRenderer, indent: str) -> None: ...
+
     @property
     def children(self) -> list["Renderable"]: ...
 
@@ -66,9 +65,7 @@ class Br:
 
 
 class MdHint(Md):
-    def __init__(
-        self, children: list[Renderable], typ: str, title: str
-    ) -> None:
+    def __init__(self, children: list[Renderable], typ: str, title: str) -> None:
         Md.__init__(self, children)
         self.title = title
         self.typ = typ

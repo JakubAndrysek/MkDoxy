@@ -58,14 +58,11 @@ class GeneratorAuto:
         self.use_directory_urls = use_directory_urls
         self.full_doc_files: list[files.File] = []
         self.debug = generator_base.debug
-        os.makedirs(os.path.join(self.temp_doxy_dir, self.api_path),
-                    exist_ok=True)
+        os.makedirs(os.path.join(self.temp_doxy_dir, self.api_path), exist_ok=True)
 
     def save(self, path: str, output: str) -> None:
         path_rel = os.path.join(self.api_path, path)
-        self.full_doc_files.append(
-            files.File(path_rel, self.temp_doxy_dir, self.site_dir,
-                       self.use_directory_urls))
+        self.full_doc_files.append(files.File(path_rel, self.temp_doxy_dir, self.site_dir, self.use_directory_urls))
         file_path = os.path.join(self.temp_doxy_dir, path_rel)
         with open(file_path, "w", encoding="utf-8") as file:
             file.write(output)
@@ -192,9 +189,7 @@ class GeneratorAuto:
         output = self.generator_base.fileindex(nodes, config)
         self.save(path, output)
 
-    def namespaces(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> None:
+    def namespaces(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "namespaces.md"
 
         output = self.generator_base.namespaces(nodes, config)
@@ -210,9 +205,7 @@ class GeneratorAuto:
         for node in nodes:
             self.page(node, config)
 
-    def relatedpages(
-        self, nodes: list[Node], config: dict | None = None
-    ) -> None:
+    def relatedpages(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "pages.md"
 
         output = self.generator_base.relatedpages(nodes)
@@ -295,14 +288,10 @@ class GeneratorAuto:
     ) -> None:
         path = title.lower().replace(" ", "_") + ".md"
 
-        output = self.generator_base.index(
-            nodes, kind_filters, kind_parents, title, config
-        )
+        output = self.generator_base.index(nodes, kind_filters, kind_parents, title, config)
         self.save(path, output)
 
-    def _generate_recursive(
-        self, output_summary: str, node: Node, level: int
-    ) -> None:
+    def _generate_recursive(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_parent():
             link_text = f"{node.kind.value} {node.name}"
             link = generate_link(link_text, f"{node.refid}.md")
@@ -330,48 +319,32 @@ class GeneratorAuto:
                 output_summary += "\n"
 
             for child in node.children:
-                self._generate_recursive_files(
-                    output_summary, child, level + 2, config
-                )
+                self._generate_recursive_files(output_summary, child, level + 2, config)
 
-    def _generate_recursive_examples(
-        self, output_summary: str, node: Node, level: int
-    ) -> None:
+    def _generate_recursive_examples(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_example():
             link = generate_link(node.name, f"{node.refid}.md")
             output_summary += str(" " * level + link)
             for child in node.children:
-                self._generate_recursive_examples(
-                    output_summary, child, level + 2
-                )
+                self._generate_recursive_examples(output_summary, child, level + 2)
 
-    def _generate_recursive_groups(
-        self, output_summary: str, node: Node, level: int
-    ) -> None:
+    def _generate_recursive_groups(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_group():
             link = generate_link(node.title, f"{node.refid}.md")
             output_summary += str(" " * level + link)
             for child in node.children:
-                self._generate_recursive_groups(
-                    output_summary, child, level + 2
-                )
+                self._generate_recursive_groups(output_summary, child, level + 2)
 
-    def _generate_recursive_pages(
-        self, output_summary: str, node: Node, level: int
-    ) -> None:
+    def _generate_recursive_pages(self, output_summary: str, node: Node, level: int) -> None:
         if node.kind.is_page():
             link = generate_link(node.title, f"{node.refid}.md")
             output_summary += str(" " * level + link)
             for child in node.children:
-                self._generate_recursive_pages(
-                    output_summary, child, level + 2
-                )
+                self._generate_recursive_pages(output_summary, child, level + 2)
 
     def summary(self, default_template_config: dict) -> None:
         offset = 0
-        output_summary = "" + str(
-            " " * (offset + 2) + generate_link("Related Pages", "pages.md")
-        )
+        output_summary = "" + str(" " * (offset + 2) + generate_link("Related Pages", "pages.md"))
         for node in self.doxygen.pages.children:
             self._generate_recursive_pages(output_summary, node, offset + 4)
 

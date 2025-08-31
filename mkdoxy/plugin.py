@@ -140,10 +140,7 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
             markdown=markdown,
             generator_base=self.generator_base,
             doxygen=self.doxygen,
-            projects={
-                name: dict(project)
-                for name, project in self.config.projects.items()
-            },
+            projects={name: dict(project) for name, project in self.config.projects.items()},
             use_directory_urls=config["use_directory_urls"],
             page=page,
             config=page_config,

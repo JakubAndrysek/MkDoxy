@@ -13,29 +13,19 @@ class DoxyTagParser:
         self.optional_dot = "[.]?"
         self.look_ahead = r"(?=\n)"  # look ahead to avoid capturing newline
 
-    def replace_markdown(
-        self, start: int, end: int, replace_format: str, **kwargs: str
-    ) -> None:
-        self.markdown_page = self.markdown_page.replace(
-            self.markdown_page[start:end], replace_format.format(**kwargs)
-        )
+    def replace_markdown(self, start: int, end: int, replace_format: str, **kwargs: str) -> None:
+        self.markdown_page = self.markdown_page.replace(self.markdown_page[start:end], replace_format.format(**kwargs))
 
     def return_markdown(self) -> str:
         return self.markdown_page
 
     def parse_empty_tag(self, replacement: str) -> None:
         empty_tag = (
-            rf"{self.indent}{self.doxy_key}{self.optional_dot}"
-            rf"{self.look_ahead}"
-        )  # https://regex101.com/r/Zh38uo/1
+            rf"{self.indent}{self.doxy_key}{self.optional_dot}{self.look_ahead}"  # https://regex101.com/r/Zh38uo/1
+        )
         matches = re.finditer(empty_tag, self.markdown_page, re.MULTILINE)
         for match in reversed(list(matches)):
-            self.replace_markdown(
-                match.start(),
-                match.end(),
-                replacement,
-                indent=match.group("indent")
-            )
+            self.replace_markdown(match.start(), match.end(), replacement, indent=match.group("indent"))
 
     def parse_project(self, replacement: str) -> None:
         project_tag = (

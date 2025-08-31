@@ -14,9 +14,7 @@ if TYPE_CHECKING:
 log: logging.Logger = logging.getLogger("mkdocs")
 
 
-regex = (
-    r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
-)
+regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
 
 
 # Credits: https://stackoverflow.com/a/1630350
@@ -58,7 +56,7 @@ def split_safe(s: str, delim: str) -> list[str]:
     while i < len(s):
         c = s[i]
         if i == len(s) - 1:
-            tokens.append(s[last:i + 1])
+            tokens.append(s[last : i + 1])
         if c in ["<", "[", "{", "("]:
             inside += 1
             i += 1
@@ -105,24 +103,17 @@ def recursive_find(nodes: list["Node"], kind: Kind) -> list["Node"]:
     return ret
 
 
-def recursive_find_with_parent(
-    nodes: list["Node"], kinds: list[Kind], parent_kinds: list[Kind]
-) -> list["Node"]:
+def recursive_find_with_parent(nodes: list["Node"], kinds: list[Kind], parent_kinds: list[Kind]) -> list["Node"]:
     ret = []
     for node in nodes:
-        if (node.kind in kinds and node.parent is not None and
-                node.parent.kind in parent_kinds):
+        if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
             ret.append(node)
         if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
-            ret.extend(
-                recursive_find_with_parent(node.children, kinds, parent_kinds)
-            )
+            ret.extend(recursive_find_with_parent(node.children, kinds, parent_kinds))
     return ret
 
 
-def check_enabled_markdown_extensions(
-    config: Config, mkdoxy_config: Config
-) -> None:
+def check_enabled_markdown_extensions(config: Config, mkdoxy_config: Config) -> None:
     # sourcery skip: merge-nested-ifs
     """
     Checks if the required markdown extensions are enabled.

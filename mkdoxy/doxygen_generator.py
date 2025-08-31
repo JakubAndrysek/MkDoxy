@@ -111,8 +111,7 @@ class DoxygenGenerator:
         @details
         @return: (dict) Doxygen configuration from the provided file.
         """
-        config_file = (str(self.project_config.doxy_config_file)
-                       if self.project_config.doxy_config_file else "???")
+        config_file = str(self.project_config.doxy_config_file) if self.project_config.doxy_config_file else "???"
         return self.str2dox_dict(self.get_doxy_config_file_raw(), config_file)
 
     def get_doxy_config_file_raw(self) -> str:
@@ -156,7 +155,9 @@ class DoxygenGenerator:
 
         # Merge INPUT directories from the mkdocs.yml file with the Doxygen configuration
         doxy_dict["INPUT"] = self.merge_doxygen_input(
-            self.project_config.src_dirs, doxy_dict.get("INPUT", ""), self.get_doxygen_run_folder()
+            self.project_config.src_dirs,
+            doxy_dict.get("INPUT", ""),
+            self.get_doxygen_run_folder(),
         )
 
         # OUTPUT_DIRECTORY is always the temporary Doxygen folder

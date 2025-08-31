@@ -132,9 +132,7 @@ class Doxygen:
                 root.children.pop(i)
                 return
 
-    def _fix_duplicates(
-        self, node: Node, root: Node, kind_filter: list[Kind]
-    ) -> None:
+    def _fix_duplicates(self, node: Node, root: Node, kind_filter: list[Kind]) -> None:
         for child in node.children:
             if len(kind_filter) > 0 and child.kind not in kind_filter:
                 continue

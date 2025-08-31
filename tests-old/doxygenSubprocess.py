@@ -7,11 +7,7 @@ if doxygen_path is None:
     raise FileNotFoundError("doxygen executable not found in PATH")
 
 p = Popen(  # noqa: S603 - controlled test environment
-    [doxygen_path, "-"],
-    stdout=PIPE,
-    stdin=PIPE,
-    stderr=PIPE,
-    shell=False
+    [doxygen_path, "-"], stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=False
 )
 
 doxyfile_content = """
@@ -26,7 +22,5 @@ GENERATE_HTML = NO
 GENERATE_LATEX = NO
 """
 
-stdout_data = p.communicate(
-    doxyfile_content.encode("utf-8")
-)[0].decode().strip()
+stdout_data = p.communicate(doxyfile_content.encode("utf-8"))[0].decode().strip()
 print(stdout_data)

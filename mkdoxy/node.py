@@ -23,7 +23,7 @@ def split_safe(s: str, delim: str) -> list[str]:
     while i < len(s):
         c = s[i]
         if i == len(s) - 1:
-            tokens.append(s[last: i + 1])
+            tokens.append(s[last : i + 1])
         if c in ["<", "[", "{", "("]:
             inside += 1
             i += 1
@@ -92,9 +92,7 @@ class Node:
             if self.debug:
                 log.info("Loading XML from: %s", xml_file)
             self._dirname = os.path.dirname(xml_file)
-            self._xml = (
-                ET.parse(xml_file).getroot().find("compounddef")  # noqa: S314
-            )
+            self._xml = ET.parse(xml_file).getroot().find("compounddef")  # noqa: S314
             if self._xml is None:
                 raise Exception(f"File {xml_file} has no <compounddef>")
             # Use local variable to help mypy understand the type
@@ -127,8 +125,7 @@ class Node:
             self._kind = Kind.from_str(self._xml.get("kind") or "unknown")
             self._refid = refid if refid is not None else (self._xml.get("id") or "")
             self._cache.add(self._refid, self)
-            self._language = (parent.code_language
-                              if parent is not None else None)
+            self._language = parent.code_language if parent is not None else None
 
             if self.debug:
                 log.info("Parsing: %s", self._refid)
@@ -259,8 +256,7 @@ class Node:
         for innernamespace in self._xml.findall("innernamespace"):
             refid = innernamespace.get("refid")
 
-            if (refid is not None and
-                    self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]):
+            if refid is not None and self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
                 try:
                     child = self._cache.get(refid)
                     self.add_child(child)
@@ -356,8 +352,7 @@ class Node:
     def has(self, visibility: str, kinds: list[str], static: bool) -> bool:
         return len(self.query(visibility, kinds, static)) > 0
 
-    def query(self, visibility: str, kinds: list[str],
-              static: bool) -> list[Node]:
+    def query(self, visibility: str, kinds: list[str], static: bool) -> list[Node]:
         vis_enum = Visibility(visibility)
         kind_enums = [Kind.from_str(kind) for kind in kinds]
         return [

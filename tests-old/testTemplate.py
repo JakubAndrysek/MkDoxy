@@ -27,26 +27,19 @@ if __name__ == "__main__":
 
     os.makedirs(api_output, exist_ok=True)
 
-    doxygen_run = DoxygenRun(
-        doxygen_path, doxygen_input, doxygen_output, doxygen_config
-    )
+    doxygen_run = DoxygenRun(doxygen_path, doxygen_input, doxygen_output, doxygen_config)
     doxygen_run.run()
 
     options = {"target": target, "link_prefix": link_prefix}
 
     cache = Cache()
     parser = XmlParser(cache=cache, target=target, hints=hints, debug=debug)
-    doxygen = Doxygen(
-        doxygen_run.getDestination(), parser, cache,
-        options=options, debug=debug
-    )
+    doxygen = Doxygen(doxygen_run.getDestination(), parser, cache, options=options, debug=debug)
 
     if debug_full:
         doxygen.print()
 
-    generator_base = GeneratorBase(
-        ignore_errors=ignore_errors, options=options
-    )
+    generator_base = GeneratorBase(ignore_errors=ignore_errors, options=options)
     generator_auto = GeneratorAuto(generatorBase=generator_base, debug=debug)
 
     if full_doc:
