@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os
 from typing import Optional
@@ -172,24 +174,24 @@ class GeneratorAuto:
             defaultTemplateConfig,
         )
 
-    def annotated(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def annotated(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "annotated.md"
         output = self.generator_base.annotated(nodes, config)
         self.save(path, output)
 
-    def programlisting(self, node: [Node], config: Optional[dict] = None) -> None:
+    def programlisting(self, node: Node, config: dict | None = None) -> None:
         path = f"{node.refid}_source.md"
 
         output = self.generator_base.programlisting(node, config)
         self.save(path, output)
 
-    def fileindex(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def fileindex(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "files.md"
 
         output = self.generator_base.fileindex(nodes, config)
         self.save(path, output)
 
-    def namespaces(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def namespaces(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "namespaces.md"
 
         output = self.generator_base.namespaces(nodes, config)
@@ -201,11 +203,11 @@ class GeneratorAuto:
         output = self.generator_base.page(node, config)
         self.save(path, output)
 
-    def pages(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def pages(self, nodes: list[Node], config: dict | None = None) -> None:
         for node in nodes:
             self.page(node, config)
 
-    def relatedpages(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def relatedpages(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "pages.md"
 
         output = self.generator_base.relatedpages(nodes)
@@ -217,7 +219,7 @@ class GeneratorAuto:
         output = self.generator_base.example(node, config)
         self.save(path, output)
 
-    def examples(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def examples(self, nodes: list[Node], config: dict | None = None) -> None:
         for node in nodes:
             if node.is_example:
                 if node.has_programlisting:
@@ -229,19 +231,19 @@ class GeneratorAuto:
         output = self.generator_base.examples(nodes, config)
         self.save(path, output)
 
-    def classes(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def classes(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "classes.md"
 
         output = self.generator_base.classes(nodes, config)
         self.save(path, output)
 
-    def modules(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def modules(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "modules.md"
 
         output = self.generator_base.modules(nodes, config)
         self.save(path, output)
 
-    def hierarchy(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def hierarchy(self, nodes: list[Node], config: dict | None = None) -> None:
         path = "hierarchy.md"
 
         output = self.generator_base.hierarchy(nodes, config)
@@ -268,23 +270,23 @@ class GeneratorAuto:
         if node.is_file or node.is_dir:
             self.files(node.children, config)
 
-    def members(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def members(self, nodes: list[Node], config: dict | None = None) -> None:
         for node in nodes:
             if node.is_parent or node.is_group or node.is_file or node.is_dir:
                 self.member(node, config)
 
-    def files(self, nodes: [Node], config: Optional[dict] = None) -> None:
+    def files(self, nodes: list[Node], config: dict | None = None) -> None:
         for node in nodes:
             if node.is_file or node.is_dir:
                 self.file(node, config)
 
     def index(
         self,
-        nodes: [Node],
+        nodes: list[Node],
         kind_filters: Kind,
-        kind_parents: [Kind],
+        kind_parents: list[Kind],
         title: str,
-        config: Optional[dict] = None,
+        config: dict | None = None,
     ) -> None:
         path = title.lower().replace(" ", "_") + ".md"
 

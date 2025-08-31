@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os
 import re
@@ -318,10 +320,10 @@ class Node:
             self._virtual = False
             self._pure = False
 
-    def has(self, visibility: str, kinds: [str], static: bool) -> bool:
+    def has(self, visibility: str, kinds: list[str], static: bool) -> bool:
         return len(self.query(visibility, kinds, static)) > 0
 
-    def query(self, visibility: str, kinds: [str], static: bool) -> ["Node"]:
+    def query(self, visibility: str, kinds: list[str], static: bool) -> list["Node"]:
         visibility = Visibility(visibility)
         kinds = [Kind.from_str(kind) for kind in kinds]
         return [
@@ -363,7 +365,7 @@ class Node:
         return len(self._children) > 0
 
     @property
-    def children(self) -> ["Node"]:
+    def children(self) -> list["Node"]:
         return self._children
 
     @property
@@ -577,7 +579,7 @@ class Node:
         return self if self._kind == Kind.ROOT else self._parent.root
 
     @property
-    def name_tokens(self) -> [str]:
+    def name_tokens(self) -> list[str]:
         if self.is_dir or self.is_file:
             return self._name.split("/")
         return split_safe(self._name, "::")
@@ -635,7 +637,7 @@ class Node:
         return f"[{self.overload_num!s}/{total!s}]" if total > 1 else ""
 
     @property
-    def parents(self) -> ["Node"]:
+    def parents(self) -> list[Node]:
         ret = []
         if self._parent is not None and (self._parent.is_language or self._parent.is_dir):
             ret.extend(self.parent.parents)
@@ -753,7 +755,7 @@ class Node:
         return len(self._xml.findall("derivedcompoundref")) > 0
 
     @property
-    def base_classes(self) -> ["Node"]:
+    def base_classes(self) -> list[Node]:
         ret = []
         for basecompoundref in self._xml.findall("basecompoundref"):
             refid = basecompoundref.get("refid")
@@ -764,7 +766,7 @@ class Node:
         return ret
 
     @property
-    def derived_classes(self) -> ["Node"]:
+    def derived_classes(self) -> list[Node]:
         ret = []
         for derivedcompoundref in self._xml.findall("derivedcompoundref"):
             refid = derivedcompoundref.get("refid")
@@ -909,7 +911,7 @@ class Node:
 
 
 class DummyNode:
-    def __init__(self, name_long: str, derived_classes: [Node], kind: Kind) -> None:
+    def __init__(self, name_long: str, derived_classes: list[Node], kind: Kind) -> None:
         self.name_long = name_long
         self.derived_classes = derived_classes
         self.kind = kind

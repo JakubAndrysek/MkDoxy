@@ -1,6 +1,6 @@
 class Cache:
     def __init__(self) -> None:
-        self.cache = {}
+        self.cache: dict[str, str] = {}
 
     def add(self, key: str, value: str) -> None:
         self.cache[key] = value

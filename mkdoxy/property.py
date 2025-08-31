@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from xml.etree.ElementTree import Element as Element
 
@@ -58,13 +60,13 @@ class Property:
             self.parser = parser
             self.kind = kind
 
-        def md(self, plain: bool = False) -> [str]:
+        def md(self, plain: bool = False) -> list[str]:
             return self.array(plain=False)
 
-        def plain(self) -> [str]:
+        def plain(self) -> list[str]:
             return self.array(plain=True)
 
-        def array(self, plain: bool = False) -> [str]:
+        def array(self, plain: bool = False) -> list[str]:
             ret = []
             for includes in self.xml.findall("includes"):
                 incl = includes.text if plain else self.parser.reference_as_str(includes)
@@ -139,7 +141,7 @@ class Property:
         def plain(self) -> str:
             return ", ".join(self.array(plain=True))
 
-        def array(self, plain: bool = False) -> [str]:
+        def array(self, plain: bool = False) -> list[str]:
             ret = []
             for param in self.xml.findall("param"):
                 p = ""
@@ -176,7 +178,7 @@ class Property:
         def plain(self) -> str:
             return ", ".join(self.array(plain=True))
 
-        def array(self, plain: bool = False, notype: bool = False) -> [str]:
+        def array(self, plain: bool = False, notype: bool = False) -> list[str]:
             ret = []
             templateparamlist = self.xml.find("templateparamlist")
             if templateparamlist is not None:
@@ -277,7 +279,7 @@ class Property:
         def plain(self) -> str:
             return ", ".join(self.array(plain=False))
 
-        def array(self, plain: bool = False) -> [str]:
+        def array(self, plain: bool = False) -> list[str]:
             ret = []
             if self.kind.is_enum():
                 for enumvalue in self.xml.findall("enumvalue"):

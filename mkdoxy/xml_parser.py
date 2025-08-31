@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from xml.etree.ElementTree import Element as Element
 
 from mkdoxy.cache import Cache
@@ -86,7 +88,7 @@ class XmlParser:
     def plain_as_str(self, p: Element) -> str:
         return " ".join(self.plain(p)).strip()
 
-    def plain(self, p: Element) -> [str]:
+    def plain(self, p: Element) -> list[str]:
         ret = []
         if p is None:
             return ret
@@ -98,7 +100,7 @@ class XmlParser:
             ret.append(p.tail.strip())
         return ret
 
-    def programlisting(self, p: Element) -> [Md]:
+    def programlisting(self, p: Element) -> list[Md]:
         ret = []
         # programlisting
         if p.tag == "programlisting":
@@ -119,7 +121,7 @@ class XmlParser:
             ret.extend((Text("\n"), code))
         return ret
 
-    def paras(self, p: Element, italic: bool = False) -> [Md]:
+    def paras(self, p: Element, italic: bool = False) -> list[Md]:
         ret = []
         if p is None:
             return ret
