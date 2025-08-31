@@ -45,3 +45,6 @@ format:
 
 lint-fix:
 	ruff check --fix mkdoxy
+
+mypy:
+	hatch run mypy .

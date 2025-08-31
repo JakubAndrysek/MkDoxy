@@ -113,7 +113,8 @@ class GeneratorBase:
         template = self.templates.get(name)
         if not template:
             raise exceptions.Abort(
-                f"Trying to load unexciting template '{name}'. Please create a new template file with name '{name}.jinja2'"
+                f"Trying to load unexciting template '{name}'. "
+                f"Please create a new template file with name '{name}.jinja2'"
             )
         metadata = self.metaData.get(name, {})
         return template, metadata

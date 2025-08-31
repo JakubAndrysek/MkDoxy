@@ -43,6 +43,7 @@ dev = [
     "click~=8.2.1",
     "ruff~=0.9.6",
     "hatch~=1.14.0",
+    "mypy~=1.11.0",
 ]
 
 [project.urls]
@@ -111,4 +112,9 @@ include = [
     "/mkdoxy",
     "/README.md",
     "/LICENSE",
+]
+
+[tool.hatch.envs.default]
+post-install-commands = [
+    "pip install -e .[dev]",
 ]

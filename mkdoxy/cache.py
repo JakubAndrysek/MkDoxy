@@ -9,4 +9,4 @@ class Cache:
         if key in self.cache:
             return self.cache[key]
         else:
-            raise IndexError(f"Key: {key} not found in cache!")
+            raise KeyError(f"Key: {key} not found in cache!")
