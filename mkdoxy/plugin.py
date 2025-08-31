@@ -51,7 +51,7 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
         @return: (Files) The files gathered by MkDocs.
         """
         for project_name, project_config in self.config.projects.items():
-            log.info(f"-> Processing project '{project_name}'")
+            log.info("-> Processing project '%s'", project_name)
 
             # Generate Doxygen and MD files to user defined folder or default temp folder
             if self.config.custom_api_folder:
@@ -95,25 +95,25 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
             )
 
             if self.config.full_doc and project_config.full_doc:
-                generatorAuto = GeneratorAuto(
-                    generatorBase=self.generator_base[project_name],
-                    tempDoxyDir=str(temp_doxy_folder),
-                    siteDir=config["site_dir"],
-                    apiPath=project_name,
+                generator_auto = GeneratorAuto(
+                    generator_base=self.generator_base[project_name],
+                    temp_doxy_dir=str(temp_doxy_folder),
+                    site_dir=config["site_dir"],
+                    api_path=project_name,
                     doxygen=self.doxygen[project_name],
-                    useDirectoryUrls=config["use_directory_urls"],
+                    use_directory_urls=config["use_directory_urls"],
                 )
 
                 template_config = self.default_template_config.copy()
 
                 # Generate full documentation
-                generatorAuto.fullDoc(template_config)
+                generator_auto.fullDoc(template_config)
 
                 # Generate summary pages
-                generatorAuto.summary(template_config)
+                generator_auto.summary(template_config)
 
                 # Append files to be processed by MkDocs
-                for file in generatorAuto.fullDocFiles:
+                for file in generator_auto.full_doc_files:
                     files.append(file)
         return files
 

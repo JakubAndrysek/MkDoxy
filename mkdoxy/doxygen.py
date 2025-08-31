@@ -119,7 +119,7 @@ class Doxygen:
         for child in node.children:
             self._recursive_sort(child)
 
-    def _is_in_root(self, node: Node, root: Node):
+    def _is_in_root(self, node: Node, root: Node) -> bool:
         return any(node.refid == child.refid for child in root.children)
 
     def _remove_from_root(self, refid: str, root: Node) -> None:
@@ -128,13 +128,15 @@ class Doxygen:
                 root.children.pop(i)
                 return
 
-    def _fix_duplicates(self, node: Node, root: Node, filter: [Kind]) -> None:
+    def _fix_duplicates(
+        self, node: Node, root: Node, kind_filter: list[Kind]
+    ) -> None:
         for child in node.children:
-            if len(filter) > 0 and child.kind not in filter:
+            if len(kind_filter) > 0 and child.kind not in kind_filter:
                 continue
             if self._is_in_root(child, root):
                 self._remove_from_root(child.refid, root)
-            self._fix_duplicates(child, root, filter)
+            self._fix_duplicates(child, root, kind_filter)
 
     def print_structure(self) -> None:
         if not self.debug:
@@ -156,6 +158,6 @@ class Doxygen:
 
     def print_node(self, node: Node, indent: str) -> None:
         if self.debug:
-            log.info(f"{indent} {node.kind} {node.name}")
+            log.info("%s %s %s", indent, node.kind, node.name)
         for child in node.children:
-            self.print_node(child, f"{indent}  ")
+            self.print_node(child, indent + "  ")

@@ -42,7 +42,7 @@ class DoxygenGenerator:
             )
 
     @staticmethod
-    def get_doxy_format_config() -> dict:
+    def get_doxy_format_config() -> dict[str, bool]:
         """
         @brief Get the default Doxygen format configuration.
         @details Default Doxygen configuration options:
@@ -103,14 +103,14 @@ class DoxygenGenerator:
         # doxy_config["CALL_GRAPH"] = "YES"
         # doxy_config["CALLER_GRAPH"] = "YES"
 
-    def get_doxy_config_file(self):
+    def get_doxy_config_file(self) -> dict:
         """! Get the Doxygen configuration from the provided file.
         @details
         @return: (dict) Doxygen configuration from the provided file.
         """
         return self.str2dox_dict(self.get_doxy_config_file_raw(), self.project_config.doxy_config_file)
 
-    def get_doxy_config_file_raw(self):
+    def get_doxy_config_file_raw(self) -> str:
         """! Get the Doxygen configuration from the provided file.
         @details
         @return: (str) Doxygen configuration from the provided file.
@@ -175,7 +175,7 @@ class DoxygenGenerator:
                 "Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/#configure-custom-doxygen-configuration-file."
             )
 
-        log.debug(f"- Doxygen INPUT: {doxy_dict['INPUT']}")
+        log.debug("- Doxygen INPUT: %s", doxy_dict["INPUT"])
 
         return doxy_dict
 
@@ -318,13 +318,13 @@ class DoxygenGenerator:
         sha1 = hashlib.sha1()
         sources = self.project_config.src_dirs.split(" ")
         # Code from https://stackoverflow.com/a/22058673/15411117
-        BUF_SIZE = 65536  # let's read stuff in 64kb chunks!
+        buf_size = 65536  # let's read stuff in 64kb chunks!
         for source in sources:
             for path in Path(source).rglob("*.*"):
                 if path.is_file():
                     with open(path, "rb") as file:
                         while True:
-                            data = file.read(BUF_SIZE)
+                            data = file.read(buf_size)
                             if not data:
                                 break
                             sha1.update(data)
@@ -376,7 +376,7 @@ class DoxygenGenerator:
         """
         return Path.joinpath(self.temp_doxy_folder, Path("html"))
 
-    def get_doxygen_run_folder(self):
+    def get_doxygen_run_folder(self) -> Path:
         """! Get the working directory to execute Doxygen in. Important to resolve relative paths.
         @details When a doxygen config file is provided, this is its containing directory. Otherwise, it's the current
           working directory.

@@ -28,8 +28,8 @@ ADDITIONAL_FILES = {
 }
 
 
-def generate_link(name, url, end="\n") -> str:
-    def normalize(name):
+def generate_link(name: str, url: str, end: str = "\n") -> str:
+    def normalize(name: str) -> str:
         return "\\" + name if name.startswith("__") else name
 
     return f"- [{normalize(name)}]({url}){end}"
@@ -42,27 +42,29 @@ def generate_link(name, url, end="\n") -> str:
 class GeneratorAuto:
     def __init__(
         self,
-        generatorBase: GeneratorBase,
-        tempDoxyDir: str,
-        siteDir: str,
-        apiPath: str,
+        generator_base: GeneratorBase,
+        temp_doxy_dir: str,
+        site_dir: str,
+        api_path: str,
         doxygen: Doxygen,
-        useDirectoryUrls: bool,
+        use_directory_urls: bool,
     ) -> None:
-        self.generatorBase = generatorBase
-        self.tempDoxyDir = tempDoxyDir
-        self.siteDir = siteDir
-        self.apiPath = apiPath
+        self.generator_base = generator_base
+        self.temp_doxy_dir = temp_doxy_dir
+        self.site_dir = site_dir
+        self.api_path = api_path
         self.doxygen = doxygen
-        self.useDirectoryUrls = useDirectoryUrls
-        self.fullDocFiles = []
-        self.debug = generatorBase.debug
-        os.makedirs(os.path.join(self.tempDoxyDir, self.apiPath), exist_ok=True)
+        self.use_directory_urls = use_directory_urls
+        self.full_doc_files = []
+        self.debug = generator_base.debug
+        os.makedirs(os.path.join(self.temp_doxy_dir, self.api_path),
+                    exist_ok=True)
 
     def save(self, path: str, output: str) -> None:
-        pathRel = os.path.join(self.apiPath, path)
-        self.fullDocFiles.append(files.File(pathRel, self.tempDoxyDir, self.siteDir, self.useDirectoryUrls))
-        with open(os.path.join(self.tempDoxyDir, pathRel), "w", encoding="utf-8") as file:
+        path_rel = os.path.join(self.api_path, path)
+        self.full_doc_files.append(
+            files.File(path_rel, self.temp_doxy_dir, self.site_dir, self.use_directory_urls))
+        with open(os.path.join(self.temp_doxy_dir, path_rel), "w", encoding="utf-8") as file:
             file.write(output)
 
     def fullDoc(self, defaultTemplateConfig: dict) -> None:
@@ -172,31 +174,31 @@ class GeneratorAuto:
 
     def annotated(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "annotated.md"
-        output = self.generatorBase.annotated(nodes, config)
+        output = self.generator_base.annotated(nodes, config)
         self.save(path, output)
 
     def programlisting(self, node: [Node], config: Optional[dict] = None) -> None:
         path = f"{node.refid}_source.md"
 
-        output = self.generatorBase.programlisting(node, config)
+        output = self.generator_base.programlisting(node, config)
         self.save(path, output)
 
     def fileindex(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "files.md"
 
-        output = self.generatorBase.fileindex(nodes, config)
+        output = self.generator_base.fileindex(nodes, config)
         self.save(path, output)
 
     def namespaces(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "namespaces.md"
 
-        output = self.generatorBase.namespaces(nodes, config)
+        output = self.generator_base.namespaces(nodes, config)
         self.save(path, output)
 
     def page(self, node: Node, config: Optional[dict] = None) -> None:
         path = f"{node.name}.md"
 
-        output = self.generatorBase.page(node, config)
+        output = self.generator_base.page(node, config)
         self.save(path, output)
 
     def pages(self, nodes: [Node], config: Optional[dict] = None) -> None:
@@ -206,13 +208,13 @@ class GeneratorAuto:
     def relatedpages(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "pages.md"
 
-        output = self.generatorBase.relatedpages(nodes)
+        output = self.generator_base.relatedpages(nodes)
         self.save(path, output)
 
     def example(self, node: Node, config: Optional[dict] = None) -> None:
         path = f"{node.refid}.md"
 
-        output = self.generatorBase.example(node, config)
+        output = self.generator_base.example(node, config)
         self.save(path, output)
 
     def examples(self, nodes: [Node], config: Optional[dict] = None) -> None:
@@ -224,31 +226,31 @@ class GeneratorAuto:
 
         path = "examples.md"
 
-        output = self.generatorBase.examples(nodes, config)
+        output = self.generator_base.examples(nodes, config)
         self.save(path, output)
 
     def classes(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "classes.md"
 
-        output = self.generatorBase.classes(nodes, config)
+        output = self.generator_base.classes(nodes, config)
         self.save(path, output)
 
     def modules(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "modules.md"
 
-        output = self.generatorBase.modules(nodes, config)
+        output = self.generator_base.modules(nodes, config)
         self.save(path, output)
 
     def hierarchy(self, nodes: [Node], config: Optional[dict] = None) -> None:
         path = "hierarchy.md"
 
-        output = self.generatorBase.hierarchy(nodes, config)
+        output = self.generator_base.hierarchy(nodes, config)
         self.save(path, output)
 
     def member(self, node: Node, config: Optional[dict] = None) -> None:
         path = node.filename
 
-        output = self.generatorBase.member(node, config)
+        output = self.generator_base.member(node, config)
         self.save(path, output)
 
         if node.is_language or node.is_group or node.is_file or node.is_dir:
@@ -257,7 +259,7 @@ class GeneratorAuto:
     def file(self, node: Node, config: Optional[dict] = None) -> None:
         path = node.filename
 
-        output = self.generatorBase.file(node, config)
+        output = self.generator_base.file(node, config)
         self.save(path, output)
 
         if node.is_file and node.has_programlisting:
@@ -286,7 +288,9 @@ class GeneratorAuto:
     ) -> None:
         path = title.lower().replace(" ", "_") + ".md"
 
-        output = self.generatorBase.index(nodes, kind_filters, kind_parents, title, config)
+        output = self.generator_base.index(
+            nodes, kind_filters, kind_parents, title, config
+        )
         self.save(path, output)
 
     def _generate_recursive(self, output_summary: str, node: Node, level: int) -> None:

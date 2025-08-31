@@ -9,10 +9,48 @@ from mkdoxy.constants import OVERLOAD_OPERATORS, Kind, Visibility
 from mkdoxy.markdown import escape
 from mkdoxy.project import ProjectContext
 from mkdoxy.property import Property
-from mkdoxy.utils import split_safe
 from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")
+
+
+def split_safe(s: str, delim: str) -> list[str]:
+    tokens = []
+    i = 0
+    last = 0
+    inside = 0
+    while i < len(s):
+        c = s[i]
+        if i == len(s) - 1:
+            tokens.append(s[last: i + 1])
+        if c in ["<", "[", "{", "("]:
+            inside += 1
+            i += 1
+            continue
+        if c in [">", "]", "}", ")"]:
+            inside -= 1
+            i += 1
+            continue
+        if inside > 0:
+            i += 1
+            continue
+        if contains(s, i, delim):
+            tokens.append(s[last:i])
+            i += 2
+            last = i
+        i += 1
+    return tokens
+
+
+def contains(a: str, pos: int, b: str) -> bool:
+    ai = pos
+    bi = 0
+    while ai < len(a) and bi < len(b):
+        if a[ai] != b[bi]:
+            return False
+        ai += 1
+        bi += 1
+    return bi == len(b)
 
 
 class Node:
@@ -26,7 +64,7 @@ class Node:
         refid: Optional[str] = None,
         debug: bool = False,
     ) -> None:
-        self._children: [Node] = []
+        self._children: list[Node] = []
         self._cache = project.cache
         self._parser: XmlParser = parser
         self._parent = parent
@@ -41,7 +79,7 @@ class Node:
 
         elif xml is None:
             if self.debug:
-                log.info(f"Loading XML from: {xml_file}")
+                log.info("Loading XML from: %s", xml_file)
             self._dirname = os.path.dirname(xml_file)
             self._xml = ET.parse(xml_file).getroot().find("compounddef")
             if self._xml is None:
@@ -60,7 +98,7 @@ class Node:
             self._static = False
 
             if self.debug:
-                log.info(f"Parsing: {self._refid}")
+                log.info("Parsing: %s", self._refid)
             self._check_for_children()
 
             title = self._xml.find("title")
@@ -73,7 +111,7 @@ class Node:
             self._cache.add(self._refid, self)
 
             if self.debug:
-                log.info(f"Parsing: {self._refid}")
+                log.info("Parsing: %s", self._refid)
             self._check_attrs()
             self._title = self._name
 
@@ -419,9 +457,9 @@ class Node:
     @property
     def name_params(self) -> str:
         name = self._name
-        type = self._type.plain()
+        type_str = self._type.plain()
         params = self._specifiers.plain()
-        return f"{type} {name}{params}" if params else self.name_long
+        return f"{type_str} {name}{params}" if params else self.name_long
 
     @property
     def title(self) -> str:
@@ -500,7 +538,7 @@ class Node:
 
     @property
     def base_url(self) -> str:
-        def prefix(page: str):
+        def prefix(page: str) -> str:
             return self.project.linkPrefix + page
 
         if self.is_group:

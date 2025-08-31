@@ -5,71 +5,82 @@ from mkdoxy.utils import recursive_find, recursive_find_with_parent
 
 
 class Finder:
-    def __init__(self, doxygen: dict[str, Doxygen], debug: bool = False) -> None:
+    def __init__(self, doxygen: dict[str, Doxygen],
+                 debug: bool = False) -> None:
         self.doxygen = doxygen
         self.debug = debug
 
     def _normalize(self, name: str) -> str:
         return name.replace(" ", "")
 
-    def listToNames(self, list):
-        return [part.name_params for part in list]
+    def list_to_names(self, items: list) -> list[str]:
+        return [part.name_params for part in items]
 
-    def _doxyParent(self, project, parent: str, kind: Kind):
+    def _doxy_parent(self, project: str, parent: str,
+                     kind: Kind) -> list[str] | None:
         if not kind.is_parent():
             return None
         parents = recursive_find(self.doxygen[project].root.children, kind)
         if parents:
-            for findParent in parents:
-                if findParent.name_long == parent:
-                    return findParent
-            return self.listToNames(parents)
+            for find_parent in parents:
+                if find_parent.name_long == parent:
+                    return find_parent
+            return self.list_to_names(parents)
         return None
 
-    def _doxyMemberInParent(self, project, parent: str, parentKind: Kind, memberName: str, memberKind: Kind):
-        findParent = self._doxyParent(project, parent, parentKind)
-        if findParent:
-            if isinstance(findParent, list):
-                for member in findParent:
-                    if self._normalize(memberName) in self._normalize(member):
+    def _doxy_member_in_parent(self, project: str, parent: str,
+                              parent_kind: Kind, member_name: str,
+                              member_kind: Kind) -> list[str] | None:
+        find_parent = self._doxy_parent(project, parent, parent_kind)
+        if find_parent is None:
+            return None
+        if isinstance(find_parent, list):
+            for member in find_parent:
+                if self._normalize(member_name) in self._normalize(member):
+                    return member
+            return find_parent
+        else:
+            members = recursive_find(find_parent.children, member_kind)
+            if members:
+                for member in members:
+                    if member.name_params == member_name:
                         return member
-                return findParent
-            else:
-                members = recursive_find(findParent.children, memberKind)
-                if members:
-                    for member in members:
-                        if self._normalize(memberName) in self._normalize(member.name_params):
-                            return member
-                    return self.listToNames(members)
-                return None
+                return self.list_to_names(members)
         return None
 
-    def doxyClass(self, project, className: str):
-        return self._doxyParent(project, className, Kind.CLASS)
+    def doxy_class(self, project: str, class_name: str) -> list[str] | None:
+        return self._doxy_parent(project, class_name, Kind.CLASS)
 
-    def doxyNamespace(self, project, namespace: str):
-        return self._doxyParent(project, namespace, Kind.NAMESPACE)
+    def doxy_namespace(self, project: str, namespace: str) -> list[str] | None:
+        return self._doxy_parent(project, namespace, Kind.NAMESPACE)
 
-    def doxyClassMethod(self, project, className: str, methodName: str):
-        return self._doxyMemberInParent(project, className, Kind.CLASS, methodName, Kind.FUNCTION)
+    def doxy_class_method(self, project: str, class_name: str,
+                          method_name: str) -> list[str] | None:
+        return self._doxy_member_in_parent(project, class_name, Kind.CLASS,
+                                           method_name, Kind.FUNCTION)
 
-    def doxyNamespaceFunction(self, project, namespace: str, functionName: str):
-        return self._doxyMemberInParent(project, namespace, Kind.NAMESPACE, functionName, Kind.FUNCTION)
+    def doxy_namespace_function(self, project: str, namespace: str,
+                                function_name: str) -> list[str] | None:
+        return self._doxy_member_in_parent(project, namespace, Kind.NAMESPACE,
+                                           function_name, Kind.FUNCTION)
 
-    def doxyFunction(self, project, functionName: str):
-        functions = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE])
+    def doxy_function(self, project: str,
+                      function_name: str) -> list[str] | None:
+        functions = recursive_find_with_parent(
+            self.doxygen[project].files.children, [Kind.FUNCTION], [Kind.FILE]
+        )
         if functions:
             for function in functions:
-                if self._normalize(functionName) == self._normalize(function.name_params):
+                if function.name_params == function_name:
                     return function
-            return self.listToNames(functions)
+            return self.list_to_names(functions)
         return None
 
-    def doxyCode(self, project, fileName):
-        files = recursive_find_with_parent(self.doxygen[project].files.children, [Kind.FILE], [Kind.DIR])
+    def doxy_code(self, project: str, file_name: str) -> list[str] | None:
+        files = recursive_find(self.doxygen[project].files.children, Kind.FILE)
         if files:
             for file in files:
-                if self._normalize(fileName) == self._normalize(file.name_long):
+                if file.name_params == file_name:
                     return file
-            return self.listToNames(files)
+            return self.list_to_names(files)
         return None

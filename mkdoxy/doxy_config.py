@@ -35,7 +35,8 @@ class MkDoxyConfigProject(Config):
     @param doxy_config_dict: (dict) Doxygen additional configuration
     @param doxy_config_default: (bool) Use default MkDoxy Doxygen configuration
     @param doxy_config_file: (str) Doxygen configuration file
-    @param doxy_config_file_force: (bool) Do not use default MkDoxy Doxygen configuration, use only Doxygen configuration file
+    @param doxy_config_file_force: (bool) Do not use default MkDoxy Doxygen
+    configuration, use only Doxygen configuration file
     @param custom_template_dir: (str) Custom template directory
     """
 
@@ -49,13 +50,14 @@ class MkDoxyConfigProject(Config):
     doxy_config_file_force = c.Type(bool, default=False)
     custom_template_dir = c.Optional(c.Type(str))
 
-    def validate(self):
+    def validate(self) -> tuple:
         failed, warnings = super().validate()
 
         # Add a warning for deprecated configuration keys
         unused_keys = set(self.keys()) - self._schema_keys
         for k in unused_keys.intersection(config_project_legacy.keys()):
-            warnings.append((k, f"Deprecated configuration name: {k} -> {config_project_legacy[k]}"))
+            warnings.append((k, "Deprecated configuration name: {} -> {}".format(
+                k, config_project_legacy[k])))
 
         return failed, warnings
 

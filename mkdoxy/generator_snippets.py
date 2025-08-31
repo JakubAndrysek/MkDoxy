@@ -119,17 +119,19 @@ class GeneratorSnippets:
                 )
                 self.replace_markdown(match.start(), match.end(), replace_str)
             return self.markdown
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             basename = pathlib.Path(__file__).name
-            log.error(f"Error in {self.page.url} page. Incorrect doxy snippet or error in file {basename}")
-            log.error(f"Error: {e}")
+            log.error("Error in %s page. Incorrect doxy snippet or error in file %s",
+                      self.page.url, basename)
+            log.error("Error: %s", e)
             return self.markdown
 
     def try_load_yaml(self, yaml_raw: str, project: str, snippet: str, config: dict) -> dict:
         try:
             return yaml.safe_load(yaml_raw)
         except yaml.YAMLError:
-            log.error(f"YAML error in {project} project on page {self.page.url}")
+            log.error("YAML error in %s project on page %s",
+                      project, self.page.url)
             self.doxy_error(
                 project,
                 config,
@@ -159,12 +161,15 @@ class GeneratorSnippets:
             snippet,
         )
 
-    def incorrect_argument(self, project: str, argument: str, config: dict, snippet: str) -> str:
+    def incorrect_argument(self, project: str, argument: str, config: dict,
+                           snippet: str) -> str:
         return self.doxy_error(
             project,
             config,
-            f"Incorrect argument: {argument}" if argument else f"Add argument to snippet: {project}",
-            f"Argument have to be based on this diagram → **:::doxy.{project}.<argument\\>**",
+            f"Incorrect argument: {argument}" if argument else
+            f"Add argument to snippet: {project}",
+            f"Argument have to be based on this diagram → "
+            f"**:::doxy.{project}.<argument\\>**",
             "A list of available arguments:",
             "\n".join(self.doxy_arguments.keys()),
             "yaml",
@@ -172,12 +177,14 @@ class GeneratorSnippets:
         )
 
     def replace_markdown(self, start: int, end: int, replacement: str) -> None:
-        self.markdown = self.markdown[:start] + replacement + "\n" + self.markdown[end:]
+        self.markdown = (self.markdown[:start] + replacement + "\n" +
+                         self.markdown[end:])
 
     def _set_link_prefix_node(self, node: Node, link_prefix: str) -> None:
         node.project.linkPrefix = link_prefix
 
-    def _set_link_prefix_nodes(self, nodes: list[Node], link_prefix: str) -> None:
+    def _set_link_prefix_nodes(self, nodes: list[Node],
+                               link_prefix: str) -> None:
         if nodes:
             nodes[0].project.linkPrefix = link_prefix
 
@@ -187,13 +194,15 @@ class GeneratorSnippets:
     def is_doxy_inactive(self, config: dict) -> bool:
         return config.get("disable_doxy_snippets", False)
 
-    def call_doxy_by_name(self, snippet: str, project: str, argument: str, config: dict) -> str:
+    def call_doxy_by_name(self, snippet: str, project: str, argument: str,
+                          config: dict) -> str:
         if argument not in self.doxy_arguments:
             return self.incorrect_argument(project, argument, config, snippet)
         callback = self.doxy_arguments[argument]
         return callback(snippet, project, config)
 
-    def check_config(self, snippet: str, project: str, config: dict, required_params: list[str]) -> str | None:
+    def check_config(self, snippet: str, project: str, config: dict,
+                     required_params: list[str]) -> str | None:
         """
         returns false if config is correct
         return error message if project not exist or find problem in config
@@ -216,7 +225,7 @@ class GeneratorSnippets:
             None,
         )
 
-    ### Create documentation generator callbacks
+    # Create documentation generator callbacks
 
     def doxy_error(
         self,
@@ -229,11 +238,12 @@ class GeneratorSnippets:
         code_language: str = "",
         snippet_code: str = "",
     ) -> str:
-        log.error(f"  -> {title} -> page: {self.page.canonical_url}")
+        log.error("  -> %s -> page: %s", title, self.page.canonical_url)
         if project not in self.projects:
             project = next(iter(self.projects))
         return self.generator_base[project].error(
-            config, title, description, code_header, code, code_language, snippet_code
+            config, title, description, code_header, code,
+            code_language, snippet_code
         )
 
     def doxy_code(self, snippet: str, project: str, config: dict) -> str:
@@ -255,11 +265,13 @@ class GeneratorSnippets:
                 return self.doxy_error(
                     project,
                     config,
-                    f"Parameter start: {config.get('start')} is greater than end: {config.get('end')}",
+                    "Parameter start: {} is greater than end: {}".format(
+                        config.get('start'), config.get('end')),
                     f"{snippet}",
                     "yaml",
                 )
-            self._set_link_prefix_node(node, self.pageUrlPrefix + project + "/")
+            self._set_link_prefix_node(node,
+                                       self.pageUrlPrefix + project + "/")
             return self.generator_base[project].code(node, config, prog_code)
         return self.doxy_error(
             project,
@@ -284,7 +296,8 @@ class GeneratorSnippets:
         if end and start > end:
             return False
 
-        out = "".join(line + "\n" for num, line in enumerate(lines) if num >= start and (num <= end or end == 0))
+        out = "".join(line + "\n" for num, line in enumerate(lines)
+                      if num >= start and (num <= end or end == 0))
         return f"```{code_language} linenums='{start}'\n{out}```"
 
     def doxy_function(self, snippet: str, project: str, config: dict) -> str:
@@ -297,7 +310,8 @@ class GeneratorSnippets:
             return self.doxy_node_is_none(project, config, snippet)
 
         if isinstance(node, Node):
-            self._set_link_prefix_node(node, self.pageUrlPrefix + project + "/")
+            self._set_link_prefix_node(node,
+                                       self.pageUrlPrefix + project + "/")
             return self.generator_base[project].function(node, config)
         return self.doxy_error(
             project,
@@ -320,7 +334,8 @@ class GeneratorSnippets:
             return self.doxy_node_is_none(project, config, snippet)
 
         if isinstance(node, Node):
-            self._set_link_prefix_node(node, self.pageUrlPrefix + project + "/")
+            self._set_link_prefix_node(node,
+                                       self.pageUrlPrefix + project + "/")
             return self.generator_base[project].member(node, config)
         return self.doxy_error(
             project,

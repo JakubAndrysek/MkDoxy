@@ -1,19 +1,26 @@
 import logging
 import re
 from collections.abc import Iterator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import yaml
 from mkdocs.config import Config
 
+from mkdoxy.constants import Kind
+
+if TYPE_CHECKING:
+    from mkdoxy.node import Node
+
 log: logging.Logger = logging.getLogger("mkdocs")
 
 
-regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
+regex = (
+    r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])*)"
+)
 
 
 # Credits: https://stackoverflow.com/a/1630350
-def lookahead(iterable: Any) -> Iterator[tuple[Any, bool]]:
+def lookahead(iterable: Any) -> Iterator[tuple[Any, bool]]:  # noqa: ANN401
     """Pass through all values from the given iterable, augmented by the
     information if there are more values to come after the current one
     (True), or if it is the last value (False).
@@ -30,7 +37,7 @@ def lookahead(iterable: Any) -> Iterator[tuple[Any, bool]]:
     yield last, False
 
 
-def contains(a: Any, pos: int, b: Any) -> bool:
+def contains(a: Any, pos: int, b: Any) -> bool:  # noqa: ANN401
     ai = pos
     bi = 0
     if len(b) > len(a) - ai:
@@ -51,7 +58,7 @@ def split_safe(s: str, delim: str) -> list[str]:
     while i < len(s):
         c = s[i]
         if i == len(s) - 1:
-            tokens.append(s[last : i + 1])
+            tokens.append(s[last:i + 1])
         if c in ["<", "[", "{", "("]:
             inside += 1
             i += 1
@@ -88,7 +95,7 @@ def merge_two_dicts(base: dict, new: dict) -> dict:
     return result
 
 
-def recursive_find(nodes: list, kind) -> list:
+def recursive_find(nodes: list["Node"], kind: Kind) -> list["Node"]:
     ret = []
     for node in nodes:
         if node.kind == kind:
@@ -98,17 +105,24 @@ def recursive_find(nodes: list, kind) -> list:
     return ret
 
 
-def recursive_find_with_parent(nodes, kinds, parent_kinds) -> list:
+def recursive_find_with_parent(
+    nodes: list["Node"], kinds: list[Kind], parent_kinds: list[Kind]
+) -> list["Node"]:
     ret = []
     for node in nodes:
-        if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
+        if (node.kind in kinds and node.parent is not None and
+                node.parent.kind in parent_kinds):
             ret.append(node)
         if node.kind.is_parent() or node.kind.is_dir() or node.kind.is_file():
-            ret.extend(recursive_find_with_parent(node.children, kinds, parent_kinds))
+            ret.extend(
+                recursive_find_with_parent(node.children, kinds, parent_kinds)
+            )
     return ret
 
 
-def check_enabled_markdown_extensions(config: Config, mkdoxy_config: Config) -> None:
+def check_enabled_markdown_extensions(
+    config: Config, mkdoxy_config: Config
+) -> None:
     # sourcery skip: merge-nested-ifs
     """
     Checks if the required markdown extensions are enabled.
@@ -117,4 +131,6 @@ def check_enabled_markdown_extensions(config: Config, mkdoxy_config: Config) -> 
     # enabled_extensions = config['markdown_extensions']
     # if mkdoxyConfig.get("emojis-enabled", False):
     # 	if 'pymdownx.emoji' not in enabled_extensions:
-    # 		log.warning("The 'pymdownx.emoji' extension is not enabled. Some emojis may not be rendered correctly. https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#configuration")
+    # 		log.warning("The 'pymdownx.emoji' extension is not enabled. "
+    # 			"Some emojis may not be rendered correctly. "
+    # 			"https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#configuration")
