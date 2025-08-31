@@ -19,7 +19,7 @@ class Doxygen:
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:
             log.info("Loading XML from: %s", path_xml)
-        xml = ET.parse(path_xml).getroot()
+        xml = ET.parse(path_xml).getroot()  # noqa: S314
 
         self.parser = parser
         self.ctx = ProjectContext(cache)

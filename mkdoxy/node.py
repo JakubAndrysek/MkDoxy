@@ -92,7 +92,9 @@ class Node:
             if self.debug:
                 log.info("Loading XML from: %s", xml_file)
             self._dirname = os.path.dirname(xml_file)
-            self._xml = ET.parse(xml_file).getroot().find("compounddef")
+            self._xml = (
+                ET.parse(xml_file).getroot().find("compounddef")  # noqa: S314
+            )
             if self._xml is None:
                 raise Exception(f"File {xml_file} has no <compounddef>")
             # Use local variable to help mypy understand the type

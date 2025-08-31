@@ -1,10 +1,9 @@
 import re
-from typing import Optional
 
 PLAIN_CODE_BLOCK = re.compile(r"```(\n.*?\n)```", re.DOTALL)
 
 
-def use_code_language(value: str, code_language: Optional[str]) -> str:
+def use_code_language(value: str, code_language: str | None) -> str:
     """! Jinja2 filter to apply a code language to all plain code blocks
     @details
     @param value: the value to apply the filter to.

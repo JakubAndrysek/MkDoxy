@@ -20,7 +20,7 @@ def update_new_config(yaml_file: Path, backup: bool, backup_file_name: str) -> N
     if backup:
         backup_path = yaml_file.parent / backup_file_name
         shutil.copy2(yaml_file, backup_path)
-        log.info(f"Backup created at {backup_path}")
+        log.info("Backup created at %s", backup_path)
 
     text = yaml_file.read_text(encoding="utf-8")
 

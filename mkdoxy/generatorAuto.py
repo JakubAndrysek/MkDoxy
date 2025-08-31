@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import Optional
 
 from mkdocs.structure import files
 
@@ -69,17 +68,17 @@ class GeneratorAuto:
         with open(os.path.join(self.temp_doxy_dir, path_rel), "w", encoding="utf-8") as file:
             file.write(output)
 
-    def fullDoc(self, defaultTemplateConfig: dict) -> None:
-        self.annotated(self.doxygen.root.children, defaultTemplateConfig)
-        self.fileindex(self.doxygen.files.children, defaultTemplateConfig)
-        self.members(self.doxygen.root.children, defaultTemplateConfig)
-        self.members(self.doxygen.groups.children, defaultTemplateConfig)
-        self.files(self.doxygen.files.children, defaultTemplateConfig)
-        self.namespaces(self.doxygen.root.children, defaultTemplateConfig)
-        self.classes(self.doxygen.root.children, defaultTemplateConfig)
-        self.hierarchy(self.doxygen.root.children, defaultTemplateConfig)
-        self.modules(self.doxygen.groups.children, defaultTemplateConfig)
-        self.pages(self.doxygen.pages.children, defaultTemplateConfig)
+    def full_doc(self, default_template_config: dict) -> None:
+        self.annotated(self.doxygen.root.children, default_template_config)
+        self.fileindex(self.doxygen.files.children, default_template_config)
+        self.members(self.doxygen.root.children, default_template_config)
+        self.members(self.doxygen.groups.children, default_template_config)
+        self.files(self.doxygen.files.children, default_template_config)
+        self.namespaces(self.doxygen.root.children, default_template_config)
+        self.classes(self.doxygen.root.children, default_template_config)
+        self.hierarchy(self.doxygen.root.children, default_template_config)
+        self.modules(self.doxygen.groups.children, default_template_config)
+        self.pages(self.doxygen.pages.children, default_template_config)
         # self.examples(self.doxygen.examples.children) # TODO examples
         self.relatedpages(self.doxygen.pages.children)
         self.index(
@@ -87,91 +86,91 @@ class GeneratorAuto:
             [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Members",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.FUNCTION],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Functions",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.VARIABLE],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Variables",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.TYPEDEF],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Typedefs",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.ENUM],
             [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE],
             "Class Member Enums",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.FUNCTION, Kind.VARIABLE, Kind.TYPEDEF, Kind.ENUM],
             [Kind.NAMESPACE],
             "Namespace Members",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.FUNCTION],
             [Kind.NAMESPACE],
             "Namespace Member Functions",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.VARIABLE],
             [Kind.NAMESPACE],
             "Namespace Member Variables",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.TYPEDEF],
             [Kind.NAMESPACE],
             "Namespace Member Typedefs",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.root.children,
             [Kind.ENUM],
             [Kind.NAMESPACE],
             "Namespace Member Enums",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.files.children,
             [Kind.FUNCTION],
             [Kind.FILE],
             "Functions",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.files.children,
             [Kind.DEFINE],
             [Kind.FILE],
             "Macros",
-            defaultTemplateConfig,
+            default_template_config,
         )
         self.index(
             self.doxygen.files.children,
             [Kind.VARIABLE, Kind.UNION, Kind.TYPEDEF, Kind.ENUM],
             [Kind.FILE],
             "Variables",
-            defaultTemplateConfig,
+            default_template_config,
         )
 
     def annotated(self, nodes: list[Node], config: dict | None = None) -> None:
@@ -197,7 +196,7 @@ class GeneratorAuto:
         output = self.generator_base.namespaces(nodes, config)
         self.save(path, output)
 
-    def page(self, node: Node, config: Optional[dict] = None) -> None:
+    def page(self, node: Node, config: dict | None = None) -> None:
         path = f"{node.name}.md"
 
         output = self.generator_base.page(node, config)
@@ -213,7 +212,7 @@ class GeneratorAuto:
         output = self.generator_base.relatedpages(nodes)
         self.save(path, output)
 
-    def example(self, node: Node, config: Optional[dict] = None) -> None:
+    def example(self, node: Node, config: dict | None = None) -> None:
         path = f"{node.refid}.md"
 
         output = self.generator_base.example(node, config)
@@ -249,7 +248,7 @@ class GeneratorAuto:
         output = self.generator_base.hierarchy(nodes, config)
         self.save(path, output)
 
-    def member(self, node: Node, config: Optional[dict] = None) -> None:
+    def member(self, node: Node, config: dict | None = None) -> None:
         path = node.filename
 
         output = self.generator_base.member(node, config)
@@ -258,7 +257,7 @@ class GeneratorAuto:
         if node.is_language or node.is_group or node.is_file or node.is_dir:
             self.members(node.children, config)
 
-    def file(self, node: Node, config: Optional[dict] = None) -> None:
+    def file(self, node: Node, config: dict | None = None) -> None:
         path = node.filename
 
         output = self.generator_base.file(node, config)
@@ -301,7 +300,9 @@ class GeneratorAuto:
             for child in node.children:
                 self._generate_recursive(output_summary, child, level + 2)
 
-    def _generate_recursive_files(self, output_summary: str, node: Node, level: int, config: Optional[dict] = None) -> None:
+    def _generate_recursive_files(
+        self, output_summary: str, node: Node, level: int, config: dict | None = None
+    ) -> None:
         if config is None:
             config = {}
         if node.kind.is_file() or node.kind.is_dir():
@@ -333,7 +334,7 @@ class GeneratorAuto:
             for child in node.children:
                 self._generate_recursive_pages(output_summary, child, level + 2)
 
-    def summary(self, defaultTemplateConfig: dict) -> None:
+    def summary(self, default_template_config: dict) -> None:
         offset = 0
         output_summary = "" + str(" " * (offset + 2) + generate_link("Related Pages", "pages.md"))
         for node in self.doxygen.pages.children:
@@ -352,7 +353,7 @@ class GeneratorAuto:
 
         output_summary += str(" " * (offset + 2) + generate_link("Files", "files.md", end="\n"))
         for node in self.doxygen.files.children:
-            self._generate_recursive_files(output_summary, node, offset + 4, defaultTemplateConfig)
+            self._generate_recursive_files(output_summary, node, offset + 4, default_template_config)
 
         # output_summary += str(' ' * (offset + 2) + generate_link('Examples', 'examples.md'))
         # for node in self.doxygen.examples.children:

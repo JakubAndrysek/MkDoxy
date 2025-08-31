@@ -109,7 +109,7 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
                 template_config = self.default_template_config.copy()
 
                 # Generate full documentation
-                generator_auto.fullDoc(template_config)
+                generator_auto.full_doc(template_config)
 
                 # Generate summary pages
                 generator_auto.summary(template_config)

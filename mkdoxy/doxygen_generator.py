@@ -321,7 +321,7 @@ class DoxygenGenerator:
         @details
         @return: (bool) True if the source files have changed since the last run.
         """
-        sha1 = hashlib.sha1()
+        sha256 = hashlib.sha256()
         sources = self.project_config.src_dirs.split(" ")
         # Code from https://stackoverflow.com/a/22058673/15411117
         buf_size = 65536  # let's read stuff in 64kb chunks!
@@ -333,9 +333,9 @@ class DoxygenGenerator:
                             data = file.read(buf_size)
                             if not data:
                                 break
-                            sha1.update(data)
+                            sha256.update(data)
 
-        hash_new = sha1.hexdigest()
+        hash_new = sha256.hexdigest()
         hash_file_name: Path = Path("mkdoxy_hash.txt")
         hash_file_path = Path.joinpath(self.temp_doxy_folder, hash_file_name)
         if hash_file_path.is_file():
@@ -350,7 +350,7 @@ class DoxygenGenerator:
         """! Run Doxygen with the current configuration using the Popen class.
         @details
         """
-        doxy_builder = Popen(
+        doxy_builder = Popen(  # noqa: S603
             [self.doxy_config.doxygen_bin_path, "-"],
             stdout=PIPE,
             stdin=PIPE,

@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import pathlib
 import re
-from typing import Any, Optional, Union
+from typing import Any
 
 import yaml
 from mkdocs.structure import pages
@@ -307,8 +307,8 @@ class GeneratorSnippets:
         code_raw: str,
         code_language: str,
         start: int = 1,
-        end: Optional[int] = None
-    ) -> Union[str, bool]:
+        end: int | None = None
+    ) -> str | bool:
         lines = code_raw.split("\n")
 
         if end is not None and start > end:

@@ -42,7 +42,9 @@ class GeneratorBase:
         self.templates: dict[str, Template] = {}
         self.metaData: dict[str, dict] = {}
 
-        environment = Environment(loader=BaseLoader())
+        environment = Environment(
+            loader=BaseLoader(), autoescape=True
+        )
         environment.filters["use_code_language"] = use_code_language
         # code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
         path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates")

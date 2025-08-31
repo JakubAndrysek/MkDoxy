@@ -327,20 +327,28 @@ class Property:
             if self.kind.is_enum():
                 for enumvalue in self.xml.findall("enumvalue"):
                     name_elem = enumvalue.find("name")
-                    p = "**" + escape(name_elem.text if name_elem is not None and name_elem.text is not None else "") + "**"
+                    p = "**" + escape(
+                        name_elem.text
+                        if name_elem is not None and name_elem.text is not None
+                        else ""
+                    ) + "**"
                     initializer = enumvalue.find("initializer")
                     if initializer is not None:
-                        p += f" {self.parser.paras_as_str(initializer, plain=plain)}"
+                        p += " " + self.parser.paras_as_str(initializer, plain=plain)
                     ret.append(p)
             return ret
 
         def has(self) -> bool:
             if self.xml is None:
                 return False
-            return self.xml.find("enumvalue") is not None if self.kind.is_enum() else False
+            return (
+                self.xml.find("enumvalue") is not None if self.kind.is_enum() else False
+            )
 
     class Initializer:
-        def __init__(self, xml: Element | None, parser: XmlParser, kind: Kind) -> None:
+        def __init__(
+            self, xml: Element | None, parser: XmlParser, kind: Kind
+        ) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -366,7 +374,9 @@ class Property:
             return self.xml.find("initializer") is not None
 
     class Definition:
-        def __init__(self, xml: Element | None, parser: XmlParser, kind: Kind) -> None:
+        def __init__(
+            self, xml: Element | None, parser: XmlParser, kind: Kind
+        ) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -389,7 +399,9 @@ class Property:
             return self.xml.find("definition") is not None
 
     class Programlisting:
-        def __init__(self, xml: Element | None, parser: XmlParser, kind: Kind) -> None:
+        def __init__(
+            self, xml: Element | None, parser: XmlParser, kind: Kind
+        ) -> None:
             self.xml = xml
             self.parser = parser
             self.kind = kind
@@ -404,4 +416,8 @@ class Property:
             return self.parser.programlisting_as_str(programlisting)
 
         def has(self) -> bool:
-            return self.xml.find("programlisting") is not None if self.xml is not None else False
+            return (
+                self.xml.find("programlisting") is not None
+                if self.xml is not None
+                else False
+            )

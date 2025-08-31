@@ -50,7 +50,7 @@ class MkDoxyConfigProject(Config):
     doxy_config_file_force = c.Type(bool, default=False)
     custom_template_dir = c.Optional(c.Type(str))
 
-    def validate(self) -> tuple:
+    def validate(self) -> tuple[list[str], list[tuple[str, str]]]:
         failed, warnings = super().validate()
 
         # Add a warning for deprecated configuration keys
@@ -86,7 +86,7 @@ class MkDoxyConfig(Config):
     generate_diagrams_format = c.Choice(("svg", "png", "jpg", "gif"), default="svg")  # diagram format
     generate_diagrams_type = c.Choice(("dot", "uml"), default="dot")  # diagram type
 
-    def validate(self):
+    def validate(self) -> tuple[list[str], list[tuple[str, str]]]:
         failed, warnings = super().validate()
 
         # Add a warning for deprecated configuration keys
