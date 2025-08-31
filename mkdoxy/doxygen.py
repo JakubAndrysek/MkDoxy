@@ -14,7 +14,9 @@ log: logging.Logger = logging.getLogger("mkdocs")
 
 
 class Doxygen:
-    def __init__(self, index_path: str, parser: XmlParser, cache: Cache) -> None:
+    def __init__(  # noqa: C901
+        self, index_path: str, parser: XmlParser, cache: Cache
+    ) -> None:
         self.debug = parser.debug
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:

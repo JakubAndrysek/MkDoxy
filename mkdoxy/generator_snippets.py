@@ -10,7 +10,7 @@ from mkdocs.structure import pages
 
 from mkdoxy.doxygen import Doxygen
 from mkdoxy.finder import Finder
-from mkdoxy.generatorBase import GeneratorBase
+from mkdoxy.generator_base import GeneratorBase
 from mkdoxy.node import Node
 
 log: logging.Logger = logging.getLogger("mkdocs")
@@ -143,7 +143,7 @@ class GeneratorSnippets:
 
     def try_load_yaml(
         self, yaml_raw: str, project: str, snippet: str, config: dict
-    ) -> Any:
+    ) -> Any:  # noqa: ANN401
         try:
             return yaml.safe_load(yaml_raw)
         except yaml.YAMLError:

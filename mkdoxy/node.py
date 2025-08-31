@@ -159,7 +159,7 @@ class Node:
     def sort_children(self) -> None:
         self._children.sort(key=lambda x: x._name, reverse=False)
 
-    def _check_for_children(self) -> None:
+    def _check_for_children(self) -> None:  # noqa: C901
         if self._xml is None:
             return
         for innergroup in self._xml.findall("innergroup"):
@@ -720,7 +720,7 @@ class Node:
         return self._language or ""
 
     @property
-    def codeblock(self) -> str:
+    def codeblock(self) -> str:  # noqa: C901
         code = []
         if self._xml is None:
             return ""

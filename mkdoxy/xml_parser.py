@@ -129,7 +129,9 @@ class XmlParser:
             ret.extend((Text("\n"), code))
         return ret
 
-    def paras(self, p: Element | None, italic: bool = False) -> list[Renderable]:
+    def paras(  # noqa: C901
+        self, p: Element | None, italic: bool = False
+    ) -> list[Renderable]:
         ret: list[Renderable] = []
         if p is None:
             return []
