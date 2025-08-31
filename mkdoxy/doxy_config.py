@@ -95,7 +95,13 @@ class MkDoxyConfig(Config):
             warnings.append((k, f"Deprecated configuration name: {k} -> {config_scheme_legacy[k]}"))
 
         # Include warnings from sub-config options in mkdoxy.projects
-        warnings.extend(next(s.option_type.warnings for k, s in self._schema if k == "projects"))
+        projects_option = next(
+            (s for k, s in self._schema if k == "projects"), None
+        )
+        if projects_option and hasattr(projects_option, 'warnings'):
+            # Convert string warnings to tuple format (key, message)
+            for warning_msg in projects_option.warnings:
+                warnings.append(("projects", warning_msg))
 
         return failed, warnings
 

@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import os
 import re
-from typing import Optional
 from xml.etree import ElementTree as ET
 from xml.etree.ElementTree import Element as Element
 
@@ -62,8 +61,8 @@ class Node:
         xml: Element | None,
         project: ProjectContext,
         parser: XmlParser,
-        parent: "Node",
-        refid: Optional[str] = None,
+        parent: Node | None,
+        refid: str | None = None,
         debug: bool = False,
     ) -> None:
         self._children: list[Node] = []
@@ -126,7 +125,8 @@ class Node:
             self._kind = Kind.from_str(self._xml.get("kind") or "unknown")
             self._refid = refid if refid is not None else (self._xml.get("id") or "")
             self._cache.add(self._refid, self)
-            self._language = parent.code_language
+            self._language = (parent.code_language
+                              if parent is not None else None)
 
             if self.debug:
                 log.info("Parsing: %s", self._refid)
@@ -151,7 +151,7 @@ class Node:
     def __repr__(self) -> str:
         return f"Node: {self.name} refid: {self._refid}"
 
-    def add_child(self, child: "Node") -> None:
+    def add_child(self, child: Node) -> None:
         self._children.append(child)
 
     def sort_children(self) -> None:
@@ -354,7 +354,8 @@ class Node:
     def has(self, visibility: str, kinds: list[str], static: bool) -> bool:
         return len(self.query(visibility, kinds, static)) > 0
 
-    def query(self, visibility: str, kinds: list[str], static: bool) -> list["Node"]:
+    def query(self, visibility: str, kinds: list[str],
+              static: bool) -> list[Node]:
         vis_enum = Visibility(visibility)
         kind_enums = [Kind.from_str(kind) for kind in kinds]
         return [
@@ -396,11 +397,11 @@ class Node:
         return len(self._children) > 0
 
     @property
-    def children(self) -> list["Node"]:
+    def children(self) -> list[Node]:
         return self._children
 
     @property
-    def parent(self) -> "Node":
+    def parent(self) -> Node | None:
         return self._parent
 
     @property
@@ -518,23 +519,24 @@ class Node:
     def operator_num(self) -> int:
         stem = "operator" + ("-" * self._name.count("-"))
         total = 0
-        for child in self.parent.children:
-            child_refid = child.name.replace(" ", "")
-            # Check if the child is a displayed operator by ensuring:
-            # 1. Its identifier is in the predefined OVERLOAD_OPERATORS list.
-            # 2. It starts with the expected 'stem' derived from the parent's naming.
-            # 3. It does not start with an extra hyphen (stem+'-') to avoid excessive matching.
-            # 4. It is not private.
-            if (
-                child.is_function
-                and child_refid in OVERLOAD_OPERATORS
-                and child_refid.startswith(stem)
-                and not child_refid.startswith(stem + "-")
-                and child._visibility != Visibility.PRIVATE
-            ):
-                total += 1
-            if child.refid == self._refid:
-                break
+        if self.parent is not None:
+            for child in self.parent.children:
+                child_refid = child.name.replace(" ", "")
+                # Check if the child is a displayed operator by ensuring:
+                # 1. Its identifier is in the predefined OVERLOAD_OPERATORS list.
+                # 2. It starts with the expected 'stem' derived from the parent's naming.
+                # 3. It does not start with an extra hyphen (stem+'-') to avoid excessive matching.
+                # 4. It is not private.
+                if (
+                    child.is_function
+                    and child_refid in OVERLOAD_OPERATORS
+                    and child_refid.startswith(stem)
+                    and not child_refid.startswith(stem + "-")
+                    and child._visibility != Visibility.PRIVATE
+                ):
+                    total += 1
+                if child.refid == self._refid:
+                    break
         return total
 
     @property
@@ -567,7 +569,8 @@ class Node:
         if self.is_parent or self.is_group or self.is_file or self.is_dir or self.is_page:
             return self.project.linkPrefix + self._refid + ".md"
         else:
-            return f"{self._parent.url}#{self.anchor}"
+            parent_url = self._parent.url if self._parent is not None else ""
+            return f"{parent_url}#{self.anchor}"
 
     @property
     def base_url(self) -> str:
@@ -606,8 +609,11 @@ class Node:
         return self.project.linkPrefix + self._refid + ".md"
 
     @property
-    def root(self) -> "Node":
-        return self if self._kind == Kind.ROOT else self._parent.root
+    def root(self) -> Node:
+        if self._kind == Kind.ROOT:
+            return self
+        else:
+            return self._parent.root if self._parent is not None else self
 
     @property
     def name_tokens(self) -> list[str]:
@@ -622,7 +628,7 @@ class Node:
     @property
     def name_long(self) -> str:
         try:
-            if self._parent.is_parent:
+            if self._parent is not None and self._parent.is_parent:
                 return f"{self._parent.name_long}::{escape(self.name_tokens[-1])}"
             else:
                 return escape(self._name)
@@ -672,9 +678,9 @@ class Node:
 
     @property
     def parents(self) -> list[Node]:
-        ret = []
+        ret: list[Node] = []
         if self._parent is not None and (self._parent.is_language or self._parent.is_dir):
-            ret.extend(self.parent.parents)
+            ret.extend(self._parent.parents)
         ret.append(self)
         return ret
 

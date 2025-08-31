@@ -31,7 +31,7 @@ class Doxygen:
         self.examples = Node("root", None, self.ctx, self.parser, None)
 
         for compound in xml.findall("compound"):
-            kind = Kind.from_str(compound.get("kind"))
+            kind = Kind.from_str(compound.get("kind") or "unknown")
             refid = compound.get("refid")
             if kind.is_language():
                 node = Node(

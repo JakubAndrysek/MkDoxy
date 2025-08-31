@@ -303,7 +303,7 @@ class GeneratorAuto:
 
     def _generate_recursive_files(self, output_summary: str, node: Node, level: int, config: Optional[dict] = None) -> None:
         if config is None:
-            config = []
+            config = {}
         if node.kind.is_file() or node.kind.is_dir():
             output_summary += str(" " * int(level + 2) + generate_link(node.name, f"{node.refid}.md", end=""))
 

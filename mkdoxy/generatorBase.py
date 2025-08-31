@@ -589,12 +589,13 @@ class GeneratorBase:
 
                 else:
                     existing_parents = d[item.name_short]
-                    already_exists = any(
-                        test.refid == item.parent.refid
-                        for test in existing_parents
-                    )
-                    if not already_exists:
-                        d[item.name_short].append(item.parent)
+                    if item.parent is not None:
+                        already_exists = any(
+                            item.parent.refid == test.refid  # type: ignore[union-attr]
+                            for test in existing_parents
+                        )
+                        if not already_exists:
+                            d[item.name_short].append(item.parent)
 
             sorted_dictionary[letter] = d
 

@@ -7,6 +7,7 @@ import re
 import shutil
 from pathlib import Path
 from subprocess import PIPE, Popen
+from typing import Any
 
 from mkdocs import exceptions
 
@@ -110,7 +111,9 @@ class DoxygenGenerator:
         @details
         @return: (dict) Doxygen configuration from the provided file.
         """
-        return self.str2dox_dict(self.get_doxy_config_file_raw(), self.project_config.doxy_config_file)
+        config_file = (str(self.project_config.doxy_config_file)
+                       if self.project_config.doxy_config_file else "???")
+        return self.str2dox_dict(self.get_doxy_config_file_raw(), config_file)
 
     def get_doxy_config_file_raw(self) -> str:
         """! Get the Doxygen configuration from the provided file.
@@ -118,6 +121,7 @@ class DoxygenGenerator:
         @return: (str) Doxygen configuration from the provided file.
         """
         try:
+            assert self.project_config.doxy_config_file is not None
             with open(self.project_config.doxy_config_file) as file:
                 return file.read()
         except FileNotFoundError as e:
@@ -228,13 +232,13 @@ class DoxygenGenerator:
     # Source of dox_dict2str: https://xdress-fabio.readthedocs.io/en/latest/_modules/xdress/doxygen.html#XDressPlugin
 
     @staticmethod
-    def str2dox_dict(dox_str: str, config_file: str = "???") -> dict:
+    def str2dox_dict(dox_str: str, config_file: str = "???") -> dict[str, Any]:
         """! Convert a string from a doxygen config file to a dictionary.
         @details
         @param dox_str: (str) String from a doxygen config file.
         @return: (dict) Dictionary.
         """
-        dox_dict = {}
+        dox_dict: dict[str, Any] = {}
         dox_str = re.sub(r"\\\s*\n\s*", "", dox_str)
         pattern = r"^\s*([^=\s]+)\s*(=|\+=)\s*(.*)$"
 

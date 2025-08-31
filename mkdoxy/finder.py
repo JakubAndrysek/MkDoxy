@@ -26,7 +26,7 @@ class Finder:
         if parents:
             for find_parent in parents:
                 if find_parent.name_long == parent:
-                    return find_parent
+                    return [find_parent.name_params]
             return self.list_to_names(parents)
         return None
 
@@ -36,19 +36,11 @@ class Finder:
         find_parent = self._doxy_parent(project, parent, parent_kind)
         if find_parent is None:
             return None
-        if isinstance(find_parent, list):
-            for member in find_parent:
-                if self._normalize(member_name) in self._normalize(member):
-                    return member
-            return find_parent
-        else:
-            members = recursive_find(find_parent.children, member_kind)
-            if members:
-                for member in members:
-                    if member.name_params == member_name:
-                        return member
-                return self.list_to_names(members)
-        return None
+        # find_parent is always a list from _doxy_parent
+        for member in find_parent:
+            if self._normalize(member_name) in self._normalize(member):
+                return [member]
+        return find_parent
 
     def doxy_class(self, project: str, class_name: str) -> list[str] | None:
         return self._doxy_parent(project, class_name, Kind.CLASS)
@@ -74,7 +66,7 @@ class Finder:
         if functions:
             for function in functions:
                 if function.name_params == function_name:
-                    return function
+                    return [function.name_params]
             return self.list_to_names(functions)
         return None
 
@@ -83,6 +75,6 @@ class Finder:
         if files:
             for file in files:
                 if file.name_params == file_name:
-                    return file
+                    return [file.name_params]
             return self.list_to_names(files)
         return None

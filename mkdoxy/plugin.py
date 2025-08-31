@@ -42,7 +42,7 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
         @details
         @return: (bool) True if the plugin is enabled.
         """
-        return self.config.get("enabled")
+        return self.config.get("enabled", False)
 
     def on_files(self, files: Files, config: Config) -> Files:
         """! Called after files have been gathered by MkDocs.
@@ -87,11 +87,11 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
 
             # Print parsed files
             if self.config.debug:
-                self.doxygen[project_name].printStructure()
+                self.doxygen[project_name].print_structure()
 
             # Prepare generator for future use (GeneratorAuto, SnippetGenerator)
             self.generator_base[project_name] = GeneratorBase(
-                project_config.custom_template_dir,
+                project_config.custom_template_dir or "",
                 False,  # ignore_errors=self.config.ignore_errors,
                 debug=self.config.debug,
             )
@@ -137,7 +137,10 @@ class MkDoxy(BasePlugin[MkDoxyConfig]):
             markdown=markdown,
             generator_base=self.generator_base,
             doxygen=self.doxygen,
-            projects=self.config.projects,
+            projects={
+                name: dict(project)
+                for name, project in self.config.projects.items()
+            },
             use_directory_urls=config["use_directory_urls"],
             page=page,
             config=page_config,

@@ -81,5 +81,5 @@ class DoxyTagParser:
                 match.end(),
                 replacement,
                 project=match.group("project"),
-                keys=list_keys,
+                keys=".".join(list_keys),
             )

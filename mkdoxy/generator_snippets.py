@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import pathlib
 import re
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 import yaml
 from mkdocs.structure import pages
@@ -36,7 +36,7 @@ class GeneratorSnippets:
         markdown: str,
         generator_base: dict[str, GeneratorBase],
         doxygen: dict[str, Doxygen],
-        projects: dict[str, dict[str, any]],
+        projects: dict[str, dict[str, Any]],
         use_directory_urls: bool,
         page: pages.Page,
         config: dict,
@@ -143,7 +143,7 @@ class GeneratorSnippets:
 
     def try_load_yaml(
         self, yaml_raw: str, project: str, snippet: str, config: dict
-    ) -> dict:
+    ) -> Any:
         try:
             return yaml.safe_load(yaml_raw)
         except yaml.YAMLError:
@@ -208,8 +208,9 @@ class GeneratorSnippets:
     def is_project_exist(self, project: str) -> bool:
         return project in self.projects
 
-    def is_doxy_inactive(self, config: dict) -> bool:
-        return config.get("disable_doxy_snippets", False)
+    def is_doxy_inactive(self, config: dict[Any, Any]) -> bool:
+        value = config.get("disable_doxy_snippets", False)
+        return bool(value)
 
     def call_doxy_by_name(self, snippet: str, project: str, argument: str,
                           config: dict) -> str:
@@ -267,7 +268,7 @@ class GeneratorSnippets:
         error_msg = self.check_config(snippet, project, config, ["file"])
         if error_msg:
             return error_msg
-        node = self.finder.doxyCode(project, config.get("file"))
+        node = self.finder.doxy_code(project, str(config.get("file", "")))
         if node is None:
             return self.doxy_node_is_none(project, config, snippet)
 
@@ -289,7 +290,7 @@ class GeneratorSnippets:
                 )
             self._set_link_prefix_node(node,
                                        self.pageUrlPrefix + project + "/")
-            return self.generator_base[project].code(node, config, prog_code)
+            return self.generator_base[project].code([node], config, str(prog_code))
         return self.doxy_error(
             project,
             config,
@@ -310,11 +311,12 @@ class GeneratorSnippets:
     ) -> Union[str, bool]:
         lines = code_raw.split("\n")
 
-        if end and start > end:
+        if end is not None and start > end:
             return False
 
         out = "".join(line + "\n" for num, line in enumerate(lines)
-                      if num >= start and (num <= end or end == 0))
+                      if num >= start and
+                      (end is None or num <= end or end == 0))
         return f"```{code_language} linenums='{start}'\n{out}```"
 
     def doxy_function(self, snippet: str, project: str, config: dict) -> str:
@@ -322,7 +324,7 @@ class GeneratorSnippets:
         if error_msg:
             return error_msg
 
-        node = self.finder.doxyFunction(project, config.get("name"))
+        node = self.finder.doxy_function(project, str(config.get("name", "")))
         if node is None:
             return self.doxy_node_is_none(project, config, snippet)
 
@@ -346,7 +348,7 @@ class GeneratorSnippets:
         if error_msg:
             return error_msg
 
-        node = self.finder.doxyClass(project, config.get("name"))
+        node = self.finder.doxy_class(project, str(config.get("name", "")))
         if node is None:
             return self.doxy_node_is_none(project, config, snippet)
 
@@ -380,10 +382,10 @@ class GeneratorSnippets:
         if error_msg:
             return error_msg
 
-        node = self.finder.doxyClassMethod(
+        node = self.finder.doxy_class_method(
             project,
-            config.get("name"),
-            config.get("method")
+            str(config.get("name", "")),
+            str(config.get("method", ""))
         )
         if node is None:
             return self.doxy_node_is_none(project, config, snippet)
@@ -468,10 +470,10 @@ class GeneratorSnippets:
         if error_msg:
             return error_msg
 
-        node = self.finder.doxyNamespaceFunction(
+        node = self.finder.doxy_namespace_function(
             project,
-            config.get("namespace"),
-            config.get("name")
+            str(config.get("namespace", "")),
+            str(config.get("name", ""))
         )
         if node is None:
             return self.doxy_node_is_none(project, config, snippet)
