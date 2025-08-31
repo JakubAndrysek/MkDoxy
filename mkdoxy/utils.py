@@ -1,5 +1,7 @@
 import logging
 import re
+from collections.abc import Iterator
+from typing import Any
 
 import yaml
 from mkdocs.config import Config
@@ -11,7 +13,7 @@ regex = r"(-{3}|\.{3})\n(?P<meta>([\S\s])*)\n(-{3}|\.{3})\n(?P<template>([\S\s])
 
 
 # Credits: https://stackoverflow.com/a/1630350
-def lookahead(iterable):
+def lookahead(iterable: Any) -> Iterator[tuple[Any, bool]]:
     """Pass through all values from the given iterable, augmented by the
     information if there are more values to come after the current one
     (True), or if it is the last value (False).
@@ -28,7 +30,7 @@ def lookahead(iterable):
     yield last, False
 
 
-def contains(a, pos, b) -> bool:
+def contains(a: Any, pos: int, b: Any) -> bool:
     ai = pos
     bi = 0
     if len(b) > len(a) - ai:
@@ -41,7 +43,7 @@ def contains(a, pos, b) -> bool:
     return True
 
 
-def split_safe(s: str, delim: str) -> [str]:
+def split_safe(s: str, delim: str) -> list[str]:
     tokens = []
     i = 0
     last = 0
@@ -69,25 +71,24 @@ def split_safe(s: str, delim: str) -> [str]:
     return tokens
 
 
-def parseTemplateFile(templateFile: str):
-    match = re.match(regex, templateFile, re.MULTILINE)
+def parse_template_file(template_file: str) -> tuple[str, dict]:
+    match = re.match(regex, template_file, re.MULTILINE)
     if match:
         template = match["template"]
         meta = match["meta"]
         metadata = yaml.safe_load(meta)
         return template, metadata
-    return templateFile, {}
+    return template_file, {}
 
 
-def merge_two_dicts(base, new):
+def merge_two_dicts(base: dict, new: dict) -> dict:
     "https://stackoverflow.com/a/26853961"
     result = base.copy()  # start with keys and values of x
     result.update(new)  # modifies z with keys and values of y
     return result
 
 
-# def recursive_find(nodes: [Node], kind: Kind):
-def recursive_find(nodes, kind):
+def recursive_find(nodes: list, kind) -> list:
     ret = []
     for node in nodes:
         if node.kind == kind:
@@ -97,8 +98,7 @@ def recursive_find(nodes, kind):
     return ret
 
 
-# def recursive_find_with_parent(nodes: [Node], kinds: [Kind], parent_kinds: [Kind]):
-def recursive_find_with_parent(nodes, kinds, parent_kinds):
+def recursive_find_with_parent(nodes, kinds, parent_kinds) -> list:
     ret = []
     for node in nodes:
         if node.kind in kinds and node.parent is not None and node.parent.kind in parent_kinds:
@@ -108,7 +108,7 @@ def recursive_find_with_parent(nodes, kinds, parent_kinds):
     return ret
 
 
-def check_enabled_markdown_extensions(config: Config, mkdoxyConfig: Config) -> None:
+def check_enabled_markdown_extensions(config: Config, mkdoxy_config: Config) -> None:
     # sourcery skip: merge-nested-ifs
     """
     Checks if the required markdown extensions are enabled.

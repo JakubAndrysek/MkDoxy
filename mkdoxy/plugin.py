@@ -16,9 +16,9 @@ from mkdoxy.cache import Cache
 from mkdoxy.doxy_config import MkDoxyConfig
 from mkdoxy.doxygen import Doxygen
 from mkdoxy.doxygen_generator import DoxygenGenerator
+from mkdoxy.generator_snippets import GeneratorSnippets
 from mkdoxy.generatorAuto import GeneratorAuto
 from mkdoxy.generatorBase import GeneratorBase
-from mkdoxy.generatorSnippets import GeneratorSnippets
 from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")
