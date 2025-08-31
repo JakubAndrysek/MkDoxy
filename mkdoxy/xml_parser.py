@@ -108,6 +108,8 @@ class XmlParser:
 
     def programlisting(self, p: Element | None) -> list[Renderable]:
         ret: list[Renderable] = []
+        if p is None:
+            return ret
         # programlisting
         if p.tag == "programlisting":
             code = MdCodeBlock([])

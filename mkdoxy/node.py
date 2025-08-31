@@ -59,7 +59,7 @@ class Node:
     def __init__(
         self,
         xml_file: str,
-        xml: Element,
+        xml: Element | None,
         project: ProjectContext,
         parser: XmlParser,
         parent: "Node",
@@ -72,6 +72,16 @@ class Node:
         self._parent = parent
         self.debug = debug
         self.project = project
+
+        # Initialize instance variables with proper types
+        self._xml: Element | None = None
+        self._refid: str = ""
+        self._kind: Kind = Kind.from_str("root")
+        self._name: str = ""
+        self._language: str | None = None
+        self._title: str = ""
+        self._dirname: str = ""
+        self._static: bool = False
 
         if xml_file == "root":
             self._refid = "root"
@@ -86,13 +96,16 @@ class Node:
             self._xml = ET.parse(xml_file).getroot().find("compounddef")
             if self._xml is None:
                 raise Exception(f"File {xml_file} has no <compounddef>")
-            self._kind = Kind.from_str(self._xml.get("kind"))
-            self._refid = self._xml.get("id")
-            self._language = self._xml.get("language")
-            if self._xml.find("compoundname").text is not None:
-                self._name = self._xml.find("compoundname").text
+            # Use local variable to help mypy understand the type
+            xml = self._xml
+            self._kind = Kind.from_str(xml.get("kind") or "unknown")
+            self._refid = xml.get("id") or ""
+            self._language = xml.get("language")
+            compoundname = xml.find("compoundname")
+            if compoundname is not None and compoundname.text is not None:
+                self._name = compoundname.text
             elif self.is_namespace:
-                location = self._xml.find("location")
+                location = xml.find("location")
                 self._name = f"anonymous namespace{{{location.get('file')}}}" if location is not None else self._refid
             else:
                 self._name = self._refid
@@ -103,32 +116,42 @@ class Node:
                 log.info("Parsing: %s", self._refid)
             self._check_for_children()
 
-            title = self._xml.find("title")
-            self._title = title.text if title is not None else self._name
+            if self._xml is not None:
+                title = self._xml.find("title")
+                self._title = title.text if title is not None and title.text is not None else self._name
+            else:
+                self._title = self._name
         else:
             self._xml = xml
-            self._kind = Kind.from_str(self._xml.get("kind"))
+            if self._xml is not None:
+                self._kind = Kind.from_str(self._xml.get("kind") or "unknown")
+                self._refid = refid if refid is not None else (self._xml.get("id") or "")
+                self._cache.add(self._refid, self)
+            else:
+                self._kind = Kind.from_str("unknown")
+                self._refid = refid or ""
+                self._cache.add(self._refid, self)
             self._language = parent.code_language
-            self._refid = refid if refid is not None else self._xml.get("id")
-            self._cache.add(self._refid, self)
 
             if self.debug:
                 log.info("Parsing: %s", self._refid)
             self._check_attrs()
             self._title = self._name
 
-        self._details = Property.Details(self._xml, parser, self._kind)
-        self._brief = Property.Brief(self._xml, parser, self._kind)
-        self._includes = Property.Includes(self._xml, parser, self._kind)
-        self._type = Property.Type(self._xml, parser, self._kind)
-        self._location = Property.Location(self._xml, parser, self._kind)
-        self._params = Property.Params(self._xml, parser, self._kind)
-        self._templateparams = Property.TemplateParams(self._xml, parser, self._kind)
-        self._specifiers = Property.Specifiers(self._xml, parser, self._kind)
-        self._values = Property.Values(self._xml, parser, self._kind)
-        self._initializer = Property.Initializer(self._xml, parser, self._kind)
-        self._definition = Property.Definition(self._xml, parser, self._kind)
-        self._programlisting = Property.Programlisting(self._xml, parser, self._kind)
+        # Initialize properties with None checks
+        xml_for_props = self._xml if self._xml is not None else None
+        self._details = Property.Details(xml_for_props, parser, self._kind)
+        self._brief = Property.Brief(xml_for_props, parser, self._kind)
+        self._includes = Property.Includes(xml_for_props, parser, self._kind)
+        self._type = Property.Type(xml_for_props, parser, self._kind)
+        self._location = Property.Location(xml_for_props, parser, self._kind)
+        self._params = Property.Params(xml_for_props, parser, self._kind)
+        self._templateparams = Property.TemplateParams(xml_for_props, parser, self._kind)
+        self._specifiers = Property.Specifiers(xml_for_props, parser, self._kind)
+        self._values = Property.Values(xml_for_props, parser, self._kind)
+        self._initializer = Property.Initializer(xml_for_props, parser, self._kind)
+        self._definition = Property.Definition(xml_for_props, parser, self._kind)
+        self._programlisting = Property.Programlisting(xml_for_props, parser, self._kind)
 
     def __repr__(self) -> str:
         return f"Node: {self.name} refid: {self._refid}"
@@ -140,9 +163,11 @@ class Node:
         self._children.sort(key=lambda x: x._name, reverse=False)
 
     def _check_for_children(self) -> None:
+        if self._xml is None:
+            return
         for innergroup in self._xml.findall("innergroup"):
             refid = innergroup.get("refid")
-            if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
+            if refid is not None and self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
                 try:
                     child = self._cache.get(refid)
                     self.add_child(child)
@@ -165,7 +190,7 @@ class Node:
             if prot == Visibility.PRIVATE:
                 continue
 
-            if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
+            if refid is not None and self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
                 try:
                     child = self._cache.get(refid)
                     self.add_child(child)
@@ -196,7 +221,7 @@ class Node:
 
         for innerfile in self._xml.findall("innerfile"):
             refid = innerfile.get("refid")
-            if self._kind == Kind.DIR:
+            if refid is not None and self._kind == Kind.DIR:
                 try:
                     child = self._cache.get(refid)
                     self.add_child(child)
@@ -216,7 +241,7 @@ class Node:
 
         for innerdir in self._xml.findall("innerdir"):
             refid = innerdir.get("refid")
-            if self._kind == Kind.DIR:
+            if refid is not None and self._kind == Kind.DIR:
                 try:
                     child = self._cache.get(refid)
                     self.add_child(child)
@@ -237,7 +262,8 @@ class Node:
         for innernamespace in self._xml.findall("innernamespace"):
             refid = innernamespace.get("refid")
 
-            if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
+            if (refid is not None and
+                    self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]):
                 try:
                     child = self._cache.get(refid)
                     self.add_child(child)
@@ -257,18 +283,21 @@ class Node:
 
         for sectiondef in self._xml.findall("sectiondef"):
             for memberdef in sectiondef.findall("memberdef"):
-                kind = Kind.from_str(memberdef.get("kind"))
-                if kind.is_language():
-                    if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
-                        refid = memberdef.get("id")
-                        try:
-                            child = self._cache.get(refid)
-                            self.add_child(child)
-                            continue
-                        except (KeyError, IndexError):
-                            pass
-                    child = Node(None, memberdef, self.project, self._parser, self)
-                    self.add_child(child)
+                kind_str = memberdef.get("kind")
+                if kind_str is not None:
+                    kind = Kind.from_str(kind_str)
+                    if kind.is_language():
+                        if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
+                            refid = memberdef.get("id")
+                            if refid is not None:
+                                try:
+                                    child = self._cache.get(refid)
+                                    self.add_child(child)
+                                    continue
+                                except (KeyError, IndexError):
+                                    pass
+                        child = Node("", memberdef, self.project, self._parser, self)
+                        self.add_child(child)
 
         # for detaileddescription in self._xml.findall('detaileddescription'):
         # 	for para in detaileddescription.findall('para'):
@@ -683,6 +712,8 @@ class Node:
     @property
     def codeblock(self) -> str:
         code = []
+        if self._xml is None:
+            return ""
         if self.is_function or self.is_friend:
             if self._templateparams.has():
                 code.append(f"template<{self._templateparams.plain()}>")
@@ -751,32 +782,42 @@ class Node:
 
     @property
     def has_base_classes(self) -> bool:
-        return len(self._xml.findall("basecompoundref")) > 0
+        return self._xml is not None and len(self._xml.findall("basecompoundref")) > 0
 
     @property
     def has_derived_classes(self) -> bool:
-        return len(self._xml.findall("derivedcompoundref")) > 0
+        return self._xml is not None and len(self._xml.findall("derivedcompoundref")) > 0
 
     @property
     def base_classes(self) -> list[Node]:
         ret = []
+        if self._xml is None:
+            return ret
         for basecompoundref in self._xml.findall("basecompoundref"):
             refid = basecompoundref.get("refid")
             if refid is None:
                 ret.append(basecompoundref.text)
             else:
-                ret.append(self._cache.get(refid))
+                try:
+                    ret.append(self._cache.get(refid))
+                except KeyError:
+                    ret.append(basecompoundref.text)
         return ret
 
     @property
     def derived_classes(self) -> list[Node]:
         ret = []
+        if self._xml is None:
+            return ret
         for derivedcompoundref in self._xml.findall("derivedcompoundref"):
             refid = derivedcompoundref.get("refid")
             if refid is None:
                 ret.append(derivedcompoundref.text)
             else:
-                ret.append(self._cache.get(refid))
+                try:
+                    ret.append(self._cache.get(refid))
+                except KeyError:
+                    ret.append(derivedcompoundref.text)
         return ret
 
     @property
@@ -895,7 +936,14 @@ class Node:
     @property
     def reimplements(self) -> "Node":
         reimp = self._xml.find("reimplements")
-        return self._cache.get(reimp.get("refid")) if reimp is not None else None
+        if reimp is not None:
+            refid = reimp.get("refid")
+            if refid is not None:
+                try:
+                    return self._cache.get(refid)
+                except KeyError:
+                    pass
+        return None
 
     @property
     def print_node_recursive(self) -> str:
