@@ -248,7 +248,11 @@ class XmlParser:
                 ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[item.get("kind")])]), Br(), lst))
             elif item.tag == "simplesect":
                 kind = item.get("kind")
-                ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
+                title = item.find("title")
+                if title is not None and title.text and title.text.strip():
+                    ret.extend((Br(), MdBold(self.paras(title)), Br()))
+                elif kind in SIMPLE_SECTIONS:
+                    ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
                 if kind != "see":
                     ret.append(Br())
                 else:
