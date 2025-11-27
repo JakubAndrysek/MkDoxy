@@ -237,16 +237,16 @@ class XmlParser:
                     name = parameteritem.find("parameternamelist").find("parametername")
                     description = parameteritem.find("parameterdescription").findall("para")
                     par = MdParagraph([])
-                    if name is not None and len(name) > 0:
-                        par.extend(self.paras(name))
-                    else:
-                        par.append(Code(name.text))
-                    par.append(Text(" "))
                     if "direction" in name.attrib:
                         if name.attrib["direction"] == "inout":
                             par.append(Text("[in/out] "))
                         else:
                             par.append(Text(f"[{name.attrib['direction']}] "))
+                    if name is not None and len(name) > 0:
+                        par.extend(self.paras(name))
+                    else:
+                        par.append(Code(name.text))
+                    par.append(Text(" "))
                     for ip in description:
                         par.extend(self.paras(ip))
                     lst.append(par)
