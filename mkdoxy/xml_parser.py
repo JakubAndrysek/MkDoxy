@@ -242,6 +242,11 @@ class XmlParser:
                     else:
                         par.append(Code(name.text))
                     par.append(Text(" "))
+                    if "direction" in name.attrib:
+                        if name.attrib["direction"] == "inout":
+                            par.append(Text("[in/out] "))
+                        else:
+                            par.append(Text(f"[{name.attrib['direction']}] "))
                     for ip in description:
                         par.extend(self.paras(ip))
                     lst.append(par)
