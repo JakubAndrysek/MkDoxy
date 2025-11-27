@@ -237,7 +237,7 @@ class XmlParser:
                     name = parameteritem.find("parameternamelist").find("parametername")
                     description = parameteritem.find("parameterdescription").findall("para")
                     par = MdParagraph([])
-                    if "direction" in name.attrib:
+                    if name is not None and "direction" in name.attrib:
                         if name.attrib["direction"] == "inout":
                             par.append(Text("[in/out] "))
                         else:
