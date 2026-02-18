@@ -46,6 +46,7 @@ class MkDoxy(BasePlugin):
         ("src-dirs", config_options.Type(str)),
         ("full-doc", config_options.Type(bool, default=True)),
         ("debug", config_options.Type(bool, default=False)),
+        ("enable_sorting", config_options.Type(bool, default=True)),
         # ('ignore-errors', config_options.Type(bool, default=False)),
         ("api-path", config_options.Type(str, default="{project_name}")),
         ("doxy-cfg", config_options.Type(dict, default={}, required=False)),
@@ -132,7 +133,7 @@ class MkDoxy(BasePlugin):
             parser = XmlParser(cache=cache, debug=self.debug)
 
             # Parse basic structure to recursive Nodes
-            self.doxygen[project_name] = Doxygen(doxygenRun.getOutputFolder(), parser=parser, cache=cache)
+            self.doxygen[project_name] = Doxygen(doxygenRun.getOutputFolder(), parser=parser, cache=cache,enable_sorting = project_data["enable_sorting"])
 
             # Print parsed files
             if self.debug:

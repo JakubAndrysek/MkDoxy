@@ -12,7 +12,7 @@ log: logging.Logger = logging.getLogger("mkdocs")
 
 
 class Doxygen:
-    def __init__(self, index_path: str, parser: XmlParser, cache: Cache):
+    def __init__(self, index_path: str, parser: XmlParser, cache: Cache,enable_sorting: bool):
         self.debug = parser.debug
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:
@@ -100,11 +100,12 @@ class Doxygen:
 
         if self.debug:
             log.info("Sorting...")
-        self._recursive_sort(self.root)
-        self._recursive_sort(self.groups)
-        self._recursive_sort(self.files)
-        self._recursive_sort(self.pages)
-        self._recursive_sort(self.examples)
+        if enable_sorting:
+            self._recursive_sort(self.root)
+            self._recursive_sort(self.groups)
+            self._recursive_sort(self.files)
+            self._recursive_sort(self.pages)
+            self._recursive_sort(self.examples)
 
     def _fix_parents(self, node: Node):
         if node.is_dir or node.is_root:
