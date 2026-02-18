@@ -46,8 +46,9 @@ class MkDoxy(BasePlugin):
         ("src-dirs", config_options.Type(str)),
         ("full-doc", config_options.Type(bool, default=True)),
         ("debug", config_options.Type(bool, default=False)),
+        ("enable_sorting", config_options.Type(bool, default=True)),
         # ('ignore-errors', config_options.Type(bool, default=False)),
-        ("api-path", config_options.Type(str, default=".")),
+        ("api-path", config_options.Type(str, default="{project_name}")),
         ("doxy-cfg", config_options.Type(dict, default={}, required=False)),
         ("doxy-cfg-file", config_options.Type(str, default="", required=False)),
         ("template-dir", config_options.Type(str, default="", required=False)),
@@ -84,6 +85,7 @@ class MkDoxy(BasePlugin):
                 raise exceptions.Abort(f"Aborted with {len(errors)} Configuration Errors!")
             elif strict and len(warnings) > 0:
                 raise exceptions.Abort(f"Aborted with {len(warnings)} Configuration Warnings in 'strict' mode!")
+            return cfg.data
 
         def tempDir(siteDir: str, tempDir: str, projectName: str) -> str:
             tempDoxyDir = PurePath.joinpath(Path(siteDir), Path(tempDir), Path(projectName))
@@ -106,7 +108,7 @@ class MkDoxy(BasePlugin):
             log.info(f"-> Start project '{project_name}'")
 
             # Check project config -> raise exceptions
-            checkConfig(self.config_project, project_data, config["strict"])
+            project_data = checkConfig(self.config_project, project_data, config["strict"])
 
             if self.config.get("save-api"):
                 tempDirApi = tempDir("", self.config.get("save-api"), project_name)
@@ -131,7 +133,7 @@ class MkDoxy(BasePlugin):
             parser = XmlParser(cache=cache, debug=self.debug)
 
             # Parse basic structure to recursive Nodes
-            self.doxygen[project_name] = Doxygen(doxygenRun.getOutputFolder(), parser=parser, cache=cache)
+            self.doxygen[project_name] = Doxygen(doxygenRun.getOutputFolder(), parser=parser, cache=cache,enable_sorting = project_data["enable_sorting"])
 
             # Print parsed files
             if self.debug:
@@ -149,7 +151,7 @@ class MkDoxy(BasePlugin):
                     generatorBase=self.generatorBase[project_name],
                     tempDoxyDir=tempDirApi,
                     siteDir=config["site_dir"],
-                    apiPath=project_data.get("api-path", project_name),
+                    apiPath=project_data.get("api-path").format(project_name=project_name),
                     doxygen=self.doxygen[project_name],
                     useDirectoryUrls=config["use_directory_urls"],
                 )
