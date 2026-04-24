@@ -65,6 +65,7 @@ class Kind(Enum):
     EXAMPLE = "example"
     GROUP = "group"
     INTERFACE = "interface"
+    CONCEPT = "concept"
     SIGNAL = "signal"
     SLOT = "slot"
     PROPERTY = "property"
@@ -89,6 +90,9 @@ class Kind(Enum):
 
     def is_interface(self) -> bool:
         return self == Kind.INTERFACE
+
+    def is_concept(self) -> bool:
+        return self == Kind.CONCEPT
 
     def is_class_or_struct(self) -> bool:
         return self in [Kind.CLASS, Kind.STRUCT, Kind.INTERFACE]
@@ -136,6 +140,7 @@ class Kind(Enum):
             Kind.ENUMVALUE,
             Kind.UNION,
             Kind.INTERFACE,
+            Kind.CONCEPT,
             Kind.FRIEND,
             Kind.SIGNAL,
             Kind.SLOT,
@@ -151,6 +156,7 @@ class Kind(Enum):
             Kind.STRUCT,
             Kind.UNION,
             Kind.INTERFACE,
+            Kind.CONCEPT,
         ]
 
     def is_member(self) -> bool:

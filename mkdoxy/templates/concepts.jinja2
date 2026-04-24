@@ -1,0 +1,22 @@
+{% filter indent(config.get('indent_level', 0), True) %}
+# Concept List
+
+{% if nodes|length > 0 %}
+Here are the concepts with brief descriptions:
+
+{% for node in nodes recursive %}
+{%- if node.is_concept %}
+* **concept** [**{{node.name_short}}**]({{node.url}}) {{node.brief}}
+{%- if node.has_children %}
+  {{- loop(node.children)|indent(4, true) }}
+{%- endif %}
+{%- elif node.is_namespace %}
+{%- if node.has_children %}
+  {{- loop(node.children)|indent(0, true) }}
+{%- endif %}
+{%- endif -%}
+{%- endfor %}
+{% else %}
+No concepts found.
+{% endif %}
+{% endfilter %}

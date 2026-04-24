@@ -1,6 +1,7 @@
 import logging
 import os
 from xml.etree import ElementTree
+from typing import Union
 
 from mkdoxy.cache import Cache
 from mkdoxy.constants import Kind, Visibility
@@ -10,10 +11,14 @@ from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
+SortingCfg = Union[bool, dict[str, bool]]
+
 
 class Doxygen:
-    def __init__(self, index_path: str, parser: XmlParser, cache: Cache):
+    def __init__(self, index_path: str, parser: XmlParser, cache: Cache, sorting_cfg: SortingCfg = True):
         self.debug = parser.debug
+        self.sorting_cfg = sorting_cfg
+
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:
             log.info(f"Loading XML from: {path_xml}")
@@ -27,6 +32,7 @@ class Doxygen:
         self.files = Node("root", None, self.ctx, self.parser, None)
         self.pages = Node("root", None, self.ctx, self.parser, None)
         self.examples = Node("root", None, self.ctx, self.parser, None)
+        self.concepts = Node("root", None, self.ctx, self.parser, None)
 
         for compound in xml.findall("compound"):
             kind = Kind.from_str(compound.get("kind"))
@@ -81,6 +87,16 @@ class Doxygen:
                 )
                 node._visibility = Visibility.PUBLIC
                 self.examples.add_child(node)
+            if kind == Kind.CONCEPT:
+                node = Node(
+                    os.path.join(index_path, f"{refid}.xml"),
+                    None,
+                    self.ctx,
+                    self.parser,
+                    self.root,
+                )
+                node._visibility = Visibility.PUBLIC
+                self.concepts.add_child(node)
 
         if self.debug:
             log.info("Deduplicating data... (may take a minute!)")
@@ -96,6 +112,13 @@ class Doxygen:
         for child in self.examples.children.copy():
             self._fix_duplicates(child, self.examples, [Kind.EXAMPLE])
 
+        for child in self.concepts.children.copy():
+            self._fix_duplicates(child, self.concepts, [Kind.CONCEPT])
+
+        # For Doxygen < 1.9.5, concepts are emitted as variables inside file compounds.
+        # After node parsing reclassifies them, collect them into the concepts list.
+        self._collect_concepts_from_files()
+
         self._fix_parents(self.files)
 
         if self.debug:
@@ -105,6 +128,7 @@ class Doxygen:
         self._recursive_sort(self.files)
         self._recursive_sort(self.pages)
         self._recursive_sort(self.examples)
+        self._recursive_sort(self.concepts)
 
     def _fix_parents(self, node: Node):
         if node.is_dir or node.is_root:
@@ -114,8 +138,49 @@ class Doxygen:
                 if child.is_dir:
                     self._fix_parents(child)
 
+    def _collect_concepts_from_files(self):
+        """Collect concept nodes from file/root trees into the concepts list.
+
+        For Doxygen < 1.9.5, concepts are emitted as variable members inside
+        file compounds. After Node parsing reclassifies them as Kind.CONCEPT,
+        this method finds them and adds them to self.concepts so they appear
+        in the concept list and get their own pages.
+        """
+        existing_refids = {c.refid for c in self.concepts.children}
+
+        def _find_concepts(nodes):
+            for node in nodes:
+                if node.kind == Kind.CONCEPT and node.refid not in existing_refids:
+                    existing_refids.add(node.refid)
+                    self.concepts.add_child(node)
+                if node.has_children:
+                    _find_concepts(node.children)
+
+        _find_concepts(self.files.children)
+        _find_concepts(self.root.children)
+
+    def _should_sort(self, node: Node) -> bool:
+        if isinstance(self.sorting_cfg, bool):
+            return self.sorting_cfg
+
+        if isinstance(self.sorting_cfg, dict):
+            if node.is_class_or_struct:
+                return self.sorting_cfg.get("classes", True)
+            if node.is_namespace:
+                return self.sorting_cfg.get("namespaces", True)
+            if node.is_file or node.is_dir:
+                return self.sorting_cfg.get("files", True)
+            if node.is_group:
+                return self.sorting_cfg.get("groups", True)
+
+            return self.sorting_cfg.get("default", True)
+
+        return True
+
     def _recursive_sort(self, node: Node):
-        node.sort_children()
+        if self._should_sort(node):
+            node.sort_children()
+
         for child in node.children:
             self._recursive_sort(child)
 
@@ -152,6 +217,11 @@ class Doxygen:
 
         log.info("Print files")
         for node in self.files.children:
+            self.print_node(node, "")
+        print("\n")
+
+        log.info("Print concepts")
+        for node in self.concepts.children:
             self.print_node(node, "")
 
     def print_node(self, node: Node, indent: str):

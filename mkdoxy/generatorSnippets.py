@@ -49,6 +49,8 @@ class GeneratorSnippets:
             "class.index": self.doxyClassIndex,
             "class.hierarchy": self.doxyClassHierarchy,
             "namespace.list": self.doxyNamespaceList,
+            "concept": self.doxyConcept,
+            "concept.list": self.doxyConceptList,
             "file.list": self.doxyFileList,
         }
 
@@ -401,6 +403,37 @@ class GeneratorSnippets:
         nodes = self.doxygen[project].files.children
         self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
         return self.generatorBase[project].fileindex(nodes, config)
+
+    def doxyConcept(self, snippet, project: str, config: dict):
+        errorMsg = self.checkConfig(snippet, project, config, ["name"])
+        if errorMsg:
+            return errorMsg
+
+        node = self.finder.doxyConcept(project, config.get("name"))
+        if node is None:
+            return self.doxyNodeIsNone(project, config, snippet)
+
+        if isinstance(node, Node):
+            self._setLinkPrefixNode(node, self.pageUrlPrefix + project + "/")
+            return self.generatorBase[project].member(node, config)
+        return self.doxyError(
+            project,
+            config,
+            "Incorrect concept configuration",
+            f"Did not find Concept with name: `{config.get('name')}`",
+            "Available concepts:",
+            "\n".join(node),
+            "yaml",
+            snippet,
+        )
+
+    def doxyConceptList(self, snippet, project: str, config):
+        errorMsg = self.checkConfig(snippet, project, config, [])
+        if errorMsg:
+            return errorMsg
+        nodes = self.doxygen[project].concepts.children
+        self._setLinkPrefixNodes(nodes, self.pageUrlPrefix + project + "/")
+        return self.generatorBase[project].concepts(nodes, config)
 
     def doxyNodeIsNone(self, project: str, config: dict, snippet: str) -> str:
         return self.doxyError(

@@ -48,6 +48,25 @@ class Finder:
     def doxyClass(self, project, className: str):
         return self._doxyParent(project, className, Kind.CLASS)
 
+    def doxyConcept(self, project, conceptName: str):
+        """Find a concept by its fully qualified name."""
+        concepts = recursive_find(self.doxygen[project].root.children, Kind.CONCEPT)
+        # Also search the dedicated concepts list
+        concepts.extend(recursive_find(self.doxygen[project].concepts.children, Kind.CONCEPT))
+        # Deduplicate by refid
+        seen = set()
+        unique_concepts = []
+        for c in concepts:
+            if c.refid not in seen:
+                seen.add(c.refid)
+                unique_concepts.append(c)
+        if unique_concepts:
+            for concept in unique_concepts:
+                if self._normalize(conceptName) == self._normalize(concept.name_long):
+                    return concept
+            return self.listToNames(unique_concepts)
+        return None
+
     def doxyNamespace(self, project, namespace: str):
         return self._doxyParent(project, namespace, Kind.NAMESPACE)
 

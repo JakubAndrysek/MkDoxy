@@ -14,7 +14,8 @@ from mkdoxy.markdown import (
     MdInlineEquation,
     MdItalic,
     MdLink,
-    MdList,
+    MdItemizedList,
+    MdOrderedList,
     MdParagraph,
     MdRenderer,
     MdTable,
@@ -22,7 +23,7 @@ from mkdoxy.markdown import (
     MdTableRow,
     Text,
 )
-from mkdoxy.utils import lookahead
+from mkdoxy.utils import lookahead, lang_from_filepath
 
 # https://www.doxygen.nl/manual/commands.html
 SIMPLE_SECTIONS = {
@@ -102,7 +103,10 @@ class XmlParser:
         ret = []
         # programlisting
         if p.tag == "programlisting":
-            code = MdCodeBlock([])
+            # Extract the language from the Doxygen filename attribute
+            lang = lang_from_filepath(filepath=p.get("filename"))
+
+            code = MdCodeBlock([], lang=lang)
             for codeline in p.findall("codeline"):
                 line = ""
                 for highlight in codeline.findall("highlight"):
@@ -166,8 +170,17 @@ class XmlParser:
             elif item.tag == "heading":
                 ret.append(MdHeader(int(item.get("level")), self.paras(item)))
 
-            elif item.tag in ["orderedlist", "itemizedlist"]:
-                lst = MdList([])
+            elif item.tag in "itemizedlist":
+                lst = MdItemizedList([])
+                for listitem in item.findall("listitem"):
+                    i = MdParagraph([])
+                    for para in listitem.findall("para"):
+                        i.extend(self.paras(para))
+                    lst.append(i)
+                ret.append(lst)
+
+            elif item.tag == "orderedlist":
+                lst = MdOrderedList([])
                 for listitem in item.findall("listitem"):
                     i = MdParagraph([])
                     for para in listitem.findall("para"):
@@ -232,7 +245,7 @@ class XmlParser:
                     ret.extend(MdParagraph(self.paras(para)) for para in listitem.findall("para"))
             elif item.tag == "parameterlist":
                 parameteritems = item.findall("parameteritem")
-                lst = MdList([])
+                lst = MdItemizedList([])
                 for parameteritem in parameteritems:
                     name = parameteritem.find("parameternamelist").find("parametername")
                     description = parameteritem.find("parameterdescription").findall("para")

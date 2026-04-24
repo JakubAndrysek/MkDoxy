@@ -93,18 +93,18 @@ class Code:
 
 
 class MdCodeBlock:
-    def __init__(self, lines: List[str]):
+    def __init__(self, lines: List[str], lang: str = ""):
         self.lines = lines
+        self.lang = lang
 
     def append(self, line: str):
         self.lines.append(line)
 
     def render(self, f: MdRenderer, indent: str):
-        f.write("```\n")
+        f.write(f"{indent}```{self.lang}\n")
         for line in self.lines:
-            f.write(line)
-            f.write("\n")
-        f.write("```\n")
+            f.write(f"{indent}{line}\n")
+        f.write(f"{indent}```\n")
 
 
 class MdBlockQuote(Md):
@@ -152,16 +152,28 @@ class MdLink(Md):
         f.write(f"]({self.url})")
 
 
-class MdList(Md):
+class MdItemizedList(Md):
     def __init__(self, children: List[Md]):
         Md.__init__(self, children)
 
     def render(self, f: MdRenderer, indent: str):
         f.eol()
         for child in self.children:
-            if not isinstance(child, MdList):
+            if not isinstance(child, MdItemizedList):
                 f.write(f"{indent}* ")
-            child.render(f, f"{indent}  ")
+            child.render(f, f"{indent}    ")
+
+
+class MdOrderedList(Md):
+    def __init__(self, children: List[Md]):
+        Md.__init__(self, children)
+
+    def render(self, f: MdRenderer, indent: str):
+        f.eol()
+        for i, child in enumerate(self.children):
+            f.write(f"{indent}{i + 1}. ")
+            child.render(f, f"{indent}    ")
+        f.eol()
 
 
 class MdLine:

@@ -52,6 +52,7 @@ Inherited by the following classes:
 {{ templateMemTab.render({'config': {}, 'node': node, 'parent': None, 'title': 'Modules', 'visibility': 'public', 'kinds': ['group'], 'static': False}) }}
 {{ templateMemTab.render({'config': {}, 'node': node, 'parent': None, 'title': 'Namespaces', 'visibility': 'public', 'kinds': ['namespace'], 'static': False}) }}
 {{ templateMemTab.render({'config': {}, 'node': node, 'parent': None, 'title': 'Classes', 'visibility': 'public', 'kinds': ['class', 'struct', 'interface'], 'static': False}) }}
+{{ templateMemTab.render({'config': {}, 'node': node, 'parent': None, 'title': 'Concepts', 'visibility': 'public', 'kinds': ['concept'], 'static': False}) }}
 
 {%- for visibility in ['public', 'protected'] -%}
 {%- for query in [['types', ['enum', 'union', 'typedef']], ['attributes', ['variable']], ['slots', ['slot']], ['properties', ['property']], ['signals', ['signal']], ['functions', ['function']]] -%}

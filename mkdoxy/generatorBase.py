@@ -328,6 +328,22 @@ class GeneratorBase:
         }
         return self.render(template, data)
 
+    def concepts(self, nodes: [Node], config: dict = None):
+        """! Render a concepts list page.
+        @details
+        @param nodes ([Node]): List of concept nodes to render.
+        @param config (dict): Config for the template. (default: None)
+        @return (str): Rendered concepts page.
+        """
+        if config is None:
+            config = {}
+        template, metaConfig = self.loadConfigAndTemplate("concepts")
+        data = {
+            "nodes": nodes,
+            "config": merge_two_dicts(config, metaConfig),
+        }
+        return self.render(template, data)
+
     def _find_base_classes(self, nodes: [Node], derived: Node):
         """! Find base classes of a node.
         @details
@@ -339,7 +355,7 @@ class GeneratorBase:
         for node in nodes:
             if isinstance(node, str):
                 ret.append({"refid": node, "derived": derived})
-            elif node.kind.is_parent() and not node.kind.is_namespace():
+            elif node.kind.is_parent() and not node.kind.is_namespace() and not node.kind.is_concept():
                 bases = node.base_classes
                 if len(bases) == 0:
                     ret.append(node)

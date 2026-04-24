@@ -73,6 +73,8 @@ class GeneratorAuto:
         self.namespaces(self.doxygen.root.children, defaultTemplateConfig)
         self.classes(self.doxygen.root.children, defaultTemplateConfig)
         self.hierarchy(self.doxygen.root.children, defaultTemplateConfig)
+        self.concepts_page(self.doxygen.concepts.children, defaultTemplateConfig)
+        self.concept_members(self.doxygen.concepts.children, defaultTemplateConfig)
         self.modules(self.doxygen.groups.children, defaultTemplateConfig)
         self.pages(self.doxygen.pages.children, defaultTemplateConfig)
         # self.examples(self.doxygen.examples.children) # TODO examples
@@ -232,6 +234,17 @@ class GeneratorAuto:
         output = self.generatorBase.classes(nodes, config)
         self.save(path, output)
 
+    def concepts_page(self, nodes: [Node], config: dict = None):
+        path = "concepts.md"
+
+        output = self.generatorBase.concepts(nodes, config)
+        self.save(path, output)
+
+    def concept_members(self, nodes: [Node], config: dict = None):
+        for node in nodes:
+            if node.is_concept:
+                self.member(node, config)
+
     def modules(self, nodes: [Node], config: dict = None):
         path = "modules.md"
 
@@ -339,6 +352,12 @@ class GeneratorAuto:
         output_summary += str(" " * (offset + 2) + generate_link("Class List", "annotated.md"))
         for node in self.doxygen.root.children:
             self._generate_recursive(output_summary, node, offset + 4)
+
+        if self.doxygen.concepts.children:
+            output_summary += str(" " * (offset + 2) + generate_link("Concept List", "concepts.md"))
+            for node in self.doxygen.concepts.children:
+                if node.kind.is_concept():
+                    output_summary += str(" " * (offset + 4) + generate_link(f"concept {node.name}", f"{node.refid}.md"))
 
         for key, val in ADDITIONAL_FILES.items():
             output_summary += str(" " * (offset + 2) + generate_link(key, val))

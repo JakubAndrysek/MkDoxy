@@ -118,3 +118,29 @@ def check_enabled_markdown_extensions(config: Config, mkdoxyConfig: Config) -> N
     # if mkdoxyConfig.get("emojis-enabled", False):
     # 	if 'pymdownx.emoji' not in enabled_extensions:
     # 		log.warning("The 'pymdownx.emoji' extension is not enabled. Some emojis may not be rendered correctly. https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/#configuration")
+
+
+def lang_from_filepath(filepath: str) -> str:
+    """Extracts and normalizes the programming language from a file path or extension."""
+    if not filepath:
+        return ""
+
+    # Safely extract the extension
+    ext = filepath.split('.')[-1].lower() if '.' in filepath else filepath.lower()
+
+    # Map file extensions to their standard Pygments lexer names
+    ext_map = {
+        "h": "cpp", "hpp": "cpp", "hxx": "cpp", "cpp": "cpp", "cxx": "cpp", "cc": "cpp",
+        "c": "c",
+        "py": "python",
+        "java": "java",
+        "cs": "csharp",
+        "js": "javascript",
+        "ts": "typescript",
+        "rs": "rust",
+        "go": "go",
+        "sh": "bash",
+        "cmake": "cmake"
+    }
+
+    return ext_map.get(ext, ext)
