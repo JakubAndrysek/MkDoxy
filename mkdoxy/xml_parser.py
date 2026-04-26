@@ -14,7 +14,8 @@ from mkdoxy.markdown import (
     MdInlineEquation,
     MdItalic,
     MdLink,
-    MdList,
+    MdItemizedList,
+    MdOrderedList,
     MdParagraph,
     MdRenderer,
     MdTable,
@@ -22,7 +23,7 @@ from mkdoxy.markdown import (
     MdTableRow,
     Text,
 )
-from mkdoxy.utils import lookahead
+from mkdoxy.utils import lookahead, lang_from_filepath
 
 # https://www.doxygen.nl/manual/commands.html
 SIMPLE_SECTIONS = {
@@ -102,7 +103,10 @@ class XmlParser:
         ret = []
         # programlisting
         if p.tag == "programlisting":
-            code = MdCodeBlock([])
+            # Extract the language from the Doxygen filename attribute
+            lang = lang_from_filepath(filepath=p.get("filename"))
+
+            code = MdCodeBlock([], lang=lang)
             for codeline in p.findall("codeline"):
                 line = ""
                 for highlight in codeline.findall("highlight"):
@@ -152,22 +156,30 @@ class XmlParser:
                 for row in item.findall("row"):
                     r = MdTableRow([])
                     for cell in row.findall("entry"):
+                        cell_contents = []
                         for para in cell.findall("para"):
-                            r.append(MdTableCell(self.paras(para)))
+                            cell_contents.extend(self.paras(para))
+                        r.append(MdTableCell(cell_contents))
                     t.append(r)
                 ret.append(t)
 
             elif item.tag == "blockquote":
-                b = MdBlockQuote([])
-                for para in item.findall("para"):
-                    b.extend(self.paras(para))
-                ret.append(b)
+                ret.append(MdBlockQuote(self.paras(item)))
 
             elif item.tag == "heading":
                 ret.append(MdHeader(int(item.get("level")), self.paras(item)))
 
-            elif item.tag in ["orderedlist", "itemizedlist"]:
-                lst = MdList([])
+            elif item.tag in "itemizedlist":
+                lst = MdItemizedList([])
+                for listitem in item.findall("listitem"):
+                    i = MdParagraph([])
+                    for para in listitem.findall("para"):
+                        i.extend(self.paras(para))
+                    lst.append(i)
+                ret.append(lst)
+
+            elif item.tag == "orderedlist":
+                lst = MdOrderedList([])
                 for listitem in item.findall("listitem"):
                     i = MdParagraph([])
                     for para in listitem.findall("para"):
@@ -232,7 +244,7 @@ class XmlParser:
                     ret.extend(MdParagraph(self.paras(para)) for para in listitem.findall("para"))
             elif item.tag == "parameterlist":
                 parameteritems = item.findall("parameteritem")
-                lst = MdList([])
+                lst = MdItemizedList([])
                 for parameteritem in parameteritems:
                     name = parameteritem.find("parameternamelist").find("parametername")
                     description = parameteritem.find("parameterdescription").findall("para")
@@ -279,9 +291,20 @@ class XmlParser:
 
             elif item.tag == "emphasis":
                 ret.append(MdItalic(self.paras(item)))
+
             elif item.tag == "formula" and item.text:
-                equation = item.text.strip("$").strip()
-                if len(p) == 1 and not item.tail:
+                equation = item.text.strip()
+                is_block_explicit = False
+
+                # Check for Doxygen's multiline formula block markers: \f[ ... \f]
+                if equation.startswith("\\[") and equation.endswith("\\]"):
+                    equation = equation[2:-2].strip()
+                    is_block_explicit = True
+                else: # Strip standard markers for \f$ ... \f$
+                    equation = equation.strip("$").strip()
+
+                # Force block equation if \f[ was used, OR if it's the only item in the paragraph (ignoring empty whitespace tails)
+                if is_block_explicit or (len(p) == 1 and not (item.tail and item.tail.strip())):
                     ret.append(MdBlockEquation(equation))
                 else:
                     ret.append(MdInlineEquation(equation))

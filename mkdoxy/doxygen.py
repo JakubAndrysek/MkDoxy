@@ -1,6 +1,7 @@
 import logging
 import os
 from xml.etree import ElementTree
+from typing import Union
 
 from mkdoxy.cache import Cache
 from mkdoxy.constants import Kind, Visibility
@@ -10,10 +11,14 @@ from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")
 
+SortingCfg = Union[bool, dict[str, bool]]
+
 
 class Doxygen:
-    def __init__(self, index_path: str, parser: XmlParser, cache: Cache):
+    def __init__(self, index_path: str, parser: XmlParser, cache: Cache, sorting_cfg: SortingCfg = True):
         self.debug = parser.debug
+        self.sorting_cfg = sorting_cfg
+
         path_xml = os.path.join(index_path, "index.xml")
         if self.debug:
             log.info(f"Loading XML from: {path_xml}")
@@ -114,8 +119,28 @@ class Doxygen:
                 if child.is_dir:
                     self._fix_parents(child)
 
+    def _should_sort(self, node: Node) -> bool:
+        if isinstance(self.sorting_cfg, bool):
+            return self.sorting_cfg
+
+        if isinstance(self.sorting_cfg, dict):
+            if node.is_class_or_struct:
+                return self.sorting_cfg.get("classes", True)
+            if node.is_namespace:
+                return self.sorting_cfg.get("namespaces", True)
+            if node.is_file or node.is_dir:
+                return self.sorting_cfg.get("files", True)
+            if node.is_group:
+                return self.sorting_cfg.get("groups", True)
+
+            return self.sorting_cfg.get("default", True)
+
+        return True
+
     def _recursive_sort(self, node: Node):
-        node.sort_children()
+        if self._should_sort(node):
+            node.sort_children()
+
         for child in node.children:
             self._recursive_sort(child)
 

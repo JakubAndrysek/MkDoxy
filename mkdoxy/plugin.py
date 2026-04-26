@@ -51,6 +51,9 @@ class MkDoxy(BasePlugin):
         ("doxy-cfg", config_options.Type(dict, default={}, required=False)),
         ("doxy-cfg-file", config_options.Type(str, default="", required=False)),
         ("template-dir", config_options.Type(str, default="", required=False)),
+        ("sorting", config_options.Type((bool, dict), default=True)),
+        ("hideparams", config_options.Type(bool, default=False)),
+        #TODO: hidetparams
     )
 
     def is_enabled(self) -> bool:
@@ -114,11 +117,19 @@ class MkDoxy(BasePlugin):
                 tempDirApi = tempDir(config["site_dir"], "assets/.doxy/", project_name)
 
             # Check src changes -> run Doxygen
+            doxy_cfg_override = project_data.get("doxy-cfg", {})
+            if project_data.get("hideparams", False):
+                hideparams_alias = 'hideparams="@xmlonly <hideparams/> @endxmlonly"'
+                if "ALIASES" in doxy_cfg_override:
+                    doxy_cfg_override["ALIASES"] += f" {hideparams_alias}"
+                else:
+                    doxy_cfg_override["ALIASES"] = hideparams_alias
+
             doxygenRun = DoxygenRun(
                 self.config["doxygen-bin-path"],
                 project_data.get("src-dirs"),
                 tempDirApi,
-                project_data.get("doxy-cfg", {}),
+                doxy_cfg_override,
                 project_data.get("doxy-cfg-file", ""),
             )
             if doxygenRun.checkAndRun():
@@ -131,7 +142,12 @@ class MkDoxy(BasePlugin):
             parser = XmlParser(cache=cache, debug=self.debug)
 
             # Parse basic structure to recursive Nodes
-            self.doxygen[project_name] = Doxygen(doxygenRun.getOutputFolder(), parser=parser, cache=cache)
+            self.doxygen[project_name] = Doxygen(
+                doxygenRun.getOutputFolder(),
+                parser=parser,
+                cache=cache,
+                sorting_cfg=project_data.get("sorting", True)
+            )
 
             # Print parsed files
             if self.debug:

@@ -8,7 +8,7 @@ from mkdoxy.constants import OVERLOAD_OPERATORS, Kind, Visibility
 from mkdoxy.markdown import escape
 from mkdoxy.project import ProjectContext
 from mkdoxy.property import Property
-from mkdoxy.utils import split_safe
+from mkdoxy.utils import split_safe, lang_from_filepath
 from mkdoxy.xml_parser import XmlParser
 
 log: logging.Logger = logging.getLogger("mkdocs")
@@ -605,18 +605,47 @@ class Node:
 
     @property
     def suffix(self) -> str:
+        def extract_param_names(params_array):
+            clean = []
+            for p in params_array:
+                # Remove default arguments (e.g., "= void")
+                p_no_default = p.split('=')[0].strip()
+                # Split by space and take the last word as the name
+                tokens = p_no_default.split()
+                if tokens:
+                    # Strip pointer/reference marks (e.g., int *N -> N)
+                    name = tokens[-1].replace('*', '').replace('&', '')
+                    clean.append(name)
+            return clean
+
         if self.is_parent:
             if self._templateparams.has():
-                return "&lt;" + ", ".join(self._templateparams.array(notype=True)) + "&gt;"
+                return "&lt;" + ", ".join(extract_param_names(self._templateparams.array(plain=True))) + "&gt;"
             else:
                 return ""
+
         elif self.is_function:
             return self._specifiers.md()
+
         elif self.is_variable:
-            return f" = {self._initializer.md()}" if self._initializer.has() else ""
+            ret = ""
+            if self._templateparams.has():
+                clean_params = extract_param_names(self._templateparams.array(plain=True))
+                if clean_params:
+                    ret += "&lt;" + ", ".join(clean_params) + "&gt; "
+
+            if self._initializer.has():
+                init_plain = self._initializer.plain().replace("`", "")
+                if init_plain.startswith("="):
+                    init_plain = init_plain[1:].strip()
+                ret += f"= `{init_plain}`"
+
+            return ret.strip()
+
         elif self.is_define:
             test = self._initializer.md()
             return "" if "\n" in test else test
+
         else:
             return ""
 
@@ -634,7 +663,23 @@ class Node:
 
     @property
     def code_language(self) -> str:
-        return self._language
+        # Try to get it explicitly from the XML node first
+        lang = self._xml.get("language") if self._xml is not None else None
+        if lang:
+            return lang
+
+        # Infer the language from the file extension directly from XML
+        location = self._xml.find("location") if self._xml is not None else None
+        if location is not None and location.get("file"):
+            mapped_lang = lang_from_filepath(location.get("file"))
+            if mapped_lang:
+                return mapped_lang
+
+        # Fall back to the inherited _language property
+        if getattr(self, "_language", None):
+            return self._language
+
+        return ""
 
     @property
     def codeblock(self) -> str:
@@ -655,7 +700,9 @@ class Node:
             if self.is_static:
                 typ = f"static {typ}"
 
-            if self._params.has():
+            if self._xml is not None and self._xml.find(".//hideparams") is not None:
+                code.append(typ + self.name_full_unescaped + " (...) " + self._specifiers.parsed())
+            elif self._params.has():
                 code.append(typ + self.name_full_unescaped + " (")
                 params = self._params.array(plain=True)
                 for i, param in enumerate(params):
@@ -701,9 +748,34 @@ class Node:
             else:
                 code.append(f"#define {self.name_full_unescaped} {self._initializer.plain()}")
 
+        elif self.is_variable:
+            if self._templateparams.has():
+                code.append(f"template<{self._templateparams.plain()}>")
+
+            definition = self._definition.plain()
+            if definition.endswith(";"):
+                definition = definition[:-1]
+
+            if self._initializer.has():
+                init_plain = self._initializer.plain().replace("`", "")
+                if init_plain.startswith("="):
+                    init_plain = init_plain[1:].strip()
+                definition += f" = {init_plain}"
+
+            definition += ";"
+            code.append(definition)
+
         else:
+            if self._templateparams.has():
+                code.append(f"template<{self._templateparams.plain()}>")
+
             code.append(self._definition.plain())
-        return "\n".join(["```", *code, "```"])
+
+        lang = self.code_language.lower()
+        if lang == "c++":
+            lang = "cpp"
+
+        return "\n".join([f"```{lang}", *code, "```"])
 
     @property
     def has_base_classes(self) -> bool:
@@ -789,6 +861,9 @@ class Node:
 
     @property
     def params(self) -> str:
+        if self._xml is not None and self._xml.find(".//hideparams") is not None:
+            return "(...)"
+
         if self._params.has():
             return f"({self._params.md()})"
         elif self.is_function:
