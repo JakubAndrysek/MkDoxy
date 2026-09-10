@@ -289,3 +289,4 @@ tests/files/.mkdoxy
 .mkdoxy/
 temp/
 local/
+venv*
