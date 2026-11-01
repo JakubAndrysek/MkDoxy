@@ -3,7 +3,7 @@
 **[MkDoxy](https://mkdoxy.kubaandrysek.cz/)** plugin for **[MkDocs](https://www.mkdocs.org/)** generates API documentation based on **[Doxygen](https://www.doxygen.nl)** comments and **[code snippets](/intro)** in your markdown files.
 
 <p align="center">
-<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FJakubAndrysek%2FMkDoxy&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=true"/></a>
+<a href="https://hit.kubaandrysek.cz/?url=https%3A%2F%2Fgithub.com%2FJakubAndrysek%2FMkDoxy%3Fsource%3Dhome&chart=true"><img src="https://hit.kubaandrysek.cz/?url=https%3A%2F%2Fgithub.com%2FJakubAndrysek%2FMkDoxy%3Fsource%3Dhome"/></a>
 <a href="https://github.com/JakubAndrysek/MkDoxy/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/JakubAndrysek/MkDoxy?style=flat-square"></a>
 <a href="https://github.com/JakubAndrysek/MkDoxy/releases" target="_blank"><img src="https://img.shields.io/github/v/release/JakubAndrysek/MkDoxy?style=flat-square"></a>
 <a href="https://github.com/JakubAndrysek/MkDoxy/stargazers" target="_blank"><img src="https://img.shields.io/github/stars/JakubAndrysek/MkDoxy?style=flat-square"></a>
@@ -13,13 +13,21 @@
 <a href="https://www.pepy.tech/projects/mkdoxy" target="_blank"><img src="https://static.pepy.tech/badge/mkdoxy"></a>
 </p>
 
-> **Warning**
-> **Extension is in development**, and a few features are not working properly.
-> More information in [Discussions](https://github.com/JakubAndrysek/MkDoxy/discussions) and [Issues](https://github.com/JakubAndrysek/MkDoxy/issues) pages.
-
+> **🤝 Looking for a maintainer**
+>
+> MkDoxy has been quiet lately — I no longer have the time to give it the care it deserves, and I'd love for it to stay alive and keep helping people.
+> If you use MkDoxy and would like to take part in its day-to-day maintenance (triaging issues, reviewing PRs, shipping releases), I'd be happy to hear from you.
+> Improving the automated test suite would be a great way to start.
+>
+> The MkDocs ecosystem is also in flux (see [MkDocs 2.0, ProperDocs, Zensical](https://fpgmaas.com/blog/collapse-of-mkdocs/)), so the project's future direction is open for discussion.
+>
+> Interested? Open a [discussion](https://github.com/JakubAndrysek/MkDoxy/discussions/160) or email **email@kubaandrysek.cz**
+> and tell me a bit about yourself and your experience with open source.
+>
+> Some features may not work properly. More information in [Discussions](https://github.com/JakubAndrysek/MkDoxy/discussions) and [Issues](https://github.com/JakubAndrysek/MkDoxy/issues).
 ---
 
-## [:material-home-edit: Online Demo](https://jakubandrysek.github.io/MkDoxy-demo/) and [:simple-github: Demo source-code ](https://github.com/JakubAndrysek/MkDoxy-demo)
+## [Online Demo](https://jakubandrysek.github.io/MkDoxy-demo/) and [Demo source-code ](https://github.com/JakubAndrysek/MkDoxy-demo)
 
 ---
 
