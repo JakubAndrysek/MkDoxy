@@ -24,6 +24,7 @@ class Node:
         parent: "Node",
         refid: str = None,
         debug: bool = False,
+        kind: Kind = None,
     ):
         self._children: ["Node"] = []
         self._cache = project.cache
@@ -66,7 +67,7 @@ class Node:
             self._title = title.text if title is not None else self._name
         else:
             self._xml = xml
-            self._kind = Kind.from_str(self._xml.get("kind"))
+            self._kind = kind if kind is not None else Kind.from_str(self._xml.get("kind"))
             self._language = parent.code_language
             self._refid = refid if refid is not None else self._xml.get("id")
             self._cache.add(self._refid, self)
@@ -90,13 +91,14 @@ class Node:
         self._programlisting = Property.Programlisting(self._xml, parser, self._kind)
 
     def __repr__(self):
-        return f"Node: {self.name} refid: {self._refid}"
+        return f"Node: {self.name} kind: {self._kind} refid: {self._refid}"
 
     def add_child(self, child: "Node"):
         self._children.append(child)
 
     def sort_children(self):
-        self._children.sort(key=lambda x: x._name, reverse=False)
+        if not self._kind.is_enum() :
+            self._children.sort(key=lambda x: x._name, reverse=False)
 
     def _check_for_children(self):
         for innergroup in self._xml.findall("innergroup"):
@@ -217,7 +219,17 @@ class Node:
         for sectiondef in self._xml.findall("sectiondef"):
             for memberdef in sectiondef.findall("memberdef"):
                 kind = Kind.from_str(memberdef.get("kind"))
-                if kind.is_language():
+                if kind == Kind.ENUM:
+                    enum = Node(None, memberdef, self.project, self._parser, self)
+                    self.add_child(enum)
+
+                    for enumvalue in memberdef.findall("enumvalue"):
+                        child = Node(None, enumvalue, self.project, self._parser, enum,
+                                kind=Kind.ENUMVALUE)
+
+                        enum.add_child(child)
+
+                elif kind.is_language():
                     if self._kind in [Kind.GROUP, Kind.DIR, Kind.FILE]:
                         refid = memberdef.get("id")
                         try:
@@ -827,6 +839,10 @@ class Node:
     @property
     def initializer(self) -> str:
         return self._initializer.md()
+
+    @property
+    def initializer_plain(self) -> str:
+        return self._initializer.plain()
 
     @property
     def has_definition(self) -> bool:

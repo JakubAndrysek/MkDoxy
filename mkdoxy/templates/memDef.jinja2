@@ -31,6 +31,23 @@ Implements [*{{node.reimplements.name_long}}*]({{node.reimplements.url}})
 {% endif %}
 {%- endif -%}
 
+{# Emit documentation for any nested members #}
+{%- if node.has_children %}
+#### Members
+
+{% for c in node.children -%}
+*{{ c.name }}*
+{%- if c.has_initializer %}
+({{ c.initializer_plain }})
+{%- endif %}
+
+{{ c.brief | use_code_language(node.code_language) }}
+
+{{ c.details | use_code_language(node.code_language) }}
+
+{% endfor -%}
+{%- endif -%}
+
 {% endfilter %}
 
 <hr>
