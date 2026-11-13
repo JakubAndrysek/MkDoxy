@@ -58,6 +58,7 @@ class DoxygenRun:
         self.doxyConfigFile: Optional[str] = doxyConfigFile
         self.hashFileName: str = "hashChanges.yaml"
         self.hashFilePath: PurePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
+        self.hashNew: Optional[str] = None
         self.doxyCfg: dict = self.setDoxyCfg(doxyCfgNew)
 
     def setDoxyCfg(self, doxyCfgNew: dict) -> dict:
@@ -190,15 +191,16 @@ class DoxygenRun:
             ) from e
         return dox_dict
 
+    def _writeHash(self, hash_value: str):
+        Path(self.hashFilePath).parent.mkdir(parents=True, exist_ok=True)
+        with open(self.hashFilePath, "w") as file:
+            file.write(hash_value)
+
     def hasChanged(self) -> bool:
         """! Check if the source files have changed since the last run.
         @details
         @return: (bool) True if the source files have changed since the last run.
         """
-
-        def hashWrite(filename: PurePath, hash: str):
-            with open(filename, "w") as file:
-                file.write(hash)
 
         def hashRead(filename: PurePath) -> str:
             with open(filename, "r") as file:
@@ -221,12 +223,14 @@ class DoxygenRun:
                 # print(f"{path}: {sha1.hexdigest()}")
 
         hashNew = sha1.hexdigest()
+        self.hashNew = hashNew
         if Path(self.hashFilePath).is_file() and Path(self.getOutputFolder(), "index.xml").is_file():
             hashOld = hashRead(self.hashFilePath)
             if hashNew == hashOld:
                 return False
 
-        hashWrite(self.hashFilePath, hashNew)
+        if Path(self.hashFilePath).is_file():
+            Path(self.hashFilePath).unlink()
         return True
 
     def run(self):
@@ -250,8 +254,8 @@ class DoxygenRun:
         """
         if self.hasChanged():
             self.run()
-            if not Path(self.getOutputFolder(), "index.xml").is_file() and Path(self.hashFilePath).is_file():
-                Path(self.hashFilePath).unlink()
+            if Path(self.getOutputFolder(), "index.xml").is_file() and self.hashNew is not None:
+                self._writeHash(self.hashNew)
             return True
         else:
             return False

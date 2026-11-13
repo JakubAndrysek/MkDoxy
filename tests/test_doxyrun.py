@@ -182,3 +182,54 @@ def test_str2dox_dict_expanded_config_errors():
 
     with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
         doxygen_run.str2dox_dict(dox_str)
+
+
+def test_check_and_run_persists_hash_only_when_index_xml_exists(tmp_path, monkeypatch):
+    src_dir = tmp_path / "src"
+    src_dir.mkdir()
+    (src_dir / "header.h").write_text("class Foo { ~Foo(); };", encoding="utf-8")
+    temp_doxy = tmp_path / "doxy"
+    temp_doxy.mkdir()
+
+    monkeypatch.setattr(DoxygenRun, "is_doxygen_valid_path", lambda self, p: True)
+
+    doxygen_run = DoxygenRun(
+        doxygenBinPath="doxygen",
+        doxygenSource=str(src_dir),
+        tempDoxyFolder=str(temp_doxy),
+        doxyCfgNew={},
+    )
+
+    # First run fails to generate xml/index.xml -> hashChanges.yaml must not be persisted
+    monkeypatch.setattr(DoxygenRun, "run", lambda self: None)
+    assert doxygen_run.checkAndRun() is True
+    assert not (temp_doxy / "hashChanges.yaml").exists()
+
+    # Second run creates xml/index.xml -> hashChanges.yaml is persisted and subsequent check returns False
+    def fake_success_run(self):
+        xml_dir = temp_doxy / "xml"
+        xml_dir.mkdir(parents=True, exist_ok=True)
+        (xml_dir / "index.xml").write_text("<doxygenindex/>", encoding="utf-8")
+
+    monkeypatch.setattr(DoxygenRun, "run", fake_success_run)
+    assert doxygen_run.checkAndRun() is True
+    assert (temp_doxy / "hashChanges.yaml").is_file()
+    assert doxygen_run.checkAndRun() is False
+
+
+def test_node_destructor_overline_normalized():
+    from xml.etree import ElementTree
+    from mkdoxy.constants import Kind
+    from mkdoxy.property import Property
+
+    xml_el = ElementTree.fromstring(
+        "<memberdef kind='function' id='classFoo_1a1' prot='public'>"
+        "<definition>Foo::‾Foo</definition>"
+        "<name>‾Foo</name>"
+        "<argsstring>()</argsstring>"
+        "</memberdef>"
+    )
+    defn = Property.Definition(xml_el, None, Kind.FUNCTION)
+    assert defn.plain() == "Foo::~Foo;"
+
+

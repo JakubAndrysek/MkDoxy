@@ -324,7 +324,7 @@ class Property:
         def plain(self) -> str:
             definition = self.xml.find("definition")
             if definition is not None and definition.text:
-                return f"{definition.text};"
+                return f"{definition.text.replace('‾', '~')};"
             else:
                 return ""
 
