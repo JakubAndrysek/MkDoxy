@@ -316,7 +316,7 @@ class GeneratorBase:
 
         for klass in classes:
             asd = klass.name_short[0].lower()
-            dictionary[asd].append(klass)
+            dictionary.setdefault(asd, []).append(klass)
 
         for letter in list(dictionary):
             if len(dictionary[letter]) == 0:

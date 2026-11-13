@@ -250,6 +250,8 @@ class DoxygenRun:
         """
         if self.hasChanged():
             self.run()
+            if not Path(self.getOutputFolder(), "index.xml").is_file() and Path(self.hashFilePath).is_file():
+                Path(self.hashFilePath).unlink()
             return True
         else:
             return False
