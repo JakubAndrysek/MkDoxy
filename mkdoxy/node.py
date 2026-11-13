@@ -262,12 +262,12 @@ class Node:
 
         name = self._xml.find("name")
         if name is not None and name.text:
-            self._name = name.text
+            self._name = name.text.replace("‾", "~")
         else:
             # Doxygen doesn't give anonymous unions any name
             qualifiedname = self._xml.find("qualifiedname")
             if qualifiedname is not None and qualifiedname.text:
-                self._name = qualifiedname.text
+                self._name = qualifiedname.text.replace("‾", "~")
             else:
                 self._name = self._refid
 
