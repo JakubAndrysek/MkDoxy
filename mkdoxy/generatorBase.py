@@ -498,7 +498,10 @@ class GeneratorBase:
 
         # Sort items into the dictionary
         for found in found_nodes:
-            dictionary[found.name_tokens[-1][0].lower()].append(found)
+            key = found.name_tokens[-1][0].lower()
+            if key == "‾":
+                key = "~"
+            dictionary.setdefault(key, []).append(found)
 
         # Delete unused letters
         for letter in list(dictionary):

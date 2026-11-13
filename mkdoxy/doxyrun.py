@@ -221,7 +221,7 @@ class DoxygenRun:
                 # print(f"{path}: {sha1.hexdigest()}")
 
         hashNew = sha1.hexdigest()
-        if Path(self.hashFilePath).is_file():
+        if Path(self.hashFilePath).is_file() and Path(self.getOutputFolder(), "index.xml").is_file():
             hashOld = hashRead(self.hashFilePath)
             if hashNew == hashOld:
                 return False
