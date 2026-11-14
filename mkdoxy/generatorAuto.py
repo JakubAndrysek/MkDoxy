@@ -11,7 +11,7 @@ from mkdoxy.node import Node
 log: logging.Logger = logging.getLogger("mkdocs")
 
 ADDITIONAL_FILES = {
-    "Namespace ListNamespace List": "namespaces.md",
+    "Namespace List": "namespaces.md",
     "Namespace Members": "namespace_members.md",
     "Namespace Member Functions": "namespace_member_functions.md",
     "Namespace Member Variables": "namespace_member_variables.md",
@@ -328,22 +328,22 @@ class GeneratorAuto:
 
     def summary(self, defaultTemplateConfig: dict):
         offset = 0
-        output_summary = "" + str(" " * (offset + 2) + generate_link("Related Pages", "pages.md"))
+        output_summary = "" + str(" " * offset + generate_link("Related Pages", "pages.md"))
         for node in self.doxygen.pages.children:
             self._generate_recursive_pages(output_summary, node, offset + 4)
 
-        output_summary += str(" " * (offset + 2) + generate_link("Modules", "modules.md"))
+        output_summary += str(" " * offset + generate_link("Modules", "modules.md"))
         for node in self.doxygen.groups.children:
             self._generate_recursive_groups(output_summary, node, offset + 4)
 
-        output_summary += str(" " * (offset + 2) + generate_link("Class List", "annotated.md"))
+        output_summary += str(" " * offset + generate_link("Class List", "annotated.md"))
         for node in self.doxygen.root.children:
             self._generate_recursive(output_summary, node, offset + 4)
 
         for key, val in ADDITIONAL_FILES.items():
-            output_summary += str(" " * (offset + 2) + generate_link(key, val))
+            output_summary += str(" " * offset + generate_link(key, val))
 
-        output_summary += str(" " * (offset + 2) + generate_link("Files", "files.md", end="\n"))
+        output_summary += str(" " * offset + generate_link("Files", "files.md", end="\n"))
         for node in self.doxygen.files.children:
             self._generate_recursive_files(output_summary, node, offset + 4, defaultTemplateConfig)
 
@@ -351,8 +351,8 @@ class GeneratorAuto:
         # for node in self.doxygen.examples.children:
         # 	self._generate_recursive_examples(node, offset + 4)
 
-        output_summary += str(" " * (offset + 2) + generate_link("File Variables", "variables.md"))
-        output_summary += str(" " * (offset + 2) + generate_link("File Functions", "functions.md"))
-        output_summary += str(" " * (offset + 2) + generate_link("File Macros", "macros.md"))
+        output_summary += str(" " * offset + generate_link("File Variables", "variables.md"))
+        output_summary += str(" " * offset + generate_link("File Functions", "functions.md"))
+        output_summary += str(" " * offset + generate_link("File Macros", "macros.md"))
 
         self.save("links.md", output_summary)
