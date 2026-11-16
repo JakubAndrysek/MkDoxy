@@ -5,6 +5,9 @@ on:
       - main
 permissions:
   contents: read
+concurrency:
+  group: deploy-docs-gh-pages
+  cancel-in-progress: true
 jobs:
   deploy:
     # Only this trusted main-branch job needs to push the generated gh-pages branch.
