@@ -68,7 +68,6 @@ def test_parameter_documentation(directions: BuiltProject) -> None:
     assert linked_page.read_text(encoding="utf-8") == html
 
 
-@pytest.mark.xfail(strict=True, reason="Known missing parameter directions: issue #78 / PR #147", raises=AssertionError)
 @pytest.mark.parametrize("name,direction", [("source", "in"), ("destination", "out"), ("state", "in/out")])
 def test_parameter_directions(directions: BuiltProject, name: str, direction: str) -> None:
     markdown = directions.markdown("classDirectionExample.md")
