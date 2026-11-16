@@ -163,6 +163,15 @@ def test_xml_image_path_cannot_escape_source(tmp_path: Path) -> None:
         MkDoxy()._copy_image_assets(tmp_path / "xml", tmp_path / "api", image_names={"../private.svg"})
 
 
+def test_absolute_image_url_is_not_read_or_copied(tmp_path: Path) -> None:
+    private = tmp_path / "private.svg"
+    private.write_bytes(b"host file must not be published")
+    destination = tmp_path / "api"
+    assert MkDoxy()._copy_image_assets(tmp_path / "xml", destination, image_names={str(private)}) == []
+    assert private.read_bytes() == b"host file must not be published"
+    assert not destination.exists()
+
+
 def test_overlapping_output_cannot_replace_another_referenced_source(tmp_path: Path) -> None:
     from mkdocs.exceptions import PluginError
 

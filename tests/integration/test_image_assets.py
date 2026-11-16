@@ -89,6 +89,27 @@ def test_existing_documentation_image_collision(build_project: ProjectBuilder, i
             build_project("image_assets", prepare=prepare)
 
 
+@pytest.mark.parametrize("url", ["/media/site-image.svg", "https://example.com/remote.svg"])
+def test_markdown_image_urls_remain_urls(build_project: ProjectBuilder, url: str) -> None:
+    def prepare(root: Path) -> None:
+        header = root / "src/image_example.h"
+        header.write_text(
+            header.read_text(encoding="utf-8").replace(
+                " * SVG: resolution-independent pipeline diagram.",
+                f" * ![External image]({url})\n *\n * SVG: resolution-independent pipeline diagram.",
+            ),
+            encoding="utf-8",
+        )
+
+    project = build_project("image_assets", prepare=prepare)
+    assert f"![Image]({url})" in project.markdown("classImageExample.md")
+    parser = _ImageParser()
+    parser.feed(project.html("api/classImageExample/index.html"))
+    assert url in parser.sources
+    assert not (project.root / "site/api" / Path(urlsplit(url).path).name).exists()
+    assert (project.root / "site/api/pipeline.svg").read_bytes() == (project.root / "images/pipeline.svg").read_bytes()
+
+
 @pytest.mark.parametrize("api_path", ["xml", "xml/api"])
 def test_api_path_can_overlap_doxygen_xml(build_project: ProjectBuilder, api_path: str) -> None:
     project = build_project("image_assets", options=BuildOptions(api_path=api_path))

@@ -94,10 +94,14 @@ class MkDoxy(BasePlugin):
             if url.scheme or url.netloc:
                 continue  # Remote images are rendered as URLs, not copied locally.
             relative_path = Path(name)
+            if relative_path.is_absolute():
+                # Doxygen preserves site-root Markdown image URLs in XML.
+                # Leave them unchanged; never interpret them as host files.
+                continue
             if relative_path.suffix.lower() not in self._IMAGE_EXTENSIONS:
                 continue
             image_path = source_xml_dir / relative_path
-            if relative_path.is_absolute() or not image_path.resolve().is_relative_to(source_root):
+            if not image_path.resolve().is_relative_to(source_root):
                 raise exceptions.PluginError(f"Doxygen image points outside the XML directory: {image_path}")
             if not image_path.is_file():
                 raise exceptions.PluginError(f"Referenced Doxygen image is missing: {image_path}")

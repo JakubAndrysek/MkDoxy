@@ -151,6 +151,10 @@ before copying; use a separate output path to resolve that ambiguity. Generated
 cache/API paths must not overlap `docs_dir`, so a build cannot replace a
 hand-authored documentation source through its image-copy step. Symlinks that
 already resolve outside the XML source directory or API destination are rejected.
+Remote and site-root image URLs (such as `/media/example.svg`) remain unchanged;
+MkDoxy does not read or copy them from the host filesystem. The site must provide
+their targets separately. Relative asset paths that escape the XML directory
+are rejected.
 Build in a workspace writable only by trusted processes; these path checks do
 not provide isolation against concurrent filesystem changes.
 
