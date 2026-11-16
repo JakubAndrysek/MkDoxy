@@ -10,6 +10,7 @@ from typing import Callable
 import pytest
 
 from .project import BuiltProject
+from .runner import run_build
 
 
 @pytest.fixture(scope="module")
@@ -47,11 +48,11 @@ def build_project(tmp_path_factory: pytest.TempPathFactory) -> Callable[[str], B
         )
         command = [sys.executable, "-c", runner, str(source_root / "mkdoxy"), "build", "--clean", "--strict"]
         try:
-            result = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True, timeout=120)
-        except subprocess.TimeoutExpired as error:
-            pytest.fail(f"MkDocs build timed out in {root}: {error.stdout!r}\n{error.stderr!r}")
-        output = result.stdout + result.stderr
-        (root / "build.log").write_text(output, encoding="utf-8")
+            result = run_build(command, root, env)
+        except subprocess.TimeoutExpired:
+            output = (root / "build.log").read_text(encoding="utf-8", errors="replace")
+            pytest.fail(f"MkDocs build timed out in {root}:\n{output}")
+        output = result.stdout
         assert result.returncode == 0, f"MkDocs build failed in {root}:\n{output}"
         assert (root / "site" / "index.html").is_file(), output
         assert (root / "generated" / "api" / "xml" / "index.xml").is_file(), output

@@ -128,8 +128,11 @@ Small, repository-owned C++ and MkDocs projects live under
 temporary directory and invokes the current interpreter's `mkdocs build --clean
 --strict` with real Doxygen. Generated XML, Markdown, HTML, caches and a
 `build.log` stay in that directory; the fixture and developer caches are not
-modified. The subprocess receives a minimal environment without inherited
-credentials, and imports MkDoxy from the candidate checkout. This environment
+modified. Output is streamed to the log even on failure or timeout. On the Linux
+CI runners, a timeout terminates the entire build process group, including
+Doxygen. Windows uses `taskkill /T`; that cleanup path is not covered by the
+Linux process-lifetime regression test. The subprocess receives a minimal
+environment without inherited credentials, and imports MkDoxy from the candidate checkout. This environment
 is for reproducibility, not a sandbox for untrusted code.
 
 Run only integration tests or the remaining tests with:
@@ -141,8 +144,9 @@ uv run --locked --extra dev pytest tests/ -m "not integration"
 
 The existing `pytest tests/` CI command includes both. Doxygen must be on PATH;
 a missing executable, a build timeout or a failed strict build fails the test
-rather than silently skipping it. Use pytest's `--basetemp` option to choose a
-location for retained artifacts (pytest clears that directory before the run).
+rather than silently skipping it. A nonzero Doxygen exit status fails the build
+and reports its stdout and stderr even if XML was already generated. Use
+pytest's `--basetemp` option to choose a location for retained artifacts (pytest clears that directory before the run).
 The OS-provided Doxygen version is not locked; include its version when reporting
 failures. External demo builds remain a broader smoke test, not the source of
 these focused fixtures.
