@@ -2,18 +2,30 @@ name: MkDoxy test build demos with all supported python versions
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
+    name: demo (Python ${{ matrix.python-version }})
+    timeout-minutes: 20
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-24.04] # windows-latest, macos-latest requires doxygen to be installed manually
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Display Python version
@@ -23,10 +35,27 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
           sudo apt-get install doxygen
-      - name: Clone test repo
-        run: git clone https://github.com/JakubAndrysek/MkDoxy-demo.git demo
+      - name: Check out the reviewed demo revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: JakubAndrysek/MkDoxy-demo
+          ref: 5881c917e81dc850c5392c23e81fd1339d368268 # Add theme toggle
+          path: demo
+          persist-credentials: false
       - name: Build docs
+        working-directory: demo
+        env:
+          MKDOXY_SOURCE_DIR: ${{ github.workspace }}
         run: |
-          cd demo
           python -m pip install -r requirements.txt
+          python - <<'PYTHON'
+          import os
+          from pathlib import Path
+          import mkdoxy
+
+          expected = Path(os.environ["MKDOXY_SOURCE_DIR"]) / "mkdoxy"
+          actual = Path(mkdoxy.__file__).resolve().parent
+          if actual != expected.resolve():
+              raise RuntimeError(f"Demo must use this checkout: expected {expected}, got {actual}")
+          PYTHON
           mkdocs build --clean --verbose
