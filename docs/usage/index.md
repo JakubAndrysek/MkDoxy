@@ -2,6 +2,10 @@
 
 MkDoxy creates API documentation based on Doxygen comments and code snippets in your markdown files.
 
+See [Images and diagrams](images-and-diagrams.md) for image assets, configuration,
+required tools and the distinction between MkDoxy output and native Doxygen graphs.
+The [gallery](../examples/images-and-diagrams.md) shows the rendered examples.
+
 ```yaml
 site_name: "My documentation"
 

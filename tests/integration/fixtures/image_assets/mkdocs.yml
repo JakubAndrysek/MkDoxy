@@ -1,0 +1,19 @@
+site_name: Doxygen image integration test
+theme:
+  name: mkdocs
+plugins:
+  - mkdoxy:
+      projects:
+        api:
+          src-dirs: src
+          full-doc: true
+          doxy-cfg:
+            FILE_PATTERNS: '*.h'
+            EXTRACT_ALL: true
+            IMAGE_PATH: images
+            EXAMPLE_PATH: ''
+            GENERATE_HTML: false
+            GENERATE_LATEX: false
+      ignore-errors: false
+markdown_extensions:
+  - tables

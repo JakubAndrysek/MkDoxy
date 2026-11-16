@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="376pt" height="44pt" viewBox="0.00 0.00 376.00 44.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 40)">
+<title>Build</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-40 371.5,-40 371.5,4 -4,4" />
+
+<g id="node1" class="node">
+<title>Source</title>
+<polygon fill="#eef2ff" stroke="black" points="63.25,-36 0,-36 0,0 63.25,0 63.25,-36" />
+<text xml:space="preserve" text-anchor="middle" x="31.62" y="-13.32" font-family="sans-serif" font-size="14.00">Source</text>
+</g>
+
+<g id="node2" class="node">
+<title>XML</title>
+<polygon fill="#eef2ff" stroke="black" points="153.25,-36 99.25,-36 99.25,0 153.25,0 153.25,-36" />
+<text xml:space="preserve" text-anchor="middle" x="126.25" y="-13.32" font-family="sans-serif" font-size="14.00">XML</text>
+</g>
+
+<g id="edge1" class="edge">
+<title>Source-&gt;XML</title>
+<path fill="none" stroke="black" d="M63.73,-18C71.42,-18 79.75,-18 87.72,-18" />
+<polygon fill="black" stroke="black" points="87.51,-21.5 97.51,-18 87.51,-14.5 87.51,-21.5" />
+</g>
+
+<g id="node3" class="node">
+<title>Markdown</title>
+<polygon fill="#eef2ff" stroke="black" points="277.25,-36 189.25,-36 189.25,0 277.25,0 277.25,-36" />
+<text xml:space="preserve" text-anchor="middle" x="233.25" y="-13.32" font-family="sans-serif" font-size="14.00">Markdown</text>
+</g>
+
+<g id="edge2" class="edge">
+<title>XML-&gt;Markdown</title>
+<path fill="none" stroke="black" d="M153.75,-18C161.1,-18 169.36,-18 177.69,-18" />
+<polygon fill="black" stroke="black" points="177.5,-21.5 187.5,-18 177.5,-14.5 177.5,-21.5" />
+</g>
+
+<g id="node4" class="node">
+<title>HTML</title>
+<polygon fill="#eef2ff" stroke="black" points="367.5,-36 313.25,-36 313.25,0 367.5,0 367.5,-36" />
+<text xml:space="preserve" text-anchor="middle" x="340.38" y="-13.32" font-family="sans-serif" font-size="14.00">HTML</text>
+</g>
+
+<g id="edge3" class="edge">
+<title>Markdown-&gt;HTML</title>
+<path fill="none" stroke="black" d="M277.62,-18C285.58,-18 293.83,-18 301.61,-18" />
+<polygon fill="black" stroke="black" points="301.45,-21.5 311.45,-18 301.45,-14.5 301.45,-21.5" />
+</g>
+</g>
+</svg>

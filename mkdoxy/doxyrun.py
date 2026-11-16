@@ -190,44 +190,45 @@ class DoxygenRun:
             ) from e
         return dox_dict
 
+    @staticmethod
+    def _config_paths(value: str) -> list[Path]:
+        """Split Doxygen's whitespace/double-quoted paths without shell execution."""
+        expanded = re.sub(r"\$\((\w+)\)", lambda match: os.environ.get(match.group(1), ""), value)
+        return [Path(first or second) for first, second in re.findall(r'"([^"]*)"|(\S+)', expanded) if first or second]
+
+    def _input_hash(self) -> str:
+        digest = hashlib.sha256()
+        digest.update(self.dox_dict2str(self.doxyCfg).encode("utf-8"))
+        inputs: set[Path] = set()
+        roots = self._config_paths(self.doxygenSource)
+        roots.extend(self._config_paths(str(self.doxyCfg.get("IMAGE_PATH", ""))))
+        output = Path(self.tempDoxyFolder).resolve()
+        for root in roots:
+            paths = [root] if root.is_file() else root.rglob("*")
+            for path in paths:
+                if path.is_file() and not path.resolve().is_relative_to(output):
+                    inputs.add(path.resolve())
+        for path in sorted(inputs):
+            name = str(path).encode("utf-8")
+            digest.update(len(name).to_bytes(8, "big"))
+            digest.update(name)
+            digest.update(path.stat().st_size.to_bytes(8, "big"))
+            with path.open("rb") as source:
+                for chunk in iter(lambda: source.read(65536), b""):
+                    digest.update(chunk)
+        return digest.hexdigest()
+
+    def _cache_matches(self, digest: str) -> bool:
+        if not (Path(self.getOutputFolder()) / "index.xml").is_file():
+            return False
+        try:
+            return Path(self.hashFilePath).read_text(encoding="utf-8") == digest
+        except FileNotFoundError:
+            return False
+
     def hasChanged(self) -> bool:
-        """! Check if the source files have changed since the last run.
-        @details
-        @return: (bool) True if the source files have changed since the last run.
-        """
-
-        def hashWrite(filename: PurePath, hash: str):
-            with open(filename, "w") as file:
-                file.write(hash)
-
-        def hashRead(filename: PurePath) -> str:
-            with open(filename, "r") as file:
-                return str(file.read())
-
-        sha1 = hashlib.sha1()
-        srcs = self.doxygenSource.split(" ")
-        for src in srcs:
-            for path in Path(src).rglob("*.*"):
-                # # Code from https://stackoverflow.com/a/22058673/15411117
-                # # BUF_SIZE is totally arbitrary, change for your app!
-                BUF_SIZE = 65536  # let's read stuff in 64kb chunks!
-                if path.is_file():
-                    with open(path, "rb") as f:
-                        while True:
-                            data = f.read(BUF_SIZE)
-                            if not data:
-                                break
-                            sha1.update(data)
-                # print(f"{path}: {sha1.hexdigest()}")
-
-        hashNew = sha1.hexdigest()
-        if Path(self.hashFilePath).is_file():
-            hashOld = hashRead(self.hashFilePath)
-            if hashNew == hashOld:
-                return False
-
-        hashWrite(self.hashFilePath, hashNew)
-        return True
+        """Check source, image and effective configuration inputs without changing the cache."""
+        return not self._cache_matches(self._input_hash())
 
     def run(self):
         """! Run Doxygen with the current configuration using the Popen class.
@@ -252,11 +253,18 @@ class DoxygenRun:
         @details
         @return: (bool) True if Doxygen was run.
         """
-        if self.hasChanged():
-            self.run()
-            return True
-        else:
+        digest = self._input_hash()
+        if self._cache_matches(digest):
             return False
+        # No hash may certify old/partial output after a failed or interrupted run.
+        Path(self.hashFilePath).unlink(missing_ok=True)
+        index = Path(self.getOutputFolder()) / "index.xml"
+        index.unlink(missing_ok=True)
+        self.run()
+        if not index.is_file():
+            raise RuntimeError(f"Doxygen did not create the required XML index: {index}")
+        Path(self.hashFilePath).write_text(digest, encoding="utf-8")
+        return True
 
     def getOutputFolder(self) -> PurePath:
         """! Get the path to the XML output folder.

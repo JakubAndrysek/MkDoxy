@@ -121,65 +121,9 @@ Check that the wheel and sdist retain Jinja templates, runtime metadata and the
 `twine upload` or `mkdocs gh-deploy` as validation commands: they publish artifacts
 or documentation. Publishing is a separate owner-coordinated action.
 
-## Integration tests
-
-Small, repository-owned C++ and MkDocs projects live under
-`tests/integration/fixtures/`. The pytest builder copies each fixture to a fresh
-temporary directory and invokes the current interpreter's `mkdocs build --clean
---strict` with real Doxygen. Generated XML, Markdown, HTML, caches and a
-`build.log` stay in that directory; the fixture and developer caches are not
-modified. Output is streamed to the log even on failure or timeout. On the Linux
-CI runners, a timeout terminates the entire build process group, including
-Doxygen. Windows uses `taskkill /T`; that cleanup path is not covered by the
-Linux process-lifetime regression test. The subprocess receives a minimal
-environment without inherited credentials, and imports MkDoxy from the candidate checkout. This environment
-is for reproducibility, not a sandbox for untrusted code.
-
-Run only integration tests or the remaining tests with:
-
-```sh
-uv run --locked --extra dev pytest tests/ -m integration -v
-uv run --locked --extra dev pytest tests/ -m "not integration"
-```
-
-The existing `pytest tests/` CI command includes both. Doxygen must be on PATH;
-a missing executable, a build timeout or a failed strict build fails the test
-rather than silently skipping it. A nonzero Doxygen exit status fails the build
-and reports its stdout and stderr even if XML was already generated. Use
-pytest's `--basetemp` option to choose a location for retained artifacts (pytest clears that directory before the run).
-The OS-provided Doxygen version is not locked; include its version when reporting
-failures. External demo builds remain a broader smoke test, not the source of
-these focused fixtures.
-
-The first fixture covers parameter names, descriptions, unannotated parameters,
-and `[in]`, `[out]`, `[in,out]` annotations. Tests verify the input XML and the
-resulting Markdown and HTML, including the actual API hyperlink and its target.
-A `doxy.api.class.method` snippet also verifies all three directions and an
-unannotated parameter in the rendered HTML.
-Directions render before parameter names as `[in]`, `[out]` and `[in/out]`; an
-unannotated parameter keeps its existing output. These regression tests cover
-issue #78 and the implementation contributed in PR #147. All are normal,
-required assertions, without expected-failure marks.
-
-## CI checks and permissions
-
-CI uses distinct check names: `pre-commit`, `pytest (Python X.Y)`,
-`docs (Python X.Y)` and `demo (Python X.Y)`. The matrix checks cover the Python
-versions listed in the workflows. Keep these names stable once they are required
-by branch protection. `pre-commit` retains its existing name so the current
-required check continues to run during the transition.
-
-Versioned workflows default to `contents: read`. Test and lint checkouts do not
-persist Git credentials. Only the documentation deployment job has
-`contents: write` and persisted credentials, needed by `mkdocs gh-deploy` to push
-`gh-pages`; that workflow runs only on pushes to `main`. Actions are pinned to
-full commit SHAs. Review the source and compatibility when updating a pin.
-
-Workflow changes do not update GitHub's repository settings. After the new check
-names have appeared in a successful pull request run, the owner can add all
-matrix checks to the required checks for `main`. Do not require a deployment
-check that runs only after a merge, and do not remove the existing lint gate
-before its replacement has run successfully.
+Detailed fixture design, integration build options, failure diagnostics and CI
+permissions are documented in the [Testing and CI guide](docs/development/testing.md).
+Keep feature-specific testing instructions there or beside the fixture.
 
 ## Reproducing and fixing a bug
 

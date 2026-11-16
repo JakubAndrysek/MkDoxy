@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" role="img" aria-labelledby="title desc">
+  <title id="title">Documentation build pipeline</title>
+  <desc id="desc">Source comments pass through Doxygen XML and MkDoxy to become a MkDocs website with images.</desc>
+  <rect width="800" height="220" rx="16" fill="#f0f4f8"/>
+  <g font-family="sans-serif" text-anchor="middle">
+    <text x="400" y="36" font-size="20" font-weight="bold" fill="#172b4d">From source comments to published documentation</text>
+    <g fill="#ffffff" stroke="#9ab0c9" stroke-width="2">
+      <rect x="24" y="72" width="160" height="80" rx="10"/>
+      <rect x="220" y="72" width="160" height="80" rx="10"/>
+      <rect x="416" y="72" width="160" height="80" rx="10"/>
+      <rect x="612" y="72" width="164" height="80" rx="10"/>
+    </g>
+    <g font-size="18" font-weight="bold" fill="#172b4d">
+      <text x="104" y="107">C++ source</text>
+      <text x="300" y="107">Doxygen</text>
+      <text x="496" y="107">MkDoxy</text>
+      <text x="694" y="107">MkDocs</text>
+    </g>
+    <g font-size="13" fill="#425b76">
+      <text x="104" y="131">Comments + image</text>
+      <text x="300" y="131">XML + image</text>
+      <text x="496" y="131">Markdown + image</text>
+      <text x="694" y="131">HTML + image</text>
+    </g>
+    <g font-size="28" fill="#3869ba">
+      <text x="202" y="120">&#8594;</text>
+      <text x="398" y="120">&#8594;</text>
+      <text x="594" y="120">&#8594;</text>
+    </g>
+    <text x="400" y="191" font-size="14" fill="#425b76">The image travels with the generated API page.</text>
+  </g>
+</svg>

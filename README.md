@@ -38,6 +38,7 @@
 - **[Code snippets](./snippets/index.md)**: Generate code snippets in place of your standard Markdown documentation.
 - **[Multiple projects](./usage/index.md#multiple-projects)**: Support for multiple projects in one documentation (e.g. C++ and Python).
 - **[Multiple source directories](./usage/index.md#multiple-source-directories)**: Configure multiple source directories in one project.
+- **[Images and diagrams](https://mkdoxy.kubaandrysek.cz/usage/images-and-diagrams/)**: Include image assets in generated API pages; explore native Doxygen diagram examples and their tool requirements.
 - **[Custom Jinja templates](./usage/index.md#custom-jinja-templates)**: Define custom Jinja templates for rendering Doxygen documentation.
 - **[Custom Doxygen configuration](./usage/index.md#custom-doxygen-configuration)**: Specify custom Doxygen configuration for each project.
 

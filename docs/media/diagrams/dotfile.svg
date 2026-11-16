@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="585pt" height="98pt" viewBox="0.00 0.00 585.00 98.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 94)">
+<title>States</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-94 580.75,-94 580.75,4 -4,4" />
+
+<g id="node1" class="node">
+<title>Source</title>
+<path fill="#e0f2f1" stroke="black" d="M51.25,-56C51.25,-56 12,-56 12,-56 6,-56 0,-50 0,-44 0,-44 0,-32 0,-32 0,-26 6,-20 12,-20 12,-20 51.25,-20 51.25,-20 57.25,-20 63.25,-26 63.25,-32 63.25,-32 63.25,-44 63.25,-44 63.25,-50 57.25,-56 51.25,-56" />
+<text xml:space="preserve" text-anchor="middle" x="31.62" y="-33.33" font-family="sans-serif" font-size="14.00">Source</text>
+</g>
+
+<g id="node2" class="node">
+<title>XML</title>
+<path fill="#e0f2f1" stroke="black" d="M203.5,-56C203.5,-56 173.5,-56 173.5,-56 167.5,-56 161.5,-50 161.5,-44 161.5,-44 161.5,-32 161.5,-32 161.5,-26 167.5,-20 173.5,-20 173.5,-20 203.5,-20 203.5,-20 209.5,-20 215.5,-26 215.5,-32 215.5,-32 215.5,-44 215.5,-44 215.5,-50 209.5,-56 203.5,-56" />
+<text xml:space="preserve" text-anchor="middle" x="188.5" y="-33.33" font-family="sans-serif" font-size="14.00">XML</text>
+</g>
+
+<g id="edge1" class="edge">
+<title>Source-&gt;XML</title>
+<path fill="none" stroke="black" d="M63.59,-38C88.4,-38 123.29,-38 149.73,-38" />
+<polygon fill="black" stroke="black" points="149.71,-41.5 159.71,-38 149.71,-34.5 149.71,-41.5" />
+<text xml:space="preserve" text-anchor="middle" x="112.38" y="-41.95" font-family="Times,serif" font-size="14.00">Doxygen</text>
+</g>
+
+<g id="node3" class="node">
+<title>Markdown</title>
+<path fill="#e0f2f1" stroke="black" d="M417.5,-90C417.5,-90 353.5,-90 353.5,-90 347.5,-90 341.5,-84 341.5,-78 341.5,-78 341.5,-66 341.5,-66 341.5,-60 347.5,-54 353.5,-54 353.5,-54 417.5,-54 417.5,-54 423.5,-54 429.5,-60 429.5,-66 429.5,-66 429.5,-78 429.5,-78 429.5,-84 423.5,-90 417.5,-90" />
+<text xml:space="preserve" text-anchor="middle" x="385.5" y="-67.33" font-family="sans-serif" font-size="14.00">Markdown</text>
+</g>
+
+<g id="edge2" class="edge">
+<title>XML-&gt;Markdown</title>
+<path fill="none" stroke="black" d="M215.8,-42.59C244.91,-47.66 292.64,-55.98 329.92,-62.48" />
+<polygon fill="black" stroke="black" points="329.18,-65.91 339.63,-64.18 330.38,-59.01 329.18,-65.91" />
+<text xml:space="preserve" text-anchor="middle" x="278.5" y="-64.95" font-family="Times,serif" font-size="14.00">MkDoxy</text>
+</g>
+
+<g id="node5" class="node">
+<title>Error</title>
+<path fill="#ffebee" stroke="black" d="M400.5,-36C400.5,-36 370.5,-36 370.5,-36 364.5,-36 358.5,-30 358.5,-24 358.5,-24 358.5,-12 358.5,-12 358.5,-6 364.5,0 370.5,0 370.5,0 400.5,0 400.5,0 406.5,0 412.5,-6 412.5,-12 412.5,-12 412.5,-24 412.5,-24 412.5,-30 406.5,-36 400.5,-36" />
+<text xml:space="preserve" text-anchor="middle" x="385.5" y="-13.32" font-family="sans-serif" font-size="14.00">Error</text>
+</g>
+
+<g id="edge4" class="edge">
+<title>XML-&gt;Error</title>
+<path fill="none" stroke="#c62828" d="M215.81,-29.66C221.59,-28.11 227.71,-26.69 233.5,-25.75 271.7,-19.53 315.98,-17.9 346.67,-17.64" />
+<polygon fill="#c62828" stroke="#c62828" points="346.63,-21.14 356.61,-17.61 346.6,-14.14 346.63,-21.14" />
+<text xml:space="preserve" text-anchor="middle" x="278.5" y="-29.7" font-family="Times,serif" font-size="14.00">invalid input</text>
+</g>
+
+<g id="node4" class="node">
+<title>HTML</title>
+<path fill="#e0f2f1" stroke="black" d="M564.75,-90C564.75,-90 534.5,-90 534.5,-90 528.5,-90 522.5,-84 522.5,-78 522.5,-78 522.5,-66 522.5,-66 522.5,-60 528.5,-54 534.5,-54 534.5,-54 564.75,-54 564.75,-54 570.75,-54 576.75,-60 576.75,-66 576.75,-66 576.75,-78 576.75,-78 576.75,-84 570.75,-90 564.75,-90" />
+<text xml:space="preserve" text-anchor="middle" x="549.62" y="-67.33" font-family="sans-serif" font-size="14.00">HTML</text>
+</g>
+
+<g id="edge3" class="edge">
+<title>Markdown-&gt;HTML</title>
+<path fill="none" stroke="black" d="M429.95,-72C455.26,-72 486.85,-72 511.08,-72" />
+<polygon fill="black" stroke="black" points="510.81,-75.5 520.81,-72 510.81,-68.5 510.81,-75.5" />
+<text xml:space="preserve" text-anchor="middle" x="476" y="-75.95" font-family="Times,serif" font-size="14.00">MkDocs</text>
+</g>
+</g>
+</svg>

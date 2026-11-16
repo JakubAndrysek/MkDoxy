@@ -82,6 +82,13 @@ class Doxygen:
                 node._visibility = Visibility.PUBLIC
                 self.examples.add_child(node)
 
+        # Only compounds named by the current index contribute assets. Retained
+        # XML/image files from removed compounds must not remain published.
+        self.image_assets: set[str] = set()
+        for tree in (self.root, self.groups, self.files, self.pages, self.examples):
+            for node in tree.children:
+                self.image_assets.update(node.image_assets)
+
         if self.debug:
             log.info("Deduplicating data... (may take a minute!)")
         for child in self.root.children.copy():

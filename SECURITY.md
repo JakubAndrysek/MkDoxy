@@ -32,3 +32,15 @@ MkDoxy runs in your MkDocs build environment and invokes Doxygen. Treat project
 configuration, Python plugins, custom templates and build inputs as trusted code
 and data; MkDoxy is not a sandbox for untrusted repositories. Evaluate reports
 involving an unexpected trust-boundary crossing privately using the contact above.
+
+Image assets are published unchanged. Include only assets you trust to serve
+from your documentation origin. In particular, SVG can contain active content
+when opened directly; rendering it inside an HTML image element does not make
+its direct asset URL safe. MkDoxy does not sanitize SVG, HTML or JavaScript.
+Untrusted uploads require a separate sanitization/hosting policy outside this
+trusted-repository build workflow.
+
+Use build and cache directories writable only by trusted processes. Resolved
+path checks reject existing symlink escapes; they do not isolate the build from
+concurrent filesystem changes by another writer. Doxygen, MkDocs and plugins
+share the build account's filesystem permissions.

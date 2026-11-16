@@ -3,12 +3,11 @@
 import re
 from html import unescape
 from html.parser import HTMLParser
-from typing import Callable
 from xml.etree import ElementTree
 
 import pytest
 
-from .project import BuiltProject
+from .project import BuiltProject, ProjectBuilder
 
 pytestmark = pytest.mark.integration
 
@@ -36,7 +35,7 @@ class _LinkParser(HTMLParser):
 
 
 @pytest.fixture(scope="module")
-def directions(build_project: Callable[[str], BuiltProject]) -> BuiltProject:
+def directions(build_project: ProjectBuilder) -> BuiltProject:
     return build_project("parameter_directions")
 
 
