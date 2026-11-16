@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 
 from mkdocs.structure import files
 
@@ -63,6 +64,30 @@ class GeneratorAuto:
         self.fullDocFiles.append(files.File(pathRel, self.tempDoxyDir, self.siteDir, self.useDirectoryUrls))
         with open(os.path.join(self.tempDoxyDir, pathRel), "w", encoding="utf-8") as file:
             file.write(output)
+
+    def copyImages(self):
+        """! Copy images referenced in the documentation to the API output folder.
+        @details Doxygen copies images referenced via ``\\image`` or markdown ``![](...)``
+        into its XML output folder. The generated markdown links to these images by their
+        bare filename, so they must sit next to the generated markdown pages and be
+        registered as MkDocs files to be served correctly.
+        """
+        imageExtensions = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".bmp", ".webp", ".ico"}
+        xmlDir = os.path.join(self.tempDoxyDir, "xml")
+        if not os.path.isdir(xmlDir):
+            return
+        for name in os.listdir(xmlDir):
+            srcPath = os.path.join(xmlDir, name)
+            if not os.path.isfile(srcPath):
+                continue
+            if os.path.splitext(name)[1].lower() not in imageExtensions:
+                continue
+            pathRel = os.path.join(self.apiPath, name)
+            dstPath = os.path.join(self.tempDoxyDir, pathRel)
+            shutil.copyfile(srcPath, dstPath)
+            self.fullDocFiles.append(files.File(pathRel, self.tempDoxyDir, self.siteDir, self.useDirectoryUrls))
+            if self.debug:
+                log.info(f"Copied image '{name}' to API folder '{self.apiPath}'")
 
     def fullDoc(self, defaultTemplateConfig: dict):
         self.annotated(self.doxygen.root.children, defaultTemplateConfig)

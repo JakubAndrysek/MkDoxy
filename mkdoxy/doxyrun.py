@@ -111,7 +111,35 @@ class DoxygenRun:
         doxyCfg.update(doxyCfgNew)
         doxyCfg["INPUT"] = self.doxygenSource
         doxyCfg["OUTPUT_DIRECTORY"] = self.tempDoxyFolder
+        # If the user did not configure IMAGE_PATH, default it to the source directories
+        # (searched recursively). Doxygen only copies referenced images into its output
+        # folder when it can locate them via IMAGE_PATH; otherwise it treats them as
+        # "external image" and the images are missing from the generated API pages.
+        if not doxyCfg.get("IMAGE_PATH"):
+            imagePath = self.buildDefaultImagePath(self.doxygenSource)
+            if imagePath:
+                doxyCfg["IMAGE_PATH"] = imagePath
         return doxyCfg
+
+    @staticmethod
+    def buildDefaultImagePath(doxygenSource: Optional[str]) -> str:
+        """! Build a default IMAGE_PATH value from the Doxygen source directories.
+        @details Each source directory is enumerated recursively so that images stored
+        in nested folders are also found and copied by Doxygen. Paths are quoted to
+        support directories containing spaces.
+        @param doxygenSource: (str) The Doxygen INPUT value (may contain multiple
+         whitespace-separated directories).
+        @return: (str) A Doxygen-compatible IMAGE_PATH string, or an empty string.
+        """
+        if not doxygenSource:
+            return ""
+        imageDirs: list[str] = []
+        for source in doxygenSource.split():
+            if not os.path.isdir(source):
+                continue
+            for root, _dirs, _files in os.walk(source):
+                imageDirs.append(root)
+        return " ".join(f'"{d}"' for d in imageDirs)
 
     def is_doxygen_valid_path(self, doxygen_bin_path: str) -> bool:
         """! Check if the Doxygen binary path is valid.
@@ -240,8 +268,6 @@ class DoxygenRun:
             stderr=PIPE,
         )
         (doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))[0].decode().strip())
-        # log.info(self.destinationDir)
-        # log.info(stdout_data)
 
     def checkAndRun(self):
         """! Check if the source files have changed since the last run and run Doxygen if they have.
