@@ -154,6 +154,8 @@ these focused fixtures.
 The first fixture covers parameter names, descriptions, unannotated parameters,
 and `[in]`, `[out]`, `[in,out]` annotations. Tests verify the input XML and the
 resulting Markdown and HTML, including the actual API hyperlink and its target.
+A `doxy.api.class.method` snippet also verifies all three directions and an
+unannotated parameter in the rendered HTML.
 Directions render before parameter names as `[in]`, `[out]` and `[in/out]`; an
 unannotated parameter keeps its existing output. These regression tests cover
 issue #78 and the implementation contributed in PR #147. All are normal,

@@ -75,3 +75,18 @@ def test_parameter_directions(directions: BuiltProject, name: str, direction: st
     assert re.search(rf"\[{re.escape(direction)}\]\s+`{name}`", markdown)
     text = unescape(re.sub(r"<[^>]+>", "", html))
     assert re.search(rf"\[{re.escape(direction)}\]\s+{name}\b", text)
+
+
+def test_parameter_directions_in_method_snippet(directions: BuiltProject) -> None:
+    html = directions.html("snippet/index.html")
+    assert "::: doxy." not in html
+    text = unescape(re.sub(r"<[^>]+>", "", html))
+    for name, direction, description in (
+        ("source", "in", "Input value to read."),
+        ("destination", "out", "Output value to write."),
+        ("state", "in/out", "State value to update."),
+    ):
+        assert re.search(rf"\[{re.escape(direction)}\]\s+{name}\b", text)
+        assert f"<code>{name}</code> {description}" in html
+    assert "<code>plain</code> Value without a direction annotation." in html
+    assert not re.search(r"\[(?:in|out|in/out)\]\s+plain\b", text)
