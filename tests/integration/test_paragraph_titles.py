@@ -48,9 +48,18 @@ def test_paragraph_titles_reach_html(build_project: ProjectBuilder) -> None:
     html = project.html("api/classParagraphExample/index.html")
     parser = _StrongParser()
     parser.feed(html)
-    for title in ("Tip:", "BoldTitle", "Before BoldWord after", "ItalicTitle", "CodeTitle"):
+    for title in (
+        "Tip:",
+        "BoldTitle",
+        "Before BoldWord after",
+        "ItalicTitle",
+        "CodeTitle",
+        "NestedTitle",
+        "PaddedTitle",
+        "PaddedCode",
+    ):
         assert parser.labels.count(title) == 1, (title, parser.labels)
-    for body in ("Plain", "Bold", "Mixed", "Italic", "Code", "Untitled"):
+    for body in ("Plain", "Bold", "Mixed", "Italic", "Code", "Nested", "Padded", "Padded code", "Untitled"):
         assert f"{body} paragraph body." in markdown
         assert f"{body} paragraph body." in html
     assert "**Tip:**" in markdown
@@ -58,6 +67,9 @@ def test_paragraph_titles_reach_html(build_project: ProjectBuilder) -> None:
     assert "**Before BoldWord after**" in markdown
     assert "<em>ItalicTitle</em>" in html
     assert "<code>CodeTitle</code>" in html
+    assert "<strong><em>NestedTitle</em></strong>" in html
+    assert "<strong><em>PaddedTitle</em></strong>" in html
+    assert "<strong><code>PaddedCode</code></strong>" in html
     assert "****" not in markdown
     for label in ("Note:", "Warning:", "See also:"):
         assert label in parser.labels

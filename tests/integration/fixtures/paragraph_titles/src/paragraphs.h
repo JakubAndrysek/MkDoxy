@@ -16,6 +16,15 @@
  * @par \c CodeTitle
  * Code paragraph body.
  *
+ * @par <em><b>NestedTitle</b></em>
+ * Nested paragraph body.
+ *
+ * @par <em> PaddedTitle </em>
+ * Padded paragraph body.
+ *
+ * @par <tt> PaddedCode </tt>
+ * Padded code paragraph body.
+ *
  * @par
  * Untitled paragraph body.
  *
