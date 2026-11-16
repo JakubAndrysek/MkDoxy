@@ -2,6 +2,7 @@
 
 import re
 from html import unescape
+from html.parser import HTMLParser
 from typing import Callable
 from xml.etree import ElementTree
 
@@ -10,6 +11,28 @@ import pytest
 from .project import BuiltProject
 
 pytestmark = pytest.mark.integration
+
+
+class _LinkParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.links: list[tuple[str, str]] = []
+        self.href: str | None = None
+        self.text: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "a":
+            self.href = dict(attrs).get("href")
+            self.text = []
+
+    def handle_data(self, data: str) -> None:
+        if self.href is not None:
+            self.text.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "a" and self.href is not None:
+            self.links.append(("".join(self.text).strip(), self.href))
+            self.href = None
 
 
 @pytest.fixture(scope="module")
@@ -35,7 +58,14 @@ def test_parameter_documentation(directions: BuiltProject) -> None:
         assert f"`{name}` {description}" in markdown
         assert f"<code>{name}</code> {description}" in html
     assert not re.search(r"\[(?:in|out|in/out)\]\s+`plain`", markdown)
-    assert "api/classDirectionExample/" in directions.html("index.html")
+    links = _LinkParser()
+    links.feed(directions.html("index.html"))
+    # Check the fixture's actual link, not a matching navigation entry or text.
+    hrefs = [href for label, href in links.links if label == "generated API"]
+    assert hrefs == ["api/classDirectionExample/"]
+    linked_page = directions.root / "site" / hrefs[0] / "index.html"
+    assert linked_page.is_file()
+    assert linked_page.read_text(encoding="utf-8") == html
 
 
 @pytest.mark.xfail(strict=True, reason="Known missing parameter directions: issue #78 / PR #147", raises=AssertionError)
