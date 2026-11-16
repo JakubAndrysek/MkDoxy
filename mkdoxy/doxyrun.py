@@ -233,9 +233,10 @@ class DoxygenRun:
             Path(self.hashFilePath).unlink()
         return True
 
-    def run(self):
+    def run(self) -> bool:
         """! Run Doxygen with the current configuration using the Popen class.
         @details
+        @return: (bool) True if Doxygen exited with return code 0.
         """
         doxyBuilder = Popen(
             [self.doxygenBinPath, "-"],
@@ -246,6 +247,7 @@ class DoxygenRun:
         (doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))[0].decode().strip())
         # log.info(self.destinationDir)
         # log.info(stdout_data)
+        return doxyBuilder.returncode == 0
 
     def checkAndRun(self):
         """! Check if the source files have changed since the last run and run Doxygen if they have.
@@ -253,8 +255,7 @@ class DoxygenRun:
         @return: (bool) True if Doxygen was run.
         """
         if self.hasChanged():
-            self.run()
-            if Path(self.getOutputFolder(), "index.xml").is_file() and self.hashNew is not None:
+            if self.run() and Path(self.getOutputFolder(), "index.xml").is_file() and self.hashNew is not None:
                 self._writeHash(self.hashNew)
             return True
         else:

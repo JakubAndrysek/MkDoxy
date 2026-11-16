@@ -185,6 +185,7 @@ def test_str2dox_dict_expanded_config_errors():
 
 
 def test_check_and_run_persists_hash_only_when_index_xml_exists(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
     src_dir = tmp_path / "src"
     src_dir.mkdir()
     (src_dir / "header.h").write_text("class Foo { ~Foo(); };", encoding="utf-8")
@@ -195,13 +196,13 @@ def test_check_and_run_persists_hash_only_when_index_xml_exists(tmp_path, monkey
 
     doxygen_run = DoxygenRun(
         doxygenBinPath="doxygen",
-        doxygenSource=str(src_dir),
-        tempDoxyFolder=str(temp_doxy),
+        doxygenSource="src",
+        tempDoxyFolder="doxy",
         doxyCfgNew={},
     )
 
     # First run fails to generate xml/index.xml -> hashChanges.yaml must not be persisted
-    monkeypatch.setattr(DoxygenRun, "run", lambda self: None)
+    monkeypatch.setattr(DoxygenRun, "run", lambda self: True)
     assert doxygen_run.checkAndRun() is True
     assert not (temp_doxy / "hashChanges.yaml").exists()
 
@@ -210,9 +211,66 @@ def test_check_and_run_persists_hash_only_when_index_xml_exists(tmp_path, monkey
         xml_dir = temp_doxy / "xml"
         xml_dir.mkdir(parents=True, exist_ok=True)
         (xml_dir / "index.xml").write_text("<doxygenindex/>", encoding="utf-8")
+        return True
 
     monkeypatch.setattr(DoxygenRun, "run", fake_success_run)
     assert doxygen_run.checkAndRun() is True
+    assert (temp_doxy / "hashChanges.yaml").is_file()
+    assert doxygen_run.checkAndRun() is False
+
+
+def test_check_and_run_does_not_persist_hash_when_doxygen_fails_with_existing_index_xml(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    src_dir = tmp_path / "src"
+    src_dir.mkdir()
+    header = src_dir / "header.h"
+    header.write_text("class Foo { int a; };", encoding="utf-8")
+    temp_doxy = tmp_path / "doxy"
+    temp_doxy.mkdir()
+
+    monkeypatch.setattr(DoxygenRun, "is_doxygen_valid_path", lambda self, p: True)
+
+    doxygen_run = DoxygenRun(
+        doxygenBinPath="doxygen",
+        doxygenSource="src",
+        tempDoxyFolder="doxy",
+        doxyCfgNew={},
+    )
+
+    state = {"returncode": 0, "calls": 0}
+
+    class FakePopen:
+        def __init__(self, *args, **kwargs):
+            state["calls"] += 1
+            self.returncode = state["returncode"]
+
+        def communicate(self, input_bytes):
+            if self.returncode == 0:
+                xml_dir = temp_doxy / "xml"
+                xml_dir.mkdir(parents=True, exist_ok=True)
+                (xml_dir / "index.xml").write_text("<doxygenindex/>", encoding="utf-8")
+            return (b"", b"")
+
+    monkeypatch.setattr("mkdoxy.doxyrun.Popen", FakePopen)
+
+    # 1. Initial successful run produces index.xml and saves the hash
+    assert doxygen_run.checkAndRun() is True
+    assert state["calls"] == 1
+    assert (temp_doxy / "xml" / "index.xml").is_file()
+    assert (temp_doxy / "hashChanges.yaml").is_file()
+
+    # 2. Source files change, but the next Doxygen run fails while stale index.xml still exists
+    header.write_text("class Foo { int a; int b; };", encoding="utf-8")
+    state["returncode"] = 1
+    assert doxygen_run.checkAndRun() is True
+    assert state["calls"] == 2
+    assert (temp_doxy / "xml" / "index.xml").is_file()
+    assert not (temp_doxy / "hashChanges.yaml").exists()
+
+    # 3. Subsequent build must not skip Doxygen; when Doxygen succeeds again, the new hash is saved
+    state["returncode"] = 0
+    assert doxygen_run.checkAndRun() is True
+    assert state["calls"] == 3
     assert (temp_doxy / "hashChanges.yaml").is_file()
     assert doxygen_run.checkAndRun() is False
 
@@ -231,5 +289,3 @@ def test_node_destructor_overline_normalized():
     )
     defn = Property.Definition(xml_el, None, Kind.FUNCTION)
     assert defn.plain() == "Foo::~Foo;"
-
-
