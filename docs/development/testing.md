@@ -62,6 +62,17 @@ unannotated parameter in the rendered HTML.
 Directions render before parameter names as `[in]`, `[out]` and `[in/out]`; an
 unannotated parameter keeps its existing output. These are normal assertions, without expected-failure marks.
 
+### Navigation
+
+The `navigation` fixture covers nested namespaces and classes, nested groups,
+related pages and source directories. Tests require every supported compound
+in the Doxygen index to appear once in `links.md`, check parent/child list nesting
+in HTML, and resolve every summary link to an actual generated page. Class and
+namespace enumeration indexes retain the `class_member_enums.md` and
+`namespace_member_enums.md` filenames used by navigation. Builds cover directory
+and flat URLs, with XML source listings enabled and disabled; source-code links
+are emitted only when a source page exists.
+
 ### Paragraph titles
 
 The `paragraph_titles` fixture covers Doxygen `@par` sections with plain, bold,
