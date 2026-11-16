@@ -28,15 +28,16 @@ validate its executable path, so install Doxygen even for the current unit suite
 
 ## Current compatibility and tools
 
-`setup.py` currently declares Python >=3.9, and CI covers Python 3.9-3.12 on
+`setup.py` declares Python >=3.10, and CI covers Python 3.10-3.15 on
 Ubuntu 24.04. This records the existing configuration, not a guarantee that all
 those interpreters still receive upstream security updates. Use a maintained
 interpreter for normal development and preserve the declared syntax/API minimum
 until a dedicated compatibility change is reviewed.
 
-The owner intends to retain Python 3.10 and 3.11 compatibility while modernizing
-testing. Broader CI coverage, uv and expanded typing are planned follow-up work;
-they are not implemented by this document. The commands below use today's pip,
+Python 3.10 and 3.11 compatibility is retained while modernizing testing.
+The reference interpreter for lint and documentation deployment is Python 3.14;
+this does not raise the package's syntax/API minimum. uv and expanded typing are
+planned follow-up work; they are not implemented by this document. The commands below use today's pip,
 pytest and pre-commit setup. Update this guide when those tools change.
 
 ## Verification

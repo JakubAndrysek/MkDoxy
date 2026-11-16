@@ -42,6 +42,11 @@
 - **[Custom Doxygen configuration](./usage/index.md#custom-doxygen-configuration)**: Specify custom Doxygen configuration for each project.
 
 ## Installation
+Starting with the next release, MkDoxy requires Python 3.10 or newer and a
+separate Doxygen installation. Python 3.10 and 3.11 remain compatible; use an
+upstream-maintained interpreter where possible. Python 3.9 users must stay on a
+compatible published release.
+
 Install the plugin using pip from [PyPI](https://pypi.org/project/mkdoxy/):
 
 ```bash

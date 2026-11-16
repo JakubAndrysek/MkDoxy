@@ -37,7 +37,7 @@ setup(
     author="Jakub Andrýsek",
     author_email="email@kubaandrysek.cz",
     license="MIT",
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     project_urls={
         "Source": "https://github.com/JakubAndrysek/MkDoxy",
         "Documentation": "https://mkdoxy.kubaandrysek.cz/",
@@ -49,10 +49,12 @@ setup(
         "dev": import_dev_requirements(),
     },
     classifiers=[
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
         "Operating System :: OS Independent",
     ],
     packages=find_packages(),
