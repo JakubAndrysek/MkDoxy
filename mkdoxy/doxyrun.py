@@ -239,9 +239,13 @@ class DoxygenRun:
             stdin=PIPE,
             stderr=PIPE,
         )
-        (doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))[0].decode().strip())
-        # log.info(self.destinationDir)
-        # log.info(stdout_data)
+        stdout, stderr = doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))
+        if doxyBuilder.returncode != 0:
+            raise RuntimeError(
+                f"Doxygen failed with exit status {doxyBuilder.returncode}\n"
+                f"stdout:\n{stdout.decode('utf-8', errors='replace')}\n"
+                f"stderr:\n{stderr.decode('utf-8', errors='replace')}"
+            )
 
     def checkAndRun(self):
         """! Check if the source files have changed since the last run and run Doxygen if they have.
