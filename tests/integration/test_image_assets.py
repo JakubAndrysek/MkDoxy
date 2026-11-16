@@ -1,5 +1,8 @@
 """Image URLs must resolve to the original bytes in the built documentation."""
 
+import os
+import shutil
+import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -7,7 +10,8 @@ from xml.etree import ElementTree
 
 import pytest
 
-from .project import BuildOptions, ProjectBuilder
+from .project import BuildOptions, BuiltProject, ProjectBuilder
+from .runner import run_build
 
 pytestmark = pytest.mark.integration
 
@@ -91,3 +95,60 @@ def test_api_path_can_overlap_doxygen_xml(build_project: ProjectBuilder, api_pat
     assert (project.root / "site" / api_path / "classImageExample/index.html").is_file()
     for image in (project.root / "images").iterdir():
         assert (project.root / "site" / api_path / image.name).read_bytes() == image.read_bytes()
+
+
+def test_saved_output_cannot_overwrite_documentation_sources(build_project: ProjectBuilder) -> None:
+    originals: list[Path] = []
+
+    def prepare(root: Path) -> None:
+        original = root / "docs/api/api/pipeline.svg"
+        original.parent.mkdir(parents=True)
+        original.write_text("original documentation asset", encoding="utf-8")
+        originals.append(original)
+
+    with pytest.raises(AssertionError, match="must not overlap docs_dir"):
+        build_project("image_assets", options=BuildOptions(save_api="docs"), prepare=prepare)
+    assert originals[0].read_text(encoding="utf-8") == "original documentation asset"
+
+
+def rebuild_project(project: BuiltProject) -> None:
+    doxygen = shutil.which("doxygen")
+    assert doxygen is not None
+    env = {
+        "PATH": os.pathsep.join((str(Path(sys.executable).parent), str(Path(doxygen).parent), os.defpath)),
+        "HOME": str(project.root / "home"),
+        "USERPROFILE": str(project.root / "home"),
+        "PYTHONPATH": str(Path(__file__).resolve().parents[2]),
+        "PYTHONUTF8": "1",
+    }
+    if "SYSTEMROOT" in os.environ:
+        env["SYSTEMROOT"] = os.environ["SYSTEMROOT"]
+    result = run_build([sys.executable, "-m", "mkdocs", "build", "--clean", "--strict"], project.root, env)
+    assert result.returncode == 0, result.stdout
+
+
+def test_persistent_images_update_and_removed_references_disappear(build_project: ProjectBuilder) -> None:
+    def prepare(root: Path) -> None:
+        xml = root / "cache/doxygen/api/xml"
+        xml.mkdir(parents=True)
+        (xml / "unused.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg"/>', encoding="utf-8")
+        (xml / "obsolete.xml").write_text(
+            '<doxygen><compounddef><image type="html" name="unused.svg"/></compounddef></doxygen>', encoding="utf-8"
+        )
+
+    project = build_project("image_assets", options=BuildOptions(save_api="cache/doxygen"), prepare=prepare)
+    assert not (project.root / "site/api/unused.svg").exists()
+    image = project.root / "images/pipeline.svg"
+    image.write_bytes(image.read_bytes() + b"\n<!-- updated without changing C++ sources -->\n")
+    rebuild_project(project)
+    assert (project.root / "site/api/pipeline.svg").read_bytes() == image.read_bytes()
+
+    header = project.root / "src/image_example.h"
+    header.write_text(
+        "\n".join(line for line in header.read_text(encoding="utf-8").splitlines() if "@image html" not in line) + "\n",
+        encoding="utf-8",
+    )
+    rebuild_project(project)
+    for asset in (project.root / "images").iterdir():
+        assert not (project.root / "site/api" / asset.name).exists()
+    assert not (project.root / "site/api/unused.svg").exists()

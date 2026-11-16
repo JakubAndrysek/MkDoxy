@@ -75,8 +75,9 @@ loading configuration, for example to reproduce existing asset collisions;
 fixtures keep a single project named `api`. Focused copier tests separately
 cover nested XML assets and supported extensions because Doxygen itself may
 flatten image paths in its XML output. Regression cases also cover overlapping
-XML/API paths, copy failures, source and destination symlink escapes, and
-identical versus conflicting existing docs assets. See the fixture README and optional
+XML/API paths, copy failures, source and destination symlink escapes,
+reference-based publication, persistent image-cache invalidation, failed-build
+retries and identical versus conflicting existing docs assets. See the fixture README and optional
 `generate_assets.py` for image provenance. The separate
 `demo-projects/diagrams/` examples show native Doxygen-generated graphs; these
 are not automatically rendered by MkDoxy and require Graphviz to regenerate.

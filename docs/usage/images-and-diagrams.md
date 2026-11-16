@@ -116,6 +116,12 @@ and `.webp`, matched without regard to extension case. JPG and JPEG share one
 encoding. Animated GIF files retain their input bytes. Rendering still depends
 on the browser's support for the chosen format.
 
+Image files are published unchanged. Include only assets trusted to run on your
+documentation origin: SVG may contain active content when opened directly.
+MkDoxy does not sanitize SVG or other authored documentation. See the
+[security policy](https://github.com/JakubAndrysek/MkDoxy/blob/main/SECURITY.md)
+for the trusted-build-input model.
+
 The current image renderer emits a Markdown image with the alt text `Image`.
 Doxygen caption and size options are not currently forwarded to that Markdown.
 Automatic asset copying requires full documentation to be enabled at both the
@@ -129,16 +135,24 @@ the selected API path. Both directory URLs and `use_directory_urls: false`
 are covered by the image integration tests.
 
 When retaining Doxygen output with `save-api`, `mkdocs build --clean` cleans the
-site directory but does not remove that separate saved cache. An image-only
-edit outside `src-dirs` may not invalidate the source cache. Rebuild using a
-fresh saved-output directory when updating such images.
+site directory but does not remove that separate saved cache. The cache tracks
+source files, the project configuration passed to Doxygen and files under `IMAGE_PATH`,
+including image inputs outside `src-dirs`. A failed or interrupted generation
+does not leave a valid cache hash; the next build retries it.
 
 Different assets cannot share one output path: MkDoxy stops the build if a
 generated image conflicts with an existing documentation asset. An identical
 file already present in `docs/` is reused. Remove an obsolete manually copied
 asset or rename it to resolve a conflict. Copy failures also stop the build;
-they are not silently omitted. Symlinks that resolve outside the XML source
-directory or API destination are rejected.
+they are not silently omitted. Only image references from the current indexed XML compounds are registered;
+stale images left in a retained output directory are not republished. An API
+path that would overwrite a different current XML image input is rejected
+before copying; use a separate output path to resolve that ambiguity. Generated
+cache/API paths must not overlap `docs_dir`, so a build cannot replace a
+hand-authored documentation source through its image-copy step. Symlinks that
+already resolve outside the XML source directory or API destination are rejected.
+Build in a workspace writable only by trusted processes; these path checks do
+not provide isolation against concurrent filesystem changes.
 
 If an image is missing, check the filename and its case, `IMAGE_PATH`, the
 Doxygen diagnostics, the generated XML image reference, and the final HTML

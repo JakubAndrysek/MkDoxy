@@ -38,7 +38,12 @@ def card(title: str, description: str, image: str, source: str, links: str = "")
 
 
 def run(command: list[str], cwd: Path, env: dict[str, str], log: Path, input_text: str | None = None) -> None:
-    result = subprocess.run(command, cwd=cwd, env=env, input=input_text, capture_output=True, text=True, timeout=120)
+    # Both callers below pass fixed argv lists for owned local fixtures, never
+    # shell fragments or request input. Quoting argv would change its meaning.
+    # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-audit
+    result = subprocess.run(
+        command, cwd=cwd, env=env, input=input_text, capture_output=True, text=True, timeout=120, shell=False
+    )
     output = result.stdout + result.stderr
     log.write_text(output, encoding="utf-8")
     if result.returncode or "error:" in output.lower() or "warning:" in output.lower():
@@ -249,6 +254,9 @@ def export_docs_assets(output: Path) -> None:
             raise RuntimeError(f"Expected one illustration for {filename}, found {matches}")
         # These are static illustrations, not copies of the native HTML site.
         # Remove links to native pages that are not published with this guide.
+        # Fresh local Graphviz output from the owned fixtures built above, not
+        # an uploaded/downloaded SVG. Link removal is not SVG sanitization.
+        # nosemgrep: python.lang.security.use-defused-xml-parse
         tree = ElementTree.parse(matches[0])
         for element in tree.iter():
             element.attrib.pop("{http://www.w3.org/1999/xlink}href", None)
