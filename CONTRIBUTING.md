@@ -80,6 +80,18 @@ uv run --locked --extra dev pre-commit run --all-files
 uv run --locked --extra dev mkdocs build --clean
 ```
 
+To run pre-commit automatically before each local commit, install its local Git
+hook explicitly:
+
+```sh
+uv run --locked --extra dev pre-commit install
+```
+
+Hook installation is local to your checkout. CI still runs the checks when a
+workflow is allowed to start. Review incoming hook configuration, build backends
+and dependency changes before running them: pre-commit executes hooks; it is not
+a sandbox for untrusted contributions.
+
 - `tests/` is the maintained pytest suite. `tests-old/` is historical material
   outside that suite.
 - The packaging regression builds a wheel from a source distribution in a
@@ -91,9 +103,11 @@ uv run --locked --extra dev mkdocs build --clean
 - The documentation build exercises Doxygen and the plugin using local example
   sources. Review its diagnostics and generated output, not only the exit code.
 - Existing CI also builds the separate
-  [MkDoxy-demo](https://github.com/JakubAndrysek/MkDoxy-demo) repository. Its inputs
-  currently follow its default branch, so record the demo revision and confirm
-  the candidate MkDoxy installation when investigating differences.
+  [MkDoxy-demo](https://github.com/JakubAndrysek/MkDoxy-demo) repository at a pinned
+  commit. The demo build checks that dependency installation has not replaced the
+  candidate MkDoxy checkout. Update the pinned ref in
+  `.github/workflows/mkdoxy-test-demos.yaml` only after reviewing the demo changes
+  and verifying them with the candidate plugin.
 
 For packaging changes, also build and inspect the distributions:
 
@@ -106,6 +120,26 @@ Check that the wheel and sdist retain Jinja templates, runtime metadata and the
 `mkdocs.plugins` entry point. Do not run `make release`, `make release-test`,
 `twine upload` or `mkdocs gh-deploy` as validation commands: they publish artifacts
 or documentation. Publishing is a separate owner-coordinated action.
+
+## CI checks and permissions
+
+CI uses distinct check names: `pre-commit`, `pytest (Python X.Y)`,
+`docs (Python X.Y)` and `demo (Python X.Y)`. The matrix checks cover the Python
+versions listed in the workflows. Keep these names stable once they are required
+by branch protection. `pre-commit` retains its existing name so the current
+required check continues to run during the transition.
+
+Versioned workflows default to `contents: read`. Test and lint checkouts do not
+persist Git credentials. Only the documentation deployment job has
+`contents: write` and persisted credentials, needed by `mkdocs gh-deploy` to push
+`gh-pages`; that workflow runs only on pushes to `main`. Actions are pinned to
+full commit SHAs. Review the source and compatibility when updating a pin.
+
+Workflow changes do not update GitHub's repository settings. After the new check
+names have appeared in a successful pull request run, the owner can add all
+matrix checks to the required checks for `main`. Do not require a deployment
+check that runs only after a merge, and do not remove the existing lint gate
+before its replacement has run successfully.
 
 ## Reproducing and fixing a bug
 
