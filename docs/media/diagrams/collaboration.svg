@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://www.w3.org/1999/xlink" width="337pt" height="104pt" viewBox="0.00 0.00 337.00 104.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 100.25)">
+<title>gallery::DocumentBuilder</title>
+
+<g id="Node000001" class="node">
+<title>Node1</title>
+<g id="a_Node000001"><a ns1:title=" ">
+<polygon fill="#999999" stroke="#666666" points="241.62,-20.75 101.88,-20.75 101.88,0 241.62,0 241.62,-20.75" />
+<text xml:space="preserve" text-anchor="middle" x="171.75" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::DocumentBuilder</text>
+</a>
+</g>
+</g>
+
+<g id="Node000002" class="node">
+<title>Node2</title>
+<g id="a_Node000002"><a target="_top" ns1:title=" ">
+<polygon fill="white" stroke="#666666" points="113.5,-96.25 0,-96.25 0,-75.5 113.5,-75.5 113.5,-96.25" />
+<text xml:space="preserve" text-anchor="middle" x="56.75" y="-82.75" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::BaseBuilder</text>
+</a>
+</g>
+</g>
+
+<g id="edge1_Node000001_Node000002" class="edge">
+<title>Node2-&gt;Node1</title>
+<g id="a_edge1_Node000001_Node000002"><a ns1:title=" ">
+<path fill="none" stroke="#63b8ff" d="M81.41,-69.11C104.14,-54.59 137.16,-33.48 156.35,-21.22" />
+<polygon fill="#63b8ff" stroke="#63b8ff" points="79.6,-66.12 73.06,-74.45 83.37,-72.01 79.6,-66.12" />
+</a>
+</g>
+</g>
+
+<g id="Node000003" class="node">
+<title>Node3</title>
+<g id="a_Node000003"><a target="_top" ns1:title=" ">
+<polygon fill="white" stroke="#666666" points="211.62,-96.25 131.88,-96.25 131.88,-75.5 211.62,-75.5 211.62,-96.25" />
+<text xml:space="preserve" text-anchor="middle" x="171.75" y="-82.75" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::Input</text>
+</a>
+</g>
+</g>
+
+<g id="edge2_Node000001_Node000003" class="edge">
+<title>Node3-&gt;Node1</title>
+<g id="a_edge2_Node000001_Node000003"><a ns1:title=" ">
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M171.75,-63.76C171.75,-49.76 171.75,-32.05 171.75,-21.22" />
+<polygon fill="#9a32cd" stroke="#9a32cd" points="168.25,-63.75 171.75,-73.75 175.25,-63.75 168.25,-63.75" />
+</a>
+</g>
+<text xml:space="preserve" text-anchor="start" x="174.75" y="-45" font-family="Helvetica,sans-Serif" font-size="10.00" fill="grey">input_</text>
+</g>
+
+<g id="Node000004" class="node">
+<title>Node4</title>
+<g id="a_Node000004"><a target="_top" ns1:title=" ">
+<polygon fill="white" stroke="#666666" points="329.38,-96.25 230.12,-96.25 230.12,-75.5 329.38,-75.5 329.38,-96.25" />
+<text xml:space="preserve" text-anchor="middle" x="279.75" y="-82.75" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::Renderer</text>
+</a>
+</g>
+</g>
+
+<g id="edge3_Node000001_Node000004" class="edge">
+<title>Node4-&gt;Node1</title>
+<g id="a_edge3_Node000001_Node000004"><a ns1:title=" ">
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M256.3,-68.91C234.97,-54.4 204.16,-33.43 186.22,-21.22" />
+<polygon fill="#9a32cd" stroke="#9a32cd" points="254.14,-71.68 264.38,-74.41 258.08,-65.89 254.14,-71.68" />
+</a>
+</g>
+<text xml:space="preserve" text-anchor="start" x="241.6" y="-45" font-family="Helvetica,sans-Serif" font-size="10.00" fill="grey">renderer_</text>
+</g>
+</g>
+</svg>

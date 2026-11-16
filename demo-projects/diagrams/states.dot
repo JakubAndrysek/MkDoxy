@@ -1,0 +1,9 @@
+digraph States {
+    rankdir=LR;
+    node [shape=box, style="rounded,filled", fillcolor="#e0f2f1", fontname="sans-serif"];
+    Source -> XML [label="Doxygen"];
+    XML -> Markdown [label="MkDoxy"];
+    Markdown -> HTML [label="MkDocs"];
+    XML -> Error [label="invalid input", color="#c62828"];
+    Error [fillcolor="#ffebee"];
+}

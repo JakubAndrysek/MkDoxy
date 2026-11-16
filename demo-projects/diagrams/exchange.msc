@@ -1,0 +1,7 @@
+msc {
+    contributor,ci,maintainer;
+    contributor=>ci [label="push contribution"];
+    ci>>contributor [label="tests pass"];
+    contributor=>maintainer [label="request review"];
+    maintainer>>contributor [label="approve / feedback"];
+}
