@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Move package metadata to `pyproject.toml`, switch the backend to `uv_build`
+  and add a locked uv development
+  environment while preserving pip and the `[dev]` extra.
+- Fix wheel builds from source distributions and add a regression test covering
+  package metadata, Jinja templates and the MkDocs entry point.
 - Require Python 3.10 or newer; Python 3.9 users must stay on a compatible
   published release. Python 3.10 and 3.11 remain supported by MkDoxy.
 - Extend the test and documentation CI matrix through Python 3.15 and use

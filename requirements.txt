@@ -1,1 +1,2 @@
-mkdocs
+# Compatibility installer. Runtime requirements are declared in pyproject.toml.
+.

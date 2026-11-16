@@ -8,10 +8,24 @@ privately using [SECURITY.md](SECURITY.md).
 
 ## Development setup
 
-Work from the repository root in a virtual environment. Install a Python version
-compatible with `setup.py`, Git and the Doxygen executable. On Debian/Ubuntu,
+Work from the repository root. Install Git, [uv](https://docs.astral.sh/uv/getting-started/installation/)
+(version 0.13.8, matching CI) and the Doxygen executable. On Debian/Ubuntu,
 Doxygen is available through `sudo apt-get install doxygen`; other platforms
 should use their package manager or the [Doxygen downloads](https://www.doxygen.nl/download.html).
+
+```sh
+uv sync --locked --extra dev
+uv run --locked --extra dev python --version
+doxygen --version
+```
+
+uv creates `.venv` and installs this checkout in editable mode. `.python-version`
+selects Python 3.14 for local development; uv can download it if needed. The
+versioned `uv.lock` fixes Python dependency resolution, not the Doxygen executable
+or OS packages. Tests that construct `DoxygenRun` also
+validate its executable path, so install Doxygen even for the current unit suite.
+
+pip remains supported; uv is not a runtime requirement:
 
 ```sh
 python -m venv .venv
@@ -19,16 +33,24 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
-doxygen --version
 ```
 
-The editable install must refer to this checkout. Doxygen is a separate system
-dependency; pip does not install it. Tests that construct `DoxygenRun` also
-validate its executable path, so install Doxygen even for the current unit suite.
+The build backend is `uv_build`, a separate build-time package that pip installs
+automatically when needed. pip users do not need the uv executable. Metadata and
+file selection live in `pyproject.toml`; `setup.py` and `MANIFEST.in` are no longer
+used. Jinja templates under `mkdoxy/` are packaged with the module. Source
+distributions also include the tests and compatibility requirement files.
+
+`requirements.txt` and `devdeps.txt` remain compatibility installers for `.` and
+`.[dev]` respectively; run them from the repository root. Edit dependency metadata
+in `pyproject.toml`, not those files. pip installations use the declared version
+ranges, not uv.lock. After an intentional dependency change, run `uv lock`, review
+the lockfile diff and verify the supported interpreters. CI uses `--locked` to
+reject stale metadata rather than silently regenerate the lockfile.
 
 ## Current compatibility and tools
 
-`setup.py` declares Python >=3.10, and CI covers Python 3.10-3.15 on
+`pyproject.toml` declares Python >=3.10, and CI covers Python 3.10-3.15 on
 Ubuntu 24.04. This records the existing configuration, not a guarantee that all
 those interpreters still receive upstream security updates. Use a maintained
 interpreter for normal development and preserve the declared syntax/API minimum
@@ -36,22 +58,33 @@ until a dedicated compatibility change is reviewed.
 
 Python 3.10 and 3.11 compatibility is retained while modernizing testing.
 The reference interpreter for lint and documentation deployment is Python 3.14;
-this does not raise the package's syntax/API minimum. uv and expanded typing are
-planned follow-up work; they are not implemented by this document. The commands below use today's pip,
-pytest and pre-commit setup. Update this guide when those tools change.
+this does not raise the package's syntax/API minimum. To exercise another
+interpreter, pass it explicitly, for example:
+
+```sh
+uv run --locked --extra dev --python 3.10 pytest tests/
+```
+
+The pytest CI matrix uses the same locked environment. Documentation and demo
+jobs also exercise the pip development extra for compatibility. The existing
+Black/Ruff hooks remain unchanged; broader typing and regression coverage are
+separate follow-up work.
 
 ## Verification
 
 Run relevant tests from the repository root:
 
 ```sh
-python -m pytest tests/
-python -m pre_commit run --all-files
-mkdocs build --clean
+uv run --locked --extra dev pytest tests/
+uv run --locked --extra dev pre-commit run --all-files
+uv run --locked --extra dev mkdocs build --clean
 ```
 
 - `tests/` is the maintained pytest suite. `tests-old/` is historical material
   outside that suite.
+- The packaging regression builds a wheel from a source distribution in a
+  temporary directory, reusing the installed backend without a separate build environment.
+  It verifies metadata, templates and the MkDocs entry point. It does not publish.
 - Pre-commit currently runs whitespace/end-of-file checks, Black and Ruff. It
   downloads its own hook environments on first use. Hooks can modify files;
   inspect and commit the intended fixes, then rerun until clean.
@@ -65,8 +98,8 @@ mkdocs build --clean
 For packaging changes, also build and inspect the distributions:
 
 ```sh
-python -m build
-python -m twine check dist/*
+uv run --locked --extra dev python -m build
+uv run --locked --extra dev python -m twine check dist/*
 ```
 
 Check that the wheel and sdist retain Jinja templates, runtime metadata and the

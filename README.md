@@ -54,7 +54,7 @@ pip install mkdoxy
 ```
 Development version with all dependencies:
 ```bash
-python -m pip install mkdoxy ".[dev]"
+python -m pip install "mkdoxy[dev]"
 ```
 
 Install from source:

@@ -18,12 +18,14 @@ and follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 - `tests/`: collected pytest tests and fixtures. `tests-old/` contains historical
   experiments; it is not the maintained test suite.
 - `demo-projects/`, `docs/`, `mkdocs.yml`: inputs and documentation for this repo.
-- `setup.py`, `requirements.txt`, `devdeps.txt`: current packaging and dependencies.
+- `pyproject.toml`: package metadata, dependencies, uv_build backend and tool configuration.
+- `uv.lock`, `.python-version`: locked development dependencies and reference Python.
+- `requirements.txt`, `devdeps.txt`: compatibility installers for pip.
 - `.github/workflows/`: tests, documentation builds, lint and Pages deployment.
 
 ## Change and review expectations
 
-- Preserve the currently declared Python compatibility. Read `setup.py` and CI;
+- Preserve the currently declared Python compatibility. Read `pyproject.toml` and CI;
   do not introduce newer syntax or raise the minimum as an incidental refactor.
 - Follow existing local naming/style. Keep broad renames and formatting changes
   separate from behavioral changes.
