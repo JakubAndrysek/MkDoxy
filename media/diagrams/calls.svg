@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://www.w3.org/1999/xlink" width="284pt" height="119pt" viewBox="0.00 0.00 284.00 119.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 115.12)">
+<title>gallery::run_build</title>
+
+<g id="Node000001" class="node">
+<title>Node1</title>
+<g id="a_Node000001"><a ns1:title=" ">
+<polygon fill="#999999" stroke="#666666" points="100,-59.75 0,-59.75 0,-39 100,-39 100,-59.75" />
+<text xml:space="preserve" text-anchor="middle" x="50" y="-46.25" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::run_build</text>
+</a>
+</g>
+</g>
+
+<g id="Node000002" class="node">
+<title>Node2</title>
+<g id="a_Node000002"><a target="_top" ns1:title=" ">
+<polygon fill="white" stroke="#666666" points="275.75,-111.12 136,-111.12 136,-77.62 275.75,-77.62 275.75,-111.12" />
+<text xml:space="preserve" text-anchor="start" x="144" y="-97.62" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::DocumentBuilder</text>
+<text xml:space="preserve" text-anchor="middle" x="205.88" y="-84.88" font-family="Helvetica,sans-Serif" font-size="10.00">::build</text>
+</a>
+</g>
+</g>
+
+<g id="edge1_Node000001_Node000002" class="edge">
+<title>Node1-&gt;Node2</title>
+<g id="a_edge1_Node000001_Node000002"><a ns1:title=" ">
+<path fill="none" stroke="#63b8ff" d="M87.86,-60.15C102.15,-64.33 119.01,-69.26 135.41,-74.06" />
+<polygon fill="#63b8ff" stroke="#63b8ff" points="134.05,-77.31 144.63,-76.76 136.02,-70.59 134.05,-77.31" />
+</a>
+</g>
+</g>
+
+<g id="Node000003" class="node">
+<title>Node3</title>
+<g id="a_Node000003"><a target="_top" ns1:title=" ">
+<polygon fill="white" stroke="#666666" points="260.38,-59.75 151.38,-59.75 151.38,-39 260.38,-39 260.38,-59.75" />
+<text xml:space="preserve" text-anchor="middle" x="205.88" y="-46.25" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::read_value</text>
+</a>
+</g>
+</g>
+
+<g id="edge2_Node000001_Node000003" class="edge">
+<title>Node1-&gt;Node3</title>
+<g id="a_edge2_Node000001_Node000003"><a ns1:title=" ">
+<path fill="none" stroke="#63b8ff" d="M100.11,-49.38C112.63,-49.38 126.28,-49.38 139.47,-49.38" />
+<polygon fill="#63b8ff" stroke="#63b8ff" points="139.39,-52.88 149.39,-49.38 139.39,-45.88 139.39,-52.88" />
+</a>
+</g>
+</g>
+
+<g id="Node000004" class="node">
+<title>Node4</title>
+<g id="a_Node000004"><a target="_top" ns1:title=" ">
+<polygon fill="white" stroke="#666666" points="265.25,-20.75 146.5,-20.75 146.5,0 265.25,0 265.25,-20.75" />
+<text xml:space="preserve" text-anchor="middle" x="205.88" y="-7.25" font-family="Helvetica,sans-Serif" font-size="10.00">gallery::render_value</text>
+</a>
+</g>
+</g>
+
+<g id="edge3_Node000001_Node000004" class="edge">
+<title>Node1-&gt;Node4</title>
+<g id="a_edge3_Node000001_Node000004"><a ns1:title=" ">
+<path fill="none" stroke="#63b8ff" d="M93.86,-38.51C111.55,-34.03 132.24,-28.78 150.94,-24.05" />
+<polygon fill="#63b8ff" stroke="#63b8ff" points="151.67,-27.47 160.51,-21.62 149.95,-20.68 151.67,-27.47" />
+</a>
+</g>
+</g>
+</g>
+</svg>
