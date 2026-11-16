@@ -49,7 +49,8 @@ def test_timeout_stops_child_and_retains_output(tmp_path: Path) -> None:
         while True:
             try:
                 status_text = status.read_text()
-            except FileNotFoundError:
+            except (FileNotFoundError, ProcessLookupError):
+                # /proc can disappear before open or while reading the status.
                 break
             state = next(line for line in status_text.splitlines() if line.startswith("State:"))
             if "Z (zombie)" in state or "X (dead)" in state:
