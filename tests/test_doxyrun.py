@@ -1,3 +1,7 @@
+import os
+import shutil
+import sys
+
 import pytest
 from mkdoxy.doxyrun import DoxygenCustomConfigNotValid, DoxygenRun
 
@@ -182,3 +186,50 @@ def test_str2dox_dict_expanded_config_errors():
 
     with pytest.raises(DoxygenCustomConfigNotValid, match=error_message):
         doxygen_run.str2dox_dict(dox_str)
+
+
+@pytest.mark.parametrize("exit_code", [0, 7])
+def test_run_checks_exit_status_and_reports_output(tmp_path, monkeypatch, exit_code):
+    """A subprocess may emit useful output and still report failure."""
+    doxygen_run = DoxygenRun(sys.executable, str(tmp_path), str(tmp_path), {})
+    # Use a real subprocess with controlled output, without requiring a shell
+    # script executable on every platform. Python accepts its program on stdin.
+    program = (
+        "import sys\n"
+        "print('partial generated output')\n"
+        "print('generation failed', file=sys.stderr)\n"
+        f"sys.exit({exit_code})\n"
+    )
+    monkeypatch.setattr(doxygen_run, "dox_dict2str", lambda config: program)
+    if exit_code:
+        with pytest.raises(RuntimeError) as error:
+            doxygen_run.run()
+        message = str(error.value)
+        assert "status 7" in message
+        assert "partial generated output" in message
+        assert "generation failed" in message
+    else:
+        doxygen_run.run()
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Uses an executable script to wrap the real Doxygen")
+def test_run_rejects_failure_even_after_xml_generation(tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "api.h").write_text("/** Example class. */ class Example {};\n", encoding="utf-8")
+    wrapper = tmp_path / "failing-doxygen"
+    wrapper.write_text(
+        f"#!{sys.executable}\n"
+        "import subprocess, sys\n"
+        f"subprocess.run([{shutil.which('doxygen')!r}, '-'], check=True)\n"
+        "print('error after XML generation', file=sys.stderr)\n"
+        "sys.exit(7)\n",
+        encoding="utf-8",
+    )
+    wrapper.chmod(0o755)
+    output = tmp_path / "generated"
+    output.mkdir()
+    doxygen_run = DoxygenRun(str(wrapper), str(source), str(output), {"EXAMPLE_PATH": "", "EXTRACT_ALL": True})
+    with pytest.raises(RuntimeError, match="error after XML generation"):
+        doxygen_run.run()
+    assert (output / "xml" / "index.xml").is_file()

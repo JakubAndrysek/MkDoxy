@@ -61,3 +61,6 @@ line-length = 120
 
 [tool.black]
 line-length = 120
+
+[tool.pytest.ini_options]
+markers = ["integration: builds real Doxygen XML, Markdown and MkDocs HTML"]

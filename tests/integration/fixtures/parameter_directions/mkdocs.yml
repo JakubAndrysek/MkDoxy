@@ -1,0 +1,18 @@
+site_name: Parameter direction integration test
+theme:
+  name: mkdocs
+plugins:
+  - mkdoxy:
+      projects:
+        api:
+          src-dirs: src
+          full-doc: true
+          doxy-cfg:
+            FILE_PATTERNS: '*.h'
+            EXTRACT_ALL: true
+            GENERATE_HTML: false
+            GENERATE_LATEX: false
+      save-api: generated
+      ignore-errors: false
+markdown_extensions:
+  - tables
