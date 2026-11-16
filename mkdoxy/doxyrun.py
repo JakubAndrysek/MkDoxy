@@ -90,7 +90,7 @@ class DoxygenRun:
         if self.doxyConfigFile is not None and self.doxyConfigFile != "":
             try:
                 with open(self.doxyConfigFile, "r") as file:
-                    doxyCfg.update(self.str2dox_dict(file.read()))
+                    doxyCfg.update(self.str2dox_dict(file.read(), self.doxyConfigFile))
             except FileNotFoundError as e:
                 raise DoxygenCustomConfigNotFound(
                     f"Custom Doxygen config file not found: {self.doxyConfigFile}\n"
@@ -149,20 +149,59 @@ class DoxygenRun:
         # Don't need an empty line at the end
         return s.strip()
 
-    def str2dox_dict(self, dox_str: str) -> dict:
+    def str2dox_dict(self, dox_str: str, config_file_path: Optional[str] = None) -> dict:
         """! Convert a string from a doxygen config file to a dictionary.
-        @details
+        @details Handles @INCLUDE and @INCLUDE_PATH directives recursively.
         @param dox_str: (str) String from a doxygen config file.
+        @param config_file_path: (str) Path to the config file (used for resolving relative @INCLUDE paths).
         @return: (dict) Dictionary.
         """
         dox_dict = {}
         dox_str = re.sub(r"\\\s*\n\s*", "", dox_str)
         pattern = r"^\s*([^=\s]+)\s*(=|\+=)\s*(.*)$"
+        include_pattern = r"^\s*@INCLUDE\s*=\s*(.+)$"
+        include_path_pattern = r"^\s*@INCLUDE_PATH\s*=\s*(.+)$"
+
+        # Determine the base directory for resolving relative paths
+        if config_file_path:
+            base_dir = Path(config_file_path).parent
+        elif self.doxyConfigFile:
+            base_dir = Path(self.doxyConfigFile).parent
+        else:
+            base_dir = Path.cwd()
+
+        # Track include paths for @INCLUDE resolution
+        include_paths = [base_dir]
 
         try:
             for line in dox_str.split("\n"):
                 if line.strip() == "" or line.startswith("#"):
                     continue
+
+                # Handle @INCLUDE_PATH directive
+                include_path_match = re.match(include_path_pattern, line, re.IGNORECASE)
+                if include_path_match:
+                    paths_str = include_path_match.group(1).strip()
+                    # Handle quoted paths and multiple paths separated by spaces
+                    for path_str in self._parse_path_list(paths_str):
+                        include_path = Path(path_str)
+                        if not include_path.is_absolute():
+                            include_path = base_dir / include_path
+                        if include_path.is_dir():
+                            include_paths.append(include_path)
+                    continue
+
+                # Handle @INCLUDE directive
+                include_match = re.match(include_pattern, line, re.IGNORECASE)
+                if include_match:
+                    include_file = include_match.group(1).strip().strip('"').strip("'")
+                    included_config = self._resolve_include(include_file, include_paths)
+                    if included_config:
+                        dox_dict.update(included_config)
+                    else:
+                        log.warning(f"Could not resolve @INCLUDE: {include_file}")
+                    continue
+
                 match = re.match(pattern, line)
                 if not match:
                     raise DoxygenCustomConfigNotValid(
@@ -181,7 +220,12 @@ class DoxygenRun:
                     else:
                         dox_dict[key] = value
                 if operator == "+=":
-                    dox_dict[key] = f"{dox_dict[key]} {value}"
+                    # Handle case where key doesn't exist yet (e.g., defined in another @INCLUDE)
+                    existing = dox_dict.get(key, "")
+                    if existing:
+                        dox_dict[key] = f"{existing} {value}"
+                    else:
+                        dox_dict[key] = value
         except ValueError as e:
             raise DoxygenCustomConfigNotValid(
                 f"Invalid custom Doxygen config file: {self.doxyConfigFile}\n"
@@ -189,6 +233,52 @@ class DoxygenRun:
                 f"Look at https://mkdoxy.kubaandrysek.cz/usage/advanced/."
             ) from e
         return dox_dict
+
+    def _parse_path_list(self, paths_str: str) -> list:
+        """! Parse a space-separated list of paths, handling quoted paths.
+        @param paths_str: (str) Space-separated paths, possibly quoted.
+        @return: (list) List of path strings.
+        """
+        paths = []
+        # Match quoted strings or non-whitespace sequences
+        pattern = r'"([^"]+)"|\'([^\']+)\'|(\S+)'
+        for match in re.finditer(pattern, paths_str):
+            path = match.group(1) or match.group(2) or match.group(3)
+            if path:
+                paths.append(path)
+        return paths
+
+    def _resolve_include(self, include_file: str, include_paths: list) -> Optional[dict]:
+        """! Resolve and parse an @INCLUDE file.
+        @param include_file: (str) The file path from the @INCLUDE directive.
+        @param include_paths: (list) List of directories to search for the include file.
+        @return: (dict) Parsed configuration from the included file, or None if not found.
+        """
+        include_path = Path(include_file)
+
+        # If absolute path, use it directly
+        if include_path.is_absolute():
+            if include_path.is_file():
+                try:
+                    with open(include_path, "r") as f:
+                        return self.str2dox_dict(f.read(), str(include_path))
+                except Exception as e:
+                    log.warning(f"Error reading @INCLUDE file {include_path}: {e}")
+                    return None
+            return None
+
+        # Search in include paths
+        for search_dir in include_paths:
+            candidate = search_dir / include_path
+            if candidate.is_file():
+                try:
+                    with open(candidate, "r") as f:
+                        return self.str2dox_dict(f.read(), str(candidate))
+                except Exception as e:
+                    log.warning(f"Error reading @INCLUDE file {candidate}: {e}")
+                    return None
+
+        return None
 
     def hasChanged(self) -> bool:
         """! Check if the source files have changed since the last run.
