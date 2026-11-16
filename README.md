@@ -79,7 +79,12 @@ plugins:
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you want to change.
+Pull requests are welcome. See the [contributing guide](https://github.com/JakubAndrysek/MkDoxy/blob/main/CONTRIBUTING.md)
+for setup, testing and the review process, and follow the
+[Code of Conduct](https://github.com/JakubAndrysek/MkDoxy/blob/main/CODE_OF_CONDUCT.md).
+For major changes, please open an issue first to discuss what you want to change.
+Report security vulnerabilities privately using the
+[security policy](https://github.com/JakubAndrysek/MkDoxy/blob/main/SECURITY.md).
 
 ## Do You Enjoy MkDoxy or Does It Save You Time?
 Then definitely consider:
