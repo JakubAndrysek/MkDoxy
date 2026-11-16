@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Require Python 3.10 or newer; Python 3.9 users must stay on a compatible
+  published release. Python 3.10 and 3.11 remain supported by MkDoxy.
+- Extend the test and documentation CI matrix through Python 3.15 and use
+  Python 3.14 explicitly for lint and documentation deployment.
+
+## Released
+
 - **v1.0.0** - 2023-01-24
     - Initial release
 - **v1.0.3** - 2023-03-21
