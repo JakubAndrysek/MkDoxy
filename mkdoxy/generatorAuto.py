@@ -1,5 +1,7 @@
 import logging
 import os
+import re
+from html import escape
 
 from mkdocs.structure import files
 
@@ -28,10 +30,11 @@ ADDITIONAL_FILES = {
 
 
 def generate_link(name, url, end="\n") -> str:
-    def normalize(name):
-        return "\\" + name if name.startswith("__") else name
-
-    return f"- [{normalize(name)}]({url}){end}"
+    # Titles are labels, not Markdown/HTML: they must not create extra links
+    # or list entries. Escape backslashes together with Markdown delimiters.
+    label = escape(" ".join(name.splitlines()), quote=False)
+    label = re.sub(r"([\\`*_\[\]])", r"\\\1", label)
+    return f"- [{label}]({url}){end}"
 
 
 # def generate_link(name, url) -> str:

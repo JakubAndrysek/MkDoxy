@@ -72,6 +72,10 @@ namespace enumeration indexes retain the `class_member_enums.md` and
 `namespace_member_enums.md` filenames used by navigation. Builds cover directory
 and flat URLs, with XML source listings enabled and disabled; source-code links
 are emitted only when a source page exists.
+Navigation labels render as literal text. Regression cases include Markdown
+link delimiters in real page/group titles, HTML and autolink syntax, backslashes,
+entities, formatting markers and line breaks; titles cannot add a different
+navigation destination.
 
 ### Paragraph titles
 

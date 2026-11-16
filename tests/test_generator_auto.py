@@ -1,7 +1,11 @@
+from html.parser import HTMLParser
 from types import SimpleNamespace
 
+import markdown
+import pytest
+
 from mkdoxy.constants import Kind
-from mkdoxy.generatorAuto import GeneratorAuto
+from mkdoxy.generatorAuto import GeneratorAuto, generate_link
 
 
 def empty_tree():
@@ -63,3 +67,42 @@ def test_summary_retains_recursive_entries_in_order(tmp_path):
         in output
     )
     assert "_source.md" not in output
+
+
+class _LabelLinks(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hrefs: list[str | None] = []
+        self.text: list[str] = []
+        self.in_link = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "a":
+            self.hrefs.append(dict(attrs).get("href"))
+            self.in_link = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "a":
+            self.in_link = False
+
+    def handle_data(self, data: str) -> None:
+        if self.in_link:
+            self.text.append(data)
+
+
+@pytest.mark.parametrize(
+    "title",
+    [
+        "Guide](https://example.com/unintended) [Read more",
+        "Backslash\\](https://example.com/unintended) [label",
+        "<a href='https://example.com/unintended'>HTML</a>",
+        "<https://example.com/unintended>",
+        "__private__ *literal* `code` [brackets] & entities &#93;",
+        "First line\nSecond line",
+    ],
+)
+def test_generated_link_labels_are_literal_text(title: str) -> None:
+    parser = _LabelLinks()
+    parser.feed(markdown.markdown(generate_link(title, "expected.md")))
+    assert parser.hrefs == ["expected.md"]
+    assert "".join(parser.text) == " ".join(title.splitlines())

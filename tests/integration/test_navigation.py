@@ -101,3 +101,27 @@ def test_summary_contains_descendants_and_valid_targets(
                 parent_target = html_target(compound.attrib["id"])
                 child_target = html_target(child.attrib["refid"])
                 assert depths[child_target] == depths[parent_target] + 1, (compound.attrib, child.attrib)
+
+
+def test_page_and_group_titles_cannot_add_navigation_links(build_project: ProjectBuilder) -> None:
+    title = "Guide](https://example.com/unintended) [Read more"
+
+    def prepare(root: Path) -> None:
+        header = root / "src/navigation.h"
+        header.write_text(
+            header.read_text(encoding="utf-8")
+            .replace("top_module Top module", f"top_module {title}")
+            .replace("overview Overview", f"overview {title}"),
+            encoding="utf-8",
+        )
+
+    project = build_project("navigation", prepare=prepare)
+    for refid in ("overview", "group__top__module"):
+        # Keep the exact XML title as evidence that Doxygen did not remove it.
+        xml = ElementTree.parse(project.xml_dir / f"{refid}.xml")
+        assert xml.findtext("compounddef/title") == title
+    parser = _Links()
+    parser.feed(project.html("api/links/index.html"))
+    assert not any("example.com/unintended" in href for href, _ in parser.hrefs)
+    assert (project.root / "site/api/overview/index.html").is_file()
+    assert (project.root / "site/api/group__top__module/index.html").is_file()
