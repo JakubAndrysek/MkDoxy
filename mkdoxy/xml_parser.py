@@ -253,7 +253,26 @@ class XmlParser:
                 ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[item.get("kind")])]), Br(), lst))
             elif item.tag == "simplesect":
                 kind = item.get("kind")
-                ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
+                title = item.find("title")
+                if title is not None and "".join(title.itertext()).strip():
+                    title_parts = []
+                    for part in self.paras(title):
+                        # The whole heading is bold already. Nested Markdown
+                        # strong markers would break a title such as @par \b Tip.
+                        title_parts.extend(part.children if isinstance(part, MdBold) else [part])
+                    # Doxygen can leave whitespace after inline title markup;
+                    # strong delimiters must touch non-whitespace content.
+                    for end in (0, -1):
+                        while title_parts and isinstance(title_parts[end], Text):
+                            text = title_parts[end].text
+                            text = text.lstrip() if end == 0 else text.rstrip()
+                            if text:
+                                title_parts[end] = Text(text)
+                                break
+                            title_parts.pop(end)
+                    ret.extend((Br(), MdBold(title_parts)))
+                elif kind in SIMPLE_SECTIONS and kind != "par":
+                    ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
                 if kind != "see":
                     ret.append(Br())
                 else:
