@@ -121,6 +121,41 @@ Check that the wheel and sdist retain Jinja templates, runtime metadata and the
 `twine upload` or `mkdocs gh-deploy` as validation commands: they publish artifacts
 or documentation. Publishing is a separate owner-coordinated action.
 
+## Integration tests
+
+Small, repository-owned C++ and MkDocs projects live under
+`tests/integration/fixtures/`. The pytest builder copies each fixture to a fresh
+temporary directory and invokes the current interpreter's `mkdocs build --clean
+--strict` with real Doxygen. Generated XML, Markdown, HTML, caches and a
+`build.log` stay in that directory; the fixture and developer caches are not
+modified. The subprocess receives a minimal environment without inherited
+credentials, and imports MkDoxy from the candidate checkout. This environment
+is for reproducibility, not a sandbox for untrusted code.
+
+Run only integration tests or the remaining tests with:
+
+```sh
+uv run --locked --extra dev pytest tests/ -m integration -v
+uv run --locked --extra dev pytest tests/ -m "not integration"
+```
+
+The existing `pytest tests/` CI command includes both. Doxygen must be on PATH;
+a missing executable, a build timeout or a failed strict build fails the test
+rather than silently skipping it. Use pytest's `--basetemp` option to choose a
+location for retained artifacts (pytest clears that directory before the run).
+The OS-provided Doxygen version is not locked; include its version when reporting
+failures. External demo builds remain a broader smoke test, not the source of
+these focused fixtures.
+
+The first fixture covers parameter names, descriptions, unannotated parameters,
+and `[in]`, `[out]`, `[in,out]` annotations. Tests verify the input XML and the
+resulting Markdown and HTML. Directions are currently a known missing feature
+(issue #78 / open PR #147), so only the direction assertions use
+`xfail(strict=True)`. Build and baseline output checks remain mandatory. Once
+the fix lands, remove that mark: an unexpected pass deliberately fails CI until
+the regression test becomes a normal passing check. Do not use `xfail` to hide
+new regressions or unrelated failures.
+
 ## CI checks and permissions
 
 CI uses distinct check names: `pre-commit`, `pytest (Python X.Y)`,
