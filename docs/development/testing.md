@@ -62,6 +62,17 @@ unannotated parameter in the rendered HTML.
 Directions render before parameter names as `[in]`, `[out]` and `[in/out]`; an
 unannotated parameter keeps its existing output. These are normal assertions, without expected-failure marks.
 
+### Paragraph titles
+
+The `paragraph_titles` fixture covers Doxygen `@par` sections with plain, bold,
+mixed, italic and code titles, as well as untitled paragraphs. Titles render as
+bold headings with inline formatting retained; bold content is not wrapped in
+duplicate strong markers. Empty titles emit no empty emphasis. Tests check the
+actual XML shape and the generated Markdown and HTML, while preserving standard
+note, warning and see-also labels. Focused parser tests also cover whitespace-only
+and empty markup titles, reference labels resolved from the symbol cache, nested
+bold formatting and whitespace inside edge inline elements.
+
 ### Image assets
 
 The image fixture uses Doxygen `@image` comments and seven owned, renderable

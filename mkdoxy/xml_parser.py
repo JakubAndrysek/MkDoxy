@@ -119,6 +119,44 @@ class XmlParser:
             ret.extend((Text("\n"), code))
         return ret
 
+    def _paragraph_title(self, title: Element | None) -> list:
+        """Resolve title content, remove redundant bold, and trim visible edges."""
+        if title is None:
+            return []
+
+        def unwrap_bold(parts):
+            result = []
+            for part in parts:
+                if isinstance(part, Md):
+                    part.children = unwrap_bold(part.children)
+                if isinstance(part, MdBold):
+                    result.extend(part.children)
+                else:
+                    result.append(part)
+            return result
+
+        def trim_edge(parts, end):
+            while parts:
+                part = parts[end]
+                if isinstance(part, (Text, Code)):
+                    part.text = part.text.lstrip() if end == 0 else part.text.rstrip()
+                    if part.text:
+                        break
+                elif isinstance(part, Md):
+                    trim_edge(part.children, end)
+                    if part.children:
+                        break
+                else:
+                    break
+                parts.pop(end)
+
+        # Parsing must precede emptiness checks: a reference can obtain its
+        # visible label from the cache even when the XML has no text content.
+        parts = unwrap_bold(self.paras(title))
+        trim_edge(parts, 0)
+        trim_edge(parts, -1)
+        return parts
+
     def paras(self, p: Element, italic: bool = False) -> [Md]:
         ret = []
         if p is None:
@@ -253,7 +291,12 @@ class XmlParser:
                 ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[item.get("kind")])]), Br(), lst))
             elif item.tag == "simplesect":
                 kind = item.get("kind")
-                ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
+                title = item.find("title")
+                title_parts = self._paragraph_title(title)
+                if title_parts:
+                    ret.extend((Br(), MdBold(title_parts)))
+                elif kind in SIMPLE_SECTIONS and kind != "par":
+                    ret.extend((Br(), MdBold([Text(SIMPLE_SECTIONS[kind])])))
                 if kind != "see":
                     ret.append(Br())
                 else:
