@@ -9,7 +9,6 @@ from mkdocs import exceptions
 
 import mkdoxy
 from mkdoxy.constants import Kind
-from mkdoxy.filters import use_code_language
 from mkdoxy.node import DummyNode, Node
 from mkdoxy.utils import (
     merge_two_dicts,
@@ -40,8 +39,6 @@ class GeneratorBase:
         self.metaData: Dict[str, list[str]] = {}
 
         environment = Environment(loader=BaseLoader())
-        environment.filters["use_code_language"] = use_code_language
-        # code from https://github.com/daizutabi/mkapi/blob/master/mkapi/core/renderer.py#L29-L38
         path = os.path.join(os.path.dirname(mkdoxy.__file__), "templates")
         ENDING = (".jinja2", ".j2", ".jinja")
         for fileName in os.listdir(path):
