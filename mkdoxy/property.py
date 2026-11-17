@@ -302,7 +302,7 @@ class Property:
                 initializer_str = self.parser.paras_as_str(initializer, plain=plain).lstrip(" =")
                 if "\n" in initializer_str:
                     return "`/* multi line expression */`"
-                return f"`{initializer_str}`"
+                return initializer_str if plain else f"`{initializer_str}`"
             else:
                 return ""
 
