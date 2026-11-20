@@ -196,7 +196,10 @@ class GeneratorAuto:
         self.save(path, output)
 
     def page(self, node: Node, config: dict = None):
-        path = f"{node.name}.md"
+        # Links to a page (Node.url, links.md, pages.md) use its refid, which
+        # is not always the name: @mainpage is "index" with refid "indexpage",
+        # and with CASE_SENSE_NAMES off "UpperGuide" becomes "_upper_guide".
+        path = f"{node.refid}.md"
 
         output = self.generatorBase.page(node, config)
         self.save(path, output)

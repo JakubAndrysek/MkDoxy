@@ -5,6 +5,9 @@
  *  @ingroup top_module
  *  Nested documentation group.
  */
+/** @mainpage Fixture home
+ *  Navigation fixture main page.
+ */
 /** @page overview Overview
  *  Navigation fixture page.
  */
