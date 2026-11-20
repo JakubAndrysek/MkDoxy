@@ -125,3 +125,46 @@ def test_page_and_group_titles_cannot_add_navigation_links(build_project: Projec
     assert not any("example.com/unintended" in href for href, _ in parser.hrefs)
     assert (project.root / "site/api/overview/index.html").is_file()
     assert (project.root / "site/api/group__top__module/index.html").is_file()
+
+
+def test_main_page_keeps_hand_written_api_landing_page(build_project: ProjectBuilder) -> None:
+    landing = "Hand-written API landing page"
+
+    def prepare(root: Path) -> None:
+        api_docs = root / "docs/api"
+        api_docs.mkdir()
+        (api_docs / "index.md").write_text(f"# API\n\n{landing}\n", encoding="utf-8")
+
+    project = build_project("navigation", options=BuildOptions(use_directory_urls=True), prepare=prepare)
+    # Doxygen names the @mainpage compound "index" but links it as "indexpage".
+    xml = ElementTree.parse(project.xml_dir / "indexpage.xml")
+    assert xml.findtext("compounddef/compoundname") == "index"
+    assert "(indexpage.md)" in project.markdown("links.md")
+    assert "Navigation fixture main page." in project.markdown("indexpage.md")
+    assert not (project.generated_dir / project.api_path / "index.md").exists()
+    landing_html = project.html("api/index.html")
+    assert landing in landing_html
+    assert "Navigation fixture main page." not in landing_html
+    assert "Navigation fixture main page." in project.html("api/indexpage/index.html")
+
+
+def test_page_with_escaped_refid_is_generated_at_its_link_target(build_project: ProjectBuilder) -> None:
+    def prepare(root: Path) -> None:
+        header = root / "src/navigation.h"
+        header.write_text(
+            header.read_text(encoding="utf-8") + "/** @page UpperGuide Upper guide\n *  Upper-case page.\n */\n",
+            encoding="utf-8",
+        )
+        path = root / "mkdocs.yml"
+        config = yaml.safe_load(path.read_text(encoding="utf-8"))
+        # Force Doxygen to escape upper-case letters on every platform.
+        config["plugins"][0]["mkdoxy"]["projects"]["api"]["doxy-cfg"]["CASE_SENSE_NAMES"] = False
+        path.write_text(yaml.safe_dump(config), encoding="utf-8")
+
+    project = build_project("navigation", prepare=prepare)
+    xml = ElementTree.parse(project.xml_dir / "_upper_guide.xml")
+    assert xml.findtext("compounddef/compoundname") == "UpperGuide"
+    assert "(_upper_guide.md)" in project.markdown("links.md")
+    assert "(_upper_guide.md)" in project.markdown("pages.md")
+    assert "Upper-case page." in project.markdown("_upper_guide.md")
+    assert not (project.generated_dir / project.api_path / "UpperGuide.md").exists()
