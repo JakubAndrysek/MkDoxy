@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="600px" height="134px" viewBox="0 0 600 134" shape-rendering="crispEdges" stroke-width="1" text-rendering="geometricPrecision">
+<polygon fill="white" points="70,7 128,7 128,16 70,16" />
+<text x="100" y="16" textLength="57" font-family="Helvetica" font-size="12" fill="black" text-anchor="middle">
+
+contributor
+</text>
+<polygon fill="white" points="294,7 304,7 304,16 294,16" />
+<text x="300" y="16" textLength="9" font-family="Helvetica" font-size="12" fill="black" text-anchor="middle">
+
+ci
+</text>
+<polygon fill="white" points="470,7 528,7 528,16 470,16" />
+<text x="500" y="16" textLength="56" font-family="Helvetica" font-size="12" fill="black" text-anchor="middle">
+
+maintainer
+</text>
+<line x1="100" y1="22" x2="100" y2="50" stroke="black" />
+<line x1="300" y1="22" x2="300" y2="50" stroke="black" />
+<line x1="500" y1="22" x2="500" y2="50" stroke="black" />
+<line x1="100" y1="33" x2="300" y2="33" stroke="black" />
+<polygon fill="black" points="300,33 290,39 290,27" />
+<polygon fill="white" points="153,23 246,23 246,32 153,32" />
+<text x="154" y="32" textLength="91" font-family="Helvetica" font-size="12" fill="black">
+push contribution
+</text>
+<line x1="100" y1="50" x2="100" y2="78" stroke="black" />
+<line x1="300" y1="50" x2="300" y2="78" stroke="black" />
+<line x1="500" y1="50" x2="500" y2="78" stroke="black" />
+<line x1="300" y1="61" x2="100" y2="61" stroke="black" stroke-dasharray="2,2" />
+<polygon fill="black" points="100,61 110,67 110,55" />
+<polygon fill="white" points="171,51 227,51 227,60 171,60" />
+<text x="172" y="60" textLength="54" font-family="Helvetica" font-size="12" fill="black">
+tests pass
+</text>
+<line x1="100" y1="78" x2="100" y2="106" stroke="black" />
+<line x1="300" y1="78" x2="300" y2="106" stroke="black" />
+<line x1="500" y1="78" x2="500" y2="106" stroke="black" />
+<line x1="100" y1="89" x2="500" y2="89" stroke="black" />
+<polygon fill="black" points="500,89 490,95 490,83" />
+<polygon fill="white" points="259,79 339,79 339,88 259,88" />
+<text x="260" y="88" textLength="78" font-family="Helvetica" font-size="12" fill="black">
+request review
+</text>
+<line x1="100" y1="106" x2="100" y2="134" stroke="black" />
+<line x1="300" y1="106" x2="300" y2="134" stroke="black" />
+<line x1="500" y1="106" x2="500" y2="134" stroke="black" />
+<line x1="500" y1="117" x2="100" y2="117" stroke="black" stroke-dasharray="2,2" />
+<polygon fill="black" points="100,117 110,123 110,111" />
+<polygon fill="white" points="247,107 351,107 351,116 247,116" />
+<text x="248" y="116" textLength="102" font-family="Helvetica" font-size="12" fill="black">
+approve / feedback
+</text>
+<line x1="100" y1="128" x2="100" y2="134" stroke="black" />
+<line x1="300" y1="128" x2="300" y2="134" stroke="black" />
+<line x1="500" y1="128" x2="500" y2="134" stroke="black" />
+</svg>

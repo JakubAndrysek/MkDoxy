@@ -1,3 +1,7 @@
+import os
+import shutil
+import sys
+
 import pytest
 from mkdoxy.doxyrun import DoxygenCustomConfigNotValid, DoxygenRun
 
@@ -201,9 +205,10 @@ def test_check_and_run_persists_hash_only_when_index_xml_exists(tmp_path, monkey
         doxyCfgNew={},
     )
 
-    # First run fails to generate xml/index.xml -> hashChanges.yaml must not be persisted
-    monkeypatch.setattr(DoxygenRun, "run", lambda self: True)
-    assert doxygen_run.checkAndRun() is True
+    # First run fails to generate xml/index.xml -> raises RuntimeError and hashChanges.yaml must not be persisted
+    monkeypatch.setattr(DoxygenRun, "run", lambda self: None)
+    with pytest.raises(RuntimeError, match="index.xml"):
+        doxygen_run.checkAndRun()
     assert not (temp_doxy / "hashChanges.yaml").exists()
 
     # Second run creates xml/index.xml -> hashChanges.yaml is persisted and subsequent check returns False
@@ -211,7 +216,6 @@ def test_check_and_run_persists_hash_only_when_index_xml_exists(tmp_path, monkey
         xml_dir = temp_doxy / "xml"
         xml_dir.mkdir(parents=True, exist_ok=True)
         (xml_dir / "index.xml").write_text("<doxygenindex/>", encoding="utf-8")
-        return True
 
     monkeypatch.setattr(DoxygenRun, "run", fake_success_run)
     assert doxygen_run.checkAndRun() is True
@@ -245,11 +249,10 @@ def test_check_and_run_does_not_persist_hash_when_doxygen_fails_with_existing_in
             self.returncode = state["returncode"]
 
         def communicate(self, input_bytes):
-            if self.returncode == 0:
-                xml_dir = temp_doxy / "xml"
-                xml_dir.mkdir(parents=True, exist_ok=True)
-                (xml_dir / "index.xml").write_text("<doxygenindex/>", encoding="utf-8")
-            return (b"", b"")
+            xml_dir = temp_doxy / "xml"
+            xml_dir.mkdir(parents=True, exist_ok=True)
+            (xml_dir / "index.xml").write_text("<doxygenindex/>", encoding="utf-8")
+            return (b"", b"simulated failure" if self.returncode else b"")
 
     monkeypatch.setattr("mkdoxy.doxyrun.Popen", FakePopen)
 
@@ -259,10 +262,11 @@ def test_check_and_run_does_not_persist_hash_when_doxygen_fails_with_existing_in
     assert (temp_doxy / "xml" / "index.xml").is_file()
     assert (temp_doxy / "hashChanges.yaml").is_file()
 
-    # 2. Source files change, but the next Doxygen run fails while stale index.xml still exists
+    # 2. Source files change, but the next Doxygen run fails while stale/partial index.xml exists
     header.write_text("class Foo { int a; int b; };", encoding="utf-8")
     state["returncode"] = 1
-    assert doxygen_run.checkAndRun() is True
+    with pytest.raises(RuntimeError, match="exit status 1"):
+        doxygen_run.checkAndRun()
     assert state["calls"] == 2
     assert (temp_doxy / "xml" / "index.xml").is_file()
     assert not (temp_doxy / "hashChanges.yaml").exists()
@@ -289,3 +293,50 @@ def test_node_destructor_overline_normalized():
     )
     defn = Property.Definition(xml_el, None, Kind.FUNCTION)
     assert defn.plain() == "Foo::~Foo;"
+
+
+@pytest.mark.parametrize("exit_code", [0, 7])
+def test_run_checks_exit_status_and_reports_output(tmp_path, monkeypatch, exit_code):
+    """A subprocess may emit useful output and still report failure."""
+    doxygen_run = DoxygenRun(sys.executable, str(tmp_path), str(tmp_path), {})
+    # Use a real subprocess with controlled output, without requiring a shell
+    # script executable on every platform. Python accepts its program on stdin.
+    program = (
+        "import sys\n"
+        "print('partial generated output')\n"
+        "print('generation failed', file=sys.stderr)\n"
+        f"sys.exit({exit_code})\n"
+    )
+    monkeypatch.setattr(doxygen_run, "dox_dict2str", lambda config: program)
+    if exit_code:
+        with pytest.raises(RuntimeError) as error:
+            doxygen_run.run()
+        message = str(error.value)
+        assert "status 7" in message
+        assert "partial generated output" in message
+        assert "generation failed" in message
+    else:
+        doxygen_run.run()
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Uses an executable script to wrap the real Doxygen")
+def test_run_rejects_failure_even_after_xml_generation(tmp_path):
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "api.h").write_text("/** Example class. */ class Example {};\n", encoding="utf-8")
+    wrapper = tmp_path / "failing-doxygen"
+    wrapper.write_text(
+        f"#!{sys.executable}\n"
+        "import subprocess, sys\n"
+        f"subprocess.run([{shutil.which('doxygen')!r}, '-'], check=True)\n"
+        "print('error after XML generation', file=sys.stderr)\n"
+        "sys.exit(7)\n",
+        encoding="utf-8",
+    )
+    wrapper.chmod(0o755)
+    output = tmp_path / "generated"
+    output.mkdir()
+    doxygen_run = DoxygenRun(str(wrapper), str(source), str(output), {"EXAMPLE_PATH": "", "EXTRACT_ALL": True})
+    with pytest.raises(RuntimeError, match="error after XML generation"):
+        doxygen_run.run()
+    assert (output / "xml" / "index.xml").is_file()

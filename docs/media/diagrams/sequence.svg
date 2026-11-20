@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="600px" height="134px" viewBox="0 0 600 134" shape-rendering="crispEdges" stroke-width="1" text-rendering="geometricPrecision">
+<polygon fill="white" points="84,7 114,7 114,16 84,16" />
+<text x="100" y="16" textLength="28" font-family="Helvetica" font-size="12" fill="black" text-anchor="middle">
+
+client
+</text>
+<polygon fill="white" points="280,7 318,7 318,16 280,16" />
+<text x="300" y="16" textLength="36" font-family="Helvetica" font-size="12" fill="black" text-anchor="middle">
+
+worker
+</text>
+<polygon fill="white" points="482,7 516,7 516,16 482,16" />
+<text x="500" y="16" textLength="32" font-family="Helvetica" font-size="12" fill="black" text-anchor="middle">
+
+cache
+</text>
+<line x1="100" y1="22" x2="100" y2="50" stroke="black" />
+<line x1="300" y1="22" x2="300" y2="50" stroke="black" />
+<line x1="500" y1="22" x2="500" y2="50" stroke="black" />
+<line x1="100" y1="33" x2="300" y2="33" stroke="black" />
+<polygon fill="black" points="300,33 290,39 290,27" />
+<polygon fill="white" points="182,23 217,23 217,32 182,32" />
+<text x="183" y="32" textLength="33" font-family="Helvetica" font-size="12" fill="black">
+build()
+</text>
+<line x1="100" y1="50" x2="100" y2="78" stroke="black" />
+<line x1="300" y1="50" x2="300" y2="78" stroke="black" />
+<line x1="500" y1="50" x2="500" y2="78" stroke="black" />
+<line x1="300" y1="61" x2="500" y2="61" stroke="black" />
+<polygon fill="black" points="500,61 490,67 490,55" />
+<polygon fill="white" points="344,51 455,51 455,60 344,60" />
+<text x="345" y="60" textLength="109" font-family="Helvetica" font-size="12" fill="black">
+lookup(source hash)
+</text>
+<line x1="100" y1="78" x2="100" y2="106" stroke="black" />
+<line x1="300" y1="78" x2="300" y2="106" stroke="black" />
+<line x1="500" y1="78" x2="500" y2="106" stroke="black" />
+<line x1="500" y1="89" x2="300" y2="89" stroke="black" stroke-dasharray="2,2" />
+<polygon fill="black" points="300,89 310,95 310,83" />
+<polygon fill="white" points="386,79 413,79 413,88 386,88" />
+<text x="387" y="88" textLength="25" font-family="Helvetica" font-size="12" fill="black">
+miss
+</text>
+<line x1="100" y1="106" x2="100" y2="134" stroke="black" />
+<line x1="300" y1="106" x2="300" y2="134" stroke="black" />
+<line x1="500" y1="106" x2="500" y2="134" stroke="black" />
+<line x1="300" y1="117" x2="100" y2="117" stroke="black" stroke-dasharray="2,2" />
+<polygon fill="black" points="100,117 110,123 110,111" />
+<polygon fill="white" points="158,107 241,107 241,116 158,116" />
+<text x="159" y="116" textLength="81" font-family="Helvetica" font-size="12" fill="black">
+HTML + assets
+</text>
+<line x1="100" y1="128" x2="100" y2="134" stroke="black" />
+<line x1="300" y1="128" x2="300" y2="134" stroke="black" />
+<line x1="500" y1="128" x2="500" y2="134" stroke="black" />
+</svg>

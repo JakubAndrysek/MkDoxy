@@ -3,8 +3,7 @@
 # Packaging
 package:
 	rm -f dist/*
-	python3 -m build --wheel  # Updated to use python3 build tool for wheel
-	python3 setup.py sdist
+	python3 -m build
 
 install: package
 	python3 -m pip install --no-deps --force dist/*.whl

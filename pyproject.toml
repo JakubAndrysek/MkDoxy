@@ -1,5 +1,66 @@
+[build-system]
+requires = ["uv_build>=0.13.8,<0.14"]
+build-backend = "uv_build"
+
+[project]
+name = "mkdoxy"
+version = "1.2.8"
+description = "MkDoxy → MkDocs + Doxygen = easy documentation generator with code snippets"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Jakub Andrýsek", email = "email@kubaandrysek.cz" }]
+keywords = [
+    "mkdoxy", "python", "open-source", "documentation", "mkdocs", "doxygen",
+    "multilanguage", "code-snippets", "code", "snippets", "documentation-generator",
+]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Operating System :: OS Independent",
+]
+dependencies = ["mkdocs"]
+
+[project.urls]
+Homepage = "https://github.com/JakubAndrysek/MkDoxy"
+Source = "https://github.com/JakubAndrysek/MkDoxy"
+Documentation = "https://mkdoxy.kubaandrysek.cz/"
+Tracker = "https://github.com/JakubAndrysek/MkDoxy/issues"
+Funding = "https://github.com/sponsors/jakubandrysek"
+
+[project.entry-points."mkdocs.plugins"]
+mkdoxy = "mkdoxy.plugin:MkDoxy"
+
+[project.optional-dependencies]
+# Preserve the pip-installable development extra during the uv migration.
+dev = [
+    "mkdocs-material~=9.6.18",
+    "mkdocs-open-in-new-tab~=1.0.8",
+    "pathlib~=1.0.1",
+    "isort~=6.0.1",
+    "pytest~=8.4.1",
+    "packaging>=24",
+    "pre-commit~=4.3.0",
+    "uv_build>=0.13.8,<0.14",
+    "build>=1.6.1,<2",
+    "twine~=6.1.0",
+]
+
+[tool.uv.build-backend]
+module-name = "mkdoxy"
+module-root = ""
+source-include = ["requirements.txt", "devdeps.txt", "tests/**"]
+
 [tool.ruff]
 line-length = 120
 
 [tool.black]
 line-length = 120
+
+[tool.pytest.ini_options]
+markers = ["integration: builds real Doxygen XML, Markdown and MkDocs HTML"]

@@ -89,6 +89,18 @@ class Node:
         self._definition = Property.Definition(self._xml, parser, self._kind)
         self._programlisting = Property.Programlisting(self._xml, parser, self._kind)
 
+    @property
+    def image_assets(self) -> set[str]:
+        """Local and remote HTML image references in this current compound."""
+        if self._xml is None:
+            return set()
+        names: set[str] = set()
+        for image in self._xml.findall(".//image"):
+            name = image.get("name")
+            if name and image.get("type", "html") == "html":
+                names.add(name)
+        return names
+
     def __repr__(self):
         return f"Node: {self.name} refid: {self._refid}"
 

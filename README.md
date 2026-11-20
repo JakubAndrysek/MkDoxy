@@ -38,10 +38,16 @@
 - **[Code snippets](./snippets/index.md)**: Generate code snippets in place of your standard Markdown documentation.
 - **[Multiple projects](./usage/index.md#multiple-projects)**: Support for multiple projects in one documentation (e.g. C++ and Python).
 - **[Multiple source directories](./usage/index.md#multiple-source-directories)**: Configure multiple source directories in one project.
+- **[Images and diagrams](https://mkdoxy.kubaandrysek.cz/usage/images-and-diagrams/)**: Include image assets in generated API pages; explore native Doxygen diagram examples and their tool requirements.
 - **[Custom Jinja templates](./usage/index.md#custom-jinja-templates)**: Define custom Jinja templates for rendering Doxygen documentation.
 - **[Custom Doxygen configuration](./usage/index.md#custom-doxygen-configuration)**: Specify custom Doxygen configuration for each project.
 
 ## Installation
+Starting with the next release, MkDoxy requires Python 3.10 or newer and a
+separate Doxygen installation. Python 3.10 and 3.11 remain compatible; use an
+upstream-maintained interpreter where possible. Python 3.9 users must stay on a
+compatible published release.
+
 Install the plugin using pip from [PyPI](https://pypi.org/project/mkdoxy/):
 
 ```bash
@@ -49,7 +55,7 @@ pip install mkdoxy
 ```
 Development version with all dependencies:
 ```bash
-python -m pip install mkdoxy ".[dev]"
+python -m pip install "mkdoxy[dev]"
 ```
 
 Install from source:
@@ -79,7 +85,12 @@ plugins:
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you want to change.
+Pull requests are welcome. See the [contributing guide](https://github.com/JakubAndrysek/MkDoxy/blob/main/CONTRIBUTING.md)
+for setup, testing and the review process, and follow the
+[Code of Conduct](https://github.com/JakubAndrysek/MkDoxy/blob/main/CODE_OF_CONDUCT.md).
+For major changes, please open an issue first to discuss what you want to change.
+Report security vulnerabilities privately using the
+[security policy](https://github.com/JakubAndrysek/MkDoxy/blob/main/SECURITY.md).
 
 ## Do You Enjoy MkDoxy or Does It Save You Time?
 Then definitely consider:

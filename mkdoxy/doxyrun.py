@@ -58,7 +58,6 @@ class DoxygenRun:
         self.doxyConfigFile: Optional[str] = doxyConfigFile
         self.hashFileName: str = "hashChanges.yaml"
         self.hashFilePath: PurePath = PurePath.joinpath(Path(self.tempDoxyFolder), Path(self.hashFileName))
-        self.hashNew: Optional[str] = None
         self.doxyCfg: dict = self.setDoxyCfg(doxyCfgNew)
 
     def setDoxyCfg(self, doxyCfgNew: dict) -> dict:
@@ -191,52 +190,49 @@ class DoxygenRun:
             ) from e
         return dox_dict
 
-    def _writeHash(self, hash_value: str):
-        Path(self.hashFilePath).parent.mkdir(parents=True, exist_ok=True)
-        with open(self.hashFilePath, "w") as file:
-            file.write(hash_value)
+    @staticmethod
+    def _config_paths(value: str) -> list[Path]:
+        """Split Doxygen's whitespace/double-quoted paths without shell execution."""
+        expanded = re.sub(r"\$\((\w+)\)", lambda match: os.environ.get(match.group(1), ""), value)
+        return [Path(first or second) for first, second in re.findall(r'"([^"]*)"|(\S+)', expanded) if first or second]
+
+    def _input_hash(self) -> str:
+        digest = hashlib.sha256()
+        digest.update(self.dox_dict2str(self.doxyCfg).encode("utf-8"))
+        inputs: set[Path] = set()
+        roots = self._config_paths(self.doxygenSource)
+        roots.extend(self._config_paths(str(self.doxyCfg.get("IMAGE_PATH", ""))))
+        output = Path(self.tempDoxyFolder).resolve()
+        for root in roots:
+            paths = [root] if root.is_file() else root.rglob("*")
+            for path in paths:
+                if path.is_file() and not path.resolve().is_relative_to(output):
+                    inputs.add(path.resolve())
+        for path in sorted(inputs):
+            name = str(path).encode("utf-8")
+            digest.update(len(name).to_bytes(8, "big"))
+            digest.update(name)
+            digest.update(path.stat().st_size.to_bytes(8, "big"))
+            with path.open("rb") as source:
+                for chunk in iter(lambda: source.read(65536), b""):
+                    digest.update(chunk)
+        return digest.hexdigest()
+
+    def _cache_matches(self, digest: str) -> bool:
+        if not (Path(self.getOutputFolder()) / "index.xml").is_file():
+            return False
+        try:
+            return Path(self.hashFilePath).read_text(encoding="utf-8") == digest
+        except FileNotFoundError:
+            return False
 
     def hasChanged(self) -> bool:
-        """! Check if the source files have changed since the last run.
-        @details
-        @return: (bool) True if the source files have changed since the last run.
-        """
+        """Check source, image and effective configuration inputs without changing the cache."""
+        return not self._cache_matches(self._input_hash())
 
-        def hashRead(filename: PurePath) -> str:
-            with open(filename, "r") as file:
-                return str(file.read())
-
-        sha1 = hashlib.sha1()
-        srcs = self.doxygenSource.split(" ")
-        for src in srcs:
-            for path in Path(src).rglob("*.*"):
-                # # Code from https://stackoverflow.com/a/22058673/15411117
-                # # BUF_SIZE is totally arbitrary, change for your app!
-                BUF_SIZE = 65536  # let's read stuff in 64kb chunks!
-                if path.is_file():
-                    with open(path, "rb") as f:
-                        while True:
-                            data = f.read(BUF_SIZE)
-                            if not data:
-                                break
-                            sha1.update(data)
-                # print(f"{path}: {sha1.hexdigest()}")
-
-        hashNew = sha1.hexdigest()
-        self.hashNew = hashNew
-        if Path(self.hashFilePath).is_file() and Path(self.getOutputFolder(), "index.xml").is_file():
-            hashOld = hashRead(self.hashFilePath)
-            if hashNew == hashOld:
-                return False
-
-        if Path(self.hashFilePath).is_file():
-            Path(self.hashFilePath).unlink()
-        return True
-
-    def run(self) -> bool:
+    def run(self):
         """! Run Doxygen with the current configuration using the Popen class.
         @details
-        @return: (bool) True if Doxygen exited with return code 0.
         """
         doxyBuilder = Popen(
             [self.doxygenBinPath, "-"],
@@ -244,22 +240,31 @@ class DoxygenRun:
             stdin=PIPE,
             stderr=PIPE,
         )
-        (doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))[0].decode().strip())
-        # log.info(self.destinationDir)
-        # log.info(stdout_data)
-        return doxyBuilder.returncode == 0
+        stdout, stderr = doxyBuilder.communicate(self.dox_dict2str(self.doxyCfg).encode("utf-8"))
+        if doxyBuilder.returncode != 0:
+            raise RuntimeError(
+                f"Doxygen failed with exit status {doxyBuilder.returncode}\n"
+                f"stdout:\n{stdout.decode('utf-8', errors='replace')}\n"
+                f"stderr:\n{stderr.decode('utf-8', errors='replace')}"
+            )
 
     def checkAndRun(self):
         """! Check if the source files have changed since the last run and run Doxygen if they have.
         @details
         @return: (bool) True if Doxygen was run.
         """
-        if self.hasChanged():
-            if self.run() and Path(self.getOutputFolder(), "index.xml").is_file() and self.hashNew is not None:
-                self._writeHash(self.hashNew)
-            return True
-        else:
+        digest = self._input_hash()
+        if self._cache_matches(digest):
             return False
+        # No hash may certify old/partial output after a failed or interrupted run.
+        Path(self.hashFilePath).unlink(missing_ok=True)
+        index = Path(self.getOutputFolder()) / "index.xml"
+        index.unlink(missing_ok=True)
+        self.run()
+        if not index.is_file():
+            raise RuntimeError(f"Doxygen did not create the required XML index: {index}")
+        Path(self.hashFilePath).write_text(digest, encoding="utf-8")
+        return True
 
     def getOutputFolder(self) -> PurePath:
         """! Get the path to the XML output folder.
