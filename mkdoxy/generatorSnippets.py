@@ -86,7 +86,6 @@ class GeneratorSnippets:
                 project_name = match.group("project")
 
                 snippet_config = self.config.copy()
-                snippet_config.update(self.try_load_yaml(match.group("yaml"), project_name, snippet, self.config))
 
                 if self.is_doxy_inactive(snippet_config):
                     continue
